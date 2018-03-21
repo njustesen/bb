@@ -40,14 +40,21 @@ class OutcomeType(Enum):
     BALL_HIT_GROUND = 36
     BALL_HIT_PLAYER = 37
     SETUP_DONE = 38
+    KNOCKED_DOWN = 39
+    ARMOR_BROKEN = 40
+    ARMOR_NOT_BROKEN = 41
+    STUNNED = 42
+    KNOCKED_OUT = 43
+    BADLY_HURT = 44
 
 
 class Outcome:
 
-    def __init__(self, outcome_type, pos=None, player_id=-1, rolls=[], team_home=None, n=0):
+    def __init__(self, outcome_type, pos=None, player_id=-1, opp_player_id=-1, rolls=[], team_home=None, n=0):
         self.outcome_type = outcome_type
         self.pos = pos
         self.player_id = player_id
+        self.opp_player_id = opp_player_id
         self.rolls = rolls
         self.team_home = team_home
         self.n = n

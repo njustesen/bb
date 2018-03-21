@@ -25,7 +25,8 @@ class Field:
         self.player_positions[player_id] = pos
         self.board[pos[0]][pos[1]] = player_id
 
-    def remove(self, player_id, pos):
+    def remove(self, player_id):
+        pos = self.player_positions[player_id]
         del self.player_positions[player_id]
         self.board[pos[0]][pos[1]] = -1
 
@@ -137,3 +138,16 @@ class GameState:
 
     def get_team_state(self, home):
         return self.home_state if home else self.away_state
+
+    def get_dugout(self, home):
+        return self.home_dugout if home else self.away_dugout
+
+    def knock_out(self, home, player_id):
+        self.get_team_state(home).player_states[player_id] = PlayerState.KOD
+        self.field.remove(player_id)
+        self.get_dugout(home).kod.append(player_id)
+
+    def badly_hurt(self, home, player_id):
+        self.get_team_state(home).player_states[player_id] = PlayerState.BH
+        self.field.remove(player_id)
+        self.get_dugout(home).casualties.append(player_id)

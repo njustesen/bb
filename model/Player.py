@@ -1,6 +1,28 @@
 from enum import Enum
 
 
+class Skill(Enum):
+    THICK_SKULL = 1
+    STUNTY = 2
+    MIGHTY_BLOW = 3
+    CLAWS = 4
+
+
+class Position:
+
+    def __init__(self, name, race, ma, st, ag, av, skills, cost, n_skill_sets = [], d_skill_sets = []):
+        self.name = name
+        self.race = race
+        self.ma = ma
+        self.st = st
+        self.ag = ag
+        self.av = av
+        self.skills = skills
+        self.cost = cost
+        self.n_skill_sets = n_skill_sets
+        self.d_skill_sets = d_skill_sets
+
+
 class PlayerState(Enum):
     READY = 1
     USED = 2
@@ -36,3 +58,6 @@ class Player:
 
     def get_av(self):
         return self.position.av + self.extra_av
+
+    def has_skill(self, skill):
+        return skill in self.extra_skills or skill in self.position.skills
