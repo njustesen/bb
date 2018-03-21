@@ -1,5 +1,4 @@
 from procs.procedure import Procedure
-from model.action import Action, ActionType
 from model.outcome import Outcome, OutcomeType
 from model.player import *
 from model.dice import *

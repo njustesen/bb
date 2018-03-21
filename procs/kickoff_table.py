@@ -49,7 +49,7 @@ class Riot(Procedure):
             if roll.get_sum() <= 3:
                 n = 1
             else:
-                n = 1
+                n = -11
 
         self.game.state.get_team_state(self.home).turn += n
         self.game.state.get_team_state(not self.home).turn += n

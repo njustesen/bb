@@ -14,13 +14,13 @@ class Half(Procedure):
         if game.state.half > 1:
             self.procedures.append(RollForKOd(game, True))
             self.procedures.append(RollForKOd(game, False))
-        kicking_home = game.state.kicking_team if game.state.half == 1 else not game.state.kicking_team
-        self.procedures.append(Setup(game, home=kicking_home))
-        self.procedures.append(Setup(game, home=not kicking_home))
-        self.procedures.append(KickOff(game, kicking_home))
+        self.kicking_home = game.state.kicking_team if game.state.half == 1 else not game.state.kicking_team
+        self.procedures.append(Setup(game, home=self.kicking_home))
+        self.procedures.append(Setup(game, home=not self.kicking_home))
+        self.procedures.append(KickOff(game, self.kicking_home))
         for i in range(8):
-            self.procedures.append(Turn(game, home=True))
-            self.procedures.append(Turn(game, home=False))
+            self.procedures.append(Turn(game, home=not self.kicking_home))
+            self.procedures.append(Turn(game, home=self.kicking_home))
         super().__init__()
 
     def step(self, action):
@@ -29,13 +29,21 @@ class Half(Procedure):
             self.procedures.pop()
             if len(self.procedures) == 0:
                 return outcome, True
+
             if outcome.outcome_type == OutcomeType.TOUCHDOWN:
-                kicking_home = outcome.team_home
+                scoring_home = outcome.team_home
                 if self.game.state.get_team_state(not kicking_home).turn < 8:
                     self.procedures.append(RollForKOd(self.game, True))
                     self.procedures.append(RollForKOd(self.game, False))
-                    self.procedures.append(Setup(self.game, home=kicking_home))
-                    self.procedures.append(Setup(self.game, home=not kicking_home))
-                    self.procedures.append(KickOff(self.game, home=kicking_home))
+                    self.procedures.append(Setup(self.game, home=scoring_home))
+                    self.procedures.append(Setup(self.game, home=not scoring_home))
+                    self.procedures.append(KickOff(self.game, home=scoring_home))
+
+            elif outcome.outcome_type == OutcomeType.RIOT:
+                if n == 1:
+                    self.procedures.append(Turn(self.game, home=not self.kicking_home))
+                    self.procedures.append(Turn(self.game, home=self.kicking_home))
+                else:
+                    self.procedures = self.procedures[:-2]
 
         return outcome, False

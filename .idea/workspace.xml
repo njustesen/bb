@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/model/coach.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/model/position.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/model/race.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/procs/injury_roll.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/gamestate.py" afterPath="$PROJECT_DIR$/model/gamestate.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/outcome.py" afterPath="$PROJECT_DIR$/model/outcome.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/team.py" afterPath="$PROJECT_DIR$/model/team.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/procs/half.py" afterPath="$PROJECT_DIR$/procs/half.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/procs/kickoff_table.py" afterPath="$PROJECT_DIR$/procs/kickoff_table.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/procs/knock_down.py" afterPath="$PROJECT_DIR$/procs/knock_down.py" />
     </list>
     <ignored path="bb.iws" />
@@ -69,7 +63,7 @@
         <entry file="file://$PROJECT_DIR$/procs/kickoff_table.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="218" column="12" selection-start-line="218" selection-start-column="12" selection-end-line="223" selection-end-column="33" />
+              <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -77,14 +71,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="knock_down.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="knock_down.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/procs/knock_down.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.4437087">
-              <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#37#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="37" selection-start-line="0" selection-start-column="37" selection-end-line="0" selection-end-column="37" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -113,17 +105,17 @@
         <entry file="file://$PROJECT_DIR$/model/outcome.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="56" column="42" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
+              <caret line="29" column="8" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="half.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="half.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/procs/half.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.8410596">
+              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -188,10 +180,8 @@
         <option value="$PROJECT_DIR$/procs/cointoss.py" />
         <option value="$PROJECT_DIR$/procs/setup.py" />
         <option value="$PROJECT_DIR$/procs/kickoff.py" />
-        <option value="$PROJECT_DIR$/procs/half.py" />
         <option value="$PROJECT_DIR$/model/playerstate.py" />
         <option value="$PROJECT_DIR$/procs/injury_roll.py" />
-        <option value="$PROJECT_DIR$/procs/kickoff_table.py" />
         <option value="$PROJECT_DIR$/model/position.py" />
         <option value="$PROJECT_DIR$/model/race.py" />
         <option value="$PROJECT_DIR$/model/coach.py" />
@@ -200,6 +190,8 @@
         <option value="$PROJECT_DIR$/model/player.py" />
         <option value="$PROJECT_DIR$/model/outcome.py" />
         <option value="$PROJECT_DIR$/procs/knock_down.py" />
+        <option value="$PROJECT_DIR$/procs/kickoff_table.py" />
+        <option value="$PROJECT_DIR$/procs/half.py" />
       </list>
     </option>
   </component>
@@ -638,26 +630,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/procs/half.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/procs/kickoff.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="129" column="8" selection-start-line="129" selection-start-column="8" selection-end-line="129" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/procs/place_ball.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -684,16 +656,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/procs/kickoff_table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="218" column="12" selection-start-line="218" selection-start-column="12" selection-end-line="223" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/team.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -713,15 +675,43 @@
     <entry file="file://$PROJECT_DIR$/model/outcome.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="42" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
+          <caret line="29" column="8" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="8" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/procs/kickoff.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="129" column="8" selection-start-line="129" selection-start-column="8" selection-end-line="129" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/procs/knock_down.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.4437087">
-          <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="37" selection-start-line="0" selection-start-column="37" selection-end-line="0" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/procs/kickoff_table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/procs/half.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8410596">
+          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
