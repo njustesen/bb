@@ -18,3 +18,9 @@ class Team:
 
     def get_player_by_id(self, id):
         return self.players_by_id[id]
+
+    def has_player_by_id(self, id):
+        return id in self.players_by_id
+
+    def get_player_ids(self):
+        return [player.id for player in self.players]

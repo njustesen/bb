@@ -23,7 +23,7 @@ class RollForKOd(Procedure):
                 if roll.get_sum() >= 4:
                     self.game.state.home_player_states[id] = PlayerState.READY
                     self.checked.append(id)
-                    return Outcome(OutcomeType.PLAYER_READY, player_id=id, roll=roll), False
+                    return Outcome(OutcomeType.PLAYER_READY, player_id=id, rolls=[roll]), False
                 self.idx += 1
-                return Outcome(OutcomeType.PLAYER_NOT_READY, player_id=id, roll=roll), False
+                return Outcome(OutcomeType.PLAYER_NOT_READY, player_id=id, rolls=[roll]), False
         return Outcome(OutcomeType.DONE), True

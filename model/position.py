@@ -11,6 +11,5 @@ class Position:
         self.av = av
         self.skills = skills
         self.cost = cost
-        self.limit = limit
         self.n_skills = n_skills
         self.d_skills = d_skills
