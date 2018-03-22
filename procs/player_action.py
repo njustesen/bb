@@ -131,10 +131,12 @@ class Dodge(Procedure):
         self.player_id = player_id
         self.from_pos = from_pos
         self.to_pos = to_pos
+        self.procedures = []
         super().__init__()
 
     def step(self, action):
-        # TODO:
+
+
 
 
 class PlayerAction(Procedure):
