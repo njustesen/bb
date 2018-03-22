@@ -1,25 +1,8 @@
 from procs.procedure import Procedure
+from procs.catch import *
 from model.outcome import Outcome, OutcomeType
 from model.player import *
 from model.dice import *
-
-
-class Fumble(Procedure):
-
-    def __init__(self, game, home, player_id, opp_player_id=None, mighty_blow_used=False):
-        self.game = game
-        self.home = home
-        self.player_id = player_id
-        self.opp_player_id = opp_player_id
-        self.injury_rolled = False
-        self.mighty_blow_used = mighty_blow_used
-        self.player = game.get_player(player_id)
-        self.opp_player = game.get_player(opp_player_id)
-        super().__init__()
-
-    def step(self, action):
-
-
 
 
 class Injury(Procedure):
@@ -116,12 +99,12 @@ class Armor(Procedure):
 
 class KnockDown(Procedure):
 
-    def __init__(self, game, home, player_id, skip_armor_roll=True, no_armor_roll=False, modifiers=0, opp_player_id=None, in_crowd=False):
+    def __init__(self, game, home, player_id, armor_roll=True, injury_roll=True, modifiers=0, opp_player_id=None, in_crowd=False):
         self.game = game
         self.home = home
         self.player_id = player_id
-        self.skip_armor_roll = skip_armor_roll
-        self.no_armor_roll = no_armor_roll
+        self.armor_roll = armor_roll
+        self.injury_roll = injury_roll
         self.modifiers = modifiers
         self.opp_player_id = opp_player_id
         self.procedures = []
@@ -136,24 +119,23 @@ class KnockDown(Procedure):
         if not self.knocked_down:
             self.game.state.get_team(self.home).player_states[self.player_id] = PlayerState.DOWN
             self.knocked_down = True
-
-            # Terminal if no armor roll should be made
-            return Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id), self.no_armor_roll, True
+            return Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id), False
 
         # Only add proc once
         if not self.proc_added:
             self.proc_added = True
             # If armor roll should be made. Injury is also nested in armor.
-            if not self.skip_armor_roll:
+            if self.armor_roll:
                 self.procedures.insert(0, Armor(self.game, self.home, self.player_id, modifiers=self.modifiers,
                                                 opp_player_id=self.opp_player_id if not self.in_crowd else None))
-            else:
+            if self.injury_roll:
                 self.procedures.insert(0, Injury(self.game, self.home, self.player_id,
                                                  opp_player_id=self.opp_player_id if not self.in_crowd else None))
             # Check fumble
             pos = self.game.state.field.get_player_position(self.player_id)
             if self.game.state.ball_at(pos):
-                self.procedures.append(Fumble(self.game, self.home, self.player_id, pos))
+                self.procedures.append(Bounce(self.game, self.home))
+                return Outcome(OutcomeType.FUMBLE, player_id=self.player_id, opp_player_id=self.opp_player_id), False
 
         outcome, terminal = self.procedures[0].step(action)
         if outcome.terminal:

@@ -8,6 +8,7 @@ class Skill(Enum):
     CLAWS = 4
     SPRINT = 5
     SURE_FEET = 6
+    NO_HANDS = 7
 
 
 class PlayerState(Enum):

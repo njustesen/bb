@@ -171,11 +171,11 @@ class ThrowARock(Procedure):
             if rh >= ra:
                 player_away_id = self.game.state.field.get_random_player(True)
                 pos = self.game.state.field.get_player_position(player_away_id)
-                self.procedures.insert(0, KnockDown(self.game, False, player_away_id, pos, armor=False))
+                self.procedures.insert(0, KnockDown(self.game, False, player_away_id, pos, armor_roll=False))
             if ra >= rh:
                 player_home_id = self.game.state.field.get_random_player(False)
                 pos = self.game.state.field.get_player_position(player_home_id)
-                self.procedures.insert(0, KnockDown(self.game, True, player_home_id, pos, armor=False))
+                self.procedures.insert(0, KnockDown(self.game, True, player_home_id, pos, armor_roll=False))
 
             return Outcome(OutcomeType.THROW_A_ROCK, rolls=[roll_home, roll_away]), False
 

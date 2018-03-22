@@ -22,37 +22,6 @@ class Touchback(Procedure):
         return Outcome(OutcomeType.BALL_PLACED, pos=action.pos_to), True
 
 
-class BounceKick(Procedure):
-
-    def __init__(self, game, home):
-        self.game = game
-        self.home = home  # Kicking team
-        super().__init__()
-
-    def step(self, action):
-        roll_scatter = DiceRoll([D8])
-
-        x = 0
-        y = 0
-        if roll_scatter.get_sum() in [1, 4, 6]:
-            x = -1
-        if roll_scatter.get_sum() in [3, 5, 9]:
-            x = 1
-        if roll_scatter.get_sum() in [1, 2, 3]:
-            y = -1
-        if roll_scatter.get_sum() in [6, 7, 8]:
-            y = 1
-
-        self.game.state.field.ball_position[0] += x
-        self.game.state.field.ball_position[1] += y
-        if self.game.state.field.is_ball_out() or \
-                self.game.arena.is_team_side(self.game.state.field.ball_position, not self.home):
-            return Outcome(OutcomeType.TOUCHBACK, pos=self.game.state.field.ball_position,
-                           team_home=self.home, rolls=[roll_scatter]), True
-
-        return Outcome(OutcomeType.BALL_ON_GROUND, pos=self.game.state.field.ball_position, team_home=self.home), True
-
-
 class LandKick(Procedure):
 
     def __init__(self, game, home):
@@ -77,7 +46,7 @@ class LandKick(Procedure):
             else:
                 player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
                 if player_id is None:
-                    self.procedures.insert(0, BounceKick(self.game, home=self.home))
+                    self.procedures.insert(0, Bounce(self.game, home=self.home, kick=True))
                     return Outcome(OutcomeType.BALL_HIT_GROUND, pos=self.game.state.field.ball_position, team_home=self.home), False
                 else:
                     self.procedures.insert(0, Catch(self.game, self.home, player_id=player_id))

@@ -42,7 +42,8 @@ class Move(Procedure):
             outcome, terminal = self.procedures[0].step(action)
             if outcome.terminal:
                 self.procedures.pop()
-                return outcome, True
+                if len(self.procedures) == 0:
+                    return outcome, True
             return outcome, False
 
 
@@ -69,7 +70,8 @@ class GFI(Procedure):
             outcome, terminal = self.procedures[0].step(action)
             if outcome.terminal:
                 self.procedures.pop()
-                return outcome, True
+                if len(self.procedures) == 0:
+                    return outcome, True
             return outcome, False
 
         # Otherwise roll if player hasn't
@@ -133,19 +135,6 @@ class Dodge(Procedure):
 
     def step(self, action):
         # TODO:
-
-
-class Fumble(Procedure):
-
-    def __init__(self, game, home, player_id, pos):
-        self.game = game
-        self.home = home
-        self.player_id = player_id
-        self.pos = pos
-        super().__init__()
-
-    def step(self, action):
-
 
 
 class PlayerAction(Procedure):
