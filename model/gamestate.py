@@ -18,6 +18,7 @@ class Field:
     def __init__(self, game):
         self.player_positions = {}
         self.ball_position = None
+        self.ball_in_air = False
         self.game = game
         self.board = np.zeros(game.arena.board.shape)
 
@@ -97,6 +98,21 @@ class Field:
     def get_random_player(self, home):
         return random.choice(self.get_team_player_ids(home))
 
+    def is_ball_at(self, pos, in_air=False):
+        if self.ball_position is None:
+            return False
+        if self.ball_in_air and not in_air:
+            return False
+        return np.array_equal(self.ball_position, pos)
+
+    def move_ball(self, pos, in_air=False):
+        self.ball_position = pos
+        self.ball_in_air = in_air
+
+    def is_ball_out(self):
+        return 0 > self.ball_position[0] or len(self.board[0]) < self.ball_position[0] or \
+            0 > self.ball_position[1] or len(self.board) < self.ball_position[1]
+
 
 class TeamState:
 
@@ -113,6 +129,15 @@ class TeamState:
         self.ass_coaches = team.ass_coaches
         self.cheerleaders = team.cheerleaders
         self.fame = 0
+        self.reroll_used = False
+
+    def reset_half(self):
+        self.reroll_used = False
+        self.rerolls = self.rerolls_start
+        self.turn = 0
+
+    def reset_turn(self):
+        self.reroll_used = False
 
 
 class Weather(Enum):
@@ -135,6 +160,30 @@ class GameState:
         self.away_state = TeamState(game.away)
         self.weather = None
         self.gentle_gust = False
+        self.home_turn = False
+        self.away_turn = False
+
+    def reset_turn(self, home):
+        self.home_turn = home
+        self.away_turn = not home
+        self.get_team_state(home).reset_turn()
+
+    def reset_kickoff(self):
+        self.home_turn = False
+        self.away_turn = False
+        self.home_state.reset_turn()
+        self.away_state.reset_turn()
+
+    def reset_half(self, home):
+        self.home_turn = False
+        self.away_turn = False
+        self.get_team_state(home).reset_half()
+
+    def get_player_state(self, player_id, home):
+        return self.get_team_state(home).player_states[player_id]
+
+    def set_player_state(self, player_id, home, player_state):
+        self.get_team_state(home).player_states[player_id] = player_state
 
     def get_team_state(self, home):
         return self.home_state if home else self.away_state
@@ -151,3 +200,10 @@ class GameState:
         self.get_team_state(home).player_states[player_id] = PlayerState.BH
         self.field.remove(player_id)
         self.get_dugout(home).casualties.append(player_id)
+
+    def can_use_reroll(self, home):
+        return not self.get_team_state(home).reroll_used and self.get_team_state(home).rerolls > 0
+
+    def use_reroll(self, home):
+        self.get_team_state(home).reroll_used = True
+        self.get_team_state(home).rerolls -= 1

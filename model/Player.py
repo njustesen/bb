@@ -6,6 +6,19 @@ class Skill(Enum):
     STUNTY = 2
     MIGHTY_BLOW = 3
     CLAWS = 4
+    SPRINT = 5
+    SURE_FEET = 6
+
+
+class PlayerState(Enum):
+    READY = 1
+    USED = 2
+    DOWN_READY = 3
+    DOWN_USED = 4
+    STUNNED = 5
+    KOD = 6
+    BH = 7
+    DEAD = 8
 
 
 class Position:
@@ -21,17 +34,6 @@ class Position:
         self.cost = cost
         self.n_skill_sets = n_skill_sets
         self.d_skill_sets = d_skill_sets
-
-
-class PlayerState(Enum):
-    READY = 1
-    USED = 2
-    ACTIVE = 3
-    DOWN = 4
-    STUNNED = 5
-    KOD = 6
-    BH = 7
-    DEAD = 8
 
 
 class Player:

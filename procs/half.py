@@ -1,6 +1,6 @@
 from procs.procedure import Procedure
 from model.outcome import OutcomeType
-from procs.roll_for_kod import RollForKOd
+from procs.roll_for_kod import PreHalf
 from procs.setup import Setup
 from procs.kickoff import KickOff
 from procs.turn import Turn
@@ -12,8 +12,8 @@ class Half(Procedure):
         self.game = game
         self.procedures = []
         if game.state.half > 1:
-            self.procedures.append(RollForKOd(game, True))
-            self.procedures.append(RollForKOd(game, False))
+            self.procedures.append(PreHalf(game, True))
+            self.procedures.append(PreHalf(game, False))
         self.kicking_home = game.state.kicking_team if game.state.half == 1 else not game.state.kicking_team
         self.procedures.append(Setup(game, home=self.kicking_home))
         self.procedures.append(Setup(game, home=not self.kicking_home))
@@ -32,9 +32,9 @@ class Half(Procedure):
 
             if outcome.outcome_type == OutcomeType.TOUCHDOWN:
                 scoring_home = outcome.team_home
-                if self.game.state.get_team_state(not kicking_home).turn < 8:
-                    self.procedures.append(RollForKOd(self.game, True))
-                    self.procedures.append(RollForKOd(self.game, False))
+                if self.game.state.get_team_state(not scoring_home).turn < 8:
+                    self.procedures.append(PreHalf(self.game, True))
+                    self.procedures.append(PreHalf(self.game, False))
                     self.procedures.append(Setup(self.game, home=scoring_home))
                     self.procedures.append(Setup(self.game, home=not scoring_home))
                     self.procedures.append(KickOff(self.game, home=scoring_home))

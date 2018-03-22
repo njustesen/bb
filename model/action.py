@@ -11,6 +11,21 @@ class ActionType(Enum):
     PLACE_PLAYER = 7
     END_SETUP = 8
     PLACE_BALL = 9
+    START_MOVE = 10
+    START_BLOCK = 11
+    START_BLITZ = 12
+    START_PASS = 13
+    START_FOUL = 14
+    START_HANDOFF = 15
+    END_PLAYER_TURN = 16
+    MOVE = 17
+    BLOCK = 18
+    BLITZ = 19
+    PASS = 20
+    FOUL = 21
+    HANDOFF = 22
+    USE_SKILL = 23
+    USE_REROLL = 24
 
 
 class Action():

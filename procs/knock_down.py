@@ -4,6 +4,24 @@ from model.player import *
 from model.dice import *
 
 
+class Fumble(Procedure):
+
+    def __init__(self, game, home, player_id, opp_player_id=None, mighty_blow_used=False):
+        self.game = game
+        self.home = home
+        self.player_id = player_id
+        self.opp_player_id = opp_player_id
+        self.injury_rolled = False
+        self.mighty_blow_used = mighty_blow_used
+        self.player = game.get_player(player_id)
+        self.opp_player = game.get_player(opp_player_id)
+        super().__init__()
+
+    def step(self, action):
+
+
+
+
 class Injury(Procedure):
 
     def __init__(self, game, home, player_id, opp_player_id=None, mighty_blow_used=False):
@@ -118,19 +136,24 @@ class KnockDown(Procedure):
         if not self.knocked_down:
             self.game.state.get_team(self.home).player_states[self.player_id] = PlayerState.DOWN
             self.knocked_down = True
+
             # Terminal if no armor roll should be made
-            return Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id), self.no_armor_roll
+            return Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id), self.no_armor_roll, True
 
         # Only add proc once
         if not self.proc_added:
             self.proc_added = True
-            # If armor roll should be made
+            # If armor roll should be made. Injury is also nested in armor.
             if not self.skip_armor_roll:
                 self.procedures.insert(0, Armor(self.game, self.home, self.player_id, modifiers=self.modifiers,
                                                 opp_player_id=self.opp_player_id if not self.in_crowd else None))
             else:
                 self.procedures.insert(0, Injury(self.game, self.home, self.player_id,
                                                  opp_player_id=self.opp_player_id if not self.in_crowd else None))
+            # Check fumble
+            pos = self.game.state.field.get_player_position(self.player_id)
+            if self.game.state.ball_at(pos):
+                self.procedures.append(Fumble(self.game, self.home, self.player_id, pos))
 
         outcome, terminal = self.procedures[0].step(action)
         if outcome.terminal:

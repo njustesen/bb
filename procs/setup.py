@@ -1,8 +1,9 @@
 from procs.procedure import Procedure
 from model.outcome import Outcome, OutcomeType
-from procs.roll_for_kod import RollForKOd
+from procs.roll_for_kod import PreHalf
 from model.action import *
 from model.arena import Tile
+from model.exceptions import *
 
 
 class Setup(Procedure):
@@ -29,7 +30,7 @@ class Setup(Procedure):
                 else:
                     self.game.state.field.swap(action.pos_from, action.pos_to)
                 return Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, player_id=action.player_from_id), False
-            return Outcome(OutcomeType.NOT_ALLOWED, pos=action.pos_to, player_id=action.player_from_id), False
+            raise IllegalActionExcpetion("Not allowed to place players at that location")
         elif action.action_type == ActionType.END_SETUP:
             if not self.game.state.field.is_setup_legal(self.home):
                 return Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team_home=self.home), False
