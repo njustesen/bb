@@ -26,6 +26,7 @@ class ActionType(Enum):
     HANDOFF = 22
     USE_SKILL = 23
     USE_REROLL = 24
+    END_TURN = 25
 
 
 class Action():

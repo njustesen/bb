@@ -33,10 +33,11 @@ class Field:
 
     def move(self, player_id, pos_to):
         pos_from = self.player_positions[player_id]
-        self.player_positions[player_id] = pos_to
-        if pos_from is not None:
-            self.board[pos_from[0]][pos_from[1]] = -1
+        if self.board[pos_to[0]][pos_to[1]] != -1:
+            raise Exception("Player cannot be moved on top of another player")
+        self.board[pos_from[0]][pos_from[1]] = -1
         self.board[pos_to[0]][pos_to[1]] = player_id
+        self.player_positions[player_id] = pos_to
 
     def swap(self, pos_from, pos_to):
         '''

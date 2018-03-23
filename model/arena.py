@@ -34,6 +34,14 @@ class Arena:
     def is_scrimmage(self, pos):
         return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
 
+    def is_touchdown(self, pos, team):
+        '''
+        :param pos:
+        :param team: Ture if home team and False if away team.
+        :return: Whether pos is within team's touchdown zone
+        '''
+        return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
+
     def is_wing(self, pos, right):
         if right:
             return self.board[pos[0]][pos[1]] in self.wing_right_tiles

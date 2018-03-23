@@ -1,5 +1,6 @@
 from procs.procedure import Procedure
 from procs.knock_down import *
+from procs.turn import *
 from model.outcome import *
 from model.action import *
 from model.player import *
@@ -22,84 +23,73 @@ class PlayerActionType(Enum):
 class Move(Procedure):
 
     def __init__(self, game, home, player_id, from_pos, to_pos, gfi, dodge):
-        self.game = game
+        super().__init__(game)
         self.home = home
         self.player_id = player_id
         self.from_pos = from_pos
         self.to_pos = to_pos
-        self.procedures = []
         if gfi:
-            self.procedures.append(GFI(game, home, player_id, from_pos, to_pos))
+            GFI(game, home, player_id, from_pos, to_pos)
         if dodge:
-            self.procedures.append(Dodge(game, home, player_id, from_pos, to_pos))
-        super().__init__()
+            Dodge(game, home, player_id, from_pos, to_pos)
 
     def step(self, action):
-
         self.game.state.field.move(self.from_pos, self.to_pos)
-
-        if len(self.procedures) > 0:
-            outcome, terminal = self.procedures[0].step(action)
-            if outcome.terminal:
-                self.procedures.pop()
-                if len(self.procedures) == 0:
-                    return outcome, True
-            return outcome, False
+        if self.game.arena.is_touchdown(self.to_pos, not self.home):
+            Touchdown(self.game, self.home, self.player_id)
+        return True
 
 
 class GFI(Procedure):
 
     def __init__(self, game, home, player_id, from_pos, to_pos):
-        self.game = game
+        super().__init__(game)
         self.home = home
         self.player_id = player_id
         self.from_pos = from_pos
         self.to_pos = to_pos
-        self.procedures = []
         self.awaiting_reroll = False
         self.awaiting_sure_feet = False
         self.sure_feet_used = False
         self.reroll_used = False
         self.rolled = False
-        super().__init__()
 
     def step(self, action):
 
-        # Check if nested procedures
-        if len(self.procedures) > 0:
-            outcome, terminal = self.procedures[0].step(action)
-            if outcome.terminal:
-                self.procedures.pop()
-                if len(self.procedures) == 0:
-                    return outcome, True
-            return outcome, False
-
-        # Otherwise roll if player hasn't
-        if action is None and not self.rolled:
+        # If player hasn't rolled
+        if not self.rolled:
 
             # Roll
             roll = DiceRoll([D6()])
             self.rolled = True
 
             if roll.get_sum() == 6:
+
                 # Success
-                return Outcome(OutcomeType.SUCCESSFUL_GFI, player_id=self.player_id, pos=self.to_pos), True
+                self.game.report(Outcome(OutcomeType.SUCCESSFUL_GFI, player_id=self.player_id, pos=self.to_pos))
+                return True
+
             else:
+
+                # Fail
+                self.game.report(Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
+
                 # Check if sure feet
                 player = self.game.get_player(self.player_id)
                 if player.has_skill(Skill.SURE_FEET) and not self.sure_feet_used:
                     self.sure_feet_used = True
                     self.awaiting_sure_feet = True
-                    return Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos, rolls=[roll]), False
+                    return False
 
                 # Check if reroll available
                 if self.game.state.can_use_reroll(self.home) and not self.sure_feet_used:
                     self.awaiting_reroll = True
-                    return Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos, rolls=[roll]), False
+                    self.game.report(Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
+                    return False
 
-                # Add knockdown proc
-                self.procedures.append(KnockDown(self.game, self.home, self.player_id, self.to_pos))
-                return Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos), False
+                # Player trips
+                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                return True
 
         # If sure feet used
         if self.awaiting_sure_feet:
@@ -108,18 +98,22 @@ class GFI(Procedure):
                 self.rolled = False
                 self.step(None)
             else:
-                return Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos), True
+                # Player trips
+                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                return True
 
         # If reroll used
         if self.awaiting_reroll:
             if action.action_type == ActionType.USE_REROLL:
-                self.reroll_used = True
+                # Remove reroll and roll again - recursive call
                 self.game.state.get_team_state(self.home).reroll_used = True
                 self.game.state.get_team_state(self.home).rerolls -= 1
                 self.rolled = False
                 self.step(None)
             else:
-                return Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos), True
+                # Player trips
+                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                return True
 
 
 
@@ -135,35 +129,19 @@ class Dodge(Procedure):
         super().__init__()
 
     def step(self, action):
-
-
+        # TODO:
 
 
 class PlayerAction(Procedure):
 
-    failed_outcomes = [OutcomeType.FAILED_GFI, OutcomeType.FAILED_DODGE, OutcomeType.TOUCHDOWN,
-                       OutcomeType.FAILED_PICKUP, OutcomeType.BALL_DROPPED]
-
     def __init__(self, game, home, player_id, type):
-        self.game = game
+        super().__init__(game)
         self.home = home
         self.player_id = player_id
         self.moves = 0
-        self.procedures = []
         self.type = type
-        super().__init__()
 
     def step(self, action):
-
-        if len(self.procedures) > 0:
-            outcome, terminal = self.procedures[0].step(action)
-            if outcome.terminal:
-                self.procedures.pop()
-            if outcome.outcome_type in PlayerAction.failed_outcomes:
-                return outcome, True
-            if outcome.terminal and self.game.state.get_player_state(self.player_id, self.home) != PlayerState.READY:
-                return outcome, True
-            return outcome, False
 
         if action.action_type == ActionType.END_PLAYER_TURN:
             return Outcome(OutcomeType.END_PLAYER_TURN), True
@@ -192,4 +170,5 @@ class PlayerAction(Procedure):
                 raise IllegalActionExcpetion("No movement points left")
 
             gfi = self.moves + move_needed > player.get_ma()
-            self.procedures.insert(0, Move(self.game, self.home, self.player_id, position, action.pos_to, gfi))
+            Move(self.game, self.home, self.player_id, position, action.pos_to, gfi)
+            self.moves += move_needed

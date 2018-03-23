@@ -6,13 +6,27 @@ from model.arena import Tile
 from model.exceptions import *
 
 
+class ClearBoard(Procedure):
+
+    def __init__(self, game):
+        super().__init__(game)
+
+    def step(self, action):
+        for team in [True, False]:
+            for player_id in self.game.get_team(team).get_player_ids():
+                # If player not in reserves. move it to it
+                if self.game.field.get_player_position(player_id) is not None:
+                    self.game.state.field.remove(player_id)
+                    self.game.state.get_dugout(team).reserves.append(player_id)
+        return True
+
+
 class Setup(Procedure):
 
     def __init__(self, game, home, reorganize=False):
-        self.game = game
+        super().__init__(game)
         self.home = home
         self.reorganize = reorganize
-        super().__init__()
 
     def step(self, action):
 
@@ -20,23 +34,27 @@ class Setup(Procedure):
             if self.game.arena.is_team_side(action.pos_to, self.home):
                 if action.pos_from is None:  # From reserves
                     if self.reorganize:
-                        return Outcome(OutcomeType.NOT_ALLOWED, team_home=self.home), False
+                        raise IllegalActionExcpetion("You cannot move players from the reserves when reorganizing the defense")
                     self.game.state.get_dugout(self.home).remove(action.player_from_id)
                 elif action.pos_to is None:  # To reserves
                     if self.reorganize:
-                        return Outcome(OutcomeType.NOT_ALLOWED, team_home=self.home), False
+                        raise IllegalActionExcpetion("You cannot move players to the reserves when reorganizing the defense")
                     self.game.state.field.remove(action.player_from_id)
                     self.game.state.get_dugout(self.home).add_to_reserves(action.player_from_id)
                 else:
                     self.game.state.field.swap(action.pos_from, action.pos_to)
-                return Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, player_id=action.player_from_id), False
-            raise IllegalActionExcpetion("Not allowed to place players at that location")
+                self.game.report(Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, player_id=action.player_from_id))
+                return False
+            raise IllegalActionExcpetion("You can only place players on your own side")
         elif action.action_type == ActionType.END_SETUP:
             if not self.game.state.field.is_setup_legal(self.home):
-                return Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team_home=self.home), False
+                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team_home=self.home))
+                return False
             elif not self.game.state.field.is_setup_legal_scrimmage(self.home):
-                return Outcome(OutcomeType.ILLEGAL_SETUP_SCRIMMAGE, team_home=self.home), False
+                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_SCRIMMAGE, team_home=self.home))
+                return False
             elif not self.game.state.field.is_setup_legal_wings(self.home):
-                return Outcome(OutcomeType.ILLEGAL_SETUP_WINGS, team_home=self.home), False
-            return Outcome(OutcomeType.SETUP_DONE, team_home=self.home), True
-
+                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_WINGS, team_home=self.home))
+                return False
+            self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
+            return True

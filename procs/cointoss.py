@@ -7,33 +7,32 @@ import random
 class CoinToss(Procedure):
 
     def __init__(self, game):
-        self.game = game
         self.away_won_toss = None
-        super().__init__()
+        super().__init__(game)
 
     def step(self, action):
         if self.away_won_toss is None:
-            assert action in [ActionType.HEADS, ActionType.TAILS]
-            return self.flip_coin(), False
+            self.flip_coin(action)
+            return False
         elif self.away_won_toss is not None:
-            assert action in [ActionType.KICK, ActionType.RECEIVE]
-            return self.pick(action), True
+            self.pick(action)
+            return True
 
     def flip_coin(self, action):
         if action.action_type == ActionType.HEADS:
             if random.random() >= 0.5:
                 self.away_won_toss = True
-                return Outcome(OutcomeType.HEADS_WON)
+                self.game.report(Outcome(OutcomeType.HEADS_WON, team_home=False))
             else:
                 self.away_won_toss = False
-                return Outcome(OutcomeType.HEADS_LOSS)
+                self.game.report(Outcome(OutcomeType.HEADS_LOSS, team_home=False))
         elif action.action_type == ActionType.TAILS:
             if random.random() >= 0.5:
                 self.away_won_toss = True
-                return Outcome(OutcomeType.TAILS_WON)
+                self.game.report(Outcome(OutcomeType.TAILS_WON, team_home=False))
             else:
                 self.away_won_toss = False
-                return Outcome(OutcomeType.TAILS_LOSS)
+                self.game.report(Outcome(OutcomeType.TAILS_LOSS, team_home=False))
 
     def pick(self, action):
         if action.action_type == ActionType.KICK:
@@ -41,5 +40,5 @@ class CoinToss(Procedure):
         elif action.action_type == ActionType.RECIEVE:
             self.game.state.kicking_team_home = True if self.away_won_toss else False
         if self.game.state.kicking_team_home:
-            return Outcome(OutcomeType.HOME_KICK)
-        return Outcome(OutcomeType.AWAY_KICK)
+            self.game.report(Outcome(OutcomeType.HOME_KICK))
+        self.game.report(Outcome(OutcomeType.AWAY_KICK))
