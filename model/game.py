@@ -110,6 +110,11 @@ class Game:
         away = self.away.get_player_by_id(player_id)
         return away
 
+    def get_home_by_player_id(self, player_id):
+        if self.home.has_player_by_id(player_id):
+            return True
+        return False
+
     def get_team_by_player_id(self, player_id):
         if self.home.has_player_by_id(player_id):
             return self.home

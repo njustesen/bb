@@ -9,6 +9,16 @@ class Skill(Enum):
     SPRINT = 5
     SURE_FEET = 6
     NO_HANDS = 7
+    BALL_AND_CHAIN = 8
+    DODGE = 9
+    PREHENSILE_TAIL = 10
+    TACKLE = 11
+    BREAK_TACKLE = 12
+    TITCHY = 13
+    DIVING_TACKLE = 14
+    SHADOWING = 15
+    TENTACLES = 16
+    TWO_HEADS = 17
 
 
 class PlayerState(Enum):
