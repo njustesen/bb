@@ -20,6 +20,81 @@ class PlayerActionType(Enum):
     FOUL = 7
 
 
+class Block(Procedure):
+
+    def __init__(self, game, home, player_from, pos_from, player_to, pos_to):
+        super().__init__(game)
+        self.home = home
+        self.player_from = player_from
+        self.player_to = player_to
+        self.pos_from = pos_from
+        self.pos_to = pos_to
+        self.reroll_used = False
+        self.roll = None
+
+    def step(self, action):
+
+        if self.roll is None:
+
+            # Determine dice and favor
+            st_from = self.player_from.get_st() + self.game.state.field.assists(self.player_from, self.player_to)
+            st_to = self.player_to.get_st() + self.game.state.field.assists(self.player_to, self.player_from)
+
+            # Determine dice and favor
+            dice = 0
+            favor = None
+            if st_from * 2 < st_to:
+                dice = 3
+                favor = not self.home
+            elif st_from < st_to:
+                dice = 2
+                favor = not self.home
+            elif st_from == st_to:
+                dice = 1
+            elif st_from > st_to * 2:
+                dice = 3
+                favor = self.home
+            elif st_from > st_to:
+                dice = 2
+                favor = self.home
+
+            # Roll
+            self.roll = DiceRoll([])
+            for i in range(dice):
+                self.roll.dice.append(BBDie())
+
+        else:
+
+            # Re-roll
+            if action.action_type == ActionType.USE_REROLL:
+
+                if self.reroll_used or not self.game.state.can_use_reroll(self.home):
+                    raise IllegalActionExcpetion("Team can't use re-roll")
+
+                # Roll again
+                self.reroll_used = True
+                self.game.state.get_team_state(self.home).use_reroll()
+                return self.step(None)
+
+            # Select dice
+            if action.action_type == ActionType.SELECT_DIE:
+                die = self.roll.dice[action.idx]
+                if die.get_value() == BBDieResult.ATTACKER_DOWN:
+                    Turnover(self.game, self.home)
+                    KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id)
+                    return True
+
+                if die.get_value == BBDieResult.BOTH_DOWN:
+                    if not self.player_from.has_skill(Skill.BLOCK):
+                        Turnover(self.game, self.home)
+                        KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id)
+                    if not self.player_to.has_skill(Skill.BLOCK):
+                        KnockDown(self.game, self.home, self.player_to.id, opp_player_id=self.player_from.id)
+
+
+        return False
+
+
 class Move(Procedure):
 
     def __init__(self, game, home, player_id, from_pos, to_pos, gfi, dodge):
@@ -237,17 +312,27 @@ class PlayerAction(Procedure):
         if action.action_type == ActionType.END_PLAYER_TURN:
             return Outcome(OutcomeType.END_PLAYER_TURN), True
 
+        # Action attributes
+        player_from = self.game.get_team(self.home).get_player_by_id(action.player_from_id)
+        player_to = self.game.get_team(self.home).get_player_by_id(action.player_to_id)
+
+        player_state_from = self.game.state.get_player_state(action.player_id, self.home)
+        player_state_to = None
+        if player_to is not None:
+            player_state_to = self.game.state.get_player_state(action.player_to_id, self.home)
+
         if action.action_type == ActionType.MOVE:
-            position = self.game.state.field.get_player_position(player_id=action.player_from_id)
-            player = self.game.get_team(self.home).get_player_by_id(action.player_from_id)
-            player_state = self.game.state.get_player_state(action.player_id, self.home)
+
+            # Check if action is allowed
+            if self.type == PlayerActionType.BLOCK or self.type == PlayerActionType.FOUL:
+                raise IllegalActionExcpetion("Players cannot move if they are doing a block of foul player action")
 
             # Check if ready
-            if player_state not in [PlayerState.READY, PlayerState.DOWN_READY]:
+            if player_state_from not in [PlayerState.READY, PlayerState.DOWN_READY]:
                 raise IllegalActionExcpetion("Player is not ready")
 
             # Check if square is nearby
-            if not self.game.arena.is_neighbor(position, action.pos_to):
+            if not self.game.arena.is_neighbor(action.pos_from, action.pos_to):
                 raise IllegalActionExcpetion("Square is not nearby")
 
             # Check if square is empty
@@ -255,9 +340,9 @@ class PlayerAction(Procedure):
                 raise IllegalActionExcpetion("Square is occupied")
 
             # Check GFI
-            move_needed = 3 if player_state == PlayerState.DOWN_READY else 1
-            gfi_allowed = 3 if player.has_skill(Skill.SPRINT) else 2
-            if self.moves + move_needed > player.get_ma() + gfi_allowed:
+            move_needed = 3 if player_state_from == PlayerState.DOWN_READY else 1
+            gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
+            if self.moves + move_needed > player_from.get_ma() + gfi_allowed:
                 raise IllegalActionExcpetion("No movement points left")
 
             # Check dodge
@@ -268,6 +353,18 @@ class PlayerAction(Procedure):
                 tackle_zones_from = self.game.state.field.get_tackle_zones(action.pos_from, self.home)
                 dodge = tackle_zones_from > 0
 
-            gfi = self.moves + move_needed > player.get_ma()
-            Move(self.game, self.home, self.player_id, position, action.pos_to, gfi, dodge)
+            # Check GFI
+            gfi = self.moves + move_needed > player_from.get_ma()
+
+            # Add proc
+            Move(self.game, self.home, self.player_id, action.pos_from, action.pos_to, gfi, dodge)
             self.moves += move_needed
+
+        elif action.action_type == ActionType.BLOCK:
+
+            # Check if action is allowed
+            if self.type != PlayerActionType.BLOCK or self.type != PlayerActionType.BLITZ:
+                raise IllegalActionExcpetion("Players cannot block if they are not doing a block of blitz player action")
+
+            # Add proc
+            Block(self.game, self.home, player_from, action.pos_from, player_to, action.pos_to)

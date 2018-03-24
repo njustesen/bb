@@ -291,7 +291,7 @@ class Catch(Procedure):
             if action.action_type == ActionType.USE_SKILL:
                 self.catch_used = True
                 self.rolled = False
-                self.step(None)
+                return self.step(None)
             else:
                 self.procedures.insert(0, Scatter(self.game, self.home))
                 return Outcome(OutcomeType.DROP, player_id=self.player_id), False
@@ -302,7 +302,7 @@ class Catch(Procedure):
                 self.reroll_used = True
                 self.game.state.use_reroll(self.home)
                 self.rolled = False
-                self.step(None)
+                return self.step(None)
             else:
                 self.procedures.insert(0, Scatter(self.game, self.home))
                 return Outcome(OutcomeType.DROP, player_id=self.player_id), False

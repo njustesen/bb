@@ -19,6 +19,7 @@ class Skill(Enum):
     SHADOWING = 15
     TENTACLES = 16
     TWO_HEADS = 17
+    BLOCK = 18
 
 
 class PlayerState(Enum):
@@ -29,7 +30,8 @@ class PlayerState(Enum):
     STUNNED = 5
     KOD = 6
     BH = 7
-    DEAD = 8
+    MNG = 8
+    DEAD = 9
 
 
 class Position:

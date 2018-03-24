@@ -53,6 +53,14 @@ class Game:
 
             # Call top of stack
             proc = self.stack.peek()
+            while proc.done:
+                self.stack.pop()
+                if self.stack.is_empty():
+                    self.game_over = True
+                    return False
+                proc = self.stack.peek()
+
+            # Run proc
             done = proc.step(action)
 
             # Set proc done status

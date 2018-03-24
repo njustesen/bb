@@ -72,6 +72,10 @@ class OutcomeType(Enum):
     END_OF_HALF = 70
     TOUCHDOWN = 71
     TURNOVER = 72
+    CASUALTY = 73
+    APOTHECARY_USED_KO = 74
+    APOTHECARY_USED_CASUALTY = 75
+    CASUALTY_APOTHECARY = 76
 
 
 class Outcome:

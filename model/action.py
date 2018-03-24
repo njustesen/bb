@@ -27,14 +27,17 @@ class ActionType(Enum):
     USE_SKILL = 23
     USE_REROLL = 24
     END_TURN = 25
+    SELECT_DIE = 26
+    USE_APOTHECARY = 27
+    USE_ROLL = 28
 
 
 class Action():
 
-    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None):
+    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0):
         self.action_type = action_type
         self.pos_from = pos_from
         self.pos_to = pos_to
         self.player_from_id = player_from_id
         self.player_to_id = player_to_id
-
+        self.idx = idx

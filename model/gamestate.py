@@ -170,6 +170,7 @@ class TeamState:
         self.babes = 0
         self.apothecary_available = team.apothecary
         self.player_states = {player.id: PlayerState.READY for player in team.players}
+        self.injuries = {}
         self.score = 0
         self.turn = 0
         self.apothecary = team.apothecary
@@ -187,6 +188,10 @@ class TeamState:
 
     def reset_turn(self):
         self.reroll_used = False
+
+    def use_reroll(self):
+        self.rerolls -= 1
+        self.reroll_used = True
 
 
 class Weather(Enum):
