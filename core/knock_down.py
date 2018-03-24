@@ -1,10 +1,5 @@
-from procs.procedure import Procedure
-from procs.catch import *
-from procs.turn import *
-from model.outcome import Outcome, OutcomeType
-from model.player import *
-from model.dice import *
-from model.rules import *
+from core import Procedure
+from model import Outcome, OutcomeType, Rules, ActionType, DiceRoll, D6, D8, PlayerState, Skill, Turnover, Bounce
 from enum import Enum
 
 
@@ -54,8 +49,7 @@ class Apothecary(Procedure):
 
                 self.roll_second = DiceRoll([D6(), D8()])
                 result = self.roll_second.get_sum()
-                n = max(38, result)
-                n = min(61, result)
+                n = min(61, max(38, result))
                 self.casualty_second = CasualtyType(n)
                 self.effect_second = Rules.casualty_effect[self.casualty_second]
 
@@ -107,7 +101,7 @@ class CasualtyEffect(Enum):
 
 
 class CasualtyType(Enum):
-    '''
+    """
     D68 Result Effect
     11-38 Badly Hurt No long term effect
     41 Broken Ribs Miss next game
@@ -127,7 +121,7 @@ class CasualtyType(Enum):
     57 Broken Neck -1 AG
     58 Smashed Collar Bone -1 ST
     61-68 DEAD Dead!
-    '''
+    """
     BADLY_HURT = 38
     BROKEN_RIBS = 41
     GROIN_STRAIN = 42
@@ -150,7 +144,7 @@ class CasualtyType(Enum):
 
 class KnockedOut(Procedure):
 
-    def __init__(self, game, home, player_id, opp_player_id=None, mighty_blow_used=False):
+    def __init__(self, game, home, player_id, opp_player_id=None):
         super().__init__(game)
         self.game = game
         self.home = home
@@ -178,7 +172,7 @@ class Casualty(Procedure):
 
     miss_next_game = [CasualtyEffect.MNG, CasualtyEffect.AG, CasualtyEffect.AV, CasualtyEffect.MA, CasualtyEffect.ST, CasualtyEffect.NI]
 
-    def __init__(self, game, home, player_id, opp_player_id=None, mighty_blow_used=False):
+    def __init__(self, game, home, player_id, opp_player_id=None):
         super().__init__(game)
         self.game = game
         self.home = home
@@ -196,8 +190,7 @@ class Casualty(Procedure):
         if self.roll is None:
             self.roll = DiceRoll([D6(), D8()])
             result = self.roll.get_sum()
-            n = max(38, result)
-            n = min(61, result)
+            n = min(61, max(38, result))
             self.casualty = CasualtyType(n)
             self.effect = Rules.casualty_effect[self.casualty]
 
@@ -261,8 +254,14 @@ class Injury(Procedure):
         # Result
         if result + thick_skull + stunty + mighty_blow <= 7:
             roll.modifiers = thick_skull + stunty + mighty_blow
-            self.game.state.get_team(self.home).player_states[self.player_id] = PlayerState.STUNNED
-            self.game.report(Outcome(OutcomeType.STUNNED, player_id=self.player_id, rolls=[roll]))
+            if self.game.get_player(self.player_id).has_skill(Skill.BALL_AND_CHAIN):
+                self.game.state.set_player_state(self.player_id, self.home, PlayerState.KOD)
+                self.game.state.field.remove(self.player_id)
+                self.game.state.get_dugout(self.home).kod.append(self.player_id)
+                self.game.report(Outcome(OutcomeType.KNOCKED_OUT, player_id=self.player_id, rolls=[roll]))
+            else:
+                self.game.state.get_home_state(self.home).player_states[self.player_id] = PlayerState.STUNNED
+                self.game.report(Outcome(OutcomeType.STUNNED, player_id=self.player_id, rolls=[roll]))
         elif result + stunty + mighty_blow >= 10:
             roll.modifiers = stunty + mighty_blow
             self.game.state.badly_hurt(self.player_id)

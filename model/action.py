@@ -35,12 +35,14 @@ class ActionType(Enum):
     DONT_USE_WRESTLE = 31
 
 
-class Action():
+class Action:
 
-    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0, team_home=True):
+    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0,
+                 team_home=True):
         self.action_type = action_type
         self.pos_from = pos_from
         self.pos_to = pos_to
         self.player_from_id = player_from_id
         self.player_to_id = player_to_id
         self.idx = idx
+        self.home = team_home

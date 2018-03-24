@@ -1,4 +1,3 @@
-import numpy as np
 from enum import Enum
 
 
@@ -35,12 +34,14 @@ class Arena:
         return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
 
     def is_touchdown(self, pos, team):
-        '''
+        """
         :param pos:
-        :param team: Ture if home team and False if away team.
-        :return: Whether pos is within team's touchdown zone
-        '''
-        return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
+        :param team: True if home team and False if away team.
+        :return: Whether pos is within team's touchdown zone (such that they would score)
+        """
+        if self.is_team_side(pos, not team):
+            return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
+        return False
 
     def is_wing(self, pos, right):
         if right:

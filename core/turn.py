@@ -1,12 +1,5 @@
-from procs.procedure import Procedure
-from model.outcome import *
-from model.action import *
-from model.player import *
-from model.exceptions import *
-from procs.procedure import Procedure
-from model.action import Action, ActionType
-from model.outcome import Outcome, OutcomeType
-from procs.player_action import *
+from core import Procedure
+from model import Outcome, OutcomeType, ActionType, PlayerState, PlayerActionType, PlayerAction
 
 
 class Turnover(Procedure):
@@ -36,9 +29,8 @@ class Touchdown(Procedure):
 class TurnStunned(Procedure):
 
     def __init__(self, game, home):
-        self.game = game
+        super().__init__(game)
         self.home = home
-        super().__init__()
 
     def step(self, action):
         players = []
@@ -47,7 +39,8 @@ class TurnStunned(Procedure):
             if player_states[player_id] == PlayerState.STUNNED:
                 self.game.state.get_team_state(self.home).player_states[player_id] = PlayerState.DOWN_USED
                 players.append(player_id)
-        return Outcome(OutcomeType.STUNNED_TURNED, n=players), True
+        self.game.report(Outcome(OutcomeType.STUNNED_TURNED, n=players))
+        return True
 
 
 class Turn(Procedure):

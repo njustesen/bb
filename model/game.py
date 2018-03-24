@@ -1,16 +1,5 @@
 from util.stack import Stack
-from procs.pregame import Pregame
-from procs.half import Half
-from model.outcome import *
-from procs.turn import *
-from procs.kickoff import *
-from procs.setup import *
-
-
-class Configuration:
-
-    def __init__(self):
-        self.fast_mode = False
+from core import *
 
 
 class Game:
@@ -26,17 +15,17 @@ class Game:
         self.game_over = False
 
     def init(self):
-        #Postgame(self)
+        # Postgame(self)
         Half(self, 2)
         Half(self, 1)
         Pregame(self)
 
     def step(self, action):
-        '''
+        """
         Executes one step in the game. If in Fast Mode, it executes several steps until action is required.
         :param action: Action from agent. Can be None if no action is required.
         :return: True if game requires action, False if not
-        '''
+        """
         # While procs are done and doesn't require new action
         done = True
         while done:
@@ -49,7 +38,12 @@ class Game:
             if isinstance(self.stack.peek(), Turnover):
                 self._end_turn()
 
-            # TODO: ADD/REMOVE TURNS FROM RIOT
+            # If riot -> remove one turn
+            if isinstance(self.stack.peek(), Riot):
+                if self.stack.peek().effect == 1:
+                    self._add_turn()
+                elif self.stack.peek().effect == -1:
+                    self._remove_turn()
 
             # Call top of stack
             proc = self.stack.peek()
@@ -85,10 +79,26 @@ class Game:
     def report(self, outcome):
         self.reports.append(outcome)
 
+    def _remove_turn(self):
+        for idx in range(self.stack.size()):
+            if isinstance(self.stack.items[idx], Turn):
+                self.stack.items.remove(idx)
+                self.stack.items.remove(idx)
+                break
+
+    def _add_turn(self):
+        home = False
+        for idx in reversed(range(self.stack.size())):
+            if isinstance(self.stack.items[idx], Turn):
+                home = self.stack.items[idx].home
+                self.stack.items.insert(idx, Turn(self, home=home))
+                self.stack.items.insert(idx, Turn(self, home=not home))
+                break
+
     def _end_turn(self):
-        '''
+        """
         Removes all procs in the current turn - including the current turn proc.
-        '''
+        """
         x = 0
         for i in reversed(range(self.stack.size())):
             x += 1
@@ -98,10 +108,10 @@ class Game:
             self.stack.pop()
 
     def _touchdown(self, proc):
-        '''
+        """
         Removes all procs in the current turn - including the current turn proc, and then creates procs to
         prepare for kickoff.
-        '''
+        """
         self._end_turn()
         KickOff(self, proc.home)
         Setup(self, not proc.home)

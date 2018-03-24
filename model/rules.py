@@ -1,4 +1,4 @@
-from procs.knock_down import *
+from core.knock_down import *
 
 
 class Rules:

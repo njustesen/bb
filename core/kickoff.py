@@ -1,10 +1,6 @@
-from procs.procedure import Procedure
-from procs.place_ball import PlaceBall
-from procs.kickoff_table import KickOffTable
-from procs.catch import *
-from model.outcome import Outcome, OutcomeType
-from model.dice import DiceRoll, D6, D8
-from model.exceptions import *
+from core import Procedure, Catch, KickOffTable, PlaceBall, Scatter, Bounce
+from model import Outcome, OutcomeType
+from exception import IllegalActionExcpetion
 
 
 class Touchback(Procedure):
@@ -33,17 +29,17 @@ class LandKick(Procedure):
         if not self.game.arena.is_team_side(self.game.state.field.ball_position, not self.home):
             Touchback(self.game, home=not self.home)
             self.game.report(Outcome(OutcomeType.TOUCHBACK, team_home=not self.home))
-            return True
         else:
             player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
             if player_id is None:
                 Bounce(self.game, home=self.home, kick=True)
-                self.game.report(Outcome(OutcomeType.BALL_HIT_GROUND, pos=self.game.state.field.ball_position, team_home=self.home))
-                return True
+                self.game.report(Outcome(OutcomeType.BALL_HIT_GROUND, pos=self.game.state.field.ball_position,
+                                         team_home=self.home))
             else:
                 Catch(self.game, self.home, player_id=player_id, pos=self.game.state.field.ball_position)
-                self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position, team_home=not self.home))
-                return True
+                self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
+                                         team_home=not self.home))
+        return True
 
 
 class KickOff(Procedure):

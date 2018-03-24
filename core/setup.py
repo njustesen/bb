@@ -1,9 +1,6 @@
-from procs.procedure import Procedure
-from model.outcome import Outcome, OutcomeType
-from procs.roll_for_kod import PreHalf
-from model.action import *
-from model.arena import Tile
-from model.exceptions import *
+from core import Procedure
+from model import Outcome, OutcomeType, ActionType, WeatherType, PlayerState
+from exception import IllegalActionExcpetion
 
 
 class ClearBoard(Procedure):
@@ -16,8 +13,11 @@ class ClearBoard(Procedure):
             for player_id in self.game.get_team(team).get_player_ids():
                 # If player not in reserves. move it to it
                 if self.game.field.get_player_position(player_id) is not None:
+                    if self.game.state.weather == WeatherType.SWELTERING_HEAT:
+                        self.game.state.set_player_state(player_id, team, PlayerState.HEATED)
                     self.game.state.field.remove(player_id)
                     self.game.state.get_dugout(team).reserves.append(player_id)
+
         return True
 
 

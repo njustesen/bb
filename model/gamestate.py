@@ -1,10 +1,7 @@
-from model.player import PlayerState
-import numpy as np
-from model.arena import Tile
-from model.player import *
-from model.rules import *
+from model import *
 from enum import Enum
 import random
+import numpy as np
 
 
 class Dugout:
@@ -42,11 +39,11 @@ class Field:
         self.player_positions[player_id] = pos_to
 
     def swap(self, pos_from, pos_to):
-        '''
+        """
         :param pos_from: A position on the field
         :param pos_to: A position on the field
         :return:
-        '''
+        """
         player_from_id = self.board[pos_from[0]][pos_from[1]]
         if player_from_id in self.player_positions:
             self.player_positions[player_from_id] = pos_to
@@ -74,7 +71,7 @@ class Field:
             return self.player_positions[player_id]
         return None
 
-    def is_setup_legal(self, home, tile=None, max=11, min=4):
+    def is_setup_legal(self, home, tile=None, max_players=11, min_players=4):
         cnt = 0
         for y in range(len(self.board)):
             for x in range(len(self.board[0])):
@@ -84,21 +81,21 @@ class Field:
                     player_id = self.board[y][x]
                     if player_id is not None and player_id in self.game.get_team(home).has_player_by_id(player_id):
                         cnt += 1
-        if cnt > max or cnt < min:
+        if cnt > max_players or cnt < min_players:
             return False
         return True
 
     def is_setup_legal_scrimmage(self, home):
         if home:
-            return self.is_setup_legal(home, tile=Tile.HOME_SCRIMMAGE, min=3)
-        return self.is_setup_legal(home, tile=Tile.AWAY_SCRIMMAGE, min=3)
+            return self.is_setup_legal(home, tile=Tile.HOME_SCRIMMAGE, min_players=3)
+        return self.is_setup_legal(home, tile=Tile.AWAY_SCRIMMAGE, min_players=3)
 
     def is_setup_legal_wings(self, home):
         if home:
-            return self.is_setup_legal(home, tile=Tile.HOME_WING_LEFT, max=2, min=0) and \
-                   self.is_setup_legal(home, tile=Tile.HOME_WING_RIGHT, max=2, min=0)
-        return self.is_setup_legal(home, tile=Tile.AWAY_WING_LEFT, max=2, min=0) and \
-               self.is_setup_legal(home, tile=Tile.AWAY_WING_RIGHT, max=2, min=0)
+            return self.is_setup_legal(home, tile=Tile.HOME_WING_LEFT, max_players=2, min_players=0) and \
+                   self.is_setup_legal(home, tile=Tile.HOME_WING_RIGHT, max_players=2, min_players=0)
+        return self.is_setup_legal(home, tile=Tile.AWAY_WING_LEFT, max_players=2, min_players=0) and \
+               self.is_setup_legal(home, tile=Tile.AWAY_WING_RIGHT, max_players=2, min_players=0)
 
     def get_team_player_ids(self, home):
         if home:
@@ -126,9 +123,9 @@ class Field:
         return not (pos[0] < 0 or pos[0] >= len(self.board[0]) or pos[1] < 0 or pos[1] >= len(self.board))
 
     def has_tackle_zone(self, player, home):
-        if player.id in self.game.get_home_by_player_id(player.id) == home:
+        if player.player_id in self.game.get_home_by_player_id(player.player_id) == home:
             return False
-        if Rules.has_tackle_zone[self.game.state.get_player_state(player.id)]:
+        if Rules.has_tackle_zone[self.game.state.get_player_state(player.player_id)]:
             return False
         if player.has_skill(Skill.TITCHY):
             return False
@@ -179,8 +176,8 @@ class Field:
         return tackle_zones, tackle_id, prehensile_tail_id, diving_tackle_id, shadowing_id, tentacles_id
 
     def assists(self, home, player_from, player_to):
-        pos_from = self.get_player_position(player_from.id)
-        pos_to = self.get_player_position(player_to.id)
+        pos_from = self.get_player_position(player_from.player_id)
+        pos_to = self.get_player_position(player_to.player_id)
         assists = []
         for yy in range(-1, 0, 1):
             for xx in range(-1, 0, 1):
@@ -193,7 +190,8 @@ class Field:
                         if player_id in self.game.get_home_by_player_id(player_id) != home:
                             if self.game.state.get_player_state(player_id) == PlayerState.BONE_HEADED:
                                 continue
-                            if self.game.get_player(player_id).has_skill(Skill.GUARD) or self.get_tackle_zones(player_id, not home) <= 1:
+                            if self.game.get_player(player_id).has_skill(Skill.GUARD) or \
+                                            self.get_tackle_zones(player_id, not home) <= 1:
                                 assists.append(player_id)
         return assists
 
@@ -204,7 +202,7 @@ class TeamState:
         self.bribes = 0
         self.babes = 0
         self.apothecary_available = team.apothecary
-        self.player_states = {player.id: PlayerState.READY for player in team.players}
+        self.player_states = {player.player_id: PlayerState.READY for player in team.players}
         self.injuries = {}
         self.score = 0
         self.turn = 0
@@ -229,7 +227,7 @@ class TeamState:
         self.reroll_used = True
 
 
-class Weather(Enum):
+class WeatherType(Enum):
     SWELTERING_HEAT = 1
     VERY_SUNNY = 2
     NICE = 3

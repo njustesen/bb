@@ -1,14 +1,13 @@
-from procs.procedure import Procedure
-from model.action import Action, ActionType
-from model.outcome import Outcome, OutcomeType
+from core.procedure import Procedure
+from model import ActionType, Outcome, OutcomeType
 import random
 
 
 class CoinToss(Procedure):
 
     def __init__(self, game):
-        self.away_won_toss = None
         super().__init__(game)
+        self.away_won_toss = None
 
     def step(self, action):
         if self.away_won_toss is None:

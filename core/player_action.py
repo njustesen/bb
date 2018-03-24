@@ -1,13 +1,6 @@
-from procs.procedure import Procedure
-from procs.knock_down import *
-from procs.turn import *
-from model.outcome import *
-from model.action import *
-from model.player import *
-from model.exceptions import *
-from model.action import Action, ActionType
-from model.outcome import Outcome, OutcomeType
-from model.dice import *
+from core import Procedure, KnockDown, Touchdown, Turnover
+from exception import IllegalActionExcpetion
+from model import ActionType, Outcome, OutcomeType, DiceRoll, Skill, BBDieResult, D6, BBDie, PlayerState, WeatherType
 from enum import Enum
 
 
@@ -244,8 +237,9 @@ class GFI(Procedure):
             # Roll
             roll = DiceRoll([D6()])
             self.rolled = True
+            roll.modifiers = 1 if self.game.state.weather == WeatherType.BLIZZARD else 0
 
-            if roll.get_sum() == 6:
+            if roll.get_sum() >= 2 + roll.modifiers:
 
                 # Success
                 self.game.report(Outcome(OutcomeType.SUCCESSFUL_GFI, player_id=self.player_id, pos=self.to_pos))
@@ -312,6 +306,8 @@ class Dodge(Procedure):
         self.to_pos = to_pos
         self.dodge_used = False
         self.awaiting_dodge = False
+        self.awaiting_reroll = False
+        self.rolled = False
 
     def step(self, action):
 
@@ -407,12 +403,12 @@ class Dodge(Procedure):
 
 class PlayerAction(Procedure):
 
-    def __init__(self, game, home, player_id, type):
+    def __init__(self, game, home, player_id, action_type):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
         self.moves = 0
-        self.type = type
+        self.action_type = action_type
 
     def step(self, action):
 
@@ -431,7 +427,7 @@ class PlayerAction(Procedure):
         if action.action_type == ActionType.MOVE:
 
             # Check if action is allowed
-            if self.type == PlayerActionType.BLOCK or self.type == PlayerActionType.FOUL:
+            if self.action_type == PlayerActionType.BLOCK or self.action_type == PlayerActionType.FOUL:
                 raise IllegalActionExcpetion("Players cannot move if they are doing a block of foul player action")
 
             # Check if ready
@@ -470,8 +466,11 @@ class PlayerAction(Procedure):
         elif action.action_type == ActionType.BLOCK:
 
             # Check if action is allowed
-            if self.type != PlayerActionType.BLOCK or self.type != PlayerActionType.BLITZ:
+            if self.action_type != PlayerActionType.BLOCK or self.action_type != PlayerActionType.BLITZ:
                 raise IllegalActionExcpetion("Players cannot block if they are not doing a block of blitz player action")
+
+            if player_state_to == PlayerState.DOWN_READY or player_state_to == PlayerState.DOWN_USED:
+                raise IllegalActionExcpetion("Players cannot block opponent players that are down")
 
             # Add proc
             Block(self.game, self.home, player_from, action.pos_from, player_to, action.pos_to)

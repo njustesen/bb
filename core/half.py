@@ -1,9 +1,5 @@
-from procs.procedure import Procedure
-from model.outcome import *
-from procs.pre_half import PreHalf
-from procs.setup import Setup
-from procs.kickoff import KickOff
-from procs.turn import Turn
+from core import Procedure, Turn, KickOff, Setup, PreHalf, ClearBoard
+from model import Outcome, OutcomeType
 
 
 class Half(Procedure):
@@ -13,7 +9,8 @@ class Half(Procedure):
         self.half = half
 
         # Determine kicking team
-        self.kicking_home = self.game.state.kicking_team if self.game.state.half == 1 else not self.game.state.kicking_team
+        self.kicking_home = self.game.state.kicking_team if self.game.state.half == 1 \
+            else not self.game.state.kicking_team
 
         # Add turns
         for i in range(8):

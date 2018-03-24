@@ -39,11 +39,12 @@ class PlayerState(Enum):
     BONE_HEADED = 10
     HYPNOTIZED = 11
     REALLY_STUPID = 12
+    HEATED = 13
 
 
 class Position:
 
-    def __init__(self, name, race, ma, st, ag, av, skills, cost, n_skill_sets = [], d_skill_sets = []):
+    def __init__(self, name, race, ma, st, ag, av, skills, cost, n_skill_sets=[], d_skill_sets=[]):
         self.name = name
         self.race = race
         self.ma = ma
@@ -58,8 +59,8 @@ class Position:
 
 class Player:
 
-    def __init__(self, id, position, name, nr, extra_skills=[], extra_ma=0, extra_st=0, extra_ag=0, extra_av=0):
-        self.id = id
+    def __init__(self, player_id, position, name, nr, extra_skills=[], extra_ma=0, extra_st=0, extra_ag=0, extra_av=0):
+        self.player_id = player_id
         self.position = position
         self.name = name
         self.nr = nr

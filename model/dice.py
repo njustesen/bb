@@ -10,7 +10,7 @@ class Die(ABC):
         pass
 
 
-class DiceRoll():
+class DiceRoll:
 
     def __init__(self, dice, target=None, modifiers=None):
         self.dice = dice
@@ -30,11 +30,11 @@ class DiceRoll():
     def get_sum(self):
         if self.sum >= 0:
             return self.sum
-        sum = 0
+        s = 0
         for d in self.dice:
             assert not isinstance(d, BBDie)
-            sum += d.get_value()
-        return sum
+            s += d.get_value()
+        return s
 
 
 class D3(Die):
