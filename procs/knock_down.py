@@ -4,6 +4,7 @@ from procs.turn import *
 from model.outcome import Outcome, OutcomeType
 from model.player import *
 from model.dice import *
+from model.rules import *
 from enum import Enum
 
 
