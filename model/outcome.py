@@ -76,6 +76,7 @@ class OutcomeType(Enum):
     APOTHECARY_USED_KO = 74
     APOTHECARY_USED_CASUALTY = 75
     CASUALTY_APOTHECARY = 76
+    DAUNTLESS_USED = 77
 
 
 class Outcome:

@@ -2,6 +2,7 @@ from model.player import PlayerState
 import numpy as np
 from model.arena import Tile
 from model.player import *
+from model.rules import *
 from enum import Enum
 import random
 
@@ -124,16 +125,27 @@ class Field:
     def is_out_of_bounds(self, pos):
         return not (pos[0] < 0 or pos[0] >= len(self.board[0]) or pos[1] < 0 or pos[1] >= len(self.board))
 
+    def has_tackle_zone(self, player, home):
+        if player.id in self.game.get_home_by_player_id(player.id) == home:
+            return False
+        if Rules.has_tackle_zone[self.game.state.get_player_state(player.id)]:
+            return False
+        if player.has_skill(Skill.TITCHY):
+            return False
+        return True
+
     def get_tackle_zones(self, pos, home):
         tackle_zones = 0
         for yy in range(-1, 0, 1):
             for xx in range(-1, 0, 1):
+                if yy == 0 and xx == 0:
+                    continue
                 p = [pos[0]+xx, pos[1]+yy]
                 if not self.is_out_of_bounds(p):
                     player_id = self.get_player_id_at(p)
-                    if player_id is not None and player_id in self.game.get_home_by_player_id(player_id) != home:
-                        if not self.game.get_player(player_id).has_skill(Skill.TITCHY):
-                            tackle_zones += 1
+                    player = self.game.get_player(player_id)
+                    if player_id is not None and self.has_tackle_zone(player, home):
+                        tackle_zones += 1
         return tackle_zones
 
     def get_tackle_zones_detailed(self, pos, home):
@@ -150,22 +162,40 @@ class Field:
                 p = [pos[0]+xx, pos[1]+yy]
                 if not self.is_out_of_bounds(p):
                     player_id = self.get_player_id_at(p)
-                    if player_id is not None and player_id in self.game.get_home_by_player_id(player_id) != home:
-                        player = self.game.get_player(player_id)
-                        if not player.has_skill(Skill.TITCHY):
-                            tackle_zones += 1
-                        if tackle_id is None and player.has_skill(Skill.TACKLE):
-                            tackle_id = player_id
-                        if prehensile_tail_id is None and player.has_skill(Skill.PREHENSILE_TAIL):
-                            prehensile_tail_id = player_id
-                        if diving_tackle_id is None and player.has_skill(Skill.DIVING_TACKLE):
-                            diving_tackle_id = player_id
-                        if shadowing_id is None and player.has_skill(Skill.SHADOWING):
-                            diving_tackle_id = player_id
-                        if tentacles_id is None and player.has_skill(Skill.TENTACLES):
-                            tentacles_id = player_id
+                    player = self.game.get_player(player_id)
+                    if player_id is not None and self.has_tackle_zone(player, home):
+                        tackle_zones += 1
+                    if tackle_id is None and player.has_skill(Skill.TACKLE):
+                        tackle_id = player_id
+                    if prehensile_tail_id is None and player.has_skill(Skill.PREHENSILE_TAIL):
+                        prehensile_tail_id = player_id
+                    if diving_tackle_id is None and player.has_skill(Skill.DIVING_TACKLE):
+                        diving_tackle_id = player_id
+                    if shadowing_id is None and player.has_skill(Skill.SHADOWING):
+                        diving_tackle_id = player_id
+                    if tentacles_id is None and player.has_skill(Skill.TENTACLES):
+                        tentacles_id = player_id
 
         return tackle_zones, tackle_id, prehensile_tail_id, diving_tackle_id, shadowing_id, tentacles_id
+
+    def assists(self, home, player_from, player_to):
+        pos_from = self.get_player_position(player_from.id)
+        pos_to = self.get_player_position(player_to.id)
+        assists = []
+        for yy in range(-1, 0, 1):
+            for xx in range(-1, 0, 1):
+                if yy == 0 and xx == 0:
+                    continue
+                p = [pos_to[0]+xx, pos_to[1]+yy]
+                if not self.is_out_of_bounds(p) and not np.array_equal(pos_from, p):
+                    player_id = self.get_player_id_at(p)
+                    if player_id is not None:
+                        if player_id in self.game.get_home_by_player_id(player_id) != home:
+                            if self.game.state.get_player_state(player_id) == PlayerState.BONE_HEADED:
+                                continue
+                            if self.game.get_player(player_id).has_skill(Skill.GUARD) or self.get_tackle_zones(player_id, not home) <= 1:
+                                assists.append(player_id)
+        return assists
 
 
 class TeamState:

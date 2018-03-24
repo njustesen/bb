@@ -36,32 +36,54 @@ class Block(Procedure):
         self.waiting_wrestle_to = False
         self.selected_die = None
         self.wrestle = False
+        self.favor = None
+        self.dauntless_roll = None
+        self.dauntless_success = False
 
     def step(self, action):
 
         if self.roll is None:
 
             # Determine dice and favor
-            st_from = self.player_from.get_st() + self.game.state.field.assists(self.player_from, self.player_to)
-            st_to = self.player_to.get_st() + self.game.state.field.assists(self.player_to, self.player_from)
+            st_from = self.player_from.get_st()
+            st_to = self.player_to.get_st()
+
+            # Horns
+            if self.blitz and self.player_from.has_skill(Skill.HORNS):
+                st_from += 1
+
+            # Dauntless
+            if st_to > st_from and self.player_from.has_skill(Skill.DAUNTLESS) and self.dauntless_roll is None:
+                self.dauntless_roll = DiceRoll([D6()])
+                self.dauntless_success = self.dauntless_roll.get_sum() + st_from > st_to
+                self.game.report(Outcome(OutcomeType.DAUNTLESS_USED, team_home=self.home, player_id=self.player_from.id, rolls=[self.dauntless_roll], n=True))
+                return False
+            elif self.dauntless_roll is not None and self.dauntless_success:
+                st_from = st_to
+
+            # Assists
+            assists_from = self.game.state.field.assists(self.home, self.player_from, self.player_to)
+            assists_to = self.game.state.field.assists(not self.home, self.player_to, self.player_from)
+            st_from = st_from + assists_from
+            st_to = st_to + assists_to
 
             # Determine dice and favor
             dice = 0
-            favor = None
             if st_from * 2 < st_to:
                 dice = 3
-                favor = not self.home
+                self.favor = not self.home
             elif st_from < st_to:
                 dice = 2
-                favor = not self.home
+                self.favor = not self.home
             elif st_from == st_to:
                 dice = 1
+                self.favor = self.home
             elif st_from > st_to * 2:
                 dice = 3
-                favor = self.home
+                self.favor = self.home
             elif st_from > st_to:
                 dice = 2
-                favor = self.home
+                self.favor = self.home
 
             # Roll
             self.roll = DiceRoll([])
@@ -117,6 +139,9 @@ class Block(Procedure):
             if not self.wrestle:
 
                 if action.action_type == ActionType.SELECT_DIE:
+
+                    if (action.team_home != self.home and self.favor) or (action.team_home == self.home and not self.favor):
+                        raise IllegalActionExcpetion("The other team has to select a die")
 
                     die = self.roll.dice[action.idx]
 

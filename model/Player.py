@@ -22,6 +22,8 @@ class Skill(Enum):
     BLOCK = 18
     WRESTLE = 19
     STAND_FIRM = 20
+    GUARD = 21
+    HORNS = 22
 
 
 class PlayerState(Enum):
@@ -34,6 +36,9 @@ class PlayerState(Enum):
     BH = 7
     MNG = 8
     DEAD = 9
+    BONE_HEADED = 10
+    HYPNOTIZED = 11
+    REALLY_STUPID = 12
 
 
 class Position:
