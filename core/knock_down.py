@@ -1,5 +1,5 @@
-from core import Procedure
-from model import Outcome, OutcomeType, Rules, ActionType, DiceRoll, D6, D8, PlayerState, Skill, Turnover, Bounce
+from core import Procedure, Turnover
+from model import Outcome, OutcomeType, Rules, ActionType, DiceRoll, D6, D8, PlayerState, Skill, Bounce
 from enum import Enum
 
 
@@ -293,38 +293,40 @@ class Armor(Procedure):
 
     def step(self, action):
 
-        # ROll
+        # Roll
         roll = DiceRoll(D6(), D6())
         roll.modifiers = self.modifiers
         result = roll.get_sum()
         self.armor_rolled = True
 
         # Armor broken - Claws
+        armor_broken = False
         if result >= 8 and self.opp_player is not None and self.opp_player.has_skill(Skill.CLAWS):
-            Injury(self.game, self.home, self.player_id, self.opp_player_id)
-            self.game.report(Outcome(OutcomeType.ARMOR_BROKEN, player_id=self.player_id, rolls=[roll]))
+            armor_broken = True
 
         # Armor broken
         if result > self.player.get_av():
-            Injury(self.game, self.home, self.player_id, self.opp_player_id)
-            self.game.report(Outcome(OutcomeType.ARMOR_BROKEN, player_id=self.player_id, rolls=[roll]))
+            armor_broken = True
 
         # Armor broken - Might Blow
         if self.opp_player is not None and self.player.has_skill(Skill.MIGHTY_BLOW) and result + 1 > self.player.get_av():
             roll.modifiers += 1
-            Injury(self.game, self.home, self.player_id, self.opp_player_id, mighty_blow_used=True)
-            self.game.report(Outcome(OutcomeType.ARMOR_BROKEN, player_id=self.player_id, rolls=[roll]))
+            armor_broken = True
 
-        self.game.report(Outcome(OutcomeType.ARMOR_NOT_BROKEN, player_id=self.player_id, rolls=[roll]))
+        if armor_broken:
+            Injury(self.game, self.home, self.player_id, self.opp_player_id)
+            self.game.report(Outcome(OutcomeType.ARMOR_BROKEN, player_id=self.player_id, rolls=[roll]))
+        else:
+            self.game.report(Outcome(OutcomeType.ARMOR_NOT_BROKEN, player_id=self.player_id, rolls=[roll]))
 
         return True
 
 
 class KnockDown(Procedure):
 
-    def __init__(self, game, home, player_id, armor_roll=True, injury_roll=True, modifiers=0, opp_player_id=None, in_crowd=False, both_down=False, modifiers_opp=0,):
+    def __init__(self, game, home, player_id, armor_roll=True, injury_roll=True, modifiers=0, opp_player_id=None, in_crowd=False, both_down=False, modifiers_opp=0, turnover=False):
         super().__init__(game)
-        self.home = home
+        self.home = home  # owner of player_id
         self.player_id = player_id
         self.armor_roll = armor_roll
         self.injury_roll = injury_roll
@@ -333,6 +335,7 @@ class KnockDown(Procedure):
         self.opp_player_id = opp_player_id
         self.in_crowd = in_crowd
         self.both_down = both_down
+        self.turnover = turnover
 
     def step(self, action):
 
@@ -343,22 +346,13 @@ class KnockDown(Procedure):
             self.game.state.get_team(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN
             self.game.report(OutcomeType.KNOCKED_DOWN, player_id=self.opp_player_id, opp_player_id=self.player_id)
 
-        # If armor roll should be made. Injury is also nested in armor.
-        if self.injury_roll:
-            Injury(self.game, self.home, self.player_id, opp_player_id=self.opp_player_id if not self.in_crowd else None)
-        if self.armor_roll:
-            Armor(self.game, not self.home, self.player_id, modifiers=self.modifiers, opp_player_id=self.player_id)
-
-        if self.both_down:
-            if self.injury_roll:
-                Injury(self.game, self.home, self.opp_player_id, opp_player_id=self.player_id if not self.in_crowd else None)
-            if self.armor_roll:
-                Armor(self.game, not self.home, self.opp_player_id, modifiers=self.modifiers, opp_player_id=self.player_id)
+        # Turnover
+        if self.turnover:
+            Turnover(self.game, self.home)
 
         # Check fumble
         pos = self.game.state.field.get_player_position(self.player_id)
         if self.game.state.ball_at(pos):
-            Turnover(self.game, self.home)
             Bounce(self.game, self.home)
             self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_id, opp_player_id=self.opp_player_id))
 
@@ -367,5 +361,17 @@ class KnockDown(Procedure):
             if self.game.state.ball_at(pos):
                 Bounce(self.game, not self.home)
                 self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.opp_player_id, opp_player_id=self.player_id))
+
+        # If armor roll should be made. Injury is also nested in armor.
+        if self.injury_roll and not self.armor_roll:
+            Injury(self.game, self.home, self.player_id, opp_player_id=self.opp_player_id if not self.in_crowd else None)
+        elif self.armor_roll:
+            Armor(self.game, not self.home, self.player_id, modifiers=self.modifiers, opp_player_id=self.player_id)
+
+        if self.both_down:
+            if self.injury_roll and not self.armor_roll:
+                Injury(self.game, self.home, self.opp_player_id, opp_player_id=self.player_id if not self.in_crowd else None)
+            elif self.armor_roll:
+                Armor(self.game, not self.home, self.opp_player_id, modifiers=self.modifiers, opp_player_id=self.player_id)
 
         return True
