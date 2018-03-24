@@ -20,6 +20,8 @@ class Skill(Enum):
     TENTACLES = 16
     TWO_HEADS = 17
     BLOCK = 18
+    WRESTLE = 19
+    STAND_FIRM = 20
 
 
 class PlayerState(Enum):

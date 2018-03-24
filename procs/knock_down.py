@@ -191,7 +191,6 @@ class KnockedOut(Procedure):
             return True
 
         self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.KOD
-
         self.game.state.field.remove(self.player_id)
         self.game.state.get_dugout(self.home).kod.append(self.player_id)
 
@@ -343,7 +342,6 @@ class Armor(Procedure):
         self.game.report(Outcome(OutcomeType.ARMOR_NOT_BROKEN, player_id=self.player_id, rolls=[roll]))
 
         return True
-
 
 
 class KnockDown(Procedure):

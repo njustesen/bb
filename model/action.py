@@ -30,11 +30,14 @@ class ActionType(Enum):
     SELECT_DIE = 26
     USE_APOTHECARY = 27
     USE_ROLL = 28
+    USE_JUGGERNAUT = 29
+    USE_WRESTLE = 30
+    DONT_USE_WRESTLE = 31
 
 
 class Action():
 
-    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0):
+    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0, team_home=True):
         self.action_type = action_type
         self.pos_from = pos_from
         self.pos_to = pos_to

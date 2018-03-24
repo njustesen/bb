@@ -56,6 +56,11 @@ class Field:
         self.board[pos_to[0]][pos_to[1]] = player_from_id
         self.board[pos_from[0]][pos_from[1]] = player_to_id
 
+    def has_ball(self, player_id):
+        if self.ball_position is not None and not self.ball_in_air:
+            return np.array_equal(self.get_player_position(player_id), self.ball_position)
+        return False
+
     def get_player_id_at(self, pos):
         if pos[0] < 0 or pos[0] >= len(self.board[0]) or pos[1] < 0 or pos[1] >= len(self.board):
             raise Exception("Position is out of the board")

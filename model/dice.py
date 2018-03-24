@@ -18,6 +18,12 @@ class DiceRoll():
         self.target = target
         self.modifiers = modifiers
 
+    def contains(self, value):
+        for die in self.dice:
+            if die.get_value() == value:
+                return True
+        return False
+
     def get_values(self):
         return [d.get_value for d in self.dice]
 

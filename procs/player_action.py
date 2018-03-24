@@ -22,7 +22,7 @@ class PlayerActionType(Enum):
 
 class Block(Procedure):
 
-    def __init__(self, game, home, player_from, pos_from, player_to, pos_to):
+    def __init__(self, game, home, player_from, pos_from, player_to, pos_to, blitz=False):
         super().__init__(game)
         self.home = home
         self.player_from = player_from
@@ -31,6 +31,11 @@ class Block(Procedure):
         self.pos_to = pos_to
         self.reroll_used = False
         self.roll = None
+        self.blitz = blitz
+        self.waiting_wrestle_from = False
+        self.waiting_wrestle_to = False
+        self.selected_die = None
+        self.wrestle = False
 
     def step(self, action):
 
@@ -63,11 +68,18 @@ class Block(Procedure):
             for i in range(dice):
                 self.roll.dice.append(BBDie())
 
+            return False
+
+        elif self.waiting_wrestle_to and action.team_home != self.home:
+
+            self.wrestle = action.action_type == ActionType.USE_WRESTLE
+            self.waiting_wrestle_to = False
+            self.selected_die = BBDieResult.BOTH_DOWN
+
         else:
 
             # Re-roll
             if action.action_type == ActionType.USE_REROLL:
-
                 if self.reroll_used or not self.game.state.can_use_reroll(self.home):
                     raise IllegalActionExcpetion("Team can't use re-roll")
 
@@ -76,21 +88,91 @@ class Block(Procedure):
                 self.game.state.get_team_state(self.home).use_reroll()
                 return self.step(None)
 
+            # Juggernaut - change 'both down' to 'push'
+            if action.action_type == ActionType.USE_JUGGERNAUT:
+
+                if not self.player_from.has_skill(Skill.JUGGERNAUT):
+                    raise IllegalActionExcpetion("Player does not have the Juggernaut skill")
+
+                if not self.blitz:
+                    raise IllegalActionExcpetion("Juggernaut can only be used in blitz actions")
+
+                if not self.roll.contains(BBDieResult.BOTH_DOWN):
+                    raise IllegalActionExcpetion("Dice is not 'both down'")
+
+                self.selected_die = BBDieResult.PUSH
+
+            # Wrestle
+            if action.action_type == ActionType.USE_WRESTLE:
+
+                if not self.player_to.has_skill(Skill.WRESTLE):
+                    raise IllegalActionExcpetion("Player does not have the Wrestle skill")
+
+                if not self.roll.contains(BBDieResult.BOTH_DOWN):
+                    raise IllegalActionExcpetion("Roll does not contain 'Both Down'")
+
+                self.wrestle = True
+
             # Select dice
-            if action.action_type == ActionType.SELECT_DIE:
-                die = self.roll.dice[action.idx]
-                if die.get_value() == BBDieResult.ATTACKER_DOWN:
-                    Turnover(self.game, self.home)
-                    KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id)
+            if not self.wrestle:
+
+                if action.action_type == ActionType.SELECT_DIE:
+
+                    die = self.roll.dice[action.idx]
+
+                    if die.get_value() == BBDieResult.ATTACKER_DOWN:
+                        self.selected_die = BBDieResult.ATTACKER_DOWN
+
+                    if die.get_value == BBDieResult.BOTH_DOWN:
+
+                        # Wrestle - opponent
+                        if self.player_to.has_skill(Skill.WRESTLE) and \
+                                not (self.player_from.has_skill(Skill.JUGGERNAUT) and self.blitz):
+                            self.waiting_wrestle_to = True
+
                     return True
 
-                if die.get_value == BBDieResult.BOTH_DOWN:
-                    if not self.player_from.has_skill(Skill.BLOCK):
-                        Turnover(self.game, self.home)
-                        KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id)
-                    if not self.player_to.has_skill(Skill.BLOCK):
-                        KnockDown(self.game, self.home, self.player_to.id, opp_player_id=self.player_from.id)
+        # Effect
+        if self.wrestle:
+            if self.game.state.field.has_ball(self.player_from.id):
+                Turnover(self.game, self.home)
+            KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, armor_roll=False, injury_roll=False, both_down=True)
+            KnockDown(self.game, self.home, self.player_to.id, opp_player_id=self.player_from.id, armor_roll=False, injury_roll=False, both_down=True)
+            return True
 
+        if self.selected_die == BBDieResult.ATTACKER_DOWN:
+            Turnover(self.game, self.home)
+            KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id)
+            return True
+
+        if self.selected_die == BBDieResult.BOTH_DOWN:
+            if not self.player_from.has_skill(Skill.BLOCK):
+                Turnover(self.game, self.home)
+                if not self.player_to.has_skill(Skill.BLOCK):
+                    KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, both_down=True)
+                else:
+                    KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, both_down=False)
+            elif not self.player_to.has_skill(Skill.BLOCK):
+                KnockDown(self.game, self.home, self.player_to.id, opp_player_id=self.player_from.id)
+            return True
+
+        if self.selected_die == BBDieResult.DEFENDER_DOWN:
+            from_pos = self.game.state.field.get_player_position(self.player_from)
+            to_pos = self.game.state.field.get_player_position(self.player_from)
+            PushOptions(self.game, self.home, self.player_to, opp_player=self.player_from, from_pos=from_pos, to_pos=to_pos, knock_down=True)
+            return True
+
+        if self.selected_die == BBDieResult.DEFENDER_STUMBLES:
+            from_pos = self.game.state.field.get_player_position(self.player_from)
+            to_pos = self.game.state.field.get_player_position(self.player_from)
+            PushOptions(self.game, self.home, self.player_to, opp_player_id=self.player_from.id, from_pos=from_pos, to_pos=to_pos, knock_down=True)
+            return True
+
+        if self.selected_die == BBDieResult.PUSH:
+            from_pos = self.game.state.field.get_player_position(self.player_from)
+            to_pos = self.game.state.field.get_player_position(self.player_from)
+            PushOptions(self.game, self.home, self.player_to, opp_player_id=self.player_from.id, from_pos=from_pos, to_pos=to_pos, knock_down=False)
+            return True
 
         return False
 
