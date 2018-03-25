@@ -1,4 +1,4 @@
-from core import Procedure, Block, Move
+from core import Procedure, Block, Move, Foul
 from exception import IllegalActionExcpetion
 from model import ActionType, Outcome, OutcomeType, Skill, PlayerState
 from enum import Enum
@@ -15,12 +15,12 @@ class PlayerActionType(Enum):
 
 class PlayerAction(Procedure):
 
-    def __init__(self, game, home, player_id, action_type):
+    def __init__(self, game, home, player_id, player_action_type):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
         self.moves = 0
-        self.action_type = action_type
+        self.player_action_type = player_action_type
 
     def step(self, action):
 
@@ -39,8 +39,8 @@ class PlayerAction(Procedure):
         if action.action_type == ActionType.MOVE:
 
             # Check if action is allowed
-            if self.action_type == PlayerActionType.BLOCK or self.action_type == PlayerActionType.FOUL:
-                raise IllegalActionExcpetion("Players cannot move if they are doing a block of foul player action")
+            if self.player_action_type == PlayerActionType.BLOCK:
+                raise IllegalActionExcpetion("Players cannot move if they are doing a block player action")
 
             # Check if ready
             if player_state_from not in [PlayerState.READY, PlayerState.DOWN_READY]:
@@ -78,7 +78,7 @@ class PlayerAction(Procedure):
         elif action.action_type == ActionType.BLOCK:
 
             # Check if action is allowed
-            if self.action_type != PlayerActionType.BLOCK or self.action_type != PlayerActionType.BLITZ:
+            if self.player_action_type != PlayerActionType.BLOCK or self.player_action_type != PlayerActionType.BLITZ:
                 raise IllegalActionExcpetion("Players cannot block if they are not doing a block of blitz player action")
 
             if player_state_to == PlayerState.DOWN_READY or player_state_to == PlayerState.DOWN_USED:
@@ -99,7 +99,7 @@ class PlayerAction(Procedure):
             # Check frenzy
             if player_from.has_skill(Skill.FRENZY):
                 move_needed = 0
-                if self.action_type == ActionType.BLITZ:
+                if self.player_action_type == ActionType.BLITZ:
                     move_needed = 1
                 gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
                 if self.moves + move_needed <= player_from.get_ma() + gfi_allowed:
@@ -111,3 +111,13 @@ class PlayerAction(Procedure):
 
             # Block
             Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi)
+
+        elif action.action_type == ActionType.FOUL:
+
+            if self.player_action_type != ActionType.FOUL:
+                raise IllegalActionExcpetion("Fouls can only be done in foul actions")
+
+            if player_state_to not in [PlayerState.DOWN_READY, PlayerState.DOWN_USED, PlayerState.STUNNED]:
+                raise IllegalActionExcpetion("Players cannot foul opponent players that are standing")
+
+            Foul(self.game, self.home, player_from, player_to, )

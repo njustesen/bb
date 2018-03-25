@@ -9,3 +9,4 @@ from model.rules import *
 from model.team import *
 from model.field import *
 from model.dugout import *
+from model.square import *
