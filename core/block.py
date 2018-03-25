@@ -5,7 +5,7 @@ from exception import IllegalActionExcpetion
 
 class Block(Procedure):
 
-    def __init__(self, game, home, player_from, pos_from, player_to, pos_to, blitz=False):
+    def __init__(self, game, home, player_from, pos_from, player_to, pos_to, blitz=False, frenzy_used=False):
         super().__init__(game)
         self.home = home
         self.player_from = player_from
@@ -22,8 +22,18 @@ class Block(Procedure):
         self.favor = None
         self.dauntless_roll = None
         self.dauntless_success = False
+        self.frenzy_used = frenzy_used
+        self.frenzy_check = False
 
     def step(self, action):
+
+        if self.frenzy_used and not self.frenzy_check:
+            # Check if player was not pushed out of bounds
+            if self.game.state.field.get_player_position(self.player_to.player_id) is None:
+                return True
+            self.game.report(Outcome(OutcomeType.FRENZY_USED, player_id=self.player_from.player_id,
+                                     opp_player_id=self.player_to.player_id, team_home=self.home))
+            self.frenzy_check = True
 
         if self.roll is None:
 
@@ -145,7 +155,6 @@ class Block(Procedure):
             if self.game.state.field.has_ball(self.player_from.id):
                 Turnover(self.game, self.home)
             KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, armor_roll=False, injury_roll=False, both_down=True)
-            KnockDown(self.game, self.home, self.player_to.id, opp_player_id=self.player_from.id, armor_roll=False, injury_roll=False, both_down=True)
             return True
 
         if self.selected_die == BBDieResult.ATTACKER_DOWN:
@@ -162,6 +171,9 @@ class Block(Procedure):
                     KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, both_down=False)
             elif not self.player_to.has_skill(Skill.BLOCK):
                 KnockDown(self.game, self.home, self.player_to.id, opp_player_id=self.player_from.id)
+            elif self.player_from.has_skill(Skill.FRENZY) and not self.frenzy_used:
+                # GFI
+                Block(self.game, self.home, self.player_from, self.pos_from, self.player_to, blitz=self.blitz, frenzy_used=True)
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_DOWN:
@@ -169,11 +181,18 @@ class Block(Procedure):
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_STUMBLES:
-            Push(self.game, self.home, self.player_to, player_to=self.player_from.id, knock_down=True, blitz=self.blitz)
+            if not self.player_to.has_skill(Skill.DODGE):
+                Push(self.game, self.home, self.player_to, player_to=self.player_from.id, knock_down=True, blitz=self.blitz)
+            elif self.player_from.has_skill(Skill.FRENZY) and not self.frenzy_used:
+                # GFI?
+                Block(self.game, self.home, self.player_from, self.pos_from, self.player_to, blitz=self.blitz, frenzy_used=True)
             return True
 
         if self.selected_die == BBDieResult.PUSH:
+            if self.player_from.has_skill(Skill.FRENZY) and not self.frenzy_used:
+                # GFI?
+                Block(self.game, self.home, self.player_from, self.pos_from, self.player_to, blitz=self.blitz, frenzy_used=True)
             Push(self.game, self.home, self.player_to, player_to=self.player_from.id, knock_down=False, blitz=self.blitz)
-            return True
 
+            return True
         return False

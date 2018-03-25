@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/core/push.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/model/field.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/push_options.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/__init__.py" afterPath="$PROJECT_DIR$/core/__init__.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/block.py" afterPath="$PROJECT_DIR$/core/block.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/__init__.py" afterPath="$PROJECT_DIR$/model/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/action.py" afterPath="$PROJECT_DIR$/model/action.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/gamestate.py" afterPath="$PROJECT_DIR$/model/gamestate.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/outcome.py" afterPath="$PROJECT_DIR$/model/outcome.py" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -78,10 +70,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="push.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="push.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/push.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.107438">
+            <state vertical-scroll-proportion="-55.555557">
               <caret line="102" column="46" selection-start-line="102" selection-start-column="46" selection-end-line="102" selection-end-column="46" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
@@ -120,11 +112,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="block.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="block.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/block.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-21.88889">
-              <caret line="175" column="14" selection-start-line="175" selection-start-column="14" selection-end-line="175" selection-end-column="14" />
+            <state vertical-scroll-proportion="-1.2809918">
+              <caret line="34" column="37" selection-start-line="34" selection-start-column="37" selection-end-line="34" selection-end-column="37" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
@@ -193,11 +185,11 @@
         <option value="$PROJECT_DIR$/model/field.py" />
         <option value="$PROJECT_DIR$/core/push_options.py" />
         <option value="$PROJECT_DIR$/core/__init__.py" />
-        <option value="$PROJECT_DIR$/core/block.py" />
         <option value="$PROJECT_DIR$/model/action.py" />
         <option value="$PROJECT_DIR$/model/player.py" />
         <option value="$PROJECT_DIR$/model/outcome.py" />
         <option value="$PROJECT_DIR$/core/push.py" />
+        <option value="$PROJECT_DIR$/core/block.py" />
       </list>
     </option>
   </component>
@@ -863,16 +855,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/block.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-21.88889">
-          <caret line="175" column="14" selection-start-line="175" selection-start-column="14" selection-end-line="175" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/action.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -909,10 +891,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/push.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.107438">
+        <state vertical-scroll-proportion="-55.555557">
           <caret line="102" column="46" selection-start-line="102" selection-start-column="46" selection-end-line="102" selection-end-column="46" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/block.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.2809918">
+          <caret line="34" column="37" selection-start-line="34" selection-start-column="37" selection-end-line="34" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
           </folding>
         </state>
       </provider>
