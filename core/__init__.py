@@ -15,3 +15,6 @@ from core.weather import *
 from core.block import *
 from core.push import *
 from core.move import *
+from core.bounce import *
+from core.scatter import *
+from core.throw_in import *

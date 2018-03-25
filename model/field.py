@@ -23,6 +23,8 @@ class Field:
 
     def move(self, player_id, pos_to):
         pos_from = self.player_positions[player_id]
+        if self.has_ball(player_id):
+            self.ball_position = pos_to
         if self.board[pos_to.y][pos_to.x] != -1:
             raise Exception("Player cannot be moved on top of another player")
         self.board[pos_from.y][pos_from.x] = -1

@@ -1,4 +1,4 @@
-from core import Procedure, KnockDown, Touchdown
+from core import Procedure, KnockDown, Touchdown, Bounce
 from model import Skill, Outcome, OutcomeType, DiceRoll, D6, ActionType, WeatherType
 
 
@@ -16,9 +16,28 @@ class Move(Procedure):
             Dodge(game, home, player_id, from_pos, to_pos)
 
     def step(self, action):
+
+        had_ball_before = self.game.state.field.has_ball(self.player_id)
         self.game.state.field.move(self.from_pos, self.to_pos)
-        if self.game.arena.is_touchdown(self.to_pos, not self.home):
+        had_ball_after = self.game.state.field.has_ball(self.player_id)
+
+        # Check if player moved onto the ball
+        if had_ball_before != had_ball_after:
+
+            # Attempt to pick up the ball - unless no hands
+            player = self.game.get_player(self.player_id)
+            if player.has_skill(Skill.NO_HANDS):
+                Bounce(self.game, self.home)
+                return True
+            else:
+                Pickup(self.game, self.home, self.player_id)
+                return True
+
+        elif had_ball_before and self.game.arena.is_touchdown(self.to_pos, self.home):
+
+            # Touchdown if player had the ball with him/her
             Touchdown(self.game, self.home, self.player_id)
+
         return True
 
 

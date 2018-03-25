@@ -26,6 +26,10 @@ class Skill(Enum):
     HORNS = 22
     SIDE_STEP = 23
     FRENZY = 24
+    CATCH = 25
+    SURE_HANDS = 26
+    BIG_HAND = 27
+    EXTRA_ARMS = 28
 
 
 class PlayerState(Enum):
