@@ -1,4 +1,4 @@
-from core import Procedure, KnockDown, Turnover, PushOption
+from core import Procedure, KnockDown, Turnover, Push
 from model import Skill, Outcome, OutcomeType, DiceRoll, BBDieResult, BBDie, D6, ActionType
 from exception import IllegalActionExcpetion
 
@@ -165,21 +165,15 @@ class Block(Procedure):
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_DOWN:
-            from_pos = self.game.state.field.get_player_position(self.player_from)
-            to_pos = self.game.state.field.get_player_position(self.player_from)
-            PushOptions(self.game, self.home, self.player_to, opp_player=self.player_from, from_pos=from_pos, to_pos=to_pos, knock_down=True)
+            Push(self.game, self.home, self.player_to, player_to=self.player_from, knock_down=True, blitz=self.blitz)
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_STUMBLES:
-            from_pos = self.game.state.field.get_player_position(self.player_from)
-            to_pos = self.game.state.field.get_player_position(self.player_from)
-            PushOptions(self.game, self.home, self.player_to, opp_player_id=self.player_from.id, from_pos=from_pos, to_pos=to_pos, knock_down=True)
+            Push(self.game, self.home, self.player_to, player_to=self.player_from.id, knock_down=True, blitz=self.blitz)
             return True
 
         if self.selected_die == BBDieResult.PUSH:
-            from_pos = self.game.state.field.get_player_position(self.player_from)
-            to_pos = self.game.state.field.get_player_position(self.player_from)
-            PushOptions(self.game, self.home, self.player_to, opp_player_id=self.player_from.id, from_pos=from_pos, to_pos=to_pos, knock_down=False)
+            Push(self.game, self.home, self.player_to, player_to=self.player_from.id, knock_down=False, blitz=self.blitz)
             return True
 
         return False

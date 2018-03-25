@@ -32,7 +32,9 @@ class ActionType(Enum):
     USE_ROLL = 28
     USE_JUGGERNAUT = 29
     USE_WRESTLE = 30
-    DONT_USE_WRESTLE = 31
+    DONT_USE_SKILL = 31
+    FOLLOW_UP = 32
+    DONT_FOLLOW_UP = 33
 
 
 class Action:

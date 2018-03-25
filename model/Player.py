@@ -24,6 +24,8 @@ class Skill(Enum):
     STAND_FIRM = 20
     GUARD = 21
     HORNS = 22
+    SIDE_STEP = 23
+    FRENZY = 24
 
 
 class PlayerState(Enum):

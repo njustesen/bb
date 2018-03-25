@@ -7,3 +7,4 @@ from model.outcome import *
 from model.player import *
 from model.rules import *
 from model.team import *
+from model.field import *

@@ -77,6 +77,8 @@ class OutcomeType(Enum):
     APOTHECARY_USED_CASUALTY = 75
     CASUALTY_APOTHECARY = 76
     DAUNTLESS_USED = 77
+    PUSHED_INTO_CROWD = 78
+    PUSHED = 79
 
 
 class Outcome:
