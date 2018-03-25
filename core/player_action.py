@@ -92,15 +92,22 @@ class PlayerAction(Procedure):
                 if self.moves + move_needed > player_from.get_ma() + gfi_allowed:
                     raise IllegalActionExcpetion("No movement points left")
                 gfi = self.moves + move_needed > player_from.get_ma()
+                # Use movement
+                self.moves += move_needed
+                self.game.state.set_player_state(player_from.player_id, self.home, PlayerState.READY)
 
             # Check frenzy
             if player_from.has_skill(Skill.FRENZY):
-                move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
+                move_needed = 0
+                if self.action_type == ActionType.BLITZ:
+                    move_needed = 1
                 gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
-                move_needed += 1  # Because its the second block
                 if self.moves + move_needed <= player_from.get_ma() + gfi_allowed:
                     gfi_2 = self.moves + move_needed > player_from.get_ma()
-                    Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi_2)
+                    Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi)
+                    gfi = gfi_2  # Switch gfi
+                # Use movement
+                self.moves += move_needed
 
             # Block
             Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi)
