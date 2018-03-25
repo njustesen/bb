@@ -14,3 +14,4 @@ from core.turn import *
 from core.weather import *
 from core.block import *
 from core.push import *
+from core.move import *

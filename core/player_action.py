@@ -1,6 +1,6 @@
-from core import Procedure, KnockDown, Touchdown, Turnover
+from core import Procedure, Block, Move
 from exception import IllegalActionExcpetion
-from model import ActionType, Outcome, OutcomeType, DiceRoll, Skill, BBDieResult, D6, BBDie, PlayerState, WeatherType
+from model import ActionType, Outcome, OutcomeType, Skill, PlayerState
 from enum import Enum
 
 
@@ -47,7 +47,7 @@ class PlayerAction(Procedure):
                 raise IllegalActionExcpetion("Player is not ready")
 
             # Check if square is nearby
-            if not self.game.arena.is_neighbor(action.pos_from, action.pos_to):
+            if not action.pos_from.is_adjacent(action.pos_to):
                 raise IllegalActionExcpetion("Square is not nearby")
 
             # Check if square is empty
@@ -84,5 +84,23 @@ class PlayerAction(Procedure):
             if player_state_to == PlayerState.DOWN_READY or player_state_to == PlayerState.DOWN_USED:
                 raise IllegalActionExcpetion("Players cannot block opponent players that are down")
 
-            # Add proc
-            Block(self.game, self.home, player_from, action.pos_from, player_to, action.pos_to)
+            # Check GFI
+            gfi = False
+            if self.action_type == ActionType.BLITZ:
+                move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
+                gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
+                if self.moves + move_needed > player_from.get_ma() + gfi_allowed:
+                    raise IllegalActionExcpetion("No movement points left")
+                gfi = self.moves + move_needed > player_from.get_ma()
+
+            # Check frenzy
+            if player_from.has_skill(Skill.FRENZY):
+                move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
+                gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
+                move_needed += 1  # Because its the second block
+                if self.moves + move_needed <= player_from.get_ma() + gfi_allowed:
+                    gfi_2 = self.moves + move_needed > player_from.get_ma()
+                    Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi_2)
+
+            # Block
+            Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi)
