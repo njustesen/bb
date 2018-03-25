@@ -198,7 +198,7 @@ class Field:
 
         return tackle_zones, tackle_id, prehensile_tail_id, diving_tackle_id, shadowing_id, tentacles_id
 
-    def assists(self, home, player_from, player_to):
+    def assists(self, home, player_from, player_to, ignore_guard=False):
         pos_from = self.get_player_position(player_from.player_id)
         pos_to = self.get_player_position(player_to.player_id)
         assists = []
@@ -213,7 +213,7 @@ class Field:
                         if player_id in self.game.get_home_by_player_id(player_id) != home:
                             if self.game.state.get_player_state(player_id) == PlayerState.BONE_HEADED:
                                 continue
-                            if self.game.get_player(player_id).has_skill(Skill.GUARD) or \
+                            if (not ignore_guard and self.game.get_player(player_id).has_skill(Skill.GUARD)) or \
                                             self.get_tackle_zones(player_id) <= 1:
                                 assists.append(player_id)
         return assists

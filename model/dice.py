@@ -36,6 +36,15 @@ class DiceRoll:
             s += d.get_value()
         return s
 
+    def same(self):
+        value = None
+        for die in self.dice:
+            if value is None or die.get_value() == value:
+                value = die.get_value()
+                continue
+            return False
+        return True
+
 
 class D3(Die):
 

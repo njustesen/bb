@@ -18,3 +18,10 @@ from core.move import *
 from core.bounce import *
 from core.scatter import *
 from core.throw_in import *
+from core.apothecary import *
+from core.casualty import *
+from core.knock_out import *
+from core.foul import *
+from core.injury import *
+from core.armor import *
+from core.ejection import *

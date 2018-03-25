@@ -30,6 +30,8 @@ class Skill(Enum):
     SURE_HANDS = 26
     BIG_HAND = 27
     EXTRA_ARMS = 28
+    DIRTY_PLAYER = 29
+    SNEAKY_GIT = 30
 
 
 class PlayerState(Enum):
@@ -46,6 +48,7 @@ class PlayerState(Enum):
     HYPNOTIZED = 11
     REALLY_STUPID = 12
     HEATED = 13
+    EJECTED = 14
 
 
 class Position:

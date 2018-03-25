@@ -4,14 +4,6 @@ import random
 import numpy as np
 
 
-class Dugout:
-
-    def __init__(self):
-        self.reserves = []
-        self.kod = []
-        self.casualties = []
-
-
 class TeamState:
 
     def __init__(self, team):
