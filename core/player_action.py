@@ -1,6 +1,6 @@
-from core import Procedure, Block, Move, Foul
+from core import Procedure, Block, Move, Foul, PassAction
 from exception import IllegalActionExcpetion
-from model import ActionType, Outcome, OutcomeType, Skill, PlayerState
+from model import ActionType, Outcome, OutcomeType, Skill, PlayerState, PassDistance, WeatherType
 from enum import Enum
 
 
@@ -15,12 +15,13 @@ class PlayerActionType(Enum):
 
 class PlayerAction(Procedure):
 
-    def __init__(self, game, home, player_id, player_action_type):
+    def __init__(self, game, home, player_id, player_action_type, turn):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
         self.moves = 0
         self.player_action_type = player_action_type
+        self.turn = turn
 
     def step(self, action):
 
@@ -75,6 +76,8 @@ class PlayerAction(Procedure):
             Move(self.game, self.home, self.player_id, action.pos_from, action.pos_to, gfi, dodge)
             self.moves += move_needed
 
+            return False
+
         elif action.action_type == ActionType.BLOCK:
 
             # Check if action is allowed
@@ -86,7 +89,7 @@ class PlayerAction(Procedure):
 
             # Check GFI
             gfi = False
-            if self.action_type == ActionType.BLITZ:
+            if action.action_type == ActionType.BLITZ:
                 move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
                 gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
                 if self.moves + move_needed > player_from.get_ma() + gfi_allowed:
@@ -112,6 +115,8 @@ class PlayerAction(Procedure):
             # Block
             Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi)
 
+            return False
+
         elif action.action_type == ActionType.FOUL:
 
             if self.player_action_type != ActionType.FOUL:
@@ -120,4 +125,36 @@ class PlayerAction(Procedure):
             if player_state_to not in [PlayerState.DOWN_READY, PlayerState.DOWN_USED, PlayerState.STUNNED]:
                 raise IllegalActionExcpetion("Players cannot foul opponent players that are standing")
 
-            Foul(self.game, self.home, player_from, player_to, )
+            Foul(self.game, self.home, player_from, player_to)
+
+            # A foul is a players last thing to do
+            return True
+
+        elif action.action_type == ActionType.PASS:
+
+            if self.player_action_type != ActionType.PASS:
+                raise IllegalActionExcpetion("Passes can only be done in pass actions")
+
+            if player_state_to not in [PlayerState.READY, PlayerState.USED]:
+                raise IllegalActionExcpetion("Passes can only be directed towards standing players")
+
+            if not self.game.state.field.has_ball(player_from.player_id):
+                raise IllegalActionExcpetion("Player needs to have ball to pass")
+
+            if not self.turn.pass_available:
+                raise IllegalActionExcpetion("Pass is not available in this turn")
+
+            # Check distance
+            pos_from = self.game.field.get_player_position(player_from.player_id)
+            pass_distance = self.game.field.pass_distance(pos_from, action.pos_to)
+
+            if self.game.state.weather == WeatherType.BLIZZARD:
+                if pass_distance != PassDistance.QUICK_PASS or pass_distance != PassDistance.SHORT_PASS:
+                    raise IllegalActionExcpetion("Only quick and short passes during blizzards")
+
+            if pass_distance == PassDistance.HAIL_MARY and not player_from.has_skill(Skill.HAIL_MARY):
+                raise IllegalActionExcpetion("Hail mary passes requires the Hail Mary skill")
+
+            PassAction(self.game, self.home, player_from, pos_from, player_to, action.pos_to, pass_distance)
+
+            self.turn.pass_available = False

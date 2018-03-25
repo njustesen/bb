@@ -93,7 +93,7 @@ class GameState:
         self.get_dugout(home).casualties.append(player_id)
 
     def can_use_reroll(self, home):
-        return not self.get_team_state(home).reroll_used and self.get_team_state(home).rerolls > 0
+        return not self.get_team_state(home).reroll_used and self.get_team_state(home).rerolls > 0 and self.team_turn == home
 
     def use_reroll(self, home):
         self.get_team_state(home).reroll_used = True

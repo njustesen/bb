@@ -32,6 +32,8 @@ class Skill(Enum):
     EXTRA_ARMS = 28
     DIRTY_PLAYER = 29
     SNEAKY_GIT = 30
+    STRONG_ARM = 31
+    LONG_LEGS = 32
 
 
 class PlayerState(Enum):

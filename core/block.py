@@ -1,4 +1,4 @@
-from core import Procedure, KnockDown, Turnover, Push, GFI
+from core import Procedure, KnockDown, Turnover, Push, GFI, Bounce
 from model import Skill, Outcome, OutcomeType, DiceRoll, BBDieResult, BBDie, D6, ActionType
 from exception import IllegalActionExcpetion
 
@@ -162,25 +162,25 @@ class Block(Procedure):
 
         # Effect
         if self.wrestle:
-            if self.game.state.field.has_ball(self.player_from.id):
+            if self.game.state.field.has_ball(self.player_from.player_id):
                 Turnover(self.game, self.home)
-            KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, armor_roll=False, injury_roll=False, both_down=True)
+            KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id, armor_roll=False, injury_roll=False, both_down=True)
             return True
 
         if self.selected_die == BBDieResult.ATTACKER_DOWN:
             Turnover(self.game, self.home)
-            KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id)
+            KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id)
             return True
 
         if self.selected_die == BBDieResult.BOTH_DOWN:
             if not self.player_from.has_skill(Skill.BLOCK):
                 Turnover(self.game, self.home)
                 if not self.player_to.has_skill(Skill.BLOCK):
-                    KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, both_down=True)
+                    KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id, both_down=True)
                 else:
-                    KnockDown(self.game, self.home, self.player_from.id, opp_player_id=self.player_to.id, both_down=False)
+                    KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id, both_down=False)
             elif not self.player_to.has_skill(Skill.BLOCK):
-                KnockDown(self.game, self.home, self.player_to.id, opp_player_id=self.player_from.id)
+                KnockDown(self.game, self.home, self.player_to.player_id, opp_player_id=self.player_from.id)
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_DOWN:

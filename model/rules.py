@@ -1,7 +1,25 @@
-from core.knock_down import *
+from core import CasualtyType, CasualtyEffect
+from model import PlayerState, PassDistance
+from enum import Enum
+
+
+class PassDistance(Enum):
+    QUICK_PASS = 1
+    SHORT_PASS = 2
+    LONG_PASS = 3
+    LONG_BOMB = 4
+    HAIL_MARY = 5
 
 
 class Rules:
+
+    pass_modifiers = {
+        PassDistance.QUICK_PASS: 1,
+        PassDistance.SHORT_PASS: 0,
+        PassDistance.LONG_PASS: -1,
+        PassDistance.LONG_BOMB: -2,
+        PassDistance.HAIL_MARY: 0  # Not used
+    }
 
     casualty_effect = {
         CasualtyType.BADLY_HURT: CasualtyEffect.NONE,

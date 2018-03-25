@@ -1,4 +1,4 @@
-from core import Procedure, KnockedOut, Weather, Setup, Turn
+from core import Procedure, Weather, Setup, Turn
 from model import ActionType, Outcome, OutcomeType, DiceRoll, D6, D3, PlayerState, KnockDown, Skill
 from exception import IllegalActionExcpetion
 import numpy as np

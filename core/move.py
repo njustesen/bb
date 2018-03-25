@@ -172,10 +172,11 @@ class Dodge(Procedure):
             if self.player.has_skill(Skill.BREAK_TACKLE) and self.player.get_st() > self.player.get_st():
                 attribute = self.player.get_st()
 
-            mod_ag = max(0, min(attribute + modifiers, 10))
-            target = Dodge.success[mod_ag]
+            target = Dodge.success[attribute]
+            result = roll.get_sum()
+            mod_result = result + roll.modifiers
 
-            if roll.get_sum() == target:
+            if result == 6 or (result != 1 and mod_result >= target):
 
                 # Success
                 self.game.report(Outcome(OutcomeType.SUCCESSFUL_DODGE, player_id=self.player_id, pos=self.to_pos))

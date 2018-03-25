@@ -35,6 +35,7 @@ class ActionType(Enum):
     DONT_USE_SKILL = 31
     FOLLOW_UP = 32
     DONT_FOLLOW_UP = 33
+    INTERCEPTION = 34
 
 
 class Action:

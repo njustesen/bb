@@ -79,6 +79,10 @@ class OutcomeType(Enum):
     DAUNTLESS_USED = 77
     PUSHED_INTO_CROWD = 78
     PUSHED = 79
+    ACCURATE_PASS = 80
+    INACCURATE_PASS = 81
+    FUMBLE = 82
+    CATCH_FAILED = 83
 
 
 class Outcome:

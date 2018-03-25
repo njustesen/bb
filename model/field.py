@@ -1,6 +1,8 @@
 import numpy as np
 import random
-from model import Tile, Skill, PlayerState, Rules, Square
+from core import Catch
+from model import Tile, Skill, PlayerState, Rules, Square, PassDistance
+from util import bresenham
 
 
 class Field:
@@ -123,7 +125,14 @@ class Field:
         squares_out = []
         squares = []
         for square in squares_to:
-            if pos_from.distance(square, manhattan=True) >= 3:
+            include = False
+            if pos_from.x == pos_to.x or pos_from.y == pos_to.y:
+                if pos_from.distance(square, manhattan=False) >= 2:
+                    include = True
+            else:
+                if pos_from.distance(square, manhattan=False) >= 3:
+                    include = True
+            if include:
                 if self.game.state.field.get_player_id_at(square) is None:
                     squares_empty.append(square)
                 if self.game.state.field.is_out_of_bounds(square):
@@ -217,3 +226,73 @@ class Field:
                                             self.get_tackle_zones(player_id) <= 1:
                                 assists.append(player_id)
         return assists
+
+    def pass_distance(self, pos_from, pos_to):
+        distance = pos_from.distance(pos_to, flight=True)
+        if distance <= 3.5:
+            return PassDistance.QUICK_PASS
+        if distance <= 6.5:
+            return PassDistance.SHORT_PASS
+        if distance <= 10.5:
+            return PassDistance.LONG_PASS
+        if distance <= 13.5:
+            return PassDistance.LONG_BOMB
+        return PassDistance.HAIL_MARY
+
+    def interceptors(self, pos_from, pos_to, home):
+        """
+        1) Find line x from a to b
+        2) Find squares s where x intersects
+        3) Find manhattan neighboring n squares of s
+        4) Remove squares where distance to a is larger than dist(a,b)
+        5) Remove squares without standing opponents with hands
+        6) Determine players on squares
+        """
+
+        # 1) Find line x from a to b
+        x = bresenham.get_line((pos_from.x, pos_from.y), (pos_to.x, pos_to.y))
+
+        # 2) Find squares s where x intersects
+        s = []
+        for i in x:
+            s.append(Square(i[0], i[1]))
+
+        # 3) Include manhattan neighbors s into n
+        # 4) Remove squares where distance to a is larger than dist(a,b)
+        max_distance = pos_from.distance(pos_to)
+        n = set()
+        for square in s:
+            n.add(square)
+            for neighbor in self.get_adjacent_squares(square):
+
+                # 4) Remove squares where distance to a is larger than dist(a,b)
+                if neighbor.distance(pos_from) > max_distance:
+                    continue
+                if neighbor.distance(pos_to) > max_distance:
+                    continue
+
+                # 5) Remove squares without standing opponents with hands
+                player_at = self.get_player_id_at(neighbor)
+                if player_at is None:
+                    continue
+                if self.game.get_home_by_player_id(player_at) != home:
+                    continue
+                if self.game.state.get_player_state(player_at) not in Catch.ready_to_catch:
+                    continue
+                if self.game.get_player(player_at).has_skill(Skill.NO_HANDS):
+                    continue
+
+                n.add(neighbor)
+
+        n.remove(pos_from)
+        n.remove(pos_to)
+
+        players = []
+        for square in n:
+            players.append(self.get_player_id_at(square))
+
+        return players
+
+
+
+
