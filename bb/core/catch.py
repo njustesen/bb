@@ -1,6 +1,6 @@
-from core import Procedure, Bounce, Turnover
-from model import Outcome, OutcomeType, ActionType, DiceRoll, D6, PlayerState, Skill, WeatherType
-
+# from . import procedure, Skill, PlayerState, Outcome, OutcomeType, WeatherType, DiceRoll, D6, Turnover, ActionType
+from core.procedure import *
+from core.
 
 class Catch(Procedure):
 
@@ -60,7 +60,7 @@ class Catch(Procedure):
             mod_result = result + roll.modifiers
             if result == 6 or (result != 1 and mod_result >= target):
                 if self.interception:
-                    self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id))
+                    self.game.report(m.Outcome(m.OutcomeType.INTERCEPTION, player_id=self.player_id))
                     Turnover(self.game, not self.home)
                 else:
                     self.game.report(Outcome(OutcomeType.CATCH, player_id=self.player_id))
@@ -71,7 +71,7 @@ class Catch(Procedure):
                 if player.has_skill(Skill.CATCH) and not self.catch_used:
                     self.catch_used = True
                     self.waiting_for_catch = True
-                    self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, pos=self.pos, rolls=[roll]))
+                    self.game.report(Outcome(m.OutcomeType.CATCH_FAILED, player_id=self.player_id, pos=self.pos, rolls=[roll]))
                     return False
 
                 # Check if reroll available
@@ -80,7 +80,7 @@ class Catch(Procedure):
                     self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
                     return False
 
-                Bounce(self.game, self.home)
+                c.Bounce(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
                 return True
 
@@ -91,7 +91,7 @@ class Catch(Procedure):
                 self.rolled = False
                 return self.step(None)
             else:
-                Bounce(self.game, self.home)
+                c.Bounce(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
                 return True
 
@@ -103,7 +103,7 @@ class Catch(Procedure):
                 self.rolled = False
                 return self.step(None)
             else:
-                Bounce(self.game, self.home)
+                c.Bounce(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
 
         return True

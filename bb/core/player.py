@@ -1,41 +1,6 @@
 from enum import Enum
 
 
-class Skill(Enum):
-    THICK_SKULL = 1
-    STUNTY = 2
-    MIGHTY_BLOW = 3
-    CLAWS = 4
-    SPRINT = 5
-    SURE_FEET = 6
-    NO_HANDS = 7
-    BALL_AND_CHAIN = 8
-    DODGE = 9
-    PREHENSILE_TAIL = 10
-    TACKLE = 11
-    BREAK_TACKLE = 12
-    TITCHY = 13
-    DIVING_TACKLE = 14
-    SHADOWING = 15
-    TENTACLES = 16
-    TWO_HEADS = 17
-    BLOCK = 18
-    WRESTLE = 19
-    STAND_FIRM = 20
-    GUARD = 21
-    HORNS = 22
-    SIDE_STEP = 23
-    FRENZY = 24
-    CATCH = 25
-    SURE_HANDS = 26
-    BIG_HAND = 27
-    EXTRA_ARMS = 28
-    DIRTY_PLAYER = 29
-    SNEAKY_GIT = 30
-    STRONG_ARM = 31
-    LONG_LEGS = 32
-
-
 class PlayerState(Enum):
     READY = 1
     USED = 2
@@ -55,7 +20,7 @@ class PlayerState(Enum):
 
 class Position:
 
-    def __init__(self, name, race, ma, st, ag, av, skills, cost, n_skill_sets=[], d_skill_sets=[]):
+    def __init__(self, name, race, ma, st, ag, av, skills, cost, feeder, n_skill_sets=[], d_skill_sets=[]):
         self.name = name
         self.race = race
         self.ma = ma
@@ -64,6 +29,7 @@ class Position:
         self.av = av
         self.skills = skills
         self.cost = cost
+        self.feeder = feeder
         self.n_skill_sets = n_skill_sets
         self.d_skill_sets = d_skill_sets
 
