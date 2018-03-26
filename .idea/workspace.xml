@@ -2,59 +2,65 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/action.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/apothecary.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/arena.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/armor.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/block.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/bounce.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/casualty.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/catch.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/cointoss.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/configuration.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/determine_pass_success.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/dice.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/dugout.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/ejection.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/field.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/foul.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/game.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/gamestate.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/half.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/injury.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/interception.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/kickoff.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/kickoff_table.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/knock_down.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/knock_out.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/move.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/outcome.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/pass_action.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/pickup.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/place_ball.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/player_action.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/pre_half.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/pregame.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/procedure.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/push.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/rules.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/scatter.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/setup.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/square.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/team.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/throw_in.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/turn.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/core/weather.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/exception/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/exception/illegal_action.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/model/Player.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/model/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/rulesets/LRB5-Experimental.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/util/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/util/bresenham.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/util/stack.py" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/game.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/model.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/procedure.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/table.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/action.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/apothecary.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/arena.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/armor.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/block.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/bounce.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/casualty.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/catch.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/cointoss.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/configuration.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/determine_pass_success.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/dice.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/dugout.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/ejection.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/field.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/foul.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/game.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/gamestate.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/half.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/injury.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/interception.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/kickoff.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/kickoff_table.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/knock_down.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/knock_out.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/move.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/outcome.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/pass_action.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/pickup.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/place_ball.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/player.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/player_action.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/pre_half.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/pregame.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/procedure.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/push.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/rules.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/scatter.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/setup.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/skill.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/square.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/team.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/throw_in.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/turn.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/core/weather.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/exception/__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/exception/illegal_action.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/loaders/__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/util/__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/util/stack.py" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/loaders/rule_loader.py" afterPath="$PROJECT_DIR$/bb/load.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/rulesets/LRB5-Experimental.xml" afterPath="$PROJECT_DIR$/data/LRB5-Experimental.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/util/bresenham.py" afterPath="$PROJECT_DIR$/bb/util.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/util/xml.py" afterPath="$PROJECT_DIR$/bb/exception.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="bb.iws" />
@@ -75,7 +81,70 @@
     <favorites_list name="bb" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="exception.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/exception.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="load.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bb/load.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.16198704">
+              <caret line="17" column="48" selection-start-line="17" selection-start-column="48" selection-end-line="17" selection-end-column="48" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LRB5-Experimental.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/LRB5-Experimental.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="50.625">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="xmlreader.py" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/xmlreader.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="table.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/table.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-10.37037">
+              <caret line="301" column="22" selection-start-line="301" selection-start-column="22" selection-end-line="301" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/util.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -90,20 +159,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/core/pre_half.py" />
-        <option value="$PROJECT_DIR$/model/arena.py" />
-        <option value="$PROJECT_DIR$/model/team.py" />
-        <option value="$PROJECT_DIR$/model/block.py" />
-        <option value="$PROJECT_DIR$/core/push_options.py" />
-        <option value="$PROJECT_DIR$/core/push.py" />
-        <option value="$PROJECT_DIR$/core/bounce.py" />
-        <option value="$PROJECT_DIR$/core/throw_in.py" />
-        <option value="$PROJECT_DIR$/core/pickup.py" />
-        <option value="$PROJECT_DIR$/core/apothecary.py" />
-        <option value="$PROJECT_DIR$/core/casualty.py" />
-        <option value="$PROJECT_DIR$/core/knocket_out.py" />
-        <option value="$PROJECT_DIR$/armor/knock_down.py" />
-        <option value="$PROJECT_DIR$/core/knock_down.py" />
         <option value="$PROJECT_DIR$/core/knock_out.py" />
         <option value="$PROJECT_DIR$/model/dice.py" />
         <option value="$PROJECT_DIR$/core/armor.py" />
@@ -141,6 +196,20 @@
         <option value="$PROJECT_DIR$/model/player.py" />
         <option value="$PROJECT_DIR$/core/__init__.py" />
         <option value="$PROJECT_DIR$/core/catch.py" />
+        <option value="$PROJECT_DIR$/bb/core/bounce.py" />
+        <option value="$PROJECT_DIR$/bb/procedures.py" />
+        <option value="$PROJECT_DIR$/bb/loader.py" />
+        <option value="$PROJECT_DIR$/util.py" />
+        <option value="$PROJECT_DIR$/bb/rules.py" />
+        <option value="$PROJECT_DIR$/bb/enum.py" />
+        <option value="$PROJECT_DIR$/bb/procedure.py" />
+        <option value="$PROJECT_DIR$/bb/__init__.py" />
+        <option value="$PROJECT_DIR$/bb/game.py" />
+        <option value="$PROJECT_DIR$/bb/model.py" />
+        <option value="$PROJECT_DIR$/bb/util.py" />
+        <option value="$PROJECT_DIR$/bb/exception.py" />
+        <option value="$PROJECT_DIR$/bb/load.py" />
+        <option value="$PROJECT_DIR$/bb/table.py" />
       </list>
     </option>
   </component>
@@ -203,7 +272,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="bb" />
+              <option name="myItemId" value="data" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -218,10 +287,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="bb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="core" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -245,47 +310,14 @@
       <recent name="$PROJECT_DIR$/procedure" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bb" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/core" />
       <recent name="$PROJECT_DIR$/exceptions" />
       <recent name="$PROJECT_DIR$/model" />
-      <recent name="$PROJECT_DIR$/util" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.catch">
-    <configuration default="false" name="cointoss" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/procedure" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="bb" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/procedure/cointoss.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="cointoss (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/procs" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="bb" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/procs/cointoss.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="Python.load">
     <configuration default="false" name="rule_loader" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -333,6 +365,40 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="bb" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/core/__init__.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="load" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bb" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="bb" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bb/load.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="untangle" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="/usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="bb" />
+      <option name="SCRIPT_NAME" value="/usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/untangle.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -460,19 +526,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.cointoss" />
-      <item index="1" class="java.lang.String" itemvalue="Python.cointoss (1)" />
-      <item index="2" class="java.lang.String" itemvalue="Python.rule_loader" />
-      <item index="3" class="java.lang.String" itemvalue="Python.catch" />
-      <item index="4" class="java.lang.String" itemvalue="Python.__init__" />
+      <item index="0" class="java.lang.String" itemvalue="Python.rule_loader" />
+      <item index="1" class="java.lang.String" itemvalue="Python.catch" />
+      <item index="2" class="java.lang.String" itemvalue="Python.__init__" />
+      <item index="3" class="java.lang.String" itemvalue="Python.load" />
+      <item index="4" class="java.lang.String" itemvalue="Python.untangle" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.catch" />
-        <item index="1" class="java.lang.String" itemvalue="Python.__init__" />
-        <item index="2" class="java.lang.String" itemvalue="Python.rule_loader" />
-        <item index="3" class="java.lang.String" itemvalue="Python.cointoss (1)" />
-        <item index="4" class="java.lang.String" itemvalue="Python.cointoss" />
+        <item index="0" class="java.lang.String" itemvalue="Python.load" />
+        <item index="1" class="java.lang.String" itemvalue="Python.untangle" />
+        <item index="2" class="java.lang.String" itemvalue="Python.catch" />
+        <item index="3" class="java.lang.String" itemvalue="Python.__init__" />
+        <item index="4" class="java.lang.String" itemvalue="Python.rule_loader" />
       </list>
     </recent_temporary>
   </component>
@@ -500,14 +566,16 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="38" y="23" width="1402" height="873" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1955105" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1955105" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22988506" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32950193" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35979512" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.184379" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37131882" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -515,9 +583,7 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39974457" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32950193" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -539,6 +605,16 @@
           <url>file://$PROJECT_DIR$/core/pregame.py</url>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/untangle.py</url>
+          <line>181</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/bb/load.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -547,15 +623,128 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="5" />
+      <option name="time" value="14" />
     </breakpoint-manager>
-    <watches-manager />
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="r" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/etree/ElementTree.py">
+    <entry file="file://$PROJECT_DIR$/bb/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="585" column="25" selection-start-line="585" selection-start-column="21" selection-end-line="585" selection-end-column="25" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.5555556">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.7777777">
+          <caret line="5" column="8" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-306.66666">
+          <caret line="552" column="85" selection-start-line="552" selection-start-column="85" selection-end-line="552" selection-end-column="85" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/handler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/xmlreader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/untangle.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/LRB5-Experimental.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="50.625">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5507559">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/expatreader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3174946">
+          <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/exception.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.37037">
+          <caret line="301" column="22" selection-start-line="301" selection-start-column="22" selection-end-line="301" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/load.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.16198704">
+          <caret line="17" column="48" selection-start-line="17" selection-start-column="48" selection-end-line="17" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

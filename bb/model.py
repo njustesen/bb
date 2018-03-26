@@ -1,8 +1,103 @@
+from abc import ABC, abstractmethod
 import numpy as np
 import random
-from core import Catch
-from model import Tile, Skill, PlayerState, Rules, Square, PassDistance
-from util import bresenham
+from math import sqrt
+from bb.util import *
+from bb.table import *
+
+
+class Configuration:
+
+    def __init__(self):
+        self.fast_mode = False
+
+
+class TeamState:
+
+    def __init__(self, team):
+        self.bribes = 0
+        self.babes = 0
+        self.apothecary_available = team.apothecary
+        self.player_states = {player.player_id: PlayerState.READY for player in team.players}
+        self.injuries = {}
+        self.score = 0
+        self.turn = 0
+        self.apothecary = team.apothecary
+        self.rerolls_start = team.rerolls
+        self.rerolls = team.rerolls
+        self.ass_coaches = team.ass_coaches
+        self.cheerleaders = team.cheerleaders
+        self.fame = 0
+        self.reroll_used = False
+
+    def reset_half(self):
+        self.reroll_used = False
+        self.rerolls = self.rerolls_start
+        self.turn = 0
+
+    def reset_turn(self):
+        self.reroll_used = False
+
+    def use_reroll(self):
+        self.rerolls -= 1
+        self.reroll_used = True
+
+
+class GameState:
+
+    def __init__(self, game):
+        self.half = 1
+        self.kicking_team = None
+        self.field = Field(game)
+        self.home_dugout = Dugout()
+        self.away_dugout = Dugout()
+        self.home_state = TeamState(game.home)
+        self.away_state = TeamState(game.away)
+        self.weather = None
+        self.gentle_gust = False
+        self.team_turn = None
+
+    def reset_turn(self, home):
+        self.team_turn = None
+        self.get_team_state(home).reset_turn()
+
+    def reset_kickoff(self):
+        self.team_turn = None
+        self.home_state.reset_turn()
+        self.away_state.reset_turn()
+
+    def reset_half(self, home):
+        self.team_turn = None
+        self.get_team_state(home).reset_half()
+
+    def get_player_state(self, player_id, home):
+        return self.get_team_state(home).player_states[player_id]
+
+    def set_player_state(self, player_id, home, player_state):
+        self.get_team_state(home).player_states[player_id] = player_state
+
+    def get_team_state(self, home):
+        return self.home_state if home else self.away_state
+
+    def get_dugout(self, home):
+        return self.home_dugout if home else self.away_dugout
+
+    def knock_out(self, home, player_id):
+        self.get_team_state(home).player_states[player_id] = PlayerState.KOD
+        self.field.remove(player_id)
+        self.get_dugout(home).kod.append(player_id)
+
+    def badly_hurt(self, home, player_id):
+        self.get_team_state(home).player_states[player_id] = PlayerState.BH
+        self.field.remove(player_id)
+        self.get_dugout(home).casualties.append(player_id)
+
+    def can_use_reroll(self, home):
+        return not self.get_team_state(home).reroll_used and self.get_team_state(home).rerolls > 0 and self.team_turn == home
+
+    def use_reroll(self, home):
+        self.get_team_state(home).reroll_used = True
+        self.get_team_state(home).rerolls -= 1
 
 
 class Field:
@@ -250,7 +345,7 @@ class Field:
         """
 
         # 1) Find line x from a to b
-        x = bresenham.get_line((pos_from.x, pos_from.y), (pos_to.x, pos_to.y))
+        x = get_line((pos_from.x, pos_from.y), (pos_to.x, pos_to.y))
 
         # 2) Find squares s where x intersects
         s = []
@@ -277,7 +372,7 @@ class Field:
                     continue
                 if self.game.get_home_by_player_id(player_at) != home:
                     continue
-                if self.game.state.get_player_state(player_at) not in Catch.ready_to_catch:
+                if self.game.state.get_player_state(player_at) not in Rules.ready_to_catch:
                     continue
                 if self.game.get_player(player_at).has_skill(Skill.NO_HANDS):
                     continue
@@ -294,5 +389,264 @@ class Field:
         return players
 
 
+class Action:
+
+    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0,
+                 team_home=True):
+        self.action_type = action_type
+        self.pos_from = pos_from
+        self.pos_to = pos_to
+        self.player_from_id = player_from_id
+        self.player_to_id = player_to_id
+        self.idx = idx
+        self.home = team_home
 
 
+class Arena:
+
+    def __init__(self, name, board):
+        self.name = name
+        self.board = board
+        self.home_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT]
+        self.away_tiles = [Tile.AWAY, Tile.AWAY_TOUCHDOWN, Tile.AWAY_WING_LEFT, Tile.AWAY_WING_RIGHT]
+        self.scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
+        self.wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
+        self.wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
+
+    def is_team_side(self, pos, home):
+        if home:
+            return self.board[pos[0]][pos[1]] in self.home_tiles
+        return self.board[pos[0]][pos[1]] in self.away_tiles
+
+    def is_scrimmage(self, pos):
+        return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
+
+    def is_touchdown(self, pos, team):
+        """
+        :param pos:
+        :param team: True if home team and False if away team.
+        :return: Whether pos is within team's touchdown zone (such that they would score)
+        """
+        if self.is_team_side(pos, not team):
+            return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
+        return False
+
+    def is_wing(self, pos, right):
+        if right:
+            return self.board[pos[0]][pos[1]] in self.wing_right_tiles
+        return self.board[pos[0]][pos[1]] in self.wing_left_tiles
+
+
+class Die(ABC):
+
+    @abstractmethod
+    def get_value(self):
+        pass
+
+
+class DiceRoll:
+
+    def __init__(self, dice, target=None, modifiers=None):
+        self.dice = dice
+        self.sum = -1
+        self.target = target
+        self.modifiers = modifiers
+
+    def contains(self, value):
+        for die in self.dice:
+            if die.get_value() == value:
+                return True
+        return False
+
+    def get_values(self):
+        return [d.get_value for d in self.dice]
+
+    def get_sum(self):
+        if self.sum >= 0:
+            return self.sum
+        s = 0
+        for d in self.dice:
+            assert not isinstance(d, BBDie)
+            s += d.get_value()
+        return s
+
+    def same(self):
+        value = None
+        for die in self.dice:
+            if value is None or die.get_value() == value:
+                value = die.get_value()
+                continue
+            return False
+        return True
+
+
+class D3(Die):
+
+    def __init__(self):
+        self.value = random.randint(1, 3)
+
+    def get_value(self):
+        return self.value
+
+
+class D6(Die):
+
+    def __init__(self):
+        self.value = random.randint(1, 6)
+
+    def get_value(self):
+        return self.value
+
+
+class D8(Die):
+
+    def __init__(self):
+        self.value = random.randint(1, 8)
+
+    def get_value(self):
+        return self.value
+
+class BBDie(Die):
+
+    def __init__(self):
+        r = random.randint(1, 6)
+        if r == 6:
+            r = 3
+        self.value = BBDieResult(r)
+
+    def get_value(self):
+        return self.value
+
+class Dugout:
+
+    def __init__(self):
+        self.reserves = []
+        self.kod = []
+        self.casualties = []
+        self.dungeon = []  # Ejected
+
+
+class Position:
+
+    def __init__(self, name, race, ma, st, ag, av, skills, cost, feeder, n_skill_sets=[], d_skill_sets=[]):
+        self.name = name
+        self.race = race
+        self.ma = ma
+        self.st = st
+        self.ag = ag
+        self.av = av
+        self.skills = skills
+        self.cost = cost
+        self.feeder = feeder
+        self.n_skill_sets = n_skill_sets
+        self.d_skill_sets = d_skill_sets
+
+
+class Player:
+
+    def __init__(self, player_id, position, name, nr, extra_skills=[], extra_ma=0, extra_st=0, extra_ag=0, extra_av=0):
+        self.player_id = player_id
+        self.position = position
+        self.name = name
+        self.nr = nr
+        self.extra_skills = extra_skills
+        self.extra_ma = extra_ma
+        self.extra_st = extra_st
+        self.extra_ag = extra_ag
+        self.extra_av = extra_av
+
+    def get_ag(self):
+        return self.position.ag + self.extra_ag
+
+    def get_st(self):
+        return self.position.st + self.extra_st
+
+    def get_ma(self):
+        return self.position.ma + self.extra_ma
+
+    def get_av(self):
+        return self.position.av + self.extra_av
+
+    def has_skill(self, skill):
+        return skill in self.extra_skills or skill in self.position.skills
+
+
+class Square:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        if other is None or self is None:
+            return False
+        return self.x == other.x and self.y == other.x
+
+    def distance(self, other, manhattan=False, flight=False):
+        if manhattan:
+            return abs(other.x - self.x) + abs(other.y - self.y)
+        elif flight:
+            return sqrt((other.x - self.x)**2 + (other.y - self.y)**2)
+        else:
+            return max(abs(other.x - self.x), abs(other.y - self.y))
+
+    def is_adjacent(self, other, manhattan=False):
+        return self.distance(other, manhattan) == 1
+
+
+class Coach:
+
+    def __init__(self, coach_id, name):
+        self.coach_id = coach_id
+        self.name = name
+
+
+class Roster:
+
+    def __init__(self, name, positions, reroll_cost, apothecary, stakes):
+        self.name = name
+        self.positions = positions
+        self.reroll_cost = reroll_cost
+        self.apothecary = apothecary
+        self.stakes = stakes
+
+
+class Team:
+
+    def __init__(self, team_id, name, roster, coach, players=[], treasury=0, apothecary=False, rerolls=0, ass_coaches=0,
+                 cheerleaders=0):
+        self.team_id = team_id
+        self.name = name
+        self.coach = coach
+        self.roster = roster
+        self.players = players
+        self.treasury = treasury
+        self.apothecary = apothecary
+        self.rerolls = rerolls
+        self.ass_coaches = ass_coaches
+        self.cheerleaders = cheerleaders
+
+        self.players_by_id = {}
+        for player in self.players:
+            self.players_by_id[player.id] = player
+
+    def get_player_by_id(self, player_id):
+        return self.players_by_id[player_id]
+
+    def has_player_by_id(self, player_id):
+        return player_id in self.players_by_id
+
+    def get_player_ids(self):
+        return [player.player_id for player in self.players]
+
+
+class Outcome:
+
+    def __init__(self, outcome_type, pos=None, player_id=-1, opp_player_id=-1, rolls=[], team_home=None, n=0):
+        self.outcome_type = outcome_type
+        self.pos = pos
+        self.player_id = player_id
+        self.opp_player_id = opp_player_id
+        self.rolls = rolls
+        self.team_home = team_home
+        self.n = n

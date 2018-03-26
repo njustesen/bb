@@ -1,4 +1,3 @@
 
-
 class IllegalActionExcpetion(Exception):
     pass

@@ -1,5 +1,4 @@
-from util.stack import Stack
-from core import *
+from bb.procedure import *
 
 
 class Game:
