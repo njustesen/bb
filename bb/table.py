@@ -21,6 +21,7 @@ class BBDieResult(Enum):
     DEFENDER_STUMBLES = 4
     DEFENDER_DOWN = 5
 
+
 class OutcomeType(Enum):
     HEADS_WON = 1
     HEADS_LOSS = 2
@@ -183,6 +184,7 @@ class CasualtyType(Enum):
     SMASHED_COLLAR_BONE = 58
     DEAD = 61
 
+
 class ActionType(Enum):
     START_GAME = 1
     END_GAME = 2
@@ -271,7 +273,6 @@ class Skill(Enum):
     STRONG_ARM = 31
     LONG_LEGS = 32
     PASS = 33
-    # Not implemented ->
     LONER = 34
     WILD_ANIMAL = 35
     RIGHT_STUFF = 36
@@ -300,6 +301,16 @@ class Skill(Enum):
     DIVING_CATCH = 57
     BLOOD_LUST = 58
     HYPNOTIC_GAZE = 59
+    HAIL_MARY_PASS = 60
+    ACCURATE = 61
+    KICK = 62
+    KICK_OFF_RETURN = 63
+    PASS_BLOCK = 64
+    FEND = 65
+    MULTIPLE_BLOCK = 66
+    STRIP_BALL = 67
+    GRAB = 68
+    STAKES = 69
 
 
 class PassDistance(Enum):

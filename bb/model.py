@@ -506,6 +506,7 @@ class D8(Die):
     def get_value(self):
         return self.value
 
+
 class BBDie(Die):
 
     def __init__(self):
@@ -516,6 +517,7 @@ class BBDie(Die):
 
     def get_value(self):
         return self.value
+
 
 class Dugout:
 
@@ -528,9 +530,9 @@ class Dugout:
 
 class Position:
 
-    def __init__(self, name, race, ma, st, ag, av, skills, cost, feeder, n_skill_sets=[], d_skill_sets=[]):
+    def __init__(self, name, races, ma, st, ag, av, skills, cost, feeder, n_skill_sets=[], d_skill_sets=[], star_player=False):
         self.name = name
-        self.race = race
+        self.races = races
         self.ma = ma
         self.st = st
         self.ag = ag
@@ -540,6 +542,7 @@ class Position:
         self.feeder = feeder
         self.n_skill_sets = n_skill_sets
         self.d_skill_sets = d_skill_sets
+        self.star_player = star_player
 
 
 class Player:
@@ -650,3 +653,27 @@ class Outcome:
         self.rolls = rolls
         self.team_home = team_home
         self.n = n
+
+
+class Inducement:
+
+    def __init__(self, name, cost, max_num, reduced=0):
+        self.name = name
+        self.cost = cost
+        self.max_num = max_num
+        self.reduced = reduced
+
+
+class RuleSet:
+
+    def __init__(self, name, rosters=[], star_players=[], inducements=[], spp_actions={}, spp_levels={}, improvements={}, se_start=0, se_interval=0, se_pace=0):
+        self.name = name
+        self.rosters = rosters
+        self.star_players = star_players
+        self.inducements = inducements
+        self.spp_actions = spp_actions
+        self.spp_levels = spp_levels
+        self.improvements = improvements
+        self.se_start = se_start
+        self.se_interval = se_interval
+        self.se_pace = se_pace

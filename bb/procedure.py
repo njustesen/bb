@@ -2269,6 +2269,7 @@ class Turn(Procedure):
 
         raise IllegalActionExcpetion("Unknown action")
 
+
 class WeatherTable(Procedure):
 
     def __init__(self, game, kickoff=False):
