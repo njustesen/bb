@@ -102,6 +102,7 @@ class Apothecary(Procedure):
 
         return True
 
+
 class Armor(Procedure):
 
     def __init__(self, game, home, player_id, modifiers=0, opp_player_id=None, foul=False):
@@ -175,7 +176,6 @@ class Armor(Procedure):
         else:
             self.game.report(Outcome(OutcomeType.ARMOR_NOT_BROKEN, player_id=self.player_id,
                                      opp_player_id=self.opp_player_id,  rolls=[roll]))
-
 
         return True
 
@@ -374,6 +374,7 @@ class Block(Procedure):
 
             return True
         return False
+
 
 class Bounce(Procedure):
 
@@ -656,6 +657,7 @@ class Ejection(Procedure):
 
         return True
 
+
 class Foul(Procedure):
 
     def __init__(self, game, home, player_from, player_to):
@@ -855,8 +857,6 @@ class KickOff(Procedure):
 
     def step(self, action):
         return True
-
-
 
 
 class GetTheRef(Procedure):
@@ -1179,32 +1179,6 @@ class KnockOut(Procedure):
         return True
 
 
-class KnockOut(Procedure):
-
-    def __init__(self, game, home, player_id, opp_player_id=None):
-        super().__init__(game)
-        self.game = game
-        self.home = home
-        self.player_id = player_id
-        self.opp_player_id = opp_player_id
-        self.player = game.get_player(player_id)
-        self.opp_player = game.get_player(opp_player_id)
-        self.waiting_apothecary = False
-        self.roll = None
-
-    def step(self, action):
-
-        if action.action_type == ActionType.USE_APOTHECARY:
-            Apothecary(self.game, self.home, self.player_id, roll=self.roll, outcome=OutcomeType.KNOCKED_OUT, opp_player_id=self.opp_player_id)
-            return True
-
-        self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.KOD
-        self.game.state.field.remove(self.player_id)
-        self.game.state.get_dugout(self.home).kod.append(self.player_id)
-
-        return True
-
-
 class Move(Procedure):
 
     def __init__(self, game, home, player_id, from_pos, to_pos, gfi, dodge):
@@ -1219,6 +1193,8 @@ class Move(Procedure):
             Dodge(game, home, player_id, from_pos, to_pos)
 
     def step(self, action):
+
+        # TODO: Check if in bounds
 
         had_ball_before = self.game.state.field.has_ball(self.player_id)
         self.game.state.field.move(self.from_pos, self.to_pos)
@@ -1563,6 +1539,7 @@ class PassAction(Procedure):
 
         return True
 
+
 class Pickup(Procedure):
 
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -1858,6 +1835,7 @@ class PreHalf(Procedure):
         self.game.state.reset_kickoff(self.home).reset()
         return True
 
+
 class FollowUp(Procedure):
 
     def __init__(self, game, home, player_from, pos_to, chain=False, optional=True):
@@ -1962,6 +1940,7 @@ class Push(Procedure):
 
         raise Exception("Unknown push sequence")
 
+
 class Scatter(Procedure):
 
     def __init__(self, game, home, kick=False, is_pass=False):
@@ -2038,6 +2017,7 @@ class Scatter(Procedure):
 
         return True
 
+
 class ClearBoard(Procedure):
 
     def __init__(self, game):
@@ -2093,6 +2073,7 @@ class Setup(Procedure):
                 return False
             self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
             return True
+
 
 class ThrowIn(Procedure):
 

@@ -1,4 +1,10 @@
 
+def parse_enum(enum_class, skill_name):
+    enum_name = skill_name.upper().replace(" ", "_").replace("-", "_")
+    if enum_name not in enum_class.__members__:
+        raise Exception("Uknown skill name " + enum_name + " (orig: " + skill_name + ")")
+    return enum_class[enum_name]
+
 
 def get_line(start, end):
     """Bresenham's Line Algorithm

@@ -404,22 +404,24 @@ class Action:
 
 class Arena:
 
-    def __init__(self, name, board):
+    home_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT]
+    away_tiles = [Tile.AWAY, Tile.AWAY_TOUCHDOWN, Tile.AWAY_WING_LEFT, Tile.AWAY_WING_RIGHT]
+    scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
+    wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
+    wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
+
+    def __init__(self, name, board, dungeon=False):
         self.name = name
         self.board = board
-        self.home_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT]
-        self.away_tiles = [Tile.AWAY, Tile.AWAY_TOUCHDOWN, Tile.AWAY_WING_LEFT, Tile.AWAY_WING_RIGHT]
-        self.scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
-        self.wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
-        self.wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
+        self.dungeon = dungeon
 
     def is_team_side(self, pos, home):
         if home:
-            return self.board[pos[0]][pos[1]] in self.home_tiles
-        return self.board[pos[0]][pos[1]] in self.away_tiles
+            return self.board[pos[0]][pos[1]] in Arena.home_tiles
+        return self.board[pos[0]][pos[1]] in Arena.away_tiles
 
     def is_scrimmage(self, pos):
-        return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
+        return self.board[pos[0]][pos[1]] in Arena.scrimmage_tiles
 
     def is_touchdown(self, pos, team):
         """
@@ -428,13 +430,13 @@ class Arena:
         :return: Whether pos is within team's touchdown zone (such that they would score)
         """
         if self.is_team_side(pos, not team):
-            return self.board[pos[0]][pos[1]] in self.scrimmage_tiles
+            return self.board[pos[0]][pos[1]] in Arena.scrimmage_tiles
         return False
 
     def is_wing(self, pos, right):
         if right:
-            return self.board[pos[0]][pos[1]] in self.wing_right_tiles
-        return self.board[pos[0]][pos[1]] in self.wing_left_tiles
+            return self.board[pos[0]][pos[1]] in Arena.wing_right_tiles
+        return self.board[pos[0]][pos[1]] in Arena.wing_left_tiles
 
 
 class Die(ABC):
@@ -547,7 +549,7 @@ class Position:
 
 class Player:
 
-    def __init__(self, player_id, position, name, nr, extra_skills=[], extra_ma=0, extra_st=0, extra_ag=0, extra_av=0):
+    def __init__(self, player_id, position, name, nr, extra_skills=[], extra_ma=0, extra_st=0, extra_ag=0, extra_av=0, niggling=0, mng=False, spp=0):
         self.player_id = player_id
         self.position = position
         self.name = name
@@ -557,6 +559,9 @@ class Player:
         self.extra_st = extra_st
         self.extra_ag = extra_ag
         self.extra_av = extra_av
+        self.niggling = niggling
+        self.mng = mng
+        self.spp = spp
 
     def get_ag(self):
         return self.position.ag + self.extra_ag
@@ -604,7 +609,7 @@ class Coach:
         self.name = name
 
 
-class Roster:
+class Race:
 
     def __init__(self, name, positions, reroll_cost, apothecary, stakes):
         self.name = name
@@ -616,12 +621,12 @@ class Roster:
 
 class Team:
 
-    def __init__(self, team_id, name, roster, coach, players=[], treasury=0, apothecary=False, rerolls=0, ass_coaches=0,
+    def __init__(self, team_id, name, race, coach, players=[], treasury=0, apothecary=False, rerolls=0, ass_coaches=0,
                  cheerleaders=0):
         self.team_id = team_id
         self.name = name
         self.coach = coach
-        self.roster = roster
+        self.race = race
         self.players = players
         self.treasury = treasury
         self.apothecary = apothecary
@@ -631,7 +636,12 @@ class Team:
 
         self.players_by_id = {}
         for player in self.players:
-            self.players_by_id[player.id] = player
+            self.players_by_id[player.player_id] = player
+
+    def init(self):
+        self.players_by_id = {}
+        for player in self.players:
+            self.players_by_id[player.player_id] = player
 
     def get_player_by_id(self, player_id):
         return self.players_by_id[player_id]
@@ -666,9 +676,9 @@ class Inducement:
 
 class RuleSet:
 
-    def __init__(self, name, rosters=[], star_players=[], inducements=[], spp_actions={}, spp_levels={}, improvements={}, se_start=0, se_interval=0, se_pace=0):
+    def __init__(self, name, races=[], star_players=[], inducements=[], spp_actions={}, spp_levels={}, improvements={}, se_start=0, se_interval=0, se_pace=0):
         self.name = name
-        self.rosters = rosters
+        self.races = races
         self.star_players = star_players
         self.inducements = inducements
         self.spp_actions = spp_actions
@@ -677,3 +687,12 @@ class RuleSet:
         self.se_start = se_start
         self.se_interval = se_interval
         self.se_pace = se_pace
+
+    def get_position(self, position, race):
+        for r in self.races:
+            if r.name == race:
+                for p in r.positions:
+                    if p.name == position:
+                        return p
+                raise Exception("Position not found in race: " + race + " -> " + position)
+        raise Exception("Race not found: " + race)

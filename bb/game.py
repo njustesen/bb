@@ -3,7 +3,7 @@ from bb.procedure import *
 
 class Game:
 
-    def __init__(self, home, away, arena, state, config):
+    def __init__(self, home, away, arena, config, state=None):
         self.home = home
         self.away = away
         self.arena = arena
@@ -12,6 +12,9 @@ class Game:
         self.reports = []
         self.config = config
         self.game_over = False
+
+        if self.state is None:
+            self.state = GameState(self)
 
     def init(self):
         # Postgame(self)

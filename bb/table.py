@@ -2,16 +2,17 @@ from enum import Enum
 
 
 class Tile(Enum):
-    NONE = 1
+    HOME = 1
     HOME_TOUCHDOWN = 2
     HOME_WING_LEFT = 3
     HOME_WING_RIGHT = 4
     HOME_SCRIMMAGE = 5
-    AWAY_TOUCHDOWN = 6
-    AWAY_WING_LEFT = 7
-    AWAY_WING_RIGHT = 8
-    AWAY_SCRIMMAGE = 9
-    CROWD = 10
+    AWAY = 6
+    AWAY_TOUCHDOWN = 7
+    AWAY_WING_LEFT = 8
+    AWAY_WING_RIGHT = 9
+    AWAY_SCRIMMAGE = 10
+    CROWD = 11
 
 
 class BBDieResult(Enum):
