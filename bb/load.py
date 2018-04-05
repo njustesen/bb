@@ -40,7 +40,9 @@ def parse_sc(sc):
     return parsed
 
 
-def get_rule_set_from_file(path):
+def get_rule_set(name):
+
+    path = get_data_path('rules/' + name + '.xml')
 
     obj = untangle.parse(path)
 
@@ -105,8 +107,11 @@ def get_rule_set_from_file(path):
     return ruleset
 
 
-def get_team_from_file(path, ruleset):
-    str = open(path).read()
+def get_team(name, ruleset):
+    path = get_data_path('teams/' + name + '.json')
+    f = open(path)
+    str = f.read()
+    f.close()
     data = json.loads(str)
     coach = Coach(data['coach']['id'], data['coach']['name'])
     team = Team(data['id'], data['name'], data['race'], coach=coach, treasury=data['treasury'], apothecary=data['apothecary'], rerolls=data['rerolls'], ass_coaches=data['ass_coaches'], cheerleaders=data['cheerleaders'])
@@ -120,7 +125,8 @@ def get_team_from_file(path, ruleset):
     return team
 
 
-def get_arena_from_file(path):
+def get_arena(name):
+    path = get_data_path('arenas/' + name + '.arena')
     name = 'Unknown arena'
     dungeon = False
     board = []
@@ -129,41 +135,41 @@ def get_arena_from_file(path):
         line = file.readline()
         if not line:
             break
-        if line[0] == '#':
-            if 'name' in line[0].lower().strip().split('=')[0]:
-                name = line[0].split('=')[1].lstrip()
-            elif 'dungeon' in line[0].lower().strip().split('=')[0]:
-                dungeon = bool(line[0].split('=')[1].lstrip())
-            continue
         row = []
         for c in line:
             if c not in arena_char_map.keys():
                 if c in ['\n']:
                     continue
+                file.close()
                 raise Exception("Unknown tile type " + c)
             row.append(arena_char_map[c])
         board.append(np.array(row))
-    return Arena(name, np.array(board), dungeon=dungeon)
+    file.close()
+    return Arena(np.array(board))
 
 
-if __name__ == "__main__":
+def get_data_path(rel_path):
     file_dir = os.path.dirname(os.path.realpath('__file__'))
-    filename = os.path.join(file_dir, "../data/rules/LRB5-Experimental.xml")
-    filename = os.path.abspath(os.path.realpath(filename))
-    ruleset = get_rule_set_from_file(filename)
+    filename = os.path.join(file_dir, "../data/" + rel_path)
+    return os.path.abspath(os.path.realpath(filename))
 
-    filename = os.path.join(file_dir, "../data/teams/reikland_reivers.json")
-    filename = os.path.abspath(os.path.realpath(filename))
-    team_home = get_team_from_file(filename, ruleset)
 
-    filename = os.path.join(file_dir, "../data/teams/gouged_eye.json")
-    filename = os.path.abspath(os.path.realpath(filename))
-    team_away = get_team_from_file(filename, ruleset)
-
-    filename = os.path.join(file_dir, "../data/arenas/bb_pitch.arena")
-    filename = os.path.abspath(os.path.realpath(filename))
-    arena = get_arena_from_file(filename)
-
+def get_config(name):
+    path = get_data_path('config/' + name + '.json')
+    f = open(path)
+    str = f.read()
+    f.close()
+    data = json.loads(str)
     config = Configuration()
-    config.fast_mode = False
-    Game(team_home, team_away, arena, config)
+    config.name = data['name']
+    config.arena = data['arena']
+    config.dungeon = data['dungeon']
+    config.roster_size = data['roster_size']
+    config.on_field = data['on_field']
+    config.scrimmage_min = data['scrimmage_min']
+    config.wings_max = data['wings_max']
+    config.turns = data['turns']
+    config.kick_off_table = data['kick_off_table']
+    config.fast_mode = data['fast_mode']
+    return config
+

@@ -1803,6 +1803,7 @@ class PlayerAction(Procedure):
 class Pregame(Procedure):
 
     def __init__(self, game):
+        self.game = game
         self.game.stack.push(CoinToss(self.game))
         # self.game.stack.push(Inducements(self.game, True))
         # self.game.stack.push(Inducements(self.game, False))

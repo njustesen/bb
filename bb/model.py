@@ -10,6 +10,16 @@ class Configuration:
 
     def __init__(self):
         self.fast_mode = False
+        self.name = "Default"
+        self.arena = "bb_pitch"
+        self.ruleset = "LRB5-Experimental"
+        self.roster_size = 16
+        self.on_field = 11
+        self.scrimmage_max = 3
+        self.wings_max = 2
+        self.turns = 8
+        self.kick_off_table = True
+        self.fast_mode = False
 
 
 class TeamState:
@@ -410,10 +420,8 @@ class Arena:
     wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
 
-    def __init__(self, name, board, dungeon=False):
-        self.name = name
+    def __init__(self, board):
         self.board = board
-        self.dungeon = dungeon
 
     def is_team_side(self, pos, home):
         if home:
