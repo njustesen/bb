@@ -1,5 +1,5 @@
 import unittest
-from bb import api
+from bb.core import api
 
 
 class TestPregame(unittest.TestCase):

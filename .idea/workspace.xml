@@ -2,20 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/api.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/host.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/web.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/arenas/bb_pitch_small.arena" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/config/bb.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/config/bb_small.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/setup.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/test_loaders.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tests/test_pregame.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/core/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/bb/web/static/js/app.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/arenas/bb_pitch.arena" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/arenas/bb_pitch_small.arena" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/config/bb_small.json" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/api.py" afterPath="$PROJECT_DIR$/bb/core/api.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/exception.py" afterPath="$PROJECT_DIR$/bb/core/exception.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/game.py" afterPath="$PROJECT_DIR$/bb/core/game.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/host.py" afterPath="$PROJECT_DIR$/bb/core/host.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/load.py" afterPath="$PROJECT_DIR$/bb/core/load.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/model.py" afterPath="$PROJECT_DIR$/bb/core/model.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/procedure.py" afterPath="$PROJECT_DIR$/bb/core/procedure.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/table.py" afterPath="$PROJECT_DIR$/bb/core/table.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/util.py" afterPath="$PROJECT_DIR$/bb/core/util.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/bb/web.py" afterPath="$PROJECT_DIR$/bb/web/server.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/load.py" afterPath="$PROJECT_DIR$/bb/load.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/model.py" afterPath="$PROJECT_DIR$/bb/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/procedure.py" afterPath="$PROJECT_DIR$/bb/procedure.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/arenas/bb_pitch.arena" afterPath="$PROJECT_DIR$/data/arenas/bb_pitch.arena" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/config/bb.json" afterPath="$PROJECT_DIR$/data/config/bb.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_loaders.py" afterPath="$PROJECT_DIR$/tests/test_loaders.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/test_pregame.py" afterPath="$PROJECT_DIR$/tests/test_pregame.py" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -37,10 +42,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="load.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/load.py">
+        <entry file="file://$PROJECT_DIR$/bb/core/load.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="160" column="12" selection-start-line="160" selection-start-column="12" selection-end-line="160" selection-end-column="12" />
+              <caret line="162" column="20" selection-start-line="162" selection-start-column="20" selection-end-line="162" selection-end-column="20" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -48,75 +53,75 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_loaders.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/test_loaders.py">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/web/server.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+              <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
               <folding>
-                <element signature="e#0#15#0" expanded="true" />
+                <element signature="e#0#49#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bb_pitch.arena" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/arenas/bb_pitch.arena">
+      <file leaf-file-name="test_loaders.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tests/test_loaders.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="26" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/procedure.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1805" column="24" selection-start-line="1805" selection-start-column="24" selection-end-line="1805" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.6081081">
+              <caret line="23" column="20" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="20" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/model.py">
+        <entry file="file://$PROJECT_DIR$/bb/core/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.7777777">
-              <caret line="422" column="23" selection-start-line="422" selection-start-column="23" selection-end-line="422" selection-end-column="23" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="api.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/core/api.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="8" column="20" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
               <folding>
-                <element signature="e#0#35#0" expanded="true" />
+                <element signature="e#0#26#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bb.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/config/bb.json">
+      <file leaf-file-name="host.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/core/host.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.5882353">
-              <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="3" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="18" column="40" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bb_small.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/config/bb_small.json">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/web/static/js/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.25">
-              <caret line="2" column="30" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="10" column="24" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_pregame.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test_pregame.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_pregame.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.53097343">
-              <caret line="12" column="19" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -124,23 +129,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="api.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/api.py">
+      <file leaf-file-name="expatreader.py" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/expatreader.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="15" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
-              <folding>
-                <element signature="e#0#21#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/game.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="40" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
+              <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="216" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -151,6 +144,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="Python Script" />
       </list>
     </option>
@@ -161,35 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/core/interception.py" />
-        <option value="$PROJECT_DIR$/model/field.py" />
-        <option value="$PROJECT_DIR$/model/outcome.py" />
-        <option value="$PROJECT_DIR$/model/gamestate.py" />
-        <option value="$PROJECT_DIR$/loaders/race_loader.py" />
-        <option value="$PROJECT_DIR$/loaders/__init__.py" />
-        <option value="$PROJECT_DIR$/util/xml.py" />
-        <option value="$PROJECT_DIR$/model/Race.py" />
-        <option value="$PROJECT_DIR$/model/race.py" />
-        <option value="$PROJECT_DIR$/model/__init__.py" />
-        <option value="$PROJECT_DIR$/model/skill.py" />
-        <option value="$PROJECT_DIR$/loaders/rule_loader.py" />
-        <option value="$PROJECT_DIR$/model/player.py" />
-        <option value="$PROJECT_DIR$/core/__init__.py" />
-        <option value="$PROJECT_DIR$/core/catch.py" />
-        <option value="$PROJECT_DIR$/bb/core/bounce.py" />
-        <option value="$PROJECT_DIR$/bb/procedures.py" />
-        <option value="$PROJECT_DIR$/bb/loader.py" />
-        <option value="$PROJECT_DIR$/util.py" />
-        <option value="$PROJECT_DIR$/bb/rules.py" />
-        <option value="$PROJECT_DIR$/bb/enum.py" />
-        <option value="$PROJECT_DIR$/bb/exception.py" />
-        <option value="$PROJECT_DIR$/data/teams/1.json" />
-        <option value="$PROJECT_DIR$/data/teams/2.json" />
-        <option value="$PROJECT_DIR$/bb/util.py" />
-        <option value="$PROJECT_DIR$/data/teams/reikland_reivers.json" />
-        <option value="$PROJECT_DIR$/bb/table.py" />
-        <option value="$PROJECT_DIR$/data/teams/gouged_eye.json" />
-        <option value="$PROJECT_DIR$/bb/envs/human_vs_human.py" />
         <option value="$PROJECT_DIR$/data/arenas/bb_pitch_small.arena" />
         <option value="$PROJECT_DIR$/bb/envs/__init__.py" />
         <option value="$PROJECT_DIR$/bb/envs/human_env.py" />
@@ -199,19 +164,48 @@
         <option value="$PROJECT_DIR$/data/config/human.json" />
         <option value="$PROJECT_DIR$/data/config/human_small.json" />
         <option value="$PROJECT_DIR$/bb/host.py" />
-        <option value="$PROJECT_DIR$/bb/game.py" />
         <option value="$PROJECT_DIR$/setup.py" />
-        <option value="$PROJECT_DIR$/web.py" />
-        <option value="$PROJECT_DIR$/bb/web.py" />
         <option value="$PROJECT_DIR$/tests/game_init.py" />
-        <option value="$PROJECT_DIR$/bb/api.py" />
-        <option value="$PROJECT_DIR$/data/config/bb.json" />
         <option value="$PROJECT_DIR$/data/config/bb_small.json" />
-        <option value="$PROJECT_DIR$/bb/model.py" />
-        <option value="$PROJECT_DIR$/tests/test_loaders.py" />
-        <option value="$PROJECT_DIR$/bb/procedure.py" />
+        <option value="$PROJECT_DIR$/bb/static/css/starter-template.css" />
+        <option value="$PROJECT_DIR$/bb/web.py" />
+        <option value="$PROJECT_DIR$/bb/static/js/angularapp.js" />
+        <option value="$PROJECT_DIR$/bb/templates/index.html" />
+        <option value="$PROJECT_DIR$/bb/views/index.html" />
+        <option value="$PROJECT_DIR$/bb/core/web.py" />
+        <option value="$PROJECT_DIR$/bb/api.py" />
+        <option value="$PROJECT_DIR$/bb/game.py" />
         <option value="$PROJECT_DIR$/bb/load.py" />
+        <option value="$PROJECT_DIR$/bb/model.py" />
+        <option value="$PROJECT_DIR$/bb/procedure.py" />
+        <option value="$PROJECT_DIR$/web.py" />
+        <option value="$PROJECT_DIR$/app/app.js" />
+        <option value="$PROJECT_DIR$/app/templates/index.html" />
+        <option value="$PROJECT_DIR$/app/static/js/pybowl.js" />
+        <option value="$PROJECT_DIR$/templates/index.html" />
+        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
+        <option value="$PROJECT_DIR$/bb/web/nocache.py" />
+        <option value="$PROJECT_DIR$/bb/web/pybowl-app/services.js" />
+        <option value="$PROJECT_DIR$/bb/web/pybowl-app/controllers.js" />
+        <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
+        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
+        <option value="$PROJECT_DIR$/bb/core/game.py" />
+        <option value="$PROJECT_DIR$/bb/web/static/css/pybowl.css" />
+        <option value="$PROJECT_DIR$/bb/web/templates/play.html" />
+        <option value="$PROJECT_DIR$/bb/web/templates/index.html" />
+        <option value="$PROJECT_DIR$/bb/web/gulpfile.js" />
+        <option value="$PROJECT_DIR$/bb/web/static/partials/post.view.html" />
+        <option value="$PROJECT_DIR$/bb/web/static/partials/post.list.html" />
+        <option value="$PROJECT_DIR$/bb/web/server.py" />
+        <option value="$PROJECT_DIR$/bb/core/host.py" />
+        <option value="$PROJECT_DIR$/bb/web/static/js/app.js" />
+        <option value="$PROJECT_DIR$/bb/web/static/dist/js/blog.js" />
         <option value="$PROJECT_DIR$/tests/test_pregame.py" />
+        <option value="$PROJECT_DIR$/tests/test_loaders.py" />
+        <option value="$PROJECT_DIR$/data/config/bb.json" />
+        <option value="$PROJECT_DIR$/bb/core/api.py" />
+        <option value="$PROJECT_DIR$/bb/core/load.py" />
+        <option value="$PROJECT_DIR$/bb/core/model.py" />
       </list>
     </option>
   </component>
@@ -246,8 +240,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -276,20 +270,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="tests" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="bb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="bb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="data" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -308,7 +288,25 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="arenas" />
+              <option name="myItemId" value="rules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="config" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -323,6 +321,90 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="dist" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="core" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -333,26 +415,27 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pybowldjango" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bb/web/static/js" />
+      <recent name="$PROJECT_DIR$/bb/web/static/img" />
+      <recent name="$PROJECT_DIR$/bb" />
       <recent name="$PROJECT_DIR$/tests" />
       <recent name="$PROJECT_DIR$/data/config" />
-      <recent name="$PROJECT_DIR$/bb/envs" />
-      <recent name="$PROJECT_DIR$/data/arenas" />
-      <recent name="$PROJECT_DIR$/data/teams" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/bb" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/data/rules" />
-      <recent name="$PROJECT_DIR$/core" />
-      <recent name="$PROJECT_DIR$/exceptions" />
+      <recent name="$PROJECT_DIR$/bb/web/static/img" />
+      <recent name="$PROJECT_DIR$/data/arenas" />
+      <recent name="$PROJECT_DIR$/bb/web/static/js" />
+      <recent name="$PROJECT_DIR$/bb/core" />
+      <recent name="$PROJECT_DIR$/bb/web" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Unittest TestPregame.test_init (2)">
-    <configuration default="false" name="Unittest TestPregame.test_init" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.Unittests in test_loaders">
+    <configuration default="false" name="Unittests in test_loaders" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
@@ -362,33 +445,16 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="bb" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_pregame.py" />
-      <option name="CLASS_NAME" value="TestPregame" />
-      <option name="METHOD_NAME" value="test_init" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_loaders.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
       <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_METHOD" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
       <option name="PATTERN" value="" />
       <option name="USE_PATTERN" value="false" />
       <option name="PUREUNITTEST" value="true" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="test_pregame" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="bb" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_pregame.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
     <configuration default="false" name="Unittest TestLoaders.test_team_loader" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
@@ -413,7 +479,7 @@
       <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="Unittest TestPregame.test_init (1)" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="Unittests in test_pregame" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
@@ -424,8 +490,30 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="bb" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_pregame.py" />
-      <option name="CLASS_NAME" value="TestPregame" />
-      <option name="METHOD_NAME" value="test_init" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittest TestLoaders.test_team_loader (1)" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="bb" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_loaders.py" />
+      <option name="CLASS_NAME" value="TestLoaders" />
+      <option name="METHOD_NAME" value="test_team_loader" />
       <option name="FOLDER_NAME" value="" />
       <option name="TEST_TYPE" value="TEST_METHOD" />
       <option name="PATTERN" value="" />
@@ -435,7 +523,7 @@
       <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="Unittest TestPregame.test_init (2)" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="Unittest TestLoaders.test_arena" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
@@ -445,9 +533,9 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="bb" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_pregame.py" />
-      <option name="CLASS_NAME" value="TestPregame" />
-      <option name="METHOD_NAME" value="test_init" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_loaders.py" />
+      <option name="CLASS_NAME" value="TestLoaders" />
+      <option name="METHOD_NAME" value="test_arena" />
       <option name="FOLDER_NAME" value="" />
       <option name="TEST_TYPE" value="TEST_METHOD" />
       <option name="PATTERN" value="" />
@@ -580,19 +668,19 @@
       <method />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python tests.Unittest TestPregame.test_init" />
-      <item index="1" class="java.lang.String" itemvalue="Python.test_pregame" />
-      <item index="2" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_team_loader" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest TestPregame.test_init (1)" />
-      <item index="4" class="java.lang.String" itemvalue="Python tests.Unittest TestPregame.test_init (2)" />
+      <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in test_loaders" />
+      <item index="1" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_team_loader" />
+      <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in test_pregame" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_team_loader (1)" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_arena" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python tests.Unittest TestPregame.test_init (2)" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittest TestPregame.test_init (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Python.test_pregame" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_team_loader" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittest TestPregame.test_init" />
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in test_loaders" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in test_pregame" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_arena" />
+        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_team_loader (1)" />
+        <item index="4" class="java.lang.String" itemvalue="Python tests.Unittest TestLoaders.test_team_loader" />
       </list>
     </recent_temporary>
   </component>
@@ -610,35 +698,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittest_TestLoaders_test_arena - 2018.04.04 at 20h 33m 03s.xml">
+    <history-entry file="Unittest_TestLoaders_test_arena - 2018.04.10 at 19h 21m 15s.xml">
       <configuration name="Unittest TestLoaders.test_arena" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittest_TestLoaders_test_arena_(1) - 2018.04.04 at 20h 32m 37s.xml">
-      <configuration name="Unittest TestLoaders.test_arena (1)" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittest_TestLoaders_test_arena_(1) - 2018.04.04 at 20h 33m 30s.xml">
-      <configuration name="Unittest TestLoaders.test_arena (1)" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittest_TestLoaders_test_arena_(2) - 2018.04.04 at 20h 32m 42s.xml">
-      <configuration name="Unittest TestLoaders.test_arena (2)" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittest_TestLoaders_test_team_loader - 2018.04.04 at 20h 35m 45s.xml">
-      <configuration name="Unittest TestLoaders.test_team_loader" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittest_TestLoaders_test_team_loader_(1) - 2018.04.04 at 20h 32m 11s.xml">
+    <history-entry file="Unittest_TestLoaders_test_team_loader_(1) - 2018.04.10 at 19h 20m 13s.xml">
       <configuration name="Unittest TestLoaders.test_team_loader (1)" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittest_TestLoaders_test_team_loader_(2) - 2018.04.04 at 20h 32m 23s.xml">
-      <configuration name="Unittest TestLoaders.test_team_loader (2)" configurationId="tests" />
+    <history-entry file="Unittests_in_test_loaders - 2018.04.10 at 19h 20m 21s.xml">
+      <configuration name="Unittests in test_loaders" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittest_TestPregame_test_init - 2018.04.04 at 20h 34m 17s.xml">
-      <configuration name="Unittest TestPregame.test_init" configurationId="tests" />
+    <history-entry file="Unittests_in_test_loaders - 2018.04.10 at 19h 21m 12s.xml">
+      <configuration name="Unittests in test_loaders" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittest_TestPregame_test_init_(1) - 2018.04.04 at 20h 37m 44s.xml">
-      <configuration name="Unittest TestPregame.test_init (1)" configurationId="tests" />
+    <history-entry file="Unittests_in_test_loaders - 2018.04.10 at 19h 21m 22s.xml">
+      <configuration name="Unittests in test_loaders" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittest_TestPregame_test_init_(2) - 2018.04.04 at 20h 37m 53s.xml">
-      <configuration name="Unittest TestPregame.test_init (2)" configurationId="tests" />
+    <history-entry file="Unittests_in_test_loaders - 2018.04.10 at 19h 25m 37s.xml">
+      <configuration name="Unittests in test_loaders" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_pregame - 2018.04.10 at 19h 21m 28s.xml">
+      <configuration name="Unittests in test_pregame" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_pregame - 2018.04.10 at 19h 21m 57s.xml">
+      <configuration name="Unittests in test_pregame" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_pregame - 2018.04.10 at 19h 23m 20s.xml">
+      <configuration name="Unittests in test_pregame" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_test_pregame - 2018.04.10 at 19h 25m 31s.xml">
+      <configuration name="Unittests in test_pregame" configurationId="tests" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -652,14 +740,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="38" y="23" width="1402" height="873" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1955105" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25995654" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22988506" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5300896" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3008963" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -697,9 +785,9 @@
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/test_loaders.py</url>
-          <line>19</line>
-          <option name="timeStamp" value="21" />
+          <url>file://$PROJECT_DIR$/bb/core/api.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -712,9 +800,13 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="22" />
+      <option name="time" value="30" />
     </breakpoint-manager>
     <watches-manager>
+      <configuration name="tests">
+        <watch expression="r" />
+        <watch expression="team" />
+      </configuration>
       <configuration name="PythonConfigurationType">
         <watch expression="r" />
         <watch expression="team" />
@@ -722,176 +814,10 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/bb/exception.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/load.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="15" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="109" column="39" selection-start-line="109" selection-start-column="34" selection-end-line="109" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/procedure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2076" column="0" selection-start-line="2076" selection-start-column="0" selection-end-line="2076" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/host.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="33" selection-start-line="16" selection-start-column="33" selection-end-line="16" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/exception.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/load.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="48" selection-start-line="17" selection-start-column="48" selection-end-line="17" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="8" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/procedure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#13#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/rules/LRB5-Experimental.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/xmlreader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="301" column="22" selection-start-line="301" selection-start-column="22" selection-end-line="301" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/handler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/xmlreader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="124" column="0" selection-start-line="124" selection-start-column="0" selection-end-line="124" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -900,13 +826,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="82" column="0" selection-start-line="82" selection-start-column="0" selection-end-line="82" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/expatreader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3174946">
-          <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -921,7 +840,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="354" column="0" selection-start-line="354" selection-start-column="0" selection-end-line="354" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -929,37 +847,51 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.77922076">
           <caret line="4" column="2" selection-start-line="4" selection-start-column="2" selection-end-line="7" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/rules/LRB5-Experimental.xml">
+    <entry file="file://$PROJECT_DIR$/data/teams/gouged_eye.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.1960785">
-          <caret line="1347" column="21" selection-start-line="1347" selection-start-column="18" selection-end-line="1347" selection-end-column="21" />
+        <state vertical-scroll-proportion="-0.028957529">
+          <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/arenas/bb_pitch_small.arena">
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/concurrent/futures/process.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="4" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/table.py">
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/flask/templating.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.6411215">
+          <caret line="132" column="81" selection-start-line="132" selection-start-column="60" selection-end-line="132" selection-end-column="81" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/exception.py">
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/jinja2/loaders.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.33271027">
+          <caret line="112" column="0" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -972,23 +904,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/teams/gouged_eye.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.028957529">
-          <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/host.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/exception.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="8" column="8" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
+    <entry file="file://$PROJECT_DIR$/data/arenas/bb_pitch.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/util.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
@@ -996,119 +936,287 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/util.py">
+    <entry file="file:///usr/local/lib/python3.6/site-packages/werkzeug/wrappers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/concurrent/futures/process.py">
+    <entry file="file:///usr/local/lib/python3.6/site-packages/werkzeug/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="883" column="0" selection-start-line="883" selection-start-column="0" selection-end-line="883" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web.py">
+    <entry file="file:///usr/local/lib/python3.6/site-packages/flask/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.333334">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1996" column="0" selection-start-line="1996" selection-start-column="0" selection-end-line="1996" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#0#13#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/game.py">
+    <entry file="file:///usr/local/lib/python3.6/site-packages/jinja2/environment.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="40" selection-start-line="5" selection-start-column="40" selection-end-line="5" selection-end-column="40" />
+          <caret line="496" column="0" selection-start-line="496" selection-start-column="0" selection-end-line="496" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/config/bb.json">
+    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/directives.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="2" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/services.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.037037">
+          <caret line="36" column="28" selection-start-line="36" selection-start-column="26" selection-end-line="36" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.7254902">
+          <caret line="5" column="32" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.037037">
+          <caret line="18" column="63" selection-start-line="18" selection-start-column="60" selection-end-line="18" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/gulpfile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="21" selection-start-line="5" selection-start-column="21" selection-end-line="5" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/css/style.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.037037">
+          <caret line="33" column="19" selection-start-line="33" selection-start-column="14" selection-end-line="33" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/dist/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.851851">
+          <caret line="48" column="15" selection-start-line="48" selection-start-column="14" selection-end-line="48" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/post.view.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.5882353">
-          <caret line="2" column="24" selection-start-line="2" selection-start-column="24" selection-end-line="3" selection-end-column="35" />
+          <caret line="2" column="88" selection-start-line="2" selection-start-column="88" selection-end-line="2" selection-end-column="88" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/config/bb_small.json">
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/post.list.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.25">
-          <caret line="2" column="30" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
+          <caret line="2" column="81" selection-start-line="2" selection-start-column="81" selection-end-line="2" selection-end-column="88" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/model.py">
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/admin.signin.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.7777777">
-          <caret line="422" column="23" selection-start-line="422" selection-start-column="23" selection-end-line="422" selection-end-column="23" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/admin.register.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/admin.post.list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="12" selection-start-line="0" selection-start-column="11" selection-end-line="0" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/admin.post.edit.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/admin.logout.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39473686">
+          <caret line="13" column="10" selection-start-line="13" selection-start-column="10" selection-end-line="13" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/admin.overview.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/admin.post.create.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/dist/js/blog.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="248" column="27" selection-start-line="248" selection-start-column="26" selection-end-line="248" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
           <folding>
-            <element signature="e#0#35#0" expanded="true" />
+            <element signature="e#0#49#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/arenas/bb_pitch.arena">
+    <entry file="file://$PROJECT_DIR$/data/rules/LRB5-Experimental.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="26" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
+        <state vertical-scroll-proportion="40.90081">
+          <caret line="1347" column="21" selection-start-line="1347" selection-start-column="18" selection-end-line="1347" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/procedure.py">
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1805" column="24" selection-start-line="1805" selection-start-column="24" selection-end-line="1805" selection-end-column="24" />
+          <caret line="10" column="24" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/api.py">
+    <entry file="file:///usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6/lib/python3.6/xml/sax/expatreader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="15" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
+          <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="216" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_loaders.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_pregame.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/load.py">
+    <entry file="file://$PROJECT_DIR$/data/config/bb.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.091093116">
+          <caret line="3" column="12" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/host.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="160" column="12" selection-start-line="160" selection-start-column="12" selection-end-line="160" selection-end-column="12" />
+          <caret line="18" column="40" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="20" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/load.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="162" column="20" selection-start-line="162" selection-start-column="20" selection-end-line="162" selection-end-column="20" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_pregame.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.53097343">
-          <caret line="12" column="19" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_loaders.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6081081">
+          <caret line="23" column="20" selection-start-line="23" selection-start-column="20" selection-end-line="23" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>

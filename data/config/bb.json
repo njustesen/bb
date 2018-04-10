@@ -1,7 +1,7 @@
 {
     "name": "Blood Bowl: Human vs Human",
-    "arena": "bb_pitch",
-    "ruleset": "LRB5-Experimental",
+    "arena": "bb_pitch.txt",
+    "ruleset": "LRB5-Experimental.xml",
     "dungeon": false,
     "roster_size": 16,
     "on_field": 11,
