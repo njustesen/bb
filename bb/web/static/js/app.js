@@ -15,43 +15,17 @@ app.config(['$locationProvider', '$routeProvider',
   function($location, $routeProvider) {
     $routeProvider.
         when('/', {
-            templateUrl: 'static/partials/post.list.html',
-            controller: 'PostListCtrl'
+            templateUrl: 'static/partials/game.list.html',
+            controller: 'GameListCtrl'
         }).
-        when('/post/:id', {
-            templateUrl: 'static/partials/post.view.html',
-            controller: 'PostViewCtrl'
-        }).
-        when('/tag/:tagName', {
-            templateUrl: 'static/partials/post.list.html',
-            controller: 'PostListTagCtrl'
-        }).
-        when('/admin', {
-            templateUrl: 'static/partials/admin.post.list.html',
-            controller: 'AdminPostListCtrl',
+        when('/game/create', {
+            templateUrl: 'static/partials/game.create.html',
+            controller: 'GameCreateCtrl',
             access: { requiredAuthentication: true }
         }).
-        when('/admin/post/create', {
-            templateUrl: 'static/partials/admin.post.create.html',
-            controller: 'AdminPostCreateCtrl',
-            access: { requiredAuthentication: true }
-        }).
-        when('/admin/post/edit/:id', {
-            templateUrl: 'static/partials/admin.post.edit.html',
-            controller: 'AdminPostEditCtrl',
-            access: { requiredAuthentication: true }
-        }).
-        when('/admin/register', {
-            templateUrl: 'static/partials/admin.register.html',
-            controller: 'AdminUserCtrl'
-        }).
-        when('/admin/login', {
-            templateUrl: 'static/partials/admin.signin.html',
-            controller: 'AdminUserCtrl'
-        }).
-        when('/admin/logout', {
-            templateUrl: 'static/partials/admin.logout.html',
-            controller: 'AdminUserCtrl',
+        when('/game/play/:id', {
+            templateUrl: 'static/partials/game.play.html',
+            controller: 'GamePlayCtrl',
             access: { requiredAuthentication: true }
         }).
         otherwise({
@@ -59,18 +33,3 @@ app.config(['$locationProvider', '$routeProvider',
         });
 }]);
 
-
-app.config(function ($httpProvider) {
-    $httpProvider.interceptors.push('TokenInterceptor');
-});
-
-app.run(function($rootScope, $location, $window, AuthenticationService) {
-    $rootScope.$on("$routeChangeStart", function(event, nextRoute, currentRoute) {
-        //redirect only if both isAuthenticated is false and no token is set
-        if (nextRoute != null && nextRoute.access != null && nextRoute.access.requiredAuthentication 
-            && !AuthenticationService.isAuthenticated && !$window.sessionStorage.token) {
-
-            $location.path("/admin/login");
-        }
-    });
-});

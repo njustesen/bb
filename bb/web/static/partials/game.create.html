@@ -1,0 +1,44 @@
+<section class="post">
+    <h3>Create new game</h3>
+    <hr />
+    <form name="EditPostForm">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <select ng-model="home_team_id" class="form-control" >
+                        <option ng:repeat="team in teams" value="{{team.team_id}}">
+                            {{team.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="radio">
+                        <label><input type="radio" value="human" name="home_player" ng-model="home_player">Human</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" value="ai" name="home_player" ng-model="home_player">AI</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+               <div class="form-group">
+                    <select ng-model="away_team_id" class="form-control" >
+                        <option ng:repeat="team in teams" value="{{team.team_id}}">
+                            {{team.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="radio">
+                        <label><input type="radio" value="human" name="away_player" ng-model="away_player">Human</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" value="ai" name="away_player" ng-model="away_player">AI</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success" ng-click="save(game, false)">Save</button>
+    </form>
+
+</section>

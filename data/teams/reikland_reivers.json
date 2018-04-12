@@ -1,5 +1,5 @@
 {
-  "id": 1,
+  "id": "2",
   "name": "Reikland Reivers",
   "race": "Human",
   "coach" : {
@@ -13,7 +13,7 @@
   "cheerleaders": 2,
   "players": [
     {
-      "id" : 1,
+      "id" : "1",
       "nr" : 1,
       "name": "a",
       "position": "Blitzer",
@@ -27,7 +27,7 @@
       "mng": false
     },
     {
-      "id" : 2,
+      "id" : "2",
       "nr" : 2,
       "name": "b",
       "position": "Blitzer",
@@ -41,7 +41,7 @@
       "mng": false
     },
     {
-      "id" : 3,
+      "id" : "3",
       "nr" : 3,
       "name": "c",
       "position": "Thrower",
@@ -55,7 +55,7 @@
       "mng": false
     },
     {
-      "id" : 4,
+      "id" : "4",
       "nr" : 4,
       "name": "d",
       "position": "Catcher",
@@ -69,7 +69,7 @@
       "mng": false
     },
     {
-      "id" : 5,
+      "id" : "5",
       "nr" : 5,
       "name": "e",
       "position": "Catcher",
@@ -83,7 +83,7 @@
       "mng": false
     },
     {
-      "id" : 6,
+      "id" : "6",
       "nr" : 6,
       "name": "f",
       "position": "Lineman",
@@ -97,7 +97,7 @@
       "mng": false
     },
     {
-      "id" : 7,
+      "id" : "7",
       "nr" : 7,
       "name": "g",
       "position": "Lineman",
@@ -111,7 +111,7 @@
       "mng": false
     },
     {
-      "id" : 8,
+      "id" : "8",
       "nr" : 8,
       "name": "h",
       "position": "Lineman",
@@ -125,7 +125,7 @@
       "mng": false
     },
     {
-      "id" : 9,
+      "id" : "9",
       "nr" : 9,
       "name": "i",
       "position": "Lineman",
@@ -139,7 +139,7 @@
       "mng": false
     },
     {
-      "id" : 10,
+      "id" : "10",
       "nr" : 10,
       "name": "j",
       "position": "Lineman",
@@ -153,7 +153,7 @@
       "mng": false
     },
     {
-      "id" : 11,
+      "id" : "11",
       "nr" : 11,
       "name": "k",
       "position": "Lineman",
@@ -167,7 +167,7 @@
       "mng": false
     },
     {
-      "id" : 12,
+      "id" : "12",
       "nr" : 12,
       "name": "l",
       "position": "Lineman",

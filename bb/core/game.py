@@ -153,14 +153,18 @@ class Game:
         return not home
 
     def toJSON(self):
+        return json.dumps(self.to_simple())
 
-        return json.dumps({
+    def to_simple(self):
+        return {
             'game_id': self.game_id,
-            'home': self.home,
-            'away': self.away,
-            'arena': self.arena,
-            #'state': self.state,
-            'reports': self.reports,
-            'config': self.config,
+            'home_team_id': self.home.team_id,
+            'away_team_id': self.away.team_id,
+            'home_team_name': self.home.name,
+            'away_team_name': self.away.name,
+            'home_team_score': self.state.home_state.score,
+            'away_team_score': self.state.away_state.score,
+            'half': self.state.half,
+            'turn': self.state.team_turn,
             'game_over': self.game_over
-        })
+        }

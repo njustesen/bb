@@ -1,85 +1,20 @@
-appControllers.controller('PostListCtrl', ['$scope', '$sce', 'PostService',
-    function PostListCtrl($scope, $sce, PostService) {
 
-        $scope.posts = [];
+appControllers.controller('GameListCtrl', ['$scope', 'GameService',
+    function GameListCtrl($scope, GameService) {
+        $scope.games = [];
 
-        PostService.findAllPublished().success(function(data) {
-            for (var postKey in data) {
-                data[postKey].content = $sce.trustAsHtml(data[postKey].content);
-            }
-
-            $scope.posts = data;            
-        }).error(function(data, status) {
-            console.log(status);
-            console.log(data);
-        });
-    }
-]);
-
-appControllers.controller('PostViewCtrl', ['$scope', '$routeParams', '$location', '$sce', 'PostService', 'LikeService',
-    function PostViewCtrl($scope, $routeParams, $location, $sce, PostService, LikeService) {
-
-        $scope.post = {};
-        var id = $routeParams.id;
-
-        $scope.isAlreadyLiked = LikeService.isAlreadyLiked(id);
-
-        PostService.read(id).success(function(data) {
-            data.content = $sce.trustAsHtml(data.content);
-            $scope.post = data;
-        }).error(function(data, status) {
-            console.log(status);
-            console.log(data);
+        GameService.findAll().success(function(data) {
+            $scope.games = data;
         });
 
-        //Like a post
-        $scope.likePost = function likePost() {
-            if (!LikeService.isAlreadyLiked(id)) {
-                PostService.like(id).success(function(data) {
-                    $scope.post.likes++;
-                    LikeService.like(id);
-                    $scope.isAlreadyLiked = true;
-                }).error(function(data, status) {
-                    console.log(status);
-                    console.log(data);
-                });
-            }
-        };
+        $scope.updatePublishState = function updatePublishState(game, shouldPublish) {
+            if (game != undefined && shouldPublish != undefined) {
 
-        //Unlike a post
-        $scope.unlikePost = function unlikePost() {
-            if (LikeService.isAlreadyLiked(id)) {
-                PostService.unlike(id).success(function(data) {
-                    $scope.post.likes--;
-                    LikeService.unlike(id);
-                    $scope.isAlreadyLiked = false;
-                }).error(function(data, status) {
-                    console.log(status);
-                    console.log(data);
-                });
-            }
-        }
-
-    }
-]);
-
-
-appControllers.controller('AdminPostListCtrl', ['$scope', 'PostService', 
-    function AdminPostListCtrl($scope, PostService) {
-        $scope.posts = [];
-
-        PostService.findAll().success(function(data) {
-            $scope.posts = data;
-        });
-
-        $scope.updatePublishState = function updatePublishState(post, shouldPublish) {
-            if (post != undefined && shouldPublish != undefined) {
-
-                PostService.changePublishState(post._id, shouldPublish).success(function(data) {
-                    var posts = $scope.posts;
-                    for (var postKey in posts) {
-                        if (posts[postKey]._id == post._id) {
-                            $scope.posts[postKey].is_published = shouldPublish;
+                GameService.changePublishState(game._id, shouldPublish).success(function(data) {
+                    var games = $scope.games;
+                    for (var gameKey in games) {
+                        if (games[gameKey]._id == game._id) {
+                            $scope.games[gameKey].is_published = shouldPublish;
                             break;
                         }
                     }
@@ -91,14 +26,14 @@ appControllers.controller('AdminPostListCtrl', ['$scope', 'PostService',
         }
 
 
-        $scope.deletePost = function deletePost(id) {
+        $scope.deleteGame = function deletegame(id) {
             if (id != undefined) {
 
-                PostService.delete(id).success(function(data) {
-                    var posts = $scope.posts;
-                    for (var postKey in posts) {
-                        if (posts[postKey]._id == id) {
-                            $scope.posts.splice(postKey, 1);
+                GameService.delete(id).success(function(data) {
+                    var games = $scope.games;
+                    for (var gameKey in games) {
+                        if (games[gameKey]._id == id) {
+                            $scope.games.splice(gameKey, 1);
                             break;
                         }
                     }
@@ -111,71 +46,71 @@ appControllers.controller('AdminPostListCtrl', ['$scope', 'PostService',
     }
 ]);
 
-appControllers.controller('AdminPostCreateCtrl', ['$scope', '$location', 'PostService',
-    function AdminPostCreateCtrl($scope, $location, PostService) {
+appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService', 'TeamService',
+    function GameCreateCtrl($scope, $location, GameService, TeamService) {
         $('#textareaContent').wysihtml5({"font-styles": false});
 
-        $scope.save = function save(post, shouldPublish) {
-            if (post != undefined 
-                && post.title != undefined
-                && post.tags != undefined) {
+        TeamService.findAll().success(function(data) {
+            $scope.teams = data;
+            $scope.home_team_id = data[0].team_id;
+            $scope.away_team_id = data[1].team_id;
+        });
 
-                var content = $('#textareaContent').val();
-                if (content != undefined) {
-                    post.content = content;
+        $scope.home_player = "human"
+        $scope.away_player = "human"
 
-                    if (shouldPublish != undefined && shouldPublish == true) {
-                        post.is_published = true;
-                    } else {
-                        post.is_published = false;
-                    }
+        $scope.save = function save(game, shouldPublish) {
+            //var content = $('#textareaContent').val();
+            game = {}
+            game.home_team_id = $scope.home_team_id
+            game.away_team_id = $scope.away_team_id
+            game.home_player = $scope.home_player
+            game.away_player = $scope.away_player
 
-                    PostService.create(post).success(function(data) {
-                        $location.path("/admin");
-                    }).error(function(status, data) {
-                        console.log(status);
-                        console.log(data);
-                    });
-                }
-            }
+            GameService.create(game).success(function(data) {
+                $location.path("/");
+            }).error(function(status, data) {
+                console.log(status);
+                console.log(data);
+            });
         }
     }
 ]);
 
-appControllers.controller('AdminPostEditCtrl', ['$scope', '$routeParams', '$location', '$sce', 'PostService',
-    function AdminPostEditCtrl($scope, $routeParams, $location, $sce, PostService) {
-        $scope.post = {};
+appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService',
+    function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService) {
+        $scope.game = {};
         var id = $routeParams.id;
 
-        PostService.read(id).success(function(data) {
-            $scope.post = data;
+        GameService.get(id).success(function(data) {
+            $scope.game = data;
             $('#textareaContent').wysihtml5({"font-styles": false});
             $('#textareaContent').val($sce.trustAsHtml(data.content));
         }).error(function(status, data) {
-            $location.path("/admin");
+            $location.path("/#/");
         });
 
-        $scope.save = function save(post, shouldPublish) {
-            if (post !== undefined 
-                && post.title !== undefined && post.title != "") {
+        $scope.save = function save(game, shouldPublish) {
+            if (game !== undefined 
+                && game.title !== undefined && game.title != "") {
 
                 var content = $('#textareaContent').val();
                 if (content !== undefined && content != "") {
-                    post.content = content;
+                    game.content = content;
 
                     if (shouldPublish != undefined && shouldPublish == true) {
-                        post.is_published = true;
+                        game.is_published = true;
                     } else {
-                        post.is_published = false;
+                        game.is_published = false;
                     }
 
                     // string comma separated to array
-                    if (Object.prototype.toString.call(post.tags) !== '[object Array]') {
-                        post.tags = post.tags.split(',');
+                    if (Object.prototype.toString.call(game.tags) !== '[object Array]') {
+                        game.tags = game.tags.split(',');
                     }
                     
-                    PostService.update(post).success(function(data) {
-                        $location.path("/admin");
+                    GameService.update(game).success(function(data) {
+                        $location.path("/");
                     }).error(function(status, data) {
                         console.log(status);
                         console.log(data);
@@ -185,75 +120,3 @@ appControllers.controller('AdminPostEditCtrl', ['$scope', '$routeParams', '$loca
         }
     }
 ]);
-
-appControllers.controller('AdminUserCtrl', ['$scope', '$location', '$window', 'UserService', 'AuthenticationService',  
-    function AdminUserCtrl($scope, $location, $window, UserService, AuthenticationService) {
-
-        //Admin User Controller (signIn, logOut)
-        $scope.signIn = function signIn(username, password) {
-            if (username != null && password != null) {
-
-                UserService.signIn(username, password).success(function(data) {
-                    AuthenticationService.isAuthenticated = true;
-                    $window.sessionStorage.token = data.token;
-                    $location.path("/admin");
-                }).error(function(status, data) {
-                    console.log(status);
-                    console.log(data);
-                });
-            }
-        }
-
-        $scope.logOut = function logOut() {
-            if (AuthenticationService.isAuthenticated) {
-                
-                UserService.logOut().success(function(data) {
-                    AuthenticationService.isAuthenticated = false;
-                    delete $window.sessionStorage.token;
-                    $location.path("/");
-                }).error(function(status, data) {
-                    console.log(status);
-                    console.log(data);
-                });
-            }
-            else {
-                $location.path("/admin/login");
-            }
-        }
-
-        $scope.register = function register(username, password, passwordConfirm) {
-            if (AuthenticationService.isAuthenticated) {
-                $location.path("/admin");
-            }
-            else {
-                UserService.register(username, password, passwordConfirm).success(function(data) {
-                    $location.path("/admin/login");
-                }).error(function(status, data) {
-                    console.log(status);
-                    console.log(data);
-                });
-            }
-        }
-    }
-]);
-
-
-appControllers.controller('PostListTagCtrl', ['$scope', '$routeParams', '$sce', 'PostService',
-    function PostListTagCtrl($scope, $routeParams, $sce, PostService) {
-
-        $scope.posts = [];
-        var tagName = $routeParams.tagName;
-
-        PostService.findByTag(tagName).success(function(data) {
-            for (var postKey in data) {
-                data[postKey].content = $sce.trustAsHtml(data[postKey].content);
-            }
-            $scope.posts = data;
-        }).error(function(status, data) {
-            console.log(status);
-            console.log(data);
-        });
-
-    }
-]);
-

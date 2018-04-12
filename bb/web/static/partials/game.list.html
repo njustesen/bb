@@ -1,0 +1,36 @@
+<section class="post">
+
+    <div class="alert alert-danger" ng-show="message.is_error">{{message.message}}</div>
+    <div class="alert alert-success" ng-show="message.is_success">{{message.message}}</div>
+
+    <a href="#/game/create" class="btn btn-success" style="margin-bottom: 15px;">Create a new game</a>
+
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <th class="text-right" style="width=30%">Home Team</th>
+                <th class="text-right" style="width=30%"></th>
+                <th></th>
+                <th></th>
+                <th>Away Team</th>
+                <th>Half</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody> 
+            <tr ng-repeat="game in games">
+                <td class="text-right">{{game.home_team_name}}</td>
+                <td class="text-right">{{game.home_team_score}}</td>
+                <td class="text-center">-</td>
+                <td>{{game.away_team_score}}</td>
+                <td>{{game.away_team_name}}</td>
+                <td>{{game.half}}</td>
+                <td class="text-right">
+                    <a href="#/game/play/{{game.game_id}}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-play"></span> Play</a>
+                    <button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</section>

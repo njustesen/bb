@@ -3,6 +3,9 @@ import untangle
 from .model import *
 import json
 from bb.core.util import *
+import glob
+import bb
+import pkg_resources
 
 
 arena_char_map = {
@@ -107,6 +110,25 @@ def get_rule_set(name):
     return ruleset
 
 
+def get_all_teams(ruleset):
+    path = get_data_path('teams/')
+    teams = []
+    for file in list(glob.glob(path + '/*.json')):
+        name = file.split("/")[-1].split(".")[0]
+        teams.append(get_team(name, ruleset))
+    return teams
+
+
+def get_team_by_id(team_id, ruleset):
+    path = get_data_path('teams/')
+    for file in list(glob.glob(path + '/*.json')):
+        name = file.split("/")[-1].split(".")[0]
+        team = get_team(name, ruleset)
+        if team.team_id == team_id:
+            return team
+    return None
+
+
 def get_team(name, ruleset):
     path = get_data_path('teams/' + name + '.json')
     f = open(path)
@@ -149,8 +171,9 @@ def get_arena(name):
 
 
 def get_data_path(rel_path):
-    file_dir = os.path.dirname(os.path.realpath('__file__'))
-    filename = os.path.join(file_dir, "../data/" + rel_path)
+    bb_dir = bb.__file__.replace("__init__.py", "")
+    root_dir = os.path.abspath(os.path.join(bb_dir, os.pardir))
+    filename = os.path.join(root_dir, "data/" + rel_path)
     return os.path.abspath(os.path.realpath(filename))
 
 

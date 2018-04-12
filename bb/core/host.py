@@ -1,10 +1,10 @@
-import uuid
 
 
 class Host:
 
-    def __init__(self):
+    def __init__(self, ruleset):
         self.games = {}
+        self.ruleset = ruleset
 
     def add_game(self, game):
         self.games[game.game_id] = game

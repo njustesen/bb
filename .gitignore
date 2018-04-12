@@ -76,6 +76,9 @@ target/
 # celery beat schedule file
 celerybeat-schedule
 
+# NodeJS
+node_modules/
+
 # SageMath parsed files
 *.sage.py
 

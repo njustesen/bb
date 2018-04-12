@@ -1,8 +1,9 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response
 from bb.core.util import *
 from bb.core import api
 from bb.core.model import Action, Square
 from bb.core.table import ActionType
+from bb.web.backend.users import *
 import json
 app = Flask(__name__)
 
@@ -12,24 +13,40 @@ $ export FLASK_DEBUG=1
 $ flask run
 '''
 
+user_store = UserStore()
+
 
 @app.route('/', methods=['GET'])
 def home():
     return render_template('index.html')
 
 
-@app.route('/post', methods=['GET'])
-def post():
-    return json.dumps(api.get_games())
-
-
-@app.route('/game/create', methods=['POST'])
+@app.route('/game/create', methods=['PUT'])
 def create():
-    game_id = api.new_game()
-    return game_id
+    data = json.loads(request.data)
+    game = api.new_game(data['game']['home_team_id'], data['game']['away_team_id'])
+    return json.dumps(game.to_simple())
 
 
-@app.route('/game/<int:game_id>/step', methods=['POST'])
+@app.route('/games/', methods=['GET'])
+def get_all_games():
+    games = api.get_games()
+    game_list = []
+    for game in games:
+        game_list.append(game.to_simple())
+    return json.dumps(game_list)
+
+
+@app.route('/teams/', methods=['GET'])
+def get_all_teams():
+    teams = api.get_teams()
+    team_list = []
+    for team in teams:
+        team_list.append(team.to_simple())
+    return json.dumps(team_list)
+
+
+@app.route('/games/<game_id>/act', methods=['POST'])
 def step(game_id):
     action_type_name = request.args.get('action')
     action_type = parse_enum(ActionType, action_type_name)
@@ -48,9 +65,10 @@ def step(game_id):
     return json.dumps(game)
 
 
-@app.route('/game/<game_id>', methods=['GET'])
+@app.route('/games/<game_id>', methods=['GET'])
 def get_game(game_id):
     return api.get_game(game_id).toJSON()
+
 
 if __name__ == '__main__':
     # Change jinja notation to work with angularjs

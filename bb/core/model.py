@@ -660,6 +660,19 @@ class Team:
     def get_player_ids(self):
         return [player.player_id for player in self.players]
 
+    def to_simple(self):
+        return {
+            'team_id': self.team_id,
+            'name': self.name,
+            'coach_id': self.coach.coach_id,
+            'coach_name': self.coach.name,
+            'race': self.race,
+            'treasury': self.treasury,
+            'apothecary': self.apothecary,
+            'rerolls': self.rerolls,
+            'ass_coaches': self.ass_coaches
+        }
+
 
 class Outcome:
 
