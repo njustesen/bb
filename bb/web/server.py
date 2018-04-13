@@ -67,7 +67,7 @@ def step(game_id):
 
 @app.route('/games/<game_id>', methods=['GET'])
 def get_game(game_id):
-    return api.get_game(game_id).toJSON()
+    return json.dumps(api.get_game(game_id).to_simple())
 
 
 if __name__ == '__main__':

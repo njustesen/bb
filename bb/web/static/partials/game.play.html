@@ -7,26 +7,26 @@
                         Home
                     </div>
                     <div>
-                        {{game.home_team_name}}
+                        {{game.home_team.name}}
                     </div>
                 </div>
             </div>
-            <div class="col-sm-2">
+            <div class="col-xs-2">
                 <div class="text-center">
                     <div class="gamelabel">Score</div>
-                    <div>{{game.home_team_score}} - {{game.away_team_score}}</div>
+                    <div>{{game.state.home_state.score}} - {{game.state.away_state.score}}</div>
                 </div>
                 <div>
 
                 </div>
             </div>
-            <div class="col-sm-5">
+            <div class="col-xs-5">
                 <div class="text-left">
                     <div class="gamelabel">
                         Away
                     </div>
                     <div>
-                        {{game.away_team_name}}
+                        {{game.away_team.name}}
                     </div>
                 </div>
             </div>
@@ -35,7 +35,23 @@
 </div>
 
 <div class="game">
-    <div class="gameboard">
-        TODO: Show board here
+
+    <div class="gamecontent">
+
+        <div class="gameboard">
+            <div class="dugout">
+                <div class="square-row" ng-repeat="n in [] | range:15">
+                    <div class="square">{{$index * 2}}</div>
+                    <div class="square">{{$index * 2 + 1}}</div>
+                </div>
+            </div>
+            <div class="field"></div>
+
+            </div>
+            <div class="dugout">
+            </div>
+        </div>
+
     </div>
+
 </div>

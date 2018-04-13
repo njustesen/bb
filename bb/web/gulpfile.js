@@ -4,13 +4,13 @@ var less = require('gulp-less');
 
 var paths = {
     scripts: ['static/js/**/*.js'],
-    styles: ['static/css/style.less']
+    styles: ['static/less/style.less']
 };
 
 gulp.task('scripts', function() {
     // concat and copy all JavaScript
     return gulp.src(paths.scripts)
-        .pipe(concat('blog.js'))
+        .pipe(concat('pybowl.js'))
         .pipe(gulp.dest('static/dist/js'));
 });
 

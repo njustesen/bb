@@ -32,13 +32,32 @@ class TeamState:
         self.injuries = {}
         self.score = 0
         self.turn = 0
-        self.apothecary = team.apothecary
         self.rerolls_start = team.rerolls
         self.rerolls = team.rerolls
         self.ass_coaches = team.ass_coaches
         self.cheerleaders = team.cheerleaders
         self.fame = 0
         self.reroll_used = False
+
+    def to_simple(self):
+        player_states = {}
+        for player_id in self.player_states.keys():
+            player_states[player_id] = self.player_states[player_id].name
+        return {
+            'bribes': self.bribes,
+            'babes': self.babes,
+            'apothecary_available': self.apothecary_available,
+            'player_states': player_states,
+            'injuries': self.injuries,
+            'score': self.score,
+            'turn': self.turn,
+            'rerolls_start': self.rerolls_start,
+            'rerolls': self.rerolls,
+            'ass_coaches': self.ass_coaches,
+            'cheerleaders': self.cheerleaders,
+            'fame': self.fame,
+            'reroll_used': self.reroll_used
+        }
 
     def reset_half(self):
         self.reroll_used = False
@@ -66,6 +85,20 @@ class GameState:
         self.weather = None
         self.gentle_gust = False
         self.team_turn = None
+
+    def to_simple(self):
+        return {
+            'half': self.half,
+            'kicking_team': self.kicking_team,
+            'field': self.field.to_simple(),
+            'home_dugout': self.home_dugout.to_simple(),
+            'away_dugout': self.away_dugout.to_simple(),
+            'home_state': self.home_state.to_simple(),
+            'away_state': self.away_state.to_simple(),
+            'weather': self.weather,
+            'gentle_gust': self.gentle_gust,
+            'team_turn': self.team_turn
+        }
 
     def reset_turn(self, home):
         self.team_turn = None
@@ -118,6 +151,17 @@ class Field:
         self.ball_in_air = False
         self.game = game
         self.board = np.full(game.arena.board.shape, -1)
+
+    def to_simple(self):
+        ball = None
+        if self.ball_position is not None:
+            ball = self.ball_position.to_simple()
+        board = self.board.tolist()
+        return {
+            'ball_position': ball,
+            'ball_in_air': self.ball_in_air,
+            'board': board
+        }
 
     def put(self, player_id, pos):
         self.player_positions[player_id] = pos
@@ -537,6 +581,14 @@ class Dugout:
         self.casualties = []
         self.dungeon = []  # Ejected
 
+    def to_simple(self):
+        return {
+            'reserves': self.reserves,
+            'kod': self.kod,
+            'casualties': self.casualties,
+            'dungeon': self.dungeon
+        }
+
 
 class Position:
 
@@ -586,12 +638,37 @@ class Player:
     def has_skill(self, skill):
         return skill in self.extra_skills or skill in self.position.skills
 
+    def to_simple(self):
+        skills = []
+        for skill in self.extra_skills + self.position.skills:
+            skills.append(skill.name)
+        return {
+            'player_id': self.player_id,
+            'name': self.name,
+            'position_name': self.position.name,
+            'nr': self.nr,
+            'skills': skills,
+            'ma': self.get_ma(),
+            'extra_st': self.get_st(),
+            'extra_ag': self.get_ag(),
+            'extra_av': self.get_av(),
+            'niggling': self.niggling,
+            'mng': self.mng,
+            'spp': self.spp
+        }
+
 
 class Square:
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+    def to_simple(self):
+        return {
+            'x': self.x,
+            'y': self.y
+        }
 
     def __eq__(self, other):
         if other is None or self is None:
@@ -615,6 +692,12 @@ class Coach:
     def __init__(self, coach_id, name):
         self.coach_id = coach_id
         self.name = name
+
+    def to_simple(self):
+        return {
+            'coach_id': self.coach_id,
+            'name': self.name
+        }
 
 
 class Race:
@@ -646,6 +729,22 @@ class Team:
         for player in self.players:
             self.players_by_id[player.player_id] = player
 
+    def to_simple(self):
+        players = []
+        for player in self.players:
+            players.append(player.to_simple())
+        return {
+            'team_id': self.team_id,
+            'name': self.name,
+            'coach': self.coach.to_simple(),
+            'race': self.race,
+            'treasury': self.treasury,
+            'apothecary': self.apothecary,
+            'rerolls': self.rerolls,
+            'ass_coaches': self.ass_coaches,
+            'players': players
+        }
+
     def init(self):
         self.players_by_id = {}
         for player in self.players:
@@ -660,18 +759,7 @@ class Team:
     def get_player_ids(self):
         return [player.player_id for player in self.players]
 
-    def to_simple(self):
-        return {
-            'team_id': self.team_id,
-            'name': self.name,
-            'coach_id': self.coach.coach_id,
-            'coach_name': self.coach.name,
-            'race': self.race,
-            'treasury': self.treasury,
-            'apothecary': self.apothecary,
-            'rerolls': self.rerolls,
-            'ass_coaches': self.ass_coaches
-        }
+
 
 
 class Outcome:
