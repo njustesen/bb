@@ -732,8 +732,10 @@ class Team:
 
     def to_simple(self):
         players = []
+        players_by_id = {}
         for player in self.players:
             players.append(player.to_simple())
+            players_by_id[player.player_id] = player.to_simple()
         return {
             'team_id': self.team_id,
             'name': self.name,
@@ -743,7 +745,8 @@ class Team:
             'apothecary': self.apothecary,
             'rerolls': self.rerolls,
             'ass_coaches': self.ass_coaches,
-            'players': players
+            'players': players,
+            'players_by_id': players_by_id
         }
 
     def init(self):

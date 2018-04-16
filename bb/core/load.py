@@ -136,7 +136,7 @@ def get_team(name, ruleset):
     f.close()
     data = json.loads(str)
     coach = Coach(data['coach']['id'], data['coach']['name'])
-    team = Team(data['id'], data['name'], data['race'], coach=coach, treasury=data['treasury'], apothecary=data['apothecary'], rerolls=data['rerolls'], ass_coaches=data['ass_coaches'], cheerleaders=data['cheerleaders'])
+    team = Team(data['id'], data['name'], data['race'], players=[], coach=coach, treasury=data['treasury'], apothecary=data['apothecary'], rerolls=data['rerolls'], ass_coaches=data['ass_coaches'], cheerleaders=data['cheerleaders'])
     for p in data['players']:
         position = ruleset.get_position(p['position'], team.race)
         player = Player(player_id=p['id'], position=position, name=p['name'], nr=p['nr'], niggling=p['niggling'], extra_ma=p['extra_ma'], extra_st=p['extra_st'], extra_ag=p['extra_ag'], extra_av=p['extra_av'], mng=p['mng'], spp=p['spp'])

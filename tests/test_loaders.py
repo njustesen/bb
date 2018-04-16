@@ -18,6 +18,12 @@ class TestLoaders(unittest.TestCase):
         team = load.get_team(team_name, ruleset)
         assert team is not None
         assert team.name == "Reikland Reivers"
+        assert len(team.players) == 12
+        team_name = 'gouged_eye'
+        team = load.get_team(team_name, ruleset)
+        assert team is not None
+        assert team.name == "Gouged Eye"
+        assert len(team.players) == 12
 
     def test_arena(self):
         name = 'bb_pitch.txt'

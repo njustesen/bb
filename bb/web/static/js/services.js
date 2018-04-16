@@ -32,3 +32,26 @@ appServices.factory('TeamService', function($http) {
         }
     };
 });
+
+appServices.factory('IconService', function() {
+
+    return {
+        playerIcons: {
+            'Human': {
+                'Lineman': 'hlineman',
+                'Blitzer': 'hblitzer',
+                'Thrower': 'hthrower',
+                'Catcher': 'hcatcher',
+                'Ogre': 'ogre'
+            },
+            'Orc': {
+                'Lineman': 'olineman',
+                'Blitzer': 'oblitzer',
+                'Thrower': 'othrower',
+                'Black Orc Blocker': 'oblackorc',
+                'Troll': 'troll',
+                'Goblin': 'goblin'
+            }
+        }
+    };
+});

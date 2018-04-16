@@ -77,14 +77,15 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
     }
 ]);
 
-appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService',
-    function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService) {
+appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService', 'IconService',
+    function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService) {
         $scope.game = {};
         $scope.loading = true;
         var id = $routeParams.id;
 
         GameService.get(id).success(function(data) {
             $scope.game = data;
+            $scope.playersById = Object.assign({}, $scope.game.home_team.players_by_id, $scope.game.away_team.players_by_id);
             console.log(data);
             $scope.loading = false;
             $('#textareaContent').wysihtml5({"font-styles": false});
@@ -115,6 +116,54 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             } else if ($scope.game.state.half == 2){
                 return "2nd half";
             }
+        };
+
+        $scope.teamOfPlayer = function teamOfPlayer(player){
+            if (player.player_id in $scope.game.home_team.players_by_id){
+                return $scope.game.home_team;
+            }
+            if (player.player_id in $scope.game.away_team.players_by_id){
+                return $scope.game.away_team;
+            }
+            return null;
+        };
+
+        $scope.playerAt = function playerAt(area, x, y){
+            let player_id = -1;
+            if (area == "field"){
+                player_id = $scope.game.state.field.board[y][x];
+            }
+            let dugout = undefined;
+            if (area == "dugout-home"){
+                dugout = $scope.game.state.home_dugout;
+            } else if (area == "dugout-away"){
+                dugout = $scope.game.state.away_dugout;
+            }
+            if (dugout != undefined){
+                let idx = y*2+x;
+                if (idx <= 14){
+                    if (idx < dugout.reserves.length){
+                        player_id = dugout.reserves[idx];
+                    }
+                } else if (idx <= 20){
+                    if (idx < dugout.kod.length){
+                        player_id = dugout.kod[idx];
+                    }
+                } else if (idx <= 24){
+                    if (idx < dugout.casualties.length){
+                        player_id = dugout.casualties[idx];
+                    }
+                }
+            }
+            if (player_id == -1){
+                return null;
+            }
+            let player = $scope.playersById[player_id];
+            let team = $scope.teamOfPlayer[player.player_id];
+            return {
+                'player': player,
+                'icon': $scope.iconName = IconService.playerIcons[team.race][player.position]
+            };
         };
 
         $scope.save = function save(game, shouldPublish) {
