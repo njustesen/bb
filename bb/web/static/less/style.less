@@ -50,20 +50,28 @@ a, a:focus, a:hover {
             min-width: 900px;
             max-width: 900px;
             margin: auto;
-            padding-bottom: 2px;
+            padding-bottom: 0px;
+
+            .emblem {
+                height: 0px;
+            }
 
             .logo-home {
-                padding-left: 0px;
+                padding-left: 6px;
+                padding-right: 10px;
             }
 
             .logo-away {
                 padding-right: 0px;
+                padding-left: 0px;
             }
 
             .team-icons {
-                margin: -6px 0px -8px 0px;
-                display: inline-block;
                 padding: 0px;
+
+                .team-icon {
+                    margin: -2px -2px -2px -1px;
+                }
 
                 .used {
                     opacity: 0.25;
@@ -74,6 +82,7 @@ a, a:focus, a:hover {
             .turns {
 
                 display: inline-block;
+                height: 24px;
 
                 .turn{
                     border-radius: 50%;
@@ -101,29 +110,43 @@ a, a:focus, a:hover {
 
         }
 
+        .turnfield {
+            height: 100%;
+        }
+
+        .turnmarker {
+            height: 2px;
+        }
+
         .turnmarker-home {
             background-color: rgba(255,0,0,0.15);
-            height: 2px;
         }
 
         .turnmarker-away {
             background-color: rgba(0,0,255,0.15);
-            height: 2px;
 	    }
 
 	    .turnmarker-home-turn {
             background-color: rgb(255,0,0);
-            height: 2px;
         }
 
         .turnmarker-away-turn {
             background-color: rgb(0,0,255);
-            height: 2px;
 	    }
 
         .gamelabel {
             font-size: 0.6em;
             color: #999;
+        }
+
+        .proc {
+            background-color: #f5f5f5;
+        }
+
+        .proclabel {
+            font-size: 0.75em;
+            color: #555;
+            line-height: 2em;
         }
 
     }
