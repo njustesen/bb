@@ -2194,7 +2194,6 @@ class Turn(Procedure):
         self.pass_available = not quick_snap
         self.handoff_available = not quick_snap
         self.game.state.reset_turn(self.home)
-        self.game.state.get_team_state(home).turn += 1
         self.pass_action_taken = False
         self.blitz_action_taken = False
         self.foul_action_taken = False

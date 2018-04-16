@@ -12,6 +12,10 @@ html {
 	}
 }
 
+.no-padding {
+    padding: 0px;
+}
+
 a, a:focus, a:hover {
 	color: #235A9F;
 	outline: none;
@@ -35,10 +39,87 @@ a, a:focus, a:hover {
 
 	.scoreboard {
         color: #222;
-        font-size: 1.8em;
+        font-size: 1.6em;
         padding: 1.2em;
 	    background: #fff;
-	    box-shadow: 0px 1px 0px #aaa;
+	    box-shadow: 0px 2px 0px #ccc;
+
+	    padding: 12px 0px 0px 0px;
+
+        .scoreboard-content {
+            min-width: 900px;
+            max-width: 900px;
+            margin: auto;
+            padding-bottom: 2px;
+
+            .logo-home {
+                padding-left: 0px;
+            }
+
+            .logo-away {
+                padding-right: 0px;
+            }
+
+            .team-icons {
+                margin: -6px 0px -8px 0px;
+                display: inline-block;
+                padding: 0px;
+
+                .used {
+                    opacity: 0.25;
+                }
+
+            }
+
+            .turns {
+
+                display: inline-block;
+
+                .turn{
+                    border-radius: 50%;
+                    width: 18px;
+                    height: 18px;
+                    margin-top: 4px;
+                    display: inline-block;
+                    opacity: 0.5;
+                }
+
+                .home {
+                    background-color: red;
+                    margin-left: 4px;
+                }
+
+                .away {
+                    background-color: blue;
+                    margin-right: 4px;
+                }
+
+                .notused {
+                    background-color: #ccc;
+                }
+            }
+
+        }
+
+        .turnmarker-home {
+            background-color: rgba(255,0,0,0.15);
+            height: 2px;
+        }
+
+        .turnmarker-away {
+            background-color: rgba(0,0,255,0.15);
+            height: 2px;
+	    }
+
+	    .turnmarker-home-turn {
+            background-color: rgb(255,0,0);
+            height: 2px;
+        }
+
+        .turnmarker-away-turn {
+            background-color: rgb(0,0,255);
+            height: 2px;
+	    }
 
         .gamelabel {
             font-size: 0.6em;

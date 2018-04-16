@@ -1,7 +1,7 @@
 <div class="game-free">
     <div class="scoreboard">
-        <div class="row">
-            <div class="col-sm-5">
+        <div class="row scoreboard-content">
+            <div class="col-sm-4">
                 <div class="text-right">
                     <div class="gamelabel">
                         Home
@@ -9,15 +9,37 @@
                     <div>
                         {{game.home_team.name}}
                     </div>
+                    <div>
+                        <div class="turns">
+                            <div ng-repeat="n in [] | range:8" class="turn home {{ $index < game.state.home_state.turn ? 'used' : 'notused' }}"> </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-2">
+            <div class="col-xs-1 logo-home">
+                <img src="static/img/teamlogos/{{game.home_team.race.toLowerCase()}}.gif" height="64" width="64" />
+            </div>
+            <div class="col-xs-2 no-padding">
                 <div class="text-center">
                     <div class="gamelabel">Score</div>
                     <div>{{game.state.home_state.score}} - {{game.state.away_state.score}}</div>
                 </div>
+                <div class="text-center" style="margin-top: -5px;">
+                    <div class="team-icons">
+                        <span><img src="static/img/team_status/wizard.gif" class="{{ game.state.home_state.wizard_available ? 'available' : 'used' }}" title="Wizard {{ game.state.home_state.wizard_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
+                        <span><img src="static/img/team_status/apoth.gif" class="{{ game.state.home_state.apothecary_available ? 'available' : 'used' }}" title="Apothecary {{ game.state.home_state.apothecary_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
+                        <span><img src="static/img/weather/{{game.state.weather.toLowerCase()}}.gif" title="Weather is {{ game.state.weather.toLowerCase()}}" width="20px" height="20px" /></span>
+                        <span><img src="static/img/team_status/apoth.gif" class="{{ game.state.away_state.apothecary_available ? 'available' : 'used' }}" title="Apothecary {{ game.state.away_state.apothecary_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
+                        <span><img src="static/img/team_status/wizard.gif" class="{{ game.state.away_state.wizard_available ? 'available' : 'used' }}" title="Wizard {{ game.state.away_state.wizard_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-5">
+            <div class="col-xs-1 logo-away">
+                <div>
+                    <img src="static/img/teamlogos/{{game.away_team.race.toLowerCase()}}.gif" height="64" width="64" />
+                </div>
+            </div>
+            <div class="col-xs-4">
                 <div class="text-left">
                     <div class="gamelabel">
                         Away
@@ -25,8 +47,15 @@
                     <div>
                         {{game.away_team.name}}
                     </div>
+                    <div class="turns">
+                        <div ng-repeat="n in [] | range:8" class="turn away {{ $index < game.state.away_state.turn ? 'used' : 'notused' }}"> </div>
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 {{ game.state.team_turn == true ? 'turnmarker-home-turn' : 'turnmarker-home' }}"></div>
+            <div class="col-sm-6 {{ game.state.team_turn == false ? 'turnmarker-away-turn' : 'turnmarker-away' }}"></div>
         </div>
     </div>
 </div>

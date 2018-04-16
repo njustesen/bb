@@ -28,6 +28,7 @@ class TeamState:
         self.bribes = 0
         self.babes = 0
         self.apothecary_available = team.apothecary
+        self.wizard_available = False
         self.player_states = {player.player_id: PlayerState.READY for player in team.players}
         self.injuries = {}
         self.score = 0
@@ -82,7 +83,7 @@ class GameState:
         self.away_dugout = Dugout()
         self.home_state = TeamState(game.home)
         self.away_state = TeamState(game.away)
-        self.weather = None
+        self.weather = WeatherType.NICE
         self.gentle_gust = False
         self.team_turn = None
 
@@ -95,7 +96,7 @@ class GameState:
             'away_dugout': self.away_dugout.to_simple(),
             'home_state': self.home_state.to_simple(),
             'away_state': self.away_state.to_simple(),
-            'weather': self.weather,
+            'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
             'team_turn': self.team_turn
         }
