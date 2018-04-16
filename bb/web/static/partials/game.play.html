@@ -80,7 +80,7 @@
     <div class="gamecontent">
 
         <div class="square-row">
-            <div class="square" ng-repeat="n in [] | range:30" ng-click="square('crowd', $index, 0)"></div>
+            <div class="square" ng-repeat="n in [] | range:30" ng-click="square('crowd', $index-1, 0)"></div>
         </div>
 
         <div class="gameboard">
@@ -116,7 +116,7 @@
         </div>
 
         <div class="square-row">
-            <div class="square" ng-repeat="n in [] | range:30" ng-click="square('crowd', $index, 16)"></div>
+            <div class="square" ng-repeat="n in [] | range:30" ng-click="square('crowd', $index-1, 16)"></div>
         </div>
 
     </div>
