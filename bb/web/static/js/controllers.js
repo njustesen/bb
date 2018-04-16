@@ -90,6 +90,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $location.path("/#/");
         });
 
+        $scope.square = function square(area, x, y) {
+            alert(area + ", x=" + x + ", y=" + y);
+        };
+
         $scope.save = function save(game, shouldPublish) {
             if (game !== undefined 
                 && game.title !== undefined && game.title != "") {

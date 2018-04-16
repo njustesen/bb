@@ -23,10 +23,22 @@ a, a:focus, a:hover {
 	box-shadow: 0px 1px 0px #aaa;
     margin-bottom: 20px;
 
-    .scoreboard {
+	.game-footer {
+		margin-top: 1.8em;
+	}
+
+}
+
+.game-free {
+    margin-top: -20px;
+	margin-bottom: 20px;
+
+	.scoreboard {
         color: #222;
         font-size: 1.8em;
         padding: 1.2em;
+	    background: #fff;
+	    box-shadow: 0px 1px 0px #aaa;
 
         .gamelabel {
             font-size: 0.6em;
@@ -35,49 +47,50 @@ a, a:focus, a:hover {
 
     }
 
-    .gamecontent {
+}
 
-        height: 452px;
+.gamecontent {
 
-        .gameboard {
+    height: 452px;
 
-            width: 900px;
-            height:100%;
-            background-image: url("@{img-url}/arenas/bb_field/lines/field_good.jpg");
-
-            .dugout {
-                width: 60px;
-                height:100%;
-                float: left;
-                background: rgba(200,0,0,0.5);
-                position: relative;
-            }
-
-            .field {
-                padding: 0;
-                width: 780px;
-                height:100%;
-                float: left;
-                background: rgba(0,200,0,0.5);
-            }
-
-            .square-row {
-                height: 30px;
-                width: 100%;
-            }
-
-            .square {
-                width: 30px;
-                height: 30px;
-                float: left;
-            }
-
-	    }
+    .square-row {
+        height: 30px;
+        width: 100%;
     }
 
-	.game-footer {
-		margin-top: 1.8em;
-	}
+    .square {
+        width: 30px;
+        height: 30px;
+        float: left;
+    }
+
+    .gameboard {
+
+        width: 900px;
+        margin: auto;
+        height:100%;
+        background-image: url("@{img-url}/arenas/bb_field/lines/field_good.jpg");
+        box-shadow: 0 0 10px rgba(0,0,0,0.6);
+        -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+        -webkit-box-shadow: 0 0 6px rgba(0,0,0,0.6);
+        -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
+        border: solid 1px #555;
+
+        .dugout {
+            width: 60px;
+            height:100%;
+            float: left;
+            position: relative;
+        }
+
+        .field {
+            padding: 0;
+            width: 780px;
+            height:100%;
+            float: left;
+        }
+
+    }
 }
 
 .post {
