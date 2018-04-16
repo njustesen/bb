@@ -152,11 +152,18 @@ class Game:
             return home
         return not home
 
+    def procs(self):
+        procs = []
+        for proc in self.stack.items:
+            procs.append(proc.__class__.__name__)
+        return procs
+
     def to_simple(self):
         return {
             'game_id': self.game_id,
             'home_team': self.home.to_simple(),
             'away_team': self.away.to_simple(),
             'state': self.state.to_simple(),
-            'game_over': self.game_over
+            'game_over': self.game_over,
+            'stack': self.procs()
         }

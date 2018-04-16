@@ -9,8 +9,8 @@
                     <div>
                         {{game.home_team.name}}
                     </div>
-                    <div class="turns">
-                        <div ng-repeat="n in [] | range:8" class="turn home {{ $index < game.state.home_state.turn ? 'used' : 'notused' }}"> </div>
+                    <div class="rerolls">
+                        <div ng-repeat="n in [] | range:8" title="{{ 7-$index < game.state.home_state.rerolls ? 'Reroll' : (7-$index < game.state.home_state.rerolls_start ? 'Reroll used' : '') }}" class="reroll home {{ 7-$index < game.state.home_state.rerolls ? 'notused' : (7-$index < game.state.home_state.rerolls_start ? 'used' : 'none') }}"> </div>
                     </div>
                 </div>
                 <div class="col-xs-1 logo-home text-center">
@@ -39,8 +39,8 @@
                     <div>
                         {{game.away_team.name}}
                     </div>
-                    <div class="turns">
-                        <div ng-repeat="n in [] | range:8" class="turn away {{ $index < game.state.away_state.turn ? 'used' : 'notused' }}"> </div>
+                    <div class="rerolls">
+                        <div ng-repeat="n in [] | range:8" title="{{ $index < game.state.away_state.rerolls ? 'Reroll' : ($index < game.state.away_state.rerolls_start ? 'Reroll used' : '') }}" class="reroll away {{ $index < game.state.away_state.rerolls ? 'notused' : ($index < game.state.away_state.rerolls_start ? 'used' : 'none') }}"> </div>
                     </div>
                 </div>
             </div>
@@ -53,13 +53,13 @@
                 </div>
             </div>
             <div class="col-xs-1 text-center {{ game.state.team_turn == true ? 'turnmarker-home-turn' : 'turnmarker-home' }}">
-                <div class="proclabel">1 / 1</div>
+                <div class="proclabel">{{game.state.home_state.turn}} / 8</div>
             </div>
             <div class="col-xs-2 text-center proc">
-                <div class="proclabel">1st half</div>
+                <div class="proclabel">{{ currentProc() }}</div>
             </div>
             <div class="col-xs-1 text-center {{ game.state.team_turn == false ? 'turnmarker-away-turn' : 'turnmarker-away' }}">
-                <div class="proclabel">1 / 1</div>
+                <div class="proclabel">{{game.state.home_state.turn}} / 8</div>
             </div>
             <div class="col-xs-4">
                 <div class="team-icons">

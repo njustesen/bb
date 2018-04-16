@@ -80,10 +80,13 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
 appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService',
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService) {
         $scope.game = {};
+        $scope.loading = true;
         var id = $routeParams.id;
 
         GameService.get(id).success(function(data) {
             $scope.game = data;
+            console.log(data);
+            $scope.loading = false;
             $('#textareaContent').wysihtml5({"font-styles": false});
             $('#textareaContent').val($sce.trustAsHtml(data.content));
         }).error(function(status, data) {
@@ -92,6 +95,26 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.square = function square(area, x, y) {
             alert(area + ", x=" + x + ", y=" + y);
+        };
+
+        $scope.currentProc = function currentProc(){
+            if ($scope.loading){
+                return "";
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Pregame"){
+                return "Pre-Game";
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "WeatherTable"){
+                return "Pre-Game";
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "CoinToss"){
+                return "Coin Toss";
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "PostGame"){
+                return "Post-Game";
+            } else if ($scope.game.game_over){
+                return "Game is Over";
+            } else if ($scope.game.state.half == 1){
+                return "1st half";
+            } else if ($scope.game.state.half == 2){
+                return "2nd half";
+            }
         };
 
         $scope.save = function save(game, shouldPublish) {

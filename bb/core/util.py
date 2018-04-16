@@ -63,6 +63,7 @@ def get_line(start, end):
         points.reverse()
     return points
 
+
 class Stack:
     def __init__(self):
         self.items = []
