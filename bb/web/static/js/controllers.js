@@ -81,7 +81,12 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService) {
         $scope.game = {};
         $scope.loading = true;
-
+        $scope.availableActions = [
+            {
+                action_type: 'End',
+                squares: []
+            }
+        ];
         var id = $routeParams.id;
 
         GameService.get(id).success(function(data) {
