@@ -446,7 +446,7 @@ class Field:
 
 class ActionChoice:
 
-    def __init__(self, action_type, positions):
+    def __init__(self, action_type, positions=[], player_ids=[]):
         self.action_type = action_type
         self.positions = positions
 
@@ -491,6 +491,14 @@ class Arena:
         if home:
             return self.board[pos[0]][pos[1]] in Arena.home_tiles
         return self.board[pos[0]][pos[1]] in Arena.away_tiles
+
+    def get_team_side(self, home):
+        tiles = []
+        for y in range(len(self.board)):
+            for x in range(len(self.board[y])):
+                if self.board[y][x] in Arena.home_tiles:
+                    tiles.append(Square(x, y))
+        return tiles
 
     def is_scrimmage(self, pos):
         return self.board[pos[0]][pos[1]] in Arena.scrimmage_tiles
@@ -749,6 +757,8 @@ class Team:
         for player in self.players:
             self.players_by_id[player.player_id] = player
 
+        self.player_ids = [player.player_id for player in self.players]
+
     def to_simple(self):
         players = []
         players_by_id = {}
@@ -772,6 +782,7 @@ class Team:
         self.players_by_id = {}
         for player in self.players:
             self.players_by_id[player.player_id] = player
+        self.player_ids = [player.player_id for player in self.players]
 
     def get_player_by_id(self, player_id):
         return self.players_by_id[player_id]
@@ -780,7 +791,7 @@ class Team:
         return player_id in self.players_by_id
 
     def get_player_ids(self):
-        return [player.player_id for player in self.players]
+        return self.player_ids
 
 
 

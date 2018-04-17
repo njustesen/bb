@@ -105,6 +105,10 @@ class OutcomeType(Enum):
     INACCURATE_PASS = 81
     FUMBLE = 82
     CATCH_FAILED = 83
+    HOME_RECEIVE = 84
+    AWAY_RECEIVE = 85
+    TAILS_WON = 86
+    TAILS_LOSS = 87
 
 
 class PlayerActionType(Enum):
@@ -223,6 +227,7 @@ class ActionType(Enum):
     INTERCEPTION = 34
     CONTINUE = 35
     ROLL_FOR_WEATHER = 36
+    SELECT_PLAYER = 37
 
 
 class WeatherType(Enum):

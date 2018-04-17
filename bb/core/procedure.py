@@ -646,11 +646,11 @@ class CoinToss(Procedure):
     def pick(self, action):
         if action.action_type == ActionType.KICK:
             self.game.state.kicking_team_home = False if self.away_won_toss else True
-        elif action.action_type == ActionType.RECIEVE:
+        elif action.action_type == ActionType.RECEIVE:
             self.game.state.kicking_team_home = True if self.away_won_toss else False
         if self.game.state.kicking_team_home:
-            self.game.report(Outcome(OutcomeType.HOME_KICK))
-        self.game.report(Outcome(OutcomeType.AWAY_KICK))
+            self.game.report(Outcome(OutcomeType.AWAY_RECEIVE))
+        self.game.report(Outcome(OutcomeType.HOME_RECEIVE))
 
     def available_actions(self):
         return self.aa
@@ -1918,6 +1918,7 @@ class Pregame(Procedure):
         # self.game.stack.push(Inducements(self.game, False))
         # self.game.stack.push(GoldToPettyCash(self.game))
         WeatherTable(self.game)
+        self.done = True
 
     def step(self, action):
         return False
@@ -2151,12 +2152,21 @@ class ClearBoard(Procedure):
         for team in [True, False]:
             for player_id in self.game.get_team(team).get_player_ids():
                 # If player not in reserves. move it to it
-                if self.game.field.get_player_position(player_id) is not None:
+                if self.game.state.field.get_player_position(player_id) is not None:
+                    # Check if heat exhausted
                     if self.game.state.weather == WeatherType.SWELTERING_HEAT:
-                        self.game.state.set_player_state(player_id, team, PlayerState.HEATED)
-                    self.game.state.field.remove(player_id)
-                    self.game.state.get_dugout(team).reserves.append(player_id)
+                        roll = DiceRoll([D6()])
+                        if roll.get_sum() == 1:
+                            self.game.state.set_player_state(player_id, team, PlayerState.HEATED)
+                            self.game.report(Outcome(OutcomeType.PLAYER_HEATED, player_id=action.player_from_id, rolls=[roll]))
+                        self.game.report(Outcome(OutcomeType.PLAYER_NOT_HEATED, player_id=action.player_from_id, rolls=[roll]))
+                        # Remove from field
+                        self.game.state.field.remove(player_id)
+                else:
+                    self.game.state.set_player_state(player_id, team, PlayerState.READY)
 
+                # Move to reserves
+                self.game.state.get_dugout(team).reserves.append(player_id)
         return True
 
     def available_actions(self):
@@ -2169,10 +2179,28 @@ class Setup(Procedure):
         super().__init__(game)
         self.home = home
         self.reorganize = reorganize
+        self.selected_player = None
+        self.aa_select = [ActionChoice(ActionType.SELECT_PLAYER, player_ids=game.get_team(home).get_player_ids()), ActionChoice(ActionType.END_SETUP)]
+        self.aa_place = [ActionChoice(ActionType.PLACE_PLAYER, game.arena.get_team_side(home) + [None]), ActionChoice(ActionType.END_SETUP)]
 
     def step(self, action):
 
-        if action.action_type == ActionType.PLACE_PLAYER:
+        if action.action_type == ActionType.END_SETUP:
+            if not self.game.state.field.is_setup_legal(self.home):
+                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team_home=self.home))
+                return False
+            elif not self.game.state.field.is_setup_legal_scrimmage(self.home):
+                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_SCRIMMAGE, team_home=self.home))
+                return False
+            elif not self.game.state.field.is_setup_legal_wings(self.home):
+                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_WINGS, team_home=self.home))
+                return False
+            self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
+            return True
+
+        if self.selected_player is None and action.action_type == ActionType.SELECT_PLAYER:
+            self.selected_player = action.player_from_id
+        elif action.action_type == ActionType.PLACE_PLAYER:
             if self.game.arena.is_team_side(action.pos_to, self.home):
                 if action.pos_from is None:  # From reserves
                     if self.reorganize:
@@ -2188,21 +2216,11 @@ class Setup(Procedure):
                 self.game.report(Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, player_id=action.player_from_id))
                 return False
             raise IllegalActionExcpetion("You can only place players on your own side")
-        elif action.action_type == ActionType.END_SETUP:
-            if not self.game.state.field.is_setup_legal(self.home):
-                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team_home=self.home))
-                return False
-            elif not self.game.state.field.is_setup_legal_scrimmage(self.home):
-                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_SCRIMMAGE, team_home=self.home))
-                return False
-            elif not self.game.state.field.is_setup_legal_wings(self.home):
-                self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_WINGS, team_home=self.home))
-                return False
-            self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
-            return True
 
     def available_actions(self):
-        return []
+        if self.selected_player is None:
+            return self.aa_select
+        return self.aa_place
 
 
 class ThrowIn(Procedure):

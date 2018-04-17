@@ -23,7 +23,7 @@
                     </div>
                     <div class="text-center" style="margin-top: -5px;">
                         <div class="team-icons">
-                            <span><img src="static/img/weather/{{game.state.weather.toLowerCase()}}.gif" title="Weather is {{ game.state.weather.toLowerCase()}}" width="20px" height="20px" /></span>
+                            <span><img src="static/img/weather/{{game.state.weather.toLowerCase()}}.gif" title="Weather is {{ game.state.weather.toLowerCase().replace('_', ' ')}}" width="20px" height="20px" /></span>
                         </div>
                     </div>
                 </div>
@@ -121,6 +121,7 @@
 
         <div class="game-info">
             <div class="action-bar">
+                {{ currentProc() }}
                 <button type="button" class="btn btn-light btn-sm" ng-repeat="action in game.available_actions" ng-click="pickActionType(action)">{{ prettify(action.action_type) }}</button>
             </div>
             <textarea class="form-control" rows="5" id="gamelog" disabled></textarea>

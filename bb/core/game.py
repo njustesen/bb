@@ -30,7 +30,7 @@ class Game:
         """
         Executes one step in the game. If in Fast Mode, it executes several steps until action is required.
         :param action: Action from agent. Can be None if no action is required.
-        :return: True if game requires action, False if not
+        :return: True if game requires action or game is over, False if not
         """
 
         # If touchdown, end turn and add kickoff
@@ -63,6 +63,9 @@ class Game:
 
         # Otherwise, request for user input
         self.set_available_actions()
+        if len(self.available_actions) == 0:
+            return False
+
         return True
 
     def set_available_actions(self):

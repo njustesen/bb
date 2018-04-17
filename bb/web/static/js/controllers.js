@@ -116,10 +116,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.teamOfPlayer = function teamOfPlayer(player){
-            if (player.player_id in $scope.game.home_team.players_by_id){
+            if (player.player_id in Object.keys($scope.game.home_team.players_by_id)){
                 return $scope.game.home_team;
             }
-            if (player.player_id in $scope.game.away_team.players_by_id){
+            if (player.player_id in Object.keys($scope.game.away_team.players_by_id)){
                 return $scope.game.away_team;
             }
             return null;
@@ -156,10 +156,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 return null;
             }
             let player = $scope.playersById[player_id];
-            let team = $scope.teamOfPlayer[player.player_id];
+            let team = $scope.teamOfPlayer(player);
             return {
                 'player': player,
-                'icon': $scope.iconName = IconService.playerIcons[team.race][player.position]
+                'icon': IconService.playerIcons[team.race][player.position_name]
             };
         };
 

@@ -22,10 +22,19 @@ def new_game(home_team_id, away_team_id, config_name="bb.json"):
 
 
 def step(game_id, action):
+
     game = host.get_game(game_id)
-    game.step(action)
+
+    # Run until user input is required
+    while True:
+        done = game.step(action)
+        if done:
+            break
+
+    # If game is over
     if game.game_over:
         host.end_game(game_id)
+
     return game
 
 
