@@ -86,14 +86,14 @@
         <div class="gameboard">
             <div class="dugout">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square" ng-click="square('dugout-home', $index*2, 0)">
-                        <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 0, $index*2) != null">
-                            <img src="static/img/iconssmall/{{ playerAt('dugout-home', 0, $index*2).icon }}" />
+                    <div class="square" ng-click="square('dugout-home', 0, $index)">
+                        <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 0, $index) != null">
+                            <img src="static/img/iconssmall/{{ playerAt('dugout-home', 0, $index).icon }}" />
                         </div>
                     </div>
-                    <div class="square" ng-click="square('dugout-home', $index*2, 1)">
-                        <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 1, $index*2) != null">
-                            <img src="static/img/iconssmall/{{ playerAt('dugout-home', 1, $index*2).icon }}" />
+                    <div class="square" ng-click="square('dugout-home', 1, $index)">
+                        <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 1, $index) != null">
+                            <img src="static/img/iconssmall/{{ playerAt('dugout-home', 1, $index).icon }}" />
                         </div>
                     </div>
                 </div>
@@ -109,8 +109,16 @@
             </div>
             <div class="dugout">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square" ng-click="square('dugout-away', $index*2, 0)"></div>
-                    <div class="square" ng-click="square('dugout-away', $index*2, 1)"></div>
+                    <div class="square" ng-click="square('dugout-away', 0, $index)">
+                        <div class="playericon align-middle text-center" ng-if="playerAt('dugout-away', 0, $index) != null">
+                            <img src="static/img/iconssmall/{{ playerAt('dugout-away', 0, $index).icon }}" />
+                        </div>
+                    </div>
+                    <div class="square" ng-click="square('dugout-away', 1, $index)">
+                        <div class="playericon align-middle text-center" ng-if="playerAt('dugout-away', 1, $index) != null">
+                            <img src="static/img/iconssmall/{{ playerAt('dugout-away', 1, $index).icon }}" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
