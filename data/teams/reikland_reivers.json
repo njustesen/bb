@@ -15,7 +15,7 @@
     {
       "id" : "b1",
       "nr" : 1,
-      "name": "a",
+      "name": "Abschuss, Ziggi",
       "position": "Blitzer",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -29,7 +29,7 @@
     {
       "id" : "b2",
       "nr" : 2,
-      "name": "b",
+      "name": "Blunt, Dieter",
       "position": "Blitzer",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -43,7 +43,7 @@
     {
       "id" : "b3",
       "nr" : 3,
-      "name": "c",
+      "name": "Di Passella, Luigi",
       "position": "Thrower",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -57,7 +57,7 @@
     {
       "id" : "b4",
       "nr" : 4,
-      "name": "d",
+      "name": "Jansen, 'Fast' Ben",
       "position": "Catcher",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -71,7 +71,7 @@
     {
       "id" : "b5",
       "nr" : 5,
-      "name": "e",
+      "name": "Headreka, Helmut",
       "position": "Catcher",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -85,7 +85,7 @@
     {
       "id" : "b6",
       "nr" : 6,
-      "name": "f",
+      "name": "Himmelstein, Henny",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -99,7 +99,7 @@
     {
       "id" : "b7",
       "nr" : 7,
-      "name": "g",
+      "name": "Heldman, Dirk Hero",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -113,7 +113,7 @@
     {
       "id" : "b8",
       "nr" : 8,
-      "name": "h",
+      "name": "Holstein, Erdrich",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -127,7 +127,7 @@
     {
       "id" : "b9",
       "nr" : 9,
-      "name": "i",
+      "name": "Hackson, Gruff",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -141,7 +141,7 @@
     {
       "id" : "b10",
       "nr" : 10,
-      "name": "j",
+      "name": "Kellhoofer, Ivan",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -155,7 +155,7 @@
     {
       "id" : "b11",
       "nr" : 11,
-      "name": "k",
+      "name": "Kempft, Walter Damm",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -169,7 +169,7 @@
     {
       "id" : "b12",
       "nr" : 12,
-      "name": "l",
+      "name": "Linebreaker, Gerhard",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,

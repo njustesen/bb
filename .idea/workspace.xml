@@ -2,8 +2,442 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling1.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling1an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling1b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling1ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling2.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling2an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling2b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling2ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling3.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling3an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling3b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling3ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling4.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling4an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling4b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling4ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling5.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling5an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling5b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/chalfling5ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur2.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur2an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur2b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur2ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot1.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot1an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot1b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot1ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot2.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot2an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot2b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot2ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot3.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot3an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot3b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot3ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot4.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot4an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot4b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/snot4ban.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight2.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight2an.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight2b.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight2ban.gif" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amcatcher1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amlineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/amthrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cbeastman4ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cddwarf2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cdhobgoblin2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/centaur2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/cwarrior4ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dblitzer2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ddeathroller1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/deblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/delineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dethrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dewitchelf1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dlongbeard3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/drunner3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/dslayer2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hblitzer3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hcatcher2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/heblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hecatcher1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/helineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hethrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hlineman3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/hthrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmmummy1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmskeleton1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kmthrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/kroxigor1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/lmsaurus2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/minotaur1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ncatcher1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ngolem1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nlineman2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nthrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/nwerewolf1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblackorc1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/oblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre4ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre5ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ogre6ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/olineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/othrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/peasant3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ratogre1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/sklineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skrunner1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skstorm1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/skthrower1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/treeman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/troll2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/ughoul4ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uwight1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/uzombie2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire2ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire3ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/vampire4ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/weblitzer1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wecatcher1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/welineman1ban.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1an.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1an.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1b.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1b.gif" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1ban.gif" afterPath="$PROJECT_DIR$/bb/web/static/img/iconssmall/wethrower1ban.gif" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/core/model.py" afterPath="$PROJECT_DIR$/bb/core/model.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/less/style.less" afterPath="$PROJECT_DIR$/bb/web/static/less/style.less" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/teams/gouged_eye.json" afterPath="$PROJECT_DIR$/data/teams/gouged_eye.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/teams/reikland_reivers.json" afterPath="$PROJECT_DIR$/data/teams/reikland_reivers.json" />
@@ -27,11 +461,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="game.play.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="game.play.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8203884">
-              <caret line="121" column="16" selection-start-line="121" selection-start-column="16" selection-end-line="121" selection-end-column="16" />
+            <state vertical-scroll-proportion="-8.862745">
+              <caret line="158" column="36" selection-start-line="158" selection-start-column="36" selection-end-line="158" selection-end-column="36" />
               <folding>
                 <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
               </folding>
@@ -49,11 +483,21 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="style.less" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bb/web/static/less/style.less">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.31707317">
+              <caret line="229" column="37" selection-start-line="229" selection-start-column="37" selection-end-line="229" selection-end-column="37" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-17.037037">
-              <caret line="154" column="12" selection-start-line="154" selection-start-column="12" selection-end-line="154" selection-end-column="12" />
+            <state vertical-scroll-proportion="-7.5925927">
+              <caret line="184" column="53" selection-start-line="184" selection-start-column="40" selection-end-line="184" selection-end-column="53" />
               <folding />
             </state>
           </provider>
@@ -62,8 +506,8 @@
       <file leaf-file-name="gouged_eye.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/teams/gouged_eye.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-23.875">
-              <caret line="182" column="3" selection-start-line="182" selection-start-column="3" selection-end-line="182" selection-end-column="3" />
+            <state vertical-scroll-proportion="55.5">
+              <caret line="59" column="31" selection-start-line="59" selection-start-column="31" selection-end-line="59" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -72,8 +516,8 @@
       <file leaf-file-name="reikland_reivers.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/teams/reikland_reivers.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-15.625">
-              <caret line="169" column="15" selection-start-line="169" selection-start-column="15" selection-end-line="169" selection-end-column="15" />
+            <state vertical-scroll-proportion="-16.375">
+              <caret line="171" column="35" selection-start-line="171" selection-start-column="35" selection-end-line="171" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -82,8 +526,8 @@
       <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.814815">
-              <caret line="170" column="32" selection-start-line="170" selection-start-column="32" selection-end-line="170" selection-end-column="32" />
+            <state vertical-scroll-proportion="-11.481482">
+              <caret line="681" column="13" selection-start-line="681" selection-start-column="13" selection-end-line="681" selection-end-column="13" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -106,16 +550,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="1597" column="0" selection-start-line="1597" selection-start-column="0" selection-end-line="1597" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/core/game.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.3703704">
-              <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -188,16 +622,16 @@
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
         <option value="$PROJECT_DIR$/bb/core/util.py" />
         <option value="$PROJECT_DIR$/bb/web/server.py" />
-        <option value="$PROJECT_DIR$/bb/web/static/less/style.less" />
         <option value="$PROJECT_DIR$/bb/core/game.py" />
         <option value="$PROJECT_DIR$/bb/core/api.py" />
         <option value="$PROJECT_DIR$/bb/core/table.py" />
-        <option value="$PROJECT_DIR$/bb/core/model.py" />
         <option value="$PROJECT_DIR$/bb/core/procedure.py" />
+        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
+        <option value="$PROJECT_DIR$/bb/core/model.py" />
         <option value="$PROJECT_DIR$/data/teams/reikland_reivers.json" />
         <option value="$PROJECT_DIR$/data/teams/gouged_eye.json" />
-        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
+        <option value="$PROJECT_DIR$/bb/web/static/less/style.less" />
       </list>
     </option>
   </component>
@@ -945,25 +1379,6 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
-    <layout-to-restore>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22988506" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35979512" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2803437" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21459493" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290653" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29860365" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -1327,14 +1742,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/less/style.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="219" column="25" selection-start-line="219" selection-start-column="25" selection-end-line="219" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/Cellar/python/3.6.4_4/Frameworks/Python.framework/Versions/3.6/lib/python3.6/enum.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1383,13 +1790,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.5925927">
+          <caret line="184" column="53" selection-start-line="184" selection-start-column="40" selection-end-line="184" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.814815">
-          <caret line="170" column="32" selection-start-line="170" selection-start-column="32" selection-end-line="170" selection-end-column="32" />
+        <state vertical-scroll-proportion="-11.481482">
+          <caret line="681" column="13" selection-start-line="681" selection-start-column="13" selection-end-line="681" selection-end-column="13" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/teams/reikland_reivers.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.375">
+          <caret line="171" column="35" selection-start-line="171" selection-start-column="35" selection-end-line="171" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/teams/gouged_eye.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="55.5">
+          <caret line="59" column="31" selection-start-line="59" selection-start-column="31" selection-end-line="59" selection-end-column="31" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1401,37 +1832,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/teams/reikland_reivers.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.625">
-          <caret line="169" column="15" selection-start-line="169" selection-start-column="15" selection-end-line="169" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/teams/gouged_eye.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-23.875">
-          <caret line="182" column="3" selection-start-line="182" selection-start-column="3" selection-end-line="182" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.037037">
-          <caret line="154" column="12" selection-start-line="154" selection-start-column="12" selection-end-line="154" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8203884">
-          <caret line="121" column="16" selection-start-line="121" selection-start-column="16" selection-end-line="121" selection-end-column="16" />
+        <state vertical-scroll-proportion="-8.862745">
+          <caret line="158" column="36" selection-start-line="158" selection-start-column="36" selection-end-line="158" selection-end-column="36" />
           <folding>
             <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/less/style.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.31707317">
+          <caret line="229" column="37" selection-start-line="229" selection-start-column="37" selection-end-line="229" selection-end-column="37" />
+          <folding />
         </state>
       </provider>
     </entry>

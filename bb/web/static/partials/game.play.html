@@ -86,37 +86,37 @@
         <div class="gameboard">
             <div class="dugout">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square" ng-click="square('dugout-home', 0, $index)">
+                    <div class="square" ng-click="square('dugout-home', 0, $index)" ng-mouseover="squareHover('dugout-home', 0, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 0, $index) != null">
-                            <img src="static/img/iconssmall/{{ playerAt('dugout-home', 0, $index).icon }}" />
+                            <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-home', 0, $index), true) }}" />
                         </div>
                     </div>
-                    <div class="square" ng-click="square('dugout-home', 1, $index)">
+                    <div class="square" ng-click="square('dugout-home', 1, $index)" ng-mouseover="squareHover('dugout-home', 1, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 1, $index) != null">
-                            <img src="static/img/iconssmall/{{ playerAt('dugout-home', 1, $index).icon }}" />
+                            <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-home', 1, $index), true) }}" />
                         </div>
                     </div>
                 </div>
             </div>
             <div class="field">
                 <div class="square-row" ng-repeat="row in game.state.field.board.slice(1, game.state.field.board.length-1)">
-                    <div class="square" ng-repeat="n in [] | range:row.length-2" ng-click="square('field', $index+1, $parent.$index+1)">
+                    <div class="square" ng-repeat="n in [] | range:row.length-2" ng-click="square('field', $index+1, $parent.$index+1)" ng-mouseover="squareHover('field', $index+1, $parent.$index+1)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('field', $index+1, $parent.$index+1) != null">
-                            <img src="static/img/iconssmall/{{ playerAt('field', $index+1, $parent.$index+1).icon }}" />
+                            <img src="static/img/iconssmall/{{ playerIcon(playerAt('field', $index+1, $parent.$index+1), true) }}" />
                         </div>
                     </div>
                 </div>
             </div>
             <div class="dugout">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square" ng-click="square('dugout-away', 0, $index)">
+                    <div class="square" ng-click="square('dugout-away', 0, $index)" ng-mouseover="squareHover('dugout-away', 0, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-away', 0, $index) != null">
-                            <img src="static/img/iconssmall/{{ playerAt('dugout-away', 0, $index).icon }}" />
+                            <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-away', 0, $index), true) }}" />
                         </div>
                     </div>
-                    <div class="square" ng-click="square('dugout-away', 1, $index)">
+                    <div class="square" ng-click="square('dugout-away', 1, $index)" ng-mouseover="squareHover('dugout-away', 1, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-away', 1, $index) != null">
-                            <img src="static/img/iconssmall/{{ playerAt('dugout-away', 1, $index).icon }}" />
+                            <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-away', 1, $index), true) }}" />
                         </div>
                     </div>
                 </div>
@@ -128,6 +128,44 @@
         </div>
 
         <div class="game-info">
+            <div class="player-info">
+                <div class="home" ng-if="playerInFocus(game.home_team) != null">
+                    <div class="icon-box">
+                        <img src="static/img/iconssmall/{{ playerIcon(playerInFocus(game.home_team), false) }}" width="48px" height="48px" />
+                    </div>
+                    <div class="stats-box">
+                        <span class="name-box label label-success">
+                            ({{playerInFocus(game.home_team).nr}}) <b>{{playerInFocus(game.home_team).position_name}}:</b> {{playerInFocus(game.home_team).name}}
+                        </span>
+                        <div>
+                            <div class="attribute text-center">
+                                <div class="gamelabel">MA</div>
+                                <div class="value label label-success">{{playerInFocus(game.home_team).ma}}</div>
+                            </div>
+                            <div class="attribute text-center">
+                                <div class="gamelabel">ST</div>
+                                <div class="value label label-success">{{playerInFocus(game.home_team).st}}</div>
+                            </div>
+                            <div class="attribute text-center">
+                                <div class="gamelabel">AG</div>
+                                <div class="value label label-success">{{playerInFocus(game.home_team).ag}}</div>
+                            </div>
+                            <div class="attribute text-center">
+                                <div class="gamelabel">AV</div>
+                                <div class="value label label-success">{{playerInFocus(game.home_team).av}}</div>
+                            </div>
+                            <div class="attribute text-center">
+                                <div class="gamelabel">SPP</div>
+                                <div class="value label label-success">{{playerInFocus(game.home_team).spp}}</div>
+                            </div>
+                            <div class="attribute">
+                                <div class="gamelabel">Skills</div>
+                                <div><span class="label label-success skill" ng-repeat="skill in playerInFocus(game.home_team).skills">{{ prettify(skill) }}</span>&nbsp</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="action-bar">
                 {{ currentProc() }}
                 <button type="button" class="btn btn-light btn-sm" ng-repeat="action in game.available_actions" ng-click="pickActionType(action)">{{ prettify(action.action_type) }}</button>

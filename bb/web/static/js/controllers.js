@@ -80,6 +80,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService) {
         $scope.game = {};
         $scope.loading = true;
+        $scope.hover_player = null;
+        $scope.selected_player = null;
         var id = $routeParams.id;
 
         GameService.get(id).success(function(data) {
@@ -93,6 +95,15 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.square = function square(area, x, y) {
             alert(area + ", x=" + x + ", y=" + y);
+        };
+
+        $scope.squareHover = function squareHover(area, x, y) {
+            let player = $scope.playerAt(area, x, y);
+            if (player != null){
+                $scope.hover_player = player;
+            } else {
+                $scope.hover_player = null;
+            }
         };
 
         $scope.currentProc = function currentProc(){
@@ -136,8 +147,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             } else if (area == "dugout-away"){
                 dugout = $scope.game.state.away_dugout;
             }
-            let idx = y*2+x;
             if (dugout != undefined){
+                let idx = y*2+x;
                 if (idx <= 14){
                     if (idx < dugout.reserves.length){
                         player_id = dugout.reserves[idx];
@@ -152,21 +163,35 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     }
                 }
             }
-            console.log(area + ": (" + x + ", " + y + ", [" + idx + "]): " + player_id)
             if (player_id == -1){
                 return null;
             }
-            let player = $scope.playersById[player_id];
+            return $scope.playersById[player_id];
+        };
+
+        $scope.playerIcon = function playerIcon(player, angled){
             let team = $scope.teamOfPlayer(player);
             let icon_base = IconService.playerIcons[team.race][player.position_name];
             let icon_num = "1";
             let team_letter = team.team_id == $scope.game.home_team.team_id ? "" : "b";
-            let angle = "an";
+            let angle = "";
+            //if (angled && $scope.selected_player != null && $scope.selected_player.player_id == player.player_id){
+            //    angle = "an";
+            //}
             let icon_name = icon_base + icon_num + team_letter + angle + ".gif";
-            return {
-                'player': player,
-                'icon': icon_name
-            };
+            return icon_name;
+        };
+
+        $scope.playerInFocus = function playerInFocus(team) {
+            let player = null;
+            if ($scope.hover_player != null){
+                player = $scope.hover_player;
+            } else if ($scope.selected_player != null){
+                player = $scope.hover_player;
+            }
+            if (player != null && team.team_id == $scope.teamOfPlayer(player).team_id){
+                return player;
+            }
         };
 
         $scope.save = function save(game, shouldPublish) {

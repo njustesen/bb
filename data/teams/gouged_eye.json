@@ -15,7 +15,7 @@
     {
       "id" : "a1",
       "nr" : 1,
-      "name": "a",
+      "name": "Muglurk, 'Bandy' Durg",
       "position": "Blitzer",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -29,7 +29,7 @@
     {
       "id" : "a2",
       "nr" : 2,
-      "name": "b",
+      "name": "Painspear, Krug",
       "position": "Blitzer",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -43,7 +43,7 @@
     {
       "id" : "a3",
       "nr" : 3,
-      "name": "c",
+      "name": "Rackspite, Ugly",
       "position": "Blitzer",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -57,7 +57,7 @@
     {
       "id" : "a4",
       "nr" : 4,
-      "name": "d",
+      "name": "Vilechuck, Osgar",
       "position": "Blitzer",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -71,7 +71,7 @@
     {
       "id" : "a5",
       "nr" : 5,
-      "name": "e",
+      "name": "Da Rock",
       "position": "Black Orc Blocker",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -85,7 +85,7 @@
     {
       "id" : "a6",
       "nr" : 6,
-      "name": "f",
+      "name": "Blazetown, Igor",
       "position": "Black Orc Blocker",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -99,7 +99,7 @@
     {
       "id" : "a7",
       "nr" : 7,
-      "name": "g",
+      "name": "Demoncutter, Hak",
       "position": "Black Orc Blocker",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -113,7 +113,7 @@
     {
       "id" : "a8",
       "nr" : 8,
-      "name": "h",
+      "name": "Elfspliiter, Trok",
       "position": "Black Orc Blocker",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -127,7 +127,7 @@
     {
       "id" : "a9",
       "nr" : 9,
-      "name": "i",
+      "name": "Halftoad, Gurk",
       "position": "Thrower",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -141,7 +141,7 @@
     {
       "id" : "a10",
       "nr" : 10,
-      "name": "j",
+      "name": "Izzi the Frog",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -155,7 +155,7 @@
     {
       "id" : "a11",
       "nr" : 11,
-      "name": "k",
+      "name": "Kneebender, Urgrain",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,
@@ -169,7 +169,7 @@
     {
       "id" : "a12",
       "nr" : 12,
-      "name": "l",
+      "name": "Ogrehack, Eruk",
       "position": "Lineman",
       "extra_skills" : [],
       "extra_ma" : 0,

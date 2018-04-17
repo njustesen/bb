@@ -211,6 +211,65 @@ a, a:focus, a:hover {
         width: 902px;
         margin: auto;
 
+        .player-info {
+            min-height: 64px;
+
+            .home {
+                background-color: white;
+                width: 50%;
+                padding: 4px;
+                height: 100%;
+                min-height: 64px;
+            }
+
+            .icon-box {
+                float:left;
+                width: 58px;
+                padding: 4px;
+                background-color: rgba(255,0,0,0.1);
+                border-radius: .25em;
+                border-top-left-radius: 0.25em;
+                border-top-right-radius: 0.25em;
+                border-bottom-right-radius: 0.25em;
+                border-bottom-left-radius: 0.25em;
+            }
+
+            .stats-box {
+                float:left;
+                margin-left:4px;
+                font-size: 1.1em;
+
+                .name-box {
+                    background-color: rgba(255,0,0,0.1);
+                    padding: 2px;
+                    font-weight: normal;
+                    font-size: 1.0em;
+                    color: black;
+                }
+
+                .attribute {
+                    float:left;
+                    margin-right: 4px;
+                    margin-top: 4px;
+
+                    .value {
+                        background-color: rgba(255,0,0,0.1);
+                        width: 16px;
+                        font-weight: normal;
+                        color: black;
+                    }
+
+                    .skill {
+                        margin-right: 2px;
+                        background-color: rgba(255,0,0,0.2);
+                        font-weight: normal;
+                        color: black;
+                    }
+                }
+            }
+
+        }
+
         .action-bar {
             background-color: #222222;
             border-color: #080808;

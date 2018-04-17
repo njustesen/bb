@@ -677,9 +677,9 @@ class Player:
             'nr': self.nr,
             'skills': skills,
             'ma': self.get_ma(),
-            'extra_st': self.get_st(),
-            'extra_ag': self.get_ag(),
-            'extra_av': self.get_av(),
+            'st': self.get_st(),
+            'ag': self.get_ag(),
+            'av': self.get_av(),
             'niggling': self.niggling,
             'mng': self.mng,
             'spp': self.spp
