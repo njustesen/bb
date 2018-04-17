@@ -48,7 +48,6 @@ appControllers.controller('GameListCtrl', ['$scope', 'GameService',
 
 appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService', 'TeamService',
     function GameCreateCtrl($scope, $location, GameService, TeamService) {
-        $('#textareaContent').wysihtml5({"font-styles": false});
 
         TeamService.findAll().success(function(data) {
             $scope.teams = data;
@@ -81,12 +80,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService) {
         $scope.game = {};
         $scope.loading = true;
-        $scope.availableActions = [
-            {
-                action_type: 'End',
-                squares: []
-            }
-        ];
         var id = $routeParams.id;
 
         GameService.get(id).success(function(data) {
@@ -197,6 +190,33 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     });
                 }
             }
-        }
+        };
+
+        $scope.prettify = function prettify(text){
+            let pretty = text.toLowerCase().split("_").join(" ");
+            return pretty.charAt(0).toUpperCase() + pretty.slice(1);
+        };
+
+        $scope.act = function act(action){
+            $scope.refreshing = true;
+            GameService.act($scope.game.game_id, action).success(function(data) {
+                $scope.game = data;
+                console.log(data);
+                $scope.refreshing = false;
+            }).error(function(status, data) {
+                $location.path("/#/");
+            });
+        };
+
+        $scope.pickActionType = function pickActionType(action){
+            $scope.selected_action = undefined;
+            if (action.positions.length == 0){
+                $scope.act({'action_type': action.action_type, 'position': null});
+            } else if (action.positions.length == 1){
+                $scope.act({'action_type': action.action_type, 'position': action.positions[0]});
+            } else {
+                $scope.selected_action = action;
+            }
+        };
     }
 ]);

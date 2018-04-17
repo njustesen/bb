@@ -10,10 +10,15 @@ class Procedure(ABC):
     def __init__(self, game):
         self.game = game
         self.game.stack.push(self)
+        self.done = False
         super().__init__()
 
     @abstractmethod
     def step(self, action):
+        pass
+
+    @abstractmethod
+    def available_actions(self):
         pass
 
 
@@ -102,6 +107,9 @@ class Apothecary(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class Armor(Procedure):
 
@@ -178,6 +186,9 @@ class Armor(Procedure):
                                      opp_player_id=self.opp_player_id,  rolls=[roll]))
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Block(Procedure):
@@ -375,6 +386,9 @@ class Block(Procedure):
             return True
         return False
 
+    def available_actions(self):
+        return []
+
 
 class Bounce(Procedure):
 
@@ -423,6 +437,9 @@ class Bounce(Procedure):
 
         self.game.report(Outcome(OutcomeType.BALL_ON_GROUND, pos=self.game.state.field.ball_position, team_home=self.home))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Casualty(Procedure):
@@ -478,6 +495,9 @@ class Casualty(Procedure):
             self.game.state.get_dugout(self.home).casualties.append(self.player_id)
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Catch(Procedure):
@@ -584,16 +604,24 @@ class Catch(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class CoinToss(Procedure):
+
+    aa = [ActionChoice(ActionType.HEADS, []), ActionChoice(ActionType.TAILS, [])]
+    aa_select = [ActionChoice(ActionType.KICK, []), ActionChoice(ActionType.RECEIVE, [])]
 
     def __init__(self, game):
         super().__init__(game)
         self.away_won_toss = None
+        self.aa = CoinToss.aa
 
     def step(self, action):
         if self.away_won_toss is None:
             self.flip_coin(action)
+            self.aa = CoinToss.aa_select
             return False
         elif self.away_won_toss is not None:
             self.pick(action)
@@ -624,6 +652,9 @@ class CoinToss(Procedure):
             self.game.report(Outcome(OutcomeType.HOME_KICK))
         self.game.report(Outcome(OutcomeType.AWAY_KICK))
 
+    def available_actions(self):
+        return self.aa
+
 
 class DeterminePassSuccess(Procedure):
 
@@ -641,6 +672,9 @@ class DeterminePassSuccess(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class Ejection(Procedure):
 
@@ -656,6 +690,9 @@ class Ejection(Procedure):
         self.game.state.set_player_state(self.player_id, self.home, PlayerState.EJECTED)
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Foul(Procedure):
@@ -681,6 +718,9 @@ class Foul(Procedure):
         Armor(self.game, self.home, self.player_to.player_id, modifiers=modifier, opp_player_id=self.player_from.player_id, foul=True)
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Half(Procedure):
@@ -712,6 +752,9 @@ class Half(Procedure):
     def step(self, action):
         self.game.report(Outcome(OutcomeType.END_OF_HALF))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Injury(Procedure):
@@ -783,6 +826,9 @@ class Injury(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class Interception(Procedure):
 
@@ -803,6 +849,9 @@ class Interception(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class Touchback(Procedure):
 
@@ -817,6 +866,9 @@ class Touchback(Procedure):
         self.game.state.field.move_ball(action.pos_to)
         self.game.report(Outcome(OutcomeType.BALL_PLACED, pos=action.pos_to))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class LandKick(Procedure):
@@ -842,6 +894,9 @@ class LandKick(Procedure):
                                          team_home=not self.home))
         return True
 
+    def available_actions(self):
+        return []
+
 
 class KickOff(Procedure):
 
@@ -858,6 +913,9 @@ class KickOff(Procedure):
     def step(self, action):
         return True
 
+    def available_actions(self):
+        return []
+
 
 class GetTheRef(Procedure):
     """
@@ -872,6 +930,9 @@ class GetTheRef(Procedure):
         self.game.state.away_state.bribes += 1
         self.game.report(Outcome(OutcomeType.GET_THE_REF))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Riot(Procedure):
@@ -906,6 +967,9 @@ class Riot(Procedure):
         self.game.report(Outcome(OutcomeType.RIOT, n=self.effect, rolls=[roll]))
         return True
 
+    def available_actions(self):
+        return []
+
 
 class HighKick(Procedure):
     """
@@ -930,6 +994,9 @@ class HighKick(Procedure):
         elif action.action_type == ActionType.END_SETUP:
             self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class CheeringFans(Procedure):
@@ -959,6 +1026,9 @@ class CheeringFans(Procedure):
         self.game.report(Outcome(OutcomeType.CHEERING_FANS, rolls=[roll_home, roll_away]))
         return True
 
+    def available_actions(self):
+        return []
+
 
 class BrilliantCoaching(Procedure):
     """
@@ -987,6 +1057,9 @@ class BrilliantCoaching(Procedure):
         self.game.report(Outcome(OutcomeType.BRILLIANT_COACHING, rolls=[roll_home, roll_away]))
         return True
 
+    def available_actions(self):
+        return []
+
 
 class ThrowARock(Procedure):
     """
@@ -1013,6 +1086,9 @@ class ThrowARock(Procedure):
                 KnockDown(self.game, True, player_home_id, armor_roll=False)
 
             return Outcome(OutcomeType.THROW_A_ROCK, rolls=[roll_home, roll_away]), False
+
+    def available_actions(self):
+        return []
 
 
 class PitchInvasionRoll(Procedure):
@@ -1042,6 +1118,9 @@ class PitchInvasionRoll(Procedure):
             self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerState.READY))
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class KickOffTable(Procedure):
@@ -1096,6 +1175,9 @@ class KickOffTable(Procedure):
             self.game.report(Outcome(OutcomeType.KICKOFF_PITCH_INVASION, rolls=[roll]))
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class KnockDown(Procedure):
@@ -1152,6 +1234,9 @@ class KnockDown(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class KnockOut(Procedure):
 
@@ -1177,6 +1262,9 @@ class KnockOut(Procedure):
         self.game.state.get_dugout(self.home).kod.append(self.player_id)
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Move(Procedure):
@@ -1218,6 +1306,9 @@ class Move(Procedure):
             Touchdown(self.game, self.home, self.player_id)
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class GFI(Procedure):
@@ -1295,6 +1386,9 @@ class GFI(Procedure):
                 # Player trips
                 KnockDown(self.game, self.home, self.player_id, self.to_pos)
                 return True
+
+    def available_actions(self):
+        return []
 
 
 class Dodge(Procedure):
@@ -1405,6 +1499,9 @@ class Dodge(Procedure):
                 # Player trips
                 KnockDown(self.game, self.home, self.player_id, self.to_pos)
                 return True
+
+    def available_actions(self):
+        return []
 
 
 class PassAction(Procedure):
@@ -1539,6 +1636,9 @@ class PassAction(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class Pickup(Procedure):
 
@@ -1637,6 +1737,9 @@ class Pickup(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class PlaceBall(Procedure):
 
@@ -1651,6 +1754,9 @@ class PlaceBall(Procedure):
         else:
             raise IllegalActionExcpetion("Illegal position")
         return True
+
+    def available_actions(self):
+        return []
 
 
 class PlayerAction(Procedure):
@@ -1799,20 +1905,25 @@ class PlayerAction(Procedure):
 
             self.turn.pass_available = False
 
+    def available_actions(self):
+        return []
+
 
 class Pregame(Procedure):
 
     def __init__(self, game):
-        self.game = game
-        self.game.stack.push(CoinToss(self.game))
+        super().__init__(game)
+        CoinToss(self.game)
         # self.game.stack.push(Inducements(self.game, True))
         # self.game.stack.push(Inducements(self.game, False))
         # self.game.stack.push(GoldToPettyCash(self.game))
-        self.game.stack.push(WeatherTable(self.game))
-        super().__init__(game)
+        WeatherTable(self.game)
 
     def step(self, action):
         return False
+
+    def available_actions(self):
+        return []
 
 
 class PreHalf(Procedure):
@@ -1836,6 +1947,9 @@ class PreHalf(Procedure):
         self.game.state.reset_kickoff(self.home).reset()
         return True
 
+    def available_actions(self):
+        return []
+
 
 class FollowUp(Procedure):
 
@@ -1852,6 +1966,9 @@ class FollowUp(Procedure):
             self.game.field.move(self.player_from, self.pos_to)
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Push(Procedure):
@@ -1941,6 +2058,9 @@ class Push(Procedure):
 
         raise Exception("Unknown push sequence")
 
+    def available_actions(self):
+        return []
+
 
 class Scatter(Procedure):
 
@@ -2018,6 +2138,9 @@ class Scatter(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class ClearBoard(Procedure):
 
@@ -2035,6 +2158,9 @@ class ClearBoard(Procedure):
                     self.game.state.get_dugout(team).reserves.append(player_id)
 
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Setup(Procedure):
@@ -2074,6 +2200,9 @@ class Setup(Procedure):
                 return False
             self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
             return True
+
+    def available_actions(self):
+        return []
 
 
 class ThrowIn(Procedure):
@@ -2138,6 +2267,9 @@ class ThrowIn(Procedure):
 
         return True
 
+    def available_actions(self):
+        return []
+
 
 class Turnover(Procedure):
 
@@ -2148,6 +2280,9 @@ class Turnover(Procedure):
     def step(self, action):
         self.game.report(Outcome(OutcomeType.TURNOVER, team_home=self.home))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Touchdown(Procedure):
@@ -2161,6 +2296,9 @@ class Touchdown(Procedure):
     def step(self, action):
         self.game.report(Outcome(OutcomeType.TOUCHDOWN, team_home=self.home, player_id=self.player_id))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class TurnStunned(Procedure):
@@ -2178,6 +2316,9 @@ class TurnStunned(Procedure):
                 players.append(player_id)
         self.game.report(Outcome(OutcomeType.STUNNED_TURNED, n=players))
         return True
+
+    def available_actions(self):
+        return []
 
 
 class Turn(Procedure):
@@ -2250,8 +2391,13 @@ class Turn(Procedure):
 
         raise IllegalActionExcpetion("Unknown action")
 
+    def available_actions(self):
+        return []
+
 
 class WeatherTable(Procedure):
+
+    aa = [ActionChoice(ActionType.ROLL_FOR_WEATHER, [])]
 
     def __init__(self, game, kickoff=False):
         super().__init__(game)
@@ -2277,3 +2423,6 @@ class WeatherTable(Procedure):
             self.game.state.weather = WeatherType.BLIZZARD
             self.game.report(Outcome(OutcomeType.WEATHER_BLIZZARD, rolls=[roll]))
         return True
+
+    def available_actions(self):
+        return WeatherTable.aa

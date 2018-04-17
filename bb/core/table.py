@@ -221,6 +221,8 @@ class ActionType(Enum):
     FOLLOW_UP = 32
     DONT_FOLLOW_UP = 33
     INTERCEPTION = 34
+    CONTINUE = 35
+    ROLL_FOR_WEATHER = 36
 
 
 class WeatherType(Enum):

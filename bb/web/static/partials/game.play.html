@@ -121,7 +121,7 @@
 
         <div class="game-info">
             <div class="action-bar">
-                <button type="button" class="btn btn-light btn-sm" ng-repeat="action in availableActions">{{ action.action_type }}</button>
+                <button type="button" class="btn btn-light btn-sm" ng-repeat="action in game.available_actions" ng-click="pickActionType(action)">{{ prettify(action.action_type) }}</button>
             </div>
             <textarea class="form-control" rows="5" id="gamelog" disabled></textarea>
         </div>

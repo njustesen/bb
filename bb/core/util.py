@@ -1,8 +1,8 @@
 
-def parse_enum(enum_class, skill_name):
-    enum_name = skill_name.upper().replace(" ", "_").replace("-", "_")
+def parse_enum(enum_class, name):
+    enum_name = name.upper().replace(" ", "_").replace("-", "_")
     if enum_name not in enum_class.__members__:
-        raise Exception("Uknown skill name " + enum_name + " (orig: " + skill_name + ")")
+        raise Exception("Uknown enum name " + enum_name + " (orig: " + name + ")")
     return enum_class[enum_name]
 
 

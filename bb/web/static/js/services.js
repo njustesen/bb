@@ -10,7 +10,7 @@ appServices.factory('GameService', function($http) {
         },
 
         act: function(id, action) {
-            return $http.put(options.api.base_url + '/games/' + id + '/act', {'game': {_id: id, is_published: newPublishState}});
+            return $http.post(options.api.base_url + '/games/' + id + '/act', {'action': action});
         },
 
         delete: function(id) {

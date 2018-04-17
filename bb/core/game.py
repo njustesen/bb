@@ -14,6 +14,7 @@ class Game:
         self.reports = []
         self.config = config
         self.game_over = False
+        self.available_actions = []
 
         if self.state is None:
             self.state = GameState(self)
@@ -23,6 +24,7 @@ class Game:
         Half(self, 2)
         Half(self, 1)
         Pregame(self)
+        self.set_available_actions()
 
     def step(self, action):
         """
@@ -30,55 +32,41 @@ class Game:
         :param action: Action from agent. Can be None if no action is required.
         :return: True if game requires action, False if not
         """
-        # While procs are done and doesn't require new action
-        done = True
-        while done:
 
-            # If touchdown, end turn and add kickoff
-            if isinstance(self.stack.peek(), Touchdown):
-                self._touchdown(self.stack.peek())
+        # If touchdown, end turn and add kickoff
+        if isinstance(self.stack.peek(), Touchdown):
+            self._touchdown(self.stack.peek())
 
-            # If turnover, end turn
-            if isinstance(self.stack.peek(), Turnover):
-                self._end_turn()
+        # If turnover, end turn
+        if isinstance(self.stack.peek(), Turnover):
+            self._end_turn()
 
-            # If riot -> remove one turn
-            if isinstance(self.stack.peek(), Riot):
-                if self.stack.peek().effect == 1:
-                    self._add_turn()
-                elif self.stack.peek().effect == -1:
-                    self._remove_turn()
+        # If riot -> remove one turn
+        if isinstance(self.stack.peek(), Riot):
+            if self.stack.peek().effect == 1:
+                self._add_turn()
+            elif self.stack.peek().effect == -1:
+                self._remove_turn()
 
-            # Call top of stack
-            proc = self.stack.peek()
-            while proc.done:
-                self.stack.pop()
-                if self.stack.is_empty():
-                    self.game_over = True
-                    return False
-                proc = self.stack.peek()
+        # Run proc
+        proc = self.stack.peek()
+        proc.done = proc.step(action)
 
-            # Run proc
-            done = proc.step(action)
-
-            # Set proc done status
-            proc.done = done
-
-            # If not procs were added and it's done -> remove it
-            if proc.done and proc == self.stack.peek():
-                self.stack.pop()
-
-            # If no more procs -> game is over
+        # Remove done procs
+        proc = self.stack.peek()
+        while proc.done:
+            self.stack.pop()
             if self.stack.is_empty():
                 self.game_over = True
                 return False
-
-            # Stop at every step if in fast mode
-            if not self.config.fast_mode:
-                return False
+            proc = self.stack.peek()
 
         # Otherwise, request for user input
+        self.set_available_actions()
         return True
+
+    def set_available_actions(self):
+        self.available_actions = self.stack.peek().available_actions()
 
     def report(self, outcome):
         self.reports.append(outcome)
@@ -159,11 +147,15 @@ class Game:
         return procs
 
     def to_simple(self):
+        available_actions = []
+        for action in self.available_actions:
+            available_actions.append(action.to_simple())
         return {
             'game_id': self.game_id,
             'home_team': self.home.to_simple(),
             'away_team': self.away.to_simple(),
             'state': self.state.to_simple(),
             'game_over': self.game_over,
-            'stack': self.procs()
+            'stack': self.procs(),
+            'available_actions': available_actions
         }

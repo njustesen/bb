@@ -444,6 +444,19 @@ class Field:
         return players
 
 
+class ActionChoice:
+
+    def __init__(self, action_type, positions):
+        self.action_type = action_type
+        self.positions = positions
+
+    def to_simple(self):
+        return {
+            'action_type': self.action_type.name,
+            'positions': [position.to_simple() for position in self.positions]
+        }
+
+
 class Action:
 
     def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0,
@@ -455,6 +468,12 @@ class Action:
         self.player_to_id = player_to_id
         self.idx = idx
         self.home = team_home
+
+    def to_simple(self):
+        return {
+            'action_type': self.action_type.name,
+            'position': self.pos_from.to_simple() if self.pos_from is not None else None
+        }
 
 
 class Arena:

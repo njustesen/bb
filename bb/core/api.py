@@ -23,13 +23,8 @@ def new_game(home_team_id, away_team_id, config_name="bb.json"):
 
 def step(game_id, action):
     game = host.get_game(game_id)
-    done = False
-    while not done:
-        done = game.step(action)
-        if done and not game.config.fast_mode:
-            break
-        action = None
-    if game.stack.is_empty():
+    game.step(action)
+    if game.game_over:
         host.end_game(game_id)
     return game
 
