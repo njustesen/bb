@@ -81,6 +81,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService) {
         $scope.game = {};
         $scope.loading = true;
+
         var id = $routeParams.id;
 
         GameService.get(id).success(function(data) {
@@ -88,8 +89,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.playersById = Object.assign({}, $scope.game.home_team.players_by_id, $scope.game.away_team.players_by_id);
             console.log(data);
             $scope.loading = false;
-            $('#textareaContent').wysihtml5({"font-styles": false});
-            $('#textareaContent').val($sce.trustAsHtml(data.content));
         }).error(function(status, data) {
             $location.path("/#/");
         });
