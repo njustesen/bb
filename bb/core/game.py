@@ -25,6 +25,7 @@ class Game:
         Half(self, 1)
         Pregame(self)
         self.set_available_actions()
+        self.step(None)
 
     def step(self, action):
         """

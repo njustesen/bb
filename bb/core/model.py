@@ -219,7 +219,7 @@ class Field:
         cnt = 0
         for y in range(len(self.board)):
             for x in range(len(self.board[0])):
-                if not self.game.arena.is_team_side(home):
+                if not self.game.arena.is_team_side(Square(x, y), home):
                     continue
                 if tile is None or self.board[y][x] == tile:
                     player_id = self.board[y][x]
@@ -446,14 +446,16 @@ class Field:
 
 class ActionChoice:
 
-    def __init__(self, action_type, positions=[], player_ids=[]):
+    def __init__(self, action_type, team, positions=[], player_ids=[]):
         self.action_type = action_type
         self.positions = positions
+        self.team = team
 
     def to_simple(self):
         return {
             'action_type': self.action_type.name,
-            'positions': [position.to_simple() for position in self.positions]
+            'positions': [position.to_simple() for position in self.positions],
+            'team': self.team
         }
 
 

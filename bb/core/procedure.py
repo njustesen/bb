@@ -610,18 +610,15 @@ class Catch(Procedure):
 
 class CoinToss(Procedure):
 
-    aa = [ActionChoice(ActionType.HEADS, []), ActionChoice(ActionType.TAILS, [])]
-    aa_select = [ActionChoice(ActionType.KICK, []), ActionChoice(ActionType.RECEIVE, [])]
-
     def __init__(self, game):
         super().__init__(game)
         self.away_won_toss = None
-        self.aa = CoinToss.aa
+        self.aa = [ActionChoice(ActionType.HEADS, team=True),
+                   ActionChoice(ActionType.TAILS, team=True)]
 
     def step(self, action):
         if self.away_won_toss is None:
             self.flip_coin(action)
-            self.aa = CoinToss.aa_select
             return False
         elif self.away_won_toss is not None:
             self.pick(action)
@@ -642,6 +639,9 @@ class CoinToss(Procedure):
             else:
                 self.away_won_toss = False
                 self.game.report(Outcome(OutcomeType.TAILS_LOSS, team_home=False))
+
+        self.aa = [ActionChoice(ActionType.KICK, team=not self.away_won_toss),
+                     ActionChoice(ActionType.RECEIVE, team=not self.away_won_toss)]
 
     def pick(self, action):
         if action.action_type == ActionType.KICK:
@@ -2180,8 +2180,14 @@ class Setup(Procedure):
         self.home = home
         self.reorganize = reorganize
         self.selected_player = None
-        self.aa_select = [ActionChoice(ActionType.SELECT_PLAYER, player_ids=game.get_team(home).get_player_ids()), ActionChoice(ActionType.END_SETUP)]
-        self.aa_place = [ActionChoice(ActionType.PLACE_PLAYER, game.arena.get_team_side(home) + [None]), ActionChoice(ActionType.END_SETUP)]
+        self.aa_select = [
+            ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=game.get_team(home).get_player_ids()),
+            ActionChoice(ActionType.END_SETUP, self.home)
+        ]
+        self.aa_place = [
+            ActionChoice(ActionType.PLACE_PLAYER, team=self.home, positions=game.arena.get_team_side(home) + [None]),
+            ActionChoice(ActionType.END_SETUP, team=self.home)
+        ]
 
     def step(self, action):
 
@@ -2415,8 +2421,6 @@ class Turn(Procedure):
 
 class WeatherTable(Procedure):
 
-    aa = [ActionChoice(ActionType.ROLL_FOR_WEATHER, [])]
-
     def __init__(self, game, kickoff=False):
         super().__init__(game)
         self.kickoff = kickoff
@@ -2443,4 +2447,4 @@ class WeatherTable(Procedure):
         return True
 
     def available_actions(self):
-        return WeatherTable.aa
+        return []

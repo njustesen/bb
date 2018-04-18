@@ -196,9 +196,8 @@
                     </div>
                 </div>
             </div>
-            <div class="action-bar">
-                {{ currentProc() }}
-                <button type="button" class="btn btn-light btn-sm" ng-repeat="action in game.available_actions" ng-click="pickActionType(action)">{{ prettify(action.action_type) }}</button>
+            <div class="action-bar text-center">
+                <button type="button" class="btn btn-sm {{action.team ? 'btn-primary' : 'btn-danger'}}" ng-repeat="action in game.available_actions" ng-click="pickActionType(action)">{{ prettify(action.action_type) }}</button>
             </div>
             <textarea class="form-control" rows="5" id="gamelog" disabled></textarea>
         </div>
