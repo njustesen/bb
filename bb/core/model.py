@@ -4,6 +4,7 @@ import random
 from math import sqrt
 from bb.core.util import *
 from bb.core.table import *
+from bb.core.exception import *
 
 
 class Configuration:
@@ -151,13 +152,18 @@ class Field:
         self.ball_position = None
         self.ball_in_air = False
         self.game = game
-        self.board = np.full(game.arena.board.shape, -1)
+        self.board = []
+        for y in range(len(game.arena.board)):
+            row = []
+            for x in range(len(game.arena.board[y])):
+                row.append(None)
+            self.board.append(row)
 
     def to_simple(self):
         ball = None
         if self.ball_position is not None:
             ball = self.ball_position.to_simple()
-        board = self.board.tolist()
+        board = self.board
         return {
             'ball_position': ball,
             'ball_in_air': self.ball_in_air,
@@ -171,15 +177,15 @@ class Field:
     def remove(self, player_id):
         pos = self.player_positions[player_id]
         del self.player_positions[player_id]
-        self.board[pos.y][pos.x] = -1
+        self.board[pos.y][pos.x] = None
 
     def move(self, player_id, pos_to):
         pos_from = self.player_positions[player_id]
         if self.has_ball(player_id):
             self.ball_position = pos_to
-        if self.board[pos_to.y][pos_to.x] != -1:
+        if self.board[pos_to.y][pos_to.x] is not None:
             raise Exception("Player cannot be moved on top of another player")
-        self.board[pos_from.y][pos_from.x] = -1
+        self.board[pos_from.y][pos_from.x] = None
         self.board[pos_to.y][pos_to.x] = player_id
         self.player_positions[player_id] = pos_to
 
@@ -194,7 +200,7 @@ class Field:
             self.player_positions[player_from_id] = pos_to
 
         player_to_id = self.board[pos_to.y][pos_to.x]
-        if player_to_id > -1:
+        if player_to_id is not None:
             self.player_positions[player_to_id] = pos_from
         self.board[pos_to.y][pos_to.x] = player_from_id
         self.board[pos_from.y][pos_from.x] = player_to_id
@@ -206,7 +212,7 @@ class Field:
     def get_player_id_at(self, pos):
         if pos.y < 0 or pos.y >= len(self.board.y) or pos.x < 0 or pos.x >= len(self.board):
             raise Exception("Position is out of the board")
-        if self.board[pos.y][pos.x] == -1:
+        if self.board[pos.y][pos.x] is None:
             return None
         return self.board[pos.y][pos.x]
 
@@ -218,15 +224,15 @@ class Field:
     def is_setup_legal(self, home, tile=None, max_players=11, min_players=4):
         cnt = 0
         for y in range(len(self.board)):
-            for x in range(len(self.board[0])):
+            for x in range(len(self.board[y])):
                 if not self.game.arena.is_team_side(Square(x, y), home):
                     continue
-                if tile is None or self.board[y][x] == tile:
+                if tile is None or self.game.arena.board[y][x] == tile:
                     player_id = self.board[y][x]
-                    if player_id is not None and player_id in self.game.get_team(home).has_player_by_id(player_id):
+                    if self.game.get_team(home).has_player_by_id(player_id):
                         cnt += 1
         if cnt > max_players or cnt < min_players:
-            return False
+            raise IllegalActionExcpetion("You must have between " + str(max_players) + " and " + str(min_players) + " on the field.")
         return True
 
     def is_setup_legal_scrimmage(self, home):
@@ -449,12 +455,14 @@ class ActionChoice:
     def __init__(self, action_type, team, positions=[], player_ids=[]):
         self.action_type = action_type
         self.positions = positions
+        self.player_ids = player_ids
         self.team = team
 
     def to_simple(self):
         return {
             'action_type': self.action_type.name,
-            'positions': [position.to_simple() for position in self.positions],
+            'positions': [position.to_simple() if position is not None else None for position in self.positions],
+            'player_ids': self.player_ids,
             'team': self.team
         }
 
@@ -480,8 +488,8 @@ class Action:
 
 class Arena:
 
-    home_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT]
-    away_tiles = [Tile.AWAY, Tile.AWAY_TOUCHDOWN, Tile.AWAY_WING_LEFT, Tile.AWAY_WING_RIGHT]
+    home_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT, Tile.HOME_SCRIMMAGE]
+    away_tiles = [Tile.AWAY, Tile.AWAY_TOUCHDOWN, Tile.AWAY_WING_LEFT, Tile.AWAY_WING_RIGHT, Tile.AWAY_SCRIMMAGE]
     scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
     wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
@@ -491,19 +499,19 @@ class Arena:
 
     def is_team_side(self, pos, home):
         if home:
-            return self.board[pos[0]][pos[1]] in Arena.home_tiles
-        return self.board[pos[0]][pos[1]] in Arena.away_tiles
+            return self.board[pos.y][pos.x] in Arena.home_tiles
+        return self.board[pos.y][pos.x] in Arena.away_tiles
 
     def get_team_side(self, home):
         tiles = []
         for y in range(len(self.board)):
             for x in range(len(self.board[y])):
-                if self.board[y][x] in Arena.home_tiles:
+                if self.board[y][x] in (Arena.home_tiles if home else Arena.away_tiles):
                     tiles.append(Square(x, y))
         return tiles
 
     def is_scrimmage(self, pos):
-        return self.board[pos[0]][pos[1]] in Arena.scrimmage_tiles
+        return self.board[pos.y][pos.x] in Arena.scrimmage_tiles
 
     def is_touchdown(self, pos, team):
         """
@@ -512,13 +520,13 @@ class Arena:
         :return: Whether pos is within team's touchdown zone (such that they would score)
         """
         if self.is_team_side(pos, not team):
-            return self.board[pos[0]][pos[1]] in Arena.scrimmage_tiles
+            return self.board[pos.y][pos.x] in Arena.scrimmage_tiles
         return False
 
     def is_wing(self, pos, right):
         if right:
-            return self.board[pos[0]][pos[1]] in Arena.wing_right_tiles
-        return self.board[pos[0]][pos[1]] in Arena.wing_left_tiles
+            return self.board[pos.y][pos.x] in Arena.wing_right_tiles
+        return self.board[pos.y][pos.x] in Arena.wing_left_tiles
 
 
 class Die(ABC):
@@ -833,7 +841,7 @@ class Team:
 
 class Outcome:
 
-    def __init__(self, outcome_type, pos=None, player_id=-1, opp_player_id=-1, rolls=[], team_home=None, n=0):
+    def __init__(self, outcome_type, pos=None, player_id=None, opp_player_id=None, rolls=[], team_home=None, n=0):
         self.outcome_type = outcome_type
         self.pos = pos
         self.player_id = player_id

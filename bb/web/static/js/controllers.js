@@ -82,13 +82,22 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.loading = true;
         $scope.hover_player = null;
         $scope.selected_player = null;
+        $scope.selected_area = null;
+        $scope.selected_square = null;
+        $scope.available_positions = [];
+        $scope.available_action_type = null;
+        $scope.action_taker_home = null;
+        $scope.action_taker_away = null;
         var id = $routeParams.id;
 
         $scope.generateGameLog = function generateGameLog() {
             let text = "";
             for (let i in $scope.game.reports){
                 if ($scope.game.reports[i].outcome_type in GameLogService.log_texts){
-                    text += GameLogService.log_texts[$scope.game.reports[i].outcome_type] + "\n";
+                    let line = GameLogService.log_texts[$scope.game.reports[i].outcome_type] + "\n";
+                    line = line.replace("<home_team>", $scope.game.home_team.name);
+                    line = line.replace("<away_team>", $scope.game.away_team.name);
+                    text += line;
                 }
             }
             return text;
@@ -104,16 +113,96 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $location.path("/#/");
         });
 
-        $scope.square = function square(area, x, y) {
-            let player = $scope.playerAt(area, x, y);
-            if (player != null){
-                //team = $scope.teamOfPlayer(player);
-                //if (team.team_id == )
-                $scope.selected_player = player;
-            } else {
-                $scope.selected_player = null;
+        $scope.is_selected_square = function is_selected_square(area, x, y){
+            return $scope.selected_square != null && $scope.selected_area != null && $scope.selected_square.x == x && $scope.selected_square.y == y && $scope.selected_area == area;
+        };
+
+        $scope.is_available_position = function is_available_position(area, x, y){
+
+            if (area == "dugout-home" && $scope.action_taker_home){
+                if (y <= 7 && $scope.playerAt(area, x, y) == null && $scope.selected_area == "field"){
+                    for (let idx in $scope.available_positions){
+                        let position = $scope.available_positions[idx];
+                        if (position == null){
+                            return true;
+                        }
+                    }
+                }
             }
+
+            if (area == "dugout-away" && $scope.action_taker_away){
+                if (y <= 7 && $scope.playerAt(area, x, y) == null && $scope.selected_area == "field"){
+                    for (let idx in $scope.available_positions){
+                        let position = $scope.available_positions[idx];
+                        if (position == null){
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            for (let idx in $scope.available_positions){
+                let position = $scope.available_positions[idx];
+                if (position != null && position.x == x && position.y == y){
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        $scope.deselect = function deselect(){
+            $scope.selected_player = null;
+            $scope.selected_area = null;
+            $scope.selected_square = null;
+            $scope.available_positions = [];
+        };
+
+        $scope.square = function square(area, x, y) {
             console.log("Click on: " + area + ", x=" + x + ", y=" + y);
+            let player = $scope.playerAt(area, x, y);
+
+            if ($scope.is_available_position(area, x, y) && $scope.selected_player != null){
+                if (player != null && $scope.selected_player.player_id == player.player_id){
+                    $scope.deselect();
+                }
+                let action = {
+                    'player_from_id': $scope.selected_player.player_id,
+                    'player_to_id': player == null ? null : player.player_id,
+                    'pos_from': $scope.selected_square != null && $scope.selected_area == 'field' ? $scope.selected_square : null,
+                    'pos_to': area == 'field' ? {'x': x, 'y': y} : null,
+                    'team_home': null,
+                    'idx': -1,
+                    'action_type': $scope.available_action_type
+                };
+
+                $scope.act(action);
+                return;
+            }
+
+            if (player == null){
+                // Deselect
+                $scope.selected_square = null;
+                $scope.selected_area = null;
+            } else {
+                $scope.selected_square = {'x':x, 'y':y};
+                $scope.selected_area = area;
+            }
+
+            $scope.available_positions = [];
+            if (player != null){
+                $scope.selected_player = player;
+                for (let idx in $scope.game.available_actions){
+                    let action = $scope.game.available_actions[idx];
+                    if (action.player_ids.length > 0 && action.player_ids.indexOf($scope.selected_player.player_id) >= 0){
+                        $scope.available_positions = action.positions;
+                        $scope.available_action_type = action.action_type;
+                        $scope.action_taker_home = action.team;
+                        $scope.action_taker_away = !action.team;
+                    }
+                }
+            } else {
+                $scope.deselect();
+            }
         };
 
         $scope.squareHover = function squareHover(area, x, y) {
@@ -156,7 +245,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.playerAt = function playerAt(area, x, y){
-            let player_id = -1;
+            let player_id = null;
             if (area == "field"){
                 player_id = $scope.game.state.field.board[y][x];
             }
@@ -182,7 +271,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     }
                 }
             }
-            if (player_id == -1){
+            if (player_id == null){
                 return null;
             }
             return $scope.playersById[player_id];
@@ -218,47 +307,23 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return null;
         };
 
-        $scope.save = function save(game, shouldPublish) {
-            if (game !== undefined 
-                && game.title !== undefined && game.title != "") {
-
-                var content = $('#textareaContent').val();
-                if (content !== undefined && content != "") {
-                    game.content = content;
-
-                    if (shouldPublish != undefined && shouldPublish == true) {
-                        game.is_published = true;
-                    } else {
-                        game.is_published = false;
-                    }
-
-                    // string comma separated to array
-                    if (Object.prototype.toString.call(game.tags) !== '[object Array]') {
-                        game.tags = game.tags.split(',');
-                    }
-                    
-                    GameService.update(game).success(function(data) {
-                        $location.path("/");
-                    }).error(function(status, data) {
-                        console.log(status);
-                        console.log(data);
-                    });
-                }
-            }
-        };
-
         $scope.prettify = function prettify(text){
             let pretty = text.toLowerCase().split("_").join(" ");
             return pretty.charAt(0).toUpperCase() + pretty.slice(1);
         };
 
         $scope.act = function act(action){
+            console.log(action);
             $scope.refreshing = true;
             GameService.act($scope.game.game_id, action).success(function(data) {
                 $scope.game = data;
                 $scope.gamelog = $scope.generateGameLog($scope.game);
                 console.log(data);
                 $scope.refreshing = false;
+                $scope.selected_square = null;
+                $scope.selected_player = null;
+                $scope.selected_area = null;
+                $scope.available_positions = []
             }).error(function(status, data) {
                 $location.path("/#/");
             });
@@ -273,6 +338,16 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             } else {
                 $scope.selected_action = action;
             }
+        };
+
+        $scope.showAction = function showAction(action) {
+            // If no args -> show
+            if (action.player_ids.length == 0 && action.positions.length == 0){
+                return true;
+            } else if (action.player_ids.length > 0 && $scope.selected_player != null && action.player_ids.indexOf($scope.selected_player.player_id) >= 0 && action.positions.length == 0){
+                return true;
+            }
+            return false;
         };
     }
 ]);

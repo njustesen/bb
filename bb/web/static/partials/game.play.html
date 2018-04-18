@@ -86,12 +86,12 @@
         <div class="gameboard">
             <div class="dugout">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square" ng-click="square('dugout-home', 0, $index)" ng-mouseover="squareHover('dugout-home', 0, $index)">
+                    <div class="square {{ is_selected_square('dugout-home', 0, $index) ? 'selected' : '' }} {{ is_available_position('dugout-home', 0, $index) ? 'green' : '' }}" ng-click="square('dugout-home', 0, $index)" ng-mouseover="squareHover('dugout-home', 0, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 0, $index) != null">
                             <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-home', 0, $index), true) }}" />
                         </div>
                     </div>
-                    <div class="square" ng-click="square('dugout-home', 1, $index)" ng-mouseover="squareHover('dugout-home', 1, $index)">
+                    <div class="square {{ is_selected_square('dugout-home', 1, $index) ? 'selected' : '' }} {{ is_available_position('dugout-home', 1, $index) ? 'green' : '' }}" ng-click="square('dugout-home', 1, $index)" ng-mouseover="squareHover('dugout-home', 1, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-home', 1, $index) != null">
                             <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-home', 1, $index), true) }}" />
                         </div>
@@ -100,21 +100,21 @@
             </div>
             <div class="field">
                 <div class="square-row" ng-repeat="row in game.state.field.board.slice(1, game.state.field.board.length-1)">
-                    <div class="square" ng-repeat="n in [] | range:row.length-2" ng-click="square('field', $index+1, $parent.$index+1)" ng-mouseover="squareHover('field', $index+1, $parent.$index+1)">
+                    <div class="square {{ is_selected_square('field', $index+1, $parent.$index+1) ? 'selected' : '' }} {{ is_available_position('field', $index+1, $parent.$index+1) ? 'green' : '' }}" ng-repeat="n in [] | range:row.length-2" ng-click="square('field', $index+1, $parent.$index+1)" ng-mouseover="squareHover('field', $index+1, $parent.$index+1)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('field', $index+1, $parent.$index+1) != null">
-                            <img src="static/img/iconssmall/{{ playerIcon(playerAt('field', $index+1, $parent.$index+1), true) }}" />
+                            <img src="static/img/iconssmall/{{ playerIcon(playerAt('field', $index+1, $parent.$parent.$index+1), true) }}" />
                         </div>
                     </div>
                 </div>
             </div>
             <div class="dugout">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square" ng-click="square('dugout-away', 0, $index)" ng-mouseover="squareHover('dugout-away', 0, $index)">
+                    <div class="square {{ is_selected_square('dugout-away', 0, $index) ? 'selected' : '' }} {{ is_available_position('dugout-away', 0, $index) ? 'green' : '' }}" ng-click="square('dugout-away', 0, $index)" ng-mouseover="squareHover('dugout-away', 0, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-away', 0, $index) != null">
                             <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-away', 0, $index), true) }}" />
                         </div>
                     </div>
-                    <div class="square" ng-click="square('dugout-away', 1, $index)" ng-mouseover="squareHover('dugout-away', 1, $index)">
+                    <div class="square {{ is_selected_square('dugout-away', 1, $index) ? 'selected' : '' }} {{ is_available_position('dugout-away', 1, $index) ? 'green' : '' }}" ng-click="square('dugout-away', 1, $index)" ng-mouseover="squareHover('dugout-away', 1, $index)">
                         <div class="playericon align-middle text-center" ng-if="playerAt('dugout-away', 1, $index) != null">
                             <img src="static/img/iconssmall/{{ playerIcon(playerAt('dugout-away', 1, $index), true) }}" />
                         </div>
@@ -134,7 +134,7 @@
                         <img src="static/img/iconssmall/{{ playerIcon(playerInFocus(game.home_team), false) }}" width="48px" height="48px" />
                     </div>
                     <div class="stats-box left">
-                        <span class="name-box label label-success red">
+                        <span class="name-box">
                             ({{playerInFocus(game.home_team).nr}}) <b>{{playerInFocus(game.home_team).position_name}}:</b> {{playerInFocus(game.home_team).name}}
                         </span>
                         <div>
@@ -167,7 +167,7 @@
                     </div>
                     <div class="stats-box">
                         <div>
-                            <span class="name-box label label-success blue">
+                            <span class="name-box">
                                 ({{playerInFocus(game.away_team).nr}}) <b>{{playerInFocus(game.away_team).position_name}}:</b> {{playerInFocus(game.away_team).name}}
                             </span>
                         </div>
@@ -197,7 +197,11 @@
                 </div>
             </div>
             <div class="action-bar text-center">
-                <button type="button" class="btn btn-sm {{action.team ? 'btn-primary' : 'btn-danger'}}" ng-repeat="action in game.available_actions" ng-click="pickActionType(action)">{{ prettify(action.action_type) }}</button>
+                <span ng-repeat="action in game.available_actions">
+                    <button ng-if="showAction(action)" type="button" class="btn btn-sm {{action.team ? 'btn-danger' : 'btn-primary'}}" ng-click="pickActionType(action)">
+                        {{ prettify(action.action_type) }}
+                    </button>
+                </span>
             </div>
             <textarea class="form-control" rows="5" id="gamelog" disabled>{{ gamelog }}</textarea>
         </div>

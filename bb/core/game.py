@@ -38,9 +38,6 @@ class Game:
         }
 
     def init(self):
-        # Postgame(self)
-        Half(self, 2)
-        Half(self, 1)
         Pregame(self)
         self.set_available_actions()
         self.step(None)
@@ -74,10 +71,21 @@ class Game:
         # Remove done procs
         proc = self.stack.peek()
         while proc.done:
+
+            # Remove proc
             self.stack.pop()
+
+            # Is game over
             if self.stack.is_empty():
                 self.game_over = True
                 return False
+
+            # If pre-game is over
+            if isinstance(self.stack.peek(), Pregame) and self.stack.peek().done:
+                Half(self, 1)
+                Half(self, 2)
+
+            # Go to next proc
             proc = self.stack.peek()
 
         # Otherwise, request for user input

@@ -645,10 +645,10 @@ class CoinToss(Procedure):
 
     def pick(self, action):
         if action.action_type == ActionType.KICK:
-            self.game.state.kicking_team_home = False if self.away_won_toss else True
+            self.game.state.kicking_team = not self.away_won_toss
         elif action.action_type == ActionType.RECEIVE:
-            self.game.state.kicking_team_home = True if self.away_won_toss else False
-        if self.game.state.kicking_team_home:
+            self.game.state.kicking_team = self.away_won_toss
+        if self.game.state.kicking_team:
             self.game.report(Outcome(OutcomeType.AWAY_RECEIVE))
         self.game.report(Outcome(OutcomeType.HOME_RECEIVE))
 
@@ -730,18 +730,18 @@ class Half(Procedure):
         self.half = half
 
         # Determine kicking team
-        self.kicking_home = self.game.state.kicking_team if self.game.state.half == 1 \
+        self.kicking_team = self.game.state.kicking_team if self.game.state.half == 1 \
             else not self.game.state.kicking_team
 
         # Add turns
         for i in range(8):
-            Turn(self.game, home=self.kicking_home)
-            Turn(self.game, home=not self.kicking_home)
+            Turn(self.game, home=self.kicking_team)
+            Turn(self.game, home=not self.kicking_team)
 
         # Setup and kickoff
-        KickOff(self.game, self.kicking_home)
-        Setup(self.game, home=not self.kicking_home)
-        Setup(self.game, home=self.kicking_home)
+        KickOff(self.game, self.kicking_team)
+        Setup(self.game, home=not self.kicking_team)
+        Setup(self.game, home=self.kicking_team)
         ClearBoard(self.game)
 
         # If second half
@@ -1746,6 +1746,7 @@ class PlaceBall(Procedure):
     def __init__(self, game, home):
         super().__init__(game)
         self.home = home
+        self.aa = [ActionChoice(ActionType.PLACE_BALL, team=self.home, positions=self.game.arena.get_team_side(not self.home))]
 
     def step(self, action):
         if not self.game.arena.is_team_side(action.pos_to, self.home):
@@ -1756,7 +1757,7 @@ class PlaceBall(Procedure):
         return True
 
     def available_actions(self):
-        return []
+        return [self.aa]
 
 
 class PlayerAction(Procedure):
@@ -1945,7 +1946,7 @@ class PreHalf(Procedure):
                     return False
                 self.game.report(Outcome(OutcomeType.PLAYER_NOT_READY, player_id=player_id, rolls=[roll]))
                 return False
-        self.game.state.reset_kickoff(self.home).reset()
+        self.game.state.reset_kickoff()
         return True
 
     def available_actions(self):
@@ -2180,13 +2181,9 @@ class Setup(Procedure):
         self.home = home
         self.reorganize = reorganize
         self.selected_player = None
-        self.aa_select = [
-            ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=game.get_team(home).get_player_ids()),
-            ActionChoice(ActionType.END_SETUP, self.home)
-        ]
-        self.aa_place = [
-            ActionChoice(ActionType.PLACE_PLAYER, team=self.home, positions=game.arena.get_team_side(home) + [None]),
-            ActionChoice(ActionType.END_SETUP, team=self.home)
+        self.aa = [
+            ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.get_team(home).get_player_ids(), positions=game.arena.get_team_side(home) + [None]),
+            ActionChoice(ActionType.END_SETUP, team=home)
         ]
 
     def step(self, action):
@@ -2207,26 +2204,31 @@ class Setup(Procedure):
         if self.selected_player is None and action.action_type == ActionType.SELECT_PLAYER:
             self.selected_player = action.player_from_id
         elif action.action_type == ActionType.PLACE_PLAYER:
-            if self.game.arena.is_team_side(action.pos_to, self.home):
-                if action.pos_from is None:  # From reserves
-                    if self.reorganize:
-                        raise IllegalActionExcpetion("You cannot move players from the reserves when reorganizing the defense")
-                    self.game.state.get_dugout(self.home).remove(action.player_from_id)
-                elif action.pos_to is None:  # To reserves
-                    if self.reorganize:
-                        raise IllegalActionExcpetion("You cannot move players to the reserves when reorganizing the defense")
-                    self.game.state.field.remove(action.player_from_id)
-                    self.game.state.get_dugout(self.home).add_to_reserves(action.player_from_id)
-                else:
-                    self.game.state.field.swap(action.pos_from, action.pos_to)
-                self.game.report(Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, player_id=action.player_from_id))
+            if action.pos_from is None and action.pos_to is None:
+                # Move player from reserve to reserve - sure
                 return False
-            raise IllegalActionExcpetion("You can only place players on your own side")
+            if action.pos_to is None and self.game.arena.is_team_side(action.pos_from, self.home):
+                # To reserves
+                if self.reorganize:
+                    raise IllegalActionExcpetion("You cannot move players to the reserves when reorganizing the defense")
+                self.game.state.field.remove(action.player_from_id)
+                self.game.state.get_dugout(self.home).reserves.append(action.player_from_id)
+            elif action.pos_from is None and self.game.arena.is_team_side(action.pos_to, self.home):
+                # From reserves
+                if self.reorganize:
+                    raise IllegalActionExcpetion("You cannot move players from the reserves when reorganizing the defense")
+                self.game.state.get_dugout(self.home).reserves.remove(action.player_from_id)
+                self.game.state.field.put(action.player_from_id, action.pos_to)
+            elif self.game.arena.is_team_side(action.pos_from, self.home) and self.game.arena.is_team_side(action.pos_to, self.home):
+                # Swap players on field
+                self.game.state.field.swap(action.pos_from, action.pos_to)
+            else:
+                raise IllegalActionExcpetion("Unknown placement action")
+            self.game.report(Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, player_id=action.player_from_id))
+            return False
 
     def available_actions(self):
-        if self.selected_player is None:
-            return self.aa_select
-        return self.aa_place
+        return self.aa
 
 
 class ThrowIn(Procedure):
@@ -2429,7 +2431,7 @@ class WeatherTable(Procedure):
         roll = DiceRoll([D6(), D6()])
         if roll.get_sum() == 2:
             self.game.state.weather = WeatherType.SWELTERING_HEAT
-            self.game.report(Outcome(OutcomeType.WEATHER_SET, rolls=[roll]))
+            self.game.report(Outcome(OutcomeType.WEATHER_SWELTERING_HEAT, rolls=[roll]))
         if roll.get_sum() == 3:
             self.game.state.weather = WeatherType.VERY_SUNNY
             self.game.report(Outcome(OutcomeType.WEATHER_VERY_SUNNY, rolls=[roll]))
