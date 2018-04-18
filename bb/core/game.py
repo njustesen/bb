@@ -19,6 +19,24 @@ class Game:
         if self.state is None:
             self.state = GameState(self)
 
+    def to_simple(self):
+        available_actions = []
+        for action in self.available_actions:
+            available_actions.append(action.to_simple())
+        reports = []
+        for report in self.reports:
+            reports.append(report.to_simple())
+        return {
+            'game_id': self.game_id,
+            'home_team': self.home.to_simple(),
+            'away_team': self.away.to_simple(),
+            'state': self.state.to_simple(),
+            'game_over': self.game_over,
+            'stack': self.procs(),
+            'available_actions': available_actions,
+            'reports': reports
+        }
+
     def init(self):
         # Postgame(self)
         Half(self, 2)
@@ -149,17 +167,3 @@ class Game:
         for proc in self.stack.items:
             procs.append(proc.__class__.__name__)
         return procs
-
-    def to_simple(self):
-        available_actions = []
-        for action in self.available_actions:
-            available_actions.append(action.to_simple())
-        return {
-            'game_id': self.game_id,
-            'home_team': self.home.to_simple(),
-            'away_team': self.away.to_simple(),
-            'state': self.state.to_simple(),
-            'game_over': self.game_over,
-            'stack': self.procs(),
-            'available_actions': available_actions
-        }

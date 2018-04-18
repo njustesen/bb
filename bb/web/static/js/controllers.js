@@ -76,17 +76,28 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
     }
 ]);
 
-appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService', 'IconService',
-    function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService) {
+appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService', 'IconService', 'GameLogService',
+    function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService, GameLogService) {
         $scope.game = {};
         $scope.loading = true;
         $scope.hover_player = null;
         $scope.selected_player = null;
         var id = $routeParams.id;
 
+        $scope.generateGameLog = function generateGameLog() {
+            let text = "";
+            for (let i in $scope.game.reports){
+                if ($scope.game.reports[i].outcome_type in GameLogService.log_texts){
+                    text += GameLogService.log_texts[$scope.game.reports[i].outcome_type] + "\n";
+                }
+            }
+            return text;
+        }
+
         GameService.get(id).success(function(data) {
             $scope.game = data;
             $scope.playersById = Object.assign({}, $scope.game.home_team.players_by_id, $scope.game.away_team.players_by_id);
+            $scope.gamelog = $scope.generateGameLog();
             console.log(data);
             $scope.loading = false;
         }).error(function(status, data) {
@@ -245,6 +256,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.refreshing = true;
             GameService.act($scope.game.game_id, action).success(function(data) {
                 $scope.game = data;
+                $scope.gamelog = $scope.generateGameLog($scope.game);
                 console.log(data);
                 $scope.refreshing = false;
             }).error(function(status, data) {

@@ -613,8 +613,8 @@ class CoinToss(Procedure):
     def __init__(self, game):
         super().__init__(game)
         self.away_won_toss = None
-        self.aa = [ActionChoice(ActionType.HEADS, team=True),
-                   ActionChoice(ActionType.TAILS, team=True)]
+        self.aa = [ActionChoice(ActionType.HEADS, team=False),
+                   ActionChoice(ActionType.TAILS, team=False)]
 
     def step(self, action):
         if self.away_won_toss is None:
@@ -628,17 +628,17 @@ class CoinToss(Procedure):
         if action.action_type == ActionType.HEADS:
             if random.random() >= 0.5:
                 self.away_won_toss = True
-                self.game.report(Outcome(OutcomeType.HEADS_WON, team_home=False))
+                self.game.report(Outcome(OutcomeType.HEADS_WON))
             else:
                 self.away_won_toss = False
-                self.game.report(Outcome(OutcomeType.HEADS_LOSS, team_home=False))
+                self.game.report(Outcome(OutcomeType.HEADS_LOSS))
         elif action.action_type == ActionType.TAILS:
             if random.random() >= 0.5:
                 self.away_won_toss = True
-                self.game.report(Outcome(OutcomeType.TAILS_WON, team_home=False))
+                self.game.report(Outcome(OutcomeType.TAILS_WON))
             else:
                 self.away_won_toss = False
-                self.game.report(Outcome(OutcomeType.TAILS_LOSS, team_home=False))
+                self.game.report(Outcome(OutcomeType.TAILS_LOSS))
 
         self.aa = [ActionChoice(ActionType.KICK, team=not self.away_won_toss),
                      ActionChoice(ActionType.RECEIVE, team=not self.away_won_toss)]
@@ -2429,7 +2429,7 @@ class WeatherTable(Procedure):
         roll = DiceRoll([D6(), D6()])
         if roll.get_sum() == 2:
             self.game.state.weather = WeatherType.SWELTERING_HEAT
-            self.game.report(Outcome(OutcomeType.WEATHER_SWELTERING_HEAT, rolls=[roll]))
+            self.game.report(Outcome(OutcomeType.WEATHER_SET, rolls=[roll]))
         if roll.get_sum() == 3:
             self.game.state.weather = WeatherType.VERY_SUNNY
             self.game.report(Outcome(OutcomeType.WEATHER_VERY_SUNNY, rolls=[roll]))

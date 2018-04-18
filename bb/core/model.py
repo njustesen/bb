@@ -536,6 +536,17 @@ class DiceRoll:
         self.target = target
         self.modifiers = modifiers
 
+    def to_simple(self):
+        dice = []
+        for die in self.dice:
+            dice.append(die.to_simple())
+        return {
+            'dice': dice,
+            'sum': self.sum,
+            'target': self.target,
+            'modifiers': self.modifiers
+        }
+
     def contains(self, value):
         for die in self.dice:
             if die.get_value() == value:
@@ -572,6 +583,12 @@ class D3(Die):
     def get_value(self):
         return self.value
 
+    def to_simple(self):
+        return {
+            'die_type': 'D3',
+            'result': self.value
+        }
+
 
 class D6(Die):
 
@@ -581,6 +598,12 @@ class D6(Die):
     def get_value(self):
         return self.value
 
+    def to_simple(self):
+        return {
+            'die_type': 'D6',
+            'result': self.value
+        }
+
 
 class D8(Die):
 
@@ -589,6 +612,12 @@ class D8(Die):
 
     def get_value(self):
         return self.value
+
+    def to_simple(self):
+        return {
+            'die_type': 'D8',
+            'result': self.value
+        }
 
 
 class BBDie(Die):
@@ -601,6 +630,12 @@ class BBDie(Die):
 
     def get_value(self):
         return self.value
+
+    def to_simple(self):
+        return {
+            'die_type': 'BB',
+            'result': self.value.name
+        }
 
 
 class Dugout:
@@ -796,8 +831,6 @@ class Team:
         return self.player_ids
 
 
-
-
 class Outcome:
 
     def __init__(self, outcome_type, pos=None, player_id=-1, opp_player_id=-1, rolls=[], team_home=None, n=0):
@@ -808,6 +841,20 @@ class Outcome:
         self.rolls = rolls
         self.team_home = team_home
         self.n = n
+
+    def to_simple(self):
+        rolls = []
+        for roll in self.rolls:
+            rolls.append(roll.to_simple())
+        return {
+            'outcome_type': self.outcome_type.name,
+            'pos': self.pos.to_simple() if self.pos is not None else None,
+            'player_id': self.player_id,
+            'opp_player_id': self.opp_player_id,
+            'rolls': rolls,
+            'team_home': self.team_home if self.team_home is not None else None,
+            'n': self.n if self.n is not None else None
+        }
 
 
 class Inducement:
