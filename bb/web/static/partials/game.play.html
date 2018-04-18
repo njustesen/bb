@@ -130,33 +130,29 @@
         <div class="game-info">
             <div class="player-info">
                 <div class="home team-box" ng-if="playerInFocus(game.home_team) != null">
-                    <div class="icon-box">
+                    <div class="icon-box red">
                         <img src="static/img/iconssmall/{{ playerIcon(playerInFocus(game.home_team), false) }}" width="48px" height="48px" />
                     </div>
-                    <div class="stats-box">
-                        <span class="name-box label label-success">
+                    <div class="stats-box left">
+                        <span class="name-box label label-success red">
                             ({{playerInFocus(game.home_team).nr}}) <b>{{playerInFocus(game.home_team).position_name}}:</b> {{playerInFocus(game.home_team).name}}
                         </span>
                         <div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">MA</div>
-                                <div class="value label label-success">{{playerInFocus(game.home_team).ma}}</div>
+                                <div class="value label label-success red">{{playerInFocus(game.home_team).ma}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">ST</div>
-                                <div class="value label label-success">{{playerInFocus(game.home_team).st}}</div>
+                                <div class="value label label-success red">{{playerInFocus(game.home_team).st}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">AG</div>
-                                <div class="value label label-success">{{playerInFocus(game.home_team).ag}}</div>
+                                <div class="value label label-success red">{{playerInFocus(game.home_team).ag}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">AV</div>
-                                <div class="value label label-success">{{playerInFocus(game.home_team).av}}</div>
-                            </div>
-                            <div class="attribute text-center">
-                                <div class="gamelabel">SPP</div>
-                                <div class="value label label-success">{{playerInFocus(game.home_team).spp}}</div>
+                                <div class="value label label-success red">{{playerInFocus(game.home_team).av}}</div>
                             </div>
                             <div class="attribute">
                                 <div class="gamelabel">Skills</div>
@@ -166,37 +162,35 @@
                     </div>
                 </div>
                 <div class="away team-box" ng-if="playerInFocus(game.away_team) != null">
-                    <div class="icon-box">
+                    <div class="icon-box blue">
                         <img src="static/img/iconssmall/{{ playerIcon(playerInFocus(game.away_team), false) }}" width="48px" height="48px" />
                     </div>
                     <div class="stats-box">
-                        <span class="name-box label label-success">
-                            ({{playerInFocus(game.away_team).nr}}) <b>{{playerInFocus(game.away_team).position_name}}:</b> {{playerInFocus(game.away_team).name}}
-                        </span>
+                        <div>
+                            <span class="name-box label label-success blue">
+                                ({{playerInFocus(game.away_team).nr}}) <b>{{playerInFocus(game.away_team).position_name}}:</b> {{playerInFocus(game.away_team).name}}
+                            </span>
+                        </div>
                         <div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">MA</div>
-                                <div class="value label label-success">{{playerInFocus(game.away_team).ma}}</div>
+                                <div class="value label label-success blue">{{playerInFocus(game.away_team).ma}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">ST</div>
-                                <div class="value label label-success">{{playerInFocus(game.away_team).st}}</div>
+                                <div class="value label label-success blue">{{playerInFocus(game.away_team).st}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">AG</div>
-                                <div class="value label label-success">{{playerInFocus(game.away_team).ag}}</div>
+                                <div class="value label label-success blue">{{playerInFocus(game.away_team).ag}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">AV</div>
-                                <div class="value label label-success">{{playerInFocus(game.away_team).av}}</div>
-                            </div>
-                            <div class="attribute text-center">
-                                <div class="gamelabel">SPP</div>
-                                <div class="value label label-success">{{playerInFocus(game.away_team).spp}}</div>
+                                <div class="value label label-success blue">{{playerInFocus(game.away_team).av}}</div>
                             </div>
                             <div class="attribute">
                                 <div class="gamelabel">Skills</div>
-                                <div><span class="label label-success skill" ng-repeat="skill in playerInFocus(game.home_team).skills">{{ prettify(skill) }}</span>&nbsp</div>
+                                <div><span class="label label-success skill" ng-repeat="skill in playerInFocus(game.away_team).skills">{{ prettify(skill) }}</span>&nbsp</div>
                             </div>
                         </div>
                     </div>

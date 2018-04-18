@@ -214,6 +214,14 @@ a, a:focus, a:hover {
         .player-info {
             min-height: 64px;
 
+            .red {
+                background-color: rgba(255,0,0,0.1);
+            }
+
+            .blue {
+                background-color: rgba(0,0,255,0.1);
+            }
+
             .team-box {
                 background-color: white;
                 width: 50%;
@@ -224,17 +232,20 @@ a, a:focus, a:hover {
 
             .home {
                 float: left;
+                border-right: 1px solid #ccc;
+                border-left: 1px solid #ccc;
             }
 
             .away {
                 float: right;
+                border-right: 1px solid #ccc;
+                border-left: 1px solid #ccc;
             }
 
             .icon-box {
                 float:left;
                 width: 58px;
                 padding: 4px;
-                background-color: rgba(255,0,0,0.1);
                 border-radius: .25em;
                 border-top-left-radius: 0.25em;
                 border-top-right-radius: 0.25em;
@@ -246,9 +257,9 @@ a, a:focus, a:hover {
                 float:left;
                 margin-left:4px;
                 font-size: 1.1em;
+                width: 375px;
 
                 .name-box {
-                    background-color: rgba(255,0,0,0.1);
                     padding: 2px;
                     font-weight: normal;
                     font-size: 1.0em;
@@ -261,7 +272,6 @@ a, a:focus, a:hover {
                     margin-top: 4px;
 
                     .value {
-                        background-color: rgba(255,0,0,0.1);
                         width: 16px;
                         font-weight: normal;
                         color: black;
@@ -269,9 +279,9 @@ a, a:focus, a:hover {
 
                     .skill {
                         margin-right: 2px;
-                        background-color: rgba(255,0,0,0.2);
                         font-weight: normal;
                         color: black;
+                        background-color: rgba(0, 255, 0, 0.4);
                     }
                 }
             }

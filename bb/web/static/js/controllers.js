@@ -94,7 +94,15 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         });
 
         $scope.square = function square(area, x, y) {
-            alert(area + ", x=" + x + ", y=" + y);
+            let player = $scope.playerAt(area, x, y);
+            if (player != null){
+                //team = $scope.teamOfPlayer(player);
+                //if (team.team_id == )
+                $scope.selected_player = player;
+            } else {
+                $scope.selected_player = null;
+            }
+            console.log("Click on: " + area + ", x=" + x + ", y=" + y);
         };
 
         $scope.squareHover = function squareHover(area, x, y) {
@@ -186,12 +194,17 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             let player = null;
             if ($scope.hover_player != null){
                 player = $scope.hover_player;
-            } else if ($scope.selected_player != null){
-                player = $scope.hover_player;
+                if (player != null && team.team_id == $scope.teamOfPlayer(player).team_id){
+                    return player;
+                }
             }
-            if (player != null && team.team_id == $scope.teamOfPlayer(player).team_id){
-                return player;
+            if ($scope.selected_player != null){
+                player = $scope.selected_player;
+                if (player != null && team.team_id == $scope.teamOfPlayer(player).team_id){
+                    return player;
+                }
             }
+            return null;
         };
 
         $scope.save = function save(game, shouldPublish) {
