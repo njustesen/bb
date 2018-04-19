@@ -1198,10 +1198,10 @@ class KnockDown(Procedure):
     def step(self, action):
 
         # Knock down player
-        self.game.state.get_team(self.home).player_states[self.player_id] = PlayerState.DOWN
+        self.game.state.get_team(self.home).player_states[self.player_id] = PlayerState.DOWN_READY
         self.game.report(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id)
         if self.both_down:
-            self.game.state.get_team(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN
+            self.game.state.get_team(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN_READY
             self.game.report(OutcomeType.KNOCKED_DOWN, player_id=self.opp_player_id, opp_player_id=self.player_id)
 
         # Turnover
@@ -1757,7 +1757,7 @@ class PlaceBall(Procedure):
         return True
 
     def available_actions(self):
-        return [self.aa]
+        return self.aa
 
 
 class PlayerAction(Procedure):
@@ -2097,8 +2097,8 @@ class Scatter(Procedure):
         for x in range(n):
             for i in range(distance):
                 # Move ball on square
-                self.game.state.field.ball_position[0] += x
-                self.game.state.field.ball_position[1] += y
+                self.game.state.field.ball_position.x += x
+                self.game.state.field.ball_position.y += y
 
                 # Check out of bounds
                 if self.kick:
@@ -2111,8 +2111,8 @@ class Scatter(Procedure):
                     # Throw in
                     if self.game.state.field.is_ball_out():
                         # Move ball back
-                        self.game.state.field.ball_position[0] -= x
-                        self.game.state.field.ball_position[1] -= y
+                        self.game.state.field.ball_position.x -= x
+                        self.game.state.field.ball_position.y -= y
                         ThrowIn(self.game, self.home, self.game.state.field.ball_position)
                         self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
                                        team_home=self.home, rolls=[roll_scatter]))
@@ -2416,7 +2416,7 @@ class Turn(Procedure):
         raise IllegalActionExcpetion("Unknown action")
 
     def available_actions(self):
-        return []
+        return [ActionChoice(ActionType.END_TURN, team=self.home)]
 
 
 class WeatherTable(Procedure):
