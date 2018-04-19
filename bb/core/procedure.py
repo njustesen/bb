@@ -2201,9 +2201,7 @@ class Setup(Procedure):
             self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
             return True
 
-        if self.selected_player is None and action.action_type == ActionType.SELECT_PLAYER:
-            self.selected_player = action.player_from_id
-        elif action.action_type == ActionType.PLACE_PLAYER:
+        if action.action_type == ActionType.PLACE_PLAYER:
             if action.pos_from is None and action.pos_to is None:
                 # Move player from reserve to reserve - sure
                 return False
