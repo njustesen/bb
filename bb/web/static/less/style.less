@@ -229,7 +229,6 @@ a, a:focus, a:hover {
         }
     }
 
-
     .game-info {
         width: 902px;
         margin: auto;
@@ -335,15 +334,16 @@ a, a:focus, a:hover {
 
     .gameboard {
 
-        width: 902px;
+        width: 904px;
         margin: auto;
         height:100%;
-        background-image: url("@{img-url}/arenas/bb_field/lines/field_good.jpg");
         box-shadow: 0 0 10px rgba(0,0,0,0.6);
         -moz-box-shadow: 0 0 10px rgba(0,0,0,0.6);
         -webkit-box-shadow: 0 0 6px rgba(0,0,0,0.6);
         -o-box-shadow: 0 0 10px rgba(0,0,0,0.6);
         border: solid 1px #555;
+        /* background-image: url("@{img-url}/arenas/bb_field/dots/field_good.jpg"); */
+        background-color: #222;
 
         .dugout {
             width: 60px;
@@ -354,9 +354,29 @@ a, a:focus, a:hover {
 
         .field {
             padding: 0;
-            width: 780px;
+            width: 782px;
             height:100%;
             float: left;
+        }
+
+        .field.swelteringheat {
+            background-image: url("@{img-url}/arenas/bb_field/default/heat.jpg");
+        }
+
+        .field.verysunny {
+            background-image: url("@{img-url}/arenas/bb_field/default/sunny.jpg");
+        }
+
+        .field.blizzard {
+            background-image: url("@{img-url}/arenas/bb_field/default/blizzard.jpg");
+        }
+
+        .field.nice {
+            background-image: url("@{img-url}/arenas/bb_field/default/nice.jpg");
+        }
+
+        .field.rain {
+            background-image: url("@{img-url}/arenas/bb_field/default/rain.jpg");
         }
 
         .playericon {
@@ -366,10 +386,30 @@ a, a:focus, a:hover {
 
         .ballicon {
             position: absolute;
+            line-height: 30px;
         }
-
-
     }
+
+    .gameboard.swelteringheat {
+        background-image: url("@{img-url}/arenas/bb_field/lines/field_heat.jpg");
+    }
+
+    .gameboard.verysunny {
+        background-image: url("@{img-url}/arenas/bb_field/lines/field_sunny.jpg");
+    }
+
+    .gameboard.blizzard {
+        background-image: url("@{img-url}/arenas/bb_field/lines/field_blizzard.jpg");
+    }
+
+    .gameboard.nice {
+        background-image: url("@{img-url}/arenas/bb_field/lines/field_good.jpg");
+    }
+
+    .gameboard.pouringrain {
+        background-image: url("@{img-url}/arenas/bb_field/lines/field_rain.jpg");
+    }
+
 }
 
 .post {

@@ -49,7 +49,7 @@ appServices.factory('GameLogService', function() {
             'WEATHER_POURING_RAIN': "Pouring Rain: It’s raining, making the ball slippery and difficult to hold. A -1 modifier applies to all catch, intercept, or pick-up rolls.",
             'WEATHER_BLIZZARD': "Blizzard: It’s cold and snowing! The ice on the pitch means that any player attempting to move an extra square (GFI) will slip and be Knocked Down on a roll of 1-2, while the snow means that only quick or short passes can be attempted.",
             'PLAYER_PLACED': 'PLAYER_PLACED',
-            'ILLEGAL_SETUP_NUM': 'Illegal Setup: Max. 11 players on the field!',
+            'ILLEGAL_SETUP_NUM': 'Illegal Setup: You must field between 3 and 11 players.',
             'ILLEGAL_SETUP_SCRIMMAGE': 'Illegal Setup: Min. 3 players on the line of scrimmage!',
             'ILLEGAL_SETUP_WINGS': 'Illegal Setup: Max. 2 players on each wing!',
             'BALL_PLACED': 'Ball placed on <position>.',

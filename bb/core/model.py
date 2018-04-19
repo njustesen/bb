@@ -221,7 +221,7 @@ class Field:
             return self.player_positions[player_id]
         return None
 
-    def is_setup_legal(self, home, tile=None, max_players=11, min_players=4):
+    def is_setup_legal(self, home, tile=None, max_players=11, min_players=3):
         cnt = 0
         for y in range(len(self.board)):
             for x in range(len(self.board[y])):
@@ -232,7 +232,7 @@ class Field:
                     if self.game.get_team(home).has_player_by_id(player_id):
                         cnt += 1
         if cnt > max_players or cnt < min_players:
-            raise IllegalActionExcpetion("You must have between " + str(max_players) + " and " + str(min_players) + " on the field.")
+            return False
         return True
 
     def is_setup_legal_scrimmage(self, home):
@@ -861,7 +861,7 @@ class Outcome:
             'opp_player_id': self.opp_player_id,
             'rolls': rolls,
             'team_home': self.team_home if self.team_home is not None else None,
-            'n': self.n if self.n is not None else None
+            #'n': self.n if self.n is not None else None
         }
 
 
