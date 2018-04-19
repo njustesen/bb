@@ -89,6 +89,9 @@ class Game:
             proc = self.stack.peek()
 
         # Otherwise, request for user input
+        if isinstance(self.stack.peek(), Turn):
+            self.state.team_turn = self.stack.peek().home
+
         self.set_available_actions()
         if len(self.available_actions) == 0:
             return False

@@ -109,6 +109,8 @@ class OutcomeType(Enum):
     AWAY_RECEIVE = 85
     TAILS_WON = 86
     TAILS_LOSS = 87
+    TOUCHBACK = 88
+    BALL_ON_GROUND = 89
 
 
 class PlayerActionType(Enum):

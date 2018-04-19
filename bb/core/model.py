@@ -210,7 +210,7 @@ class Field:
             return self.ball_position is not None and self.ball_position == self.get_player_position(player_id)
 
     def get_player_id_at(self, pos):
-        if pos.y < 0 or pos.y >= len(self.board.y) or pos.x < 0 or pos.x >= len(self.board):
+        if pos.y < 0 or pos.y >= len(self.board[0]) or pos.x < 0 or pos.x >= len(self.board[0]):
             raise Exception("Position is out of the board")
         if self.board[pos.y][pos.x] is None:
             return None

@@ -7,25 +7,6 @@ appControllers.controller('GameListCtrl', ['$scope', 'GameService',
             $scope.games = data;
         });
 
-        $scope.updatePublishState = function updatePublishState(game, shouldPublish) {
-            if (game != undefined && shouldPublish != undefined) {
-
-                GameService.changePublishState(game._id, shouldPublish).success(function(data) {
-                    var games = $scope.games;
-                    for (var gameKey in games) {
-                        if (games[gameKey]._id == game._id) {
-                            $scope.games[gameKey].is_published = shouldPublish;
-                            break;
-                        }
-                    }
-                }).error(function(status, data) {
-                    console.log(status);
-                    console.log(data);
-                });
-            }
-        }
-
-
         $scope.deleteGame = function deletegame(id) {
             if (id != undefined) {
 
@@ -85,6 +66,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.main_action = null;
         $scope.available_positions = [];
         $scope.local_state = {
+            ball_position: null,
+            ball_in_air: null,
             board: [],
             home_dugout: [],
             away_dugout: []
@@ -129,6 +112,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             let player = player_id != null ? $scope.playersById[player_id] : null;
             let player_state = player_id != null ? $scope.game.state.home_state.player_states[player_id] : null;
             let player_icon = player != null ? $scope.playerIcon(player, false) : null;
+            let ball = $scope.game.state.field.ball_position != null ? ($scope.game.state.field.ball_position.x == x && $scope.game.state.field.ball_position.y == y) : null;
             return {
                 x: x,
                 y: y,
@@ -138,7 +122,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 selected: false,
                 available_position: false,
                 area: area,
-                sub_area: sub_area
+                sub_area: sub_area,
+                ball: ball
             };
         };
 
@@ -148,9 +133,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let action = $scope.game.available_actions[idx];
                 if (action.positions.length > 0){
                     // If an available player is selected
+                    $scope.main_action = action;
                     if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0)){
                         $scope.available_positions = action.positions;
-                        $scope.main_action = action;
                     }
                 }
             }
@@ -181,6 +166,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.setLocalState = function setLocalState(){
+            $scope.local_state.ball_in_air = $scope.game.state.ball_in_air;
+            $scope.local_state.ball_position = $scope.game.state.ball_position;
             for (let y = 0; y < $scope.game.state.field.board.length; y++){
                 if ($scope.local_state.board.length <= y){
                     $scope.local_state.board.push([]);
@@ -286,13 +273,26 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return null;
         };
 
+        $scope.placeBall = function placeBall(square){
+            // Remove ball first
+            for (let y = 0; y < $scope.local_state.board.length; y++){
+                for (let x = 0; x < $scope.local_state.board[y].length; x++){
+                    $scope.local_state.board[y][x].ball = false;
+                }
+            }
+            // Place ball
+            $scope.local_state.board[square.y][square.x].ball = true;
+            $scope.local_state.ball_in_air = true;
+            $scope.local_state.ball_position = square;
+        };
+
         $scope.square = function square(square) {
             console.log("Click on: " + square);
 
             // If position is available
             if ($scope.main_action != null && square.available_position){
 
-                // If action requires a selected player or there is a selected player
+                // If action requires a selected player or a player is selected
                 if ($scope.main_action.player_ids.length == 0 || ($scope.selectedPlayer() != null)){
 
                     // If the user clicked on the selected player
@@ -301,30 +301,38 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         $scope.setAvailablePositions();
                         return;
                     } else {
-                        // Send action
-                        let action = {
-                            'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
-                            'player_to_id': square.player == null ? null : square.player.player_id,
-                            'pos_from': $scope.selected_square != null && $scope.selected_square.area == 'field' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
-                            'pos_to': square.area == 'field' ? {'x': square.x, 'y': square.y} : null,
-                            'team_home': null,
-                            'idx': -1,
-                            'action_type': $scope.main_action.action_type
-                        };
-                        $scope.act(action);
+                        // If action is PLACE_BALL - simply place the ball locally
+                        if ($scope.main_action.action_type == "PLACE_BALL"){
+                            $scope.placeBall(square);
+                        } else {
+                            // Otherwise - send action
+                            let action = {
+                                'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
+                                'player_to_id': square.player == null ? null : square.player.player_id,
+                                'pos_from': $scope.selected_square != null && $scope.selected_square.area == 'field' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
+                                'pos_to': square.area == 'field' ? {'x': square.x, 'y': square.y} : null,
+                                'team_home': null,
+                                'idx': -1,
+                                'action_type': $scope.main_action.action_type
+                            };
+                            $scope.act(action);
+                        }
+
                         return;
                     }
                 }
             }
             if (square.player == null){
-                // Clicked on an empty square
+                // Clicked on an empty square with no selected player
                 $scope.resetSquares();
                 $scope.setAvailablePositions();
             } else {
-                // Clicked on a player
-                $scope.resetSquares();
-                $scope.select(square);
-                $scope.setAvailablePositions();
+                // Clicked on a player - select it
+                if ($scope.main_action.action_type != "PLACE_BALL"){
+                    $scope.resetSquares();
+                    $scope.select(square);
+                    $scope.setAvailablePositions();
+                }
             }
 
         };
@@ -394,14 +402,26 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             });
         };
 
+        $scope.newAction = function newAction(action_type){
+            return {
+                'player_from_id': null,
+                'player_to_id': null,
+                'pos_from': null,
+                'pos_to': null,
+                'team_home': null,
+                'idx': -1,
+                'action_type': action_type
+            };
+        };
+
         $scope.pickActionType = function pickActionType(action){
-            $scope.selected_action = undefined;
             if (action.positions.length == 0){
-                $scope.act({'action_type': action.action_type, 'position': null});
-            } else if (action.positions.length == 1){
-                $scope.act({'action_type': action.action_type, 'position': action.positions[0]});
-            } else {
-                $scope.selected_action = action;
+                let a = $scope.newAction(action.action_type);
+                $scope.act(a);
+            } else if (action.action_type == "PLACE_BALL" && $scope.local_state.ball_position != null){
+                let a = $scope.newAction(action.action_type);
+                a.pos_to = $scope.local_state.ball_position;
+                $scope.act(a);
             }
         };
 
@@ -409,8 +429,14 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             // If no args -> show
             if (action.player_ids.length == 0 && action.positions.length == 0){
                 return true;
-            } else if (action.player_ids.length > 0 && $scope.selected_square != null && $scope.selected_square.player != null && action.player_ids.indexOf($scope.selected_square.player.player_id) >= 0 && action.positions.length == 0){
+            }
+            if (action.player_ids.length > 0 && $scope.selected_square != null && $scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0 && action.positions.length == 0){
                 return true;
+            }
+            if (action.player_ids.length == 0 && action.positions.length > 0){
+                if (action.action_type == "PLACE_BALL" && $scope.local_state.ball_position != null){
+                    return true;
+                }
             }
             return false;
         };

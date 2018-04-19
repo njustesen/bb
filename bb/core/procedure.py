@@ -414,8 +414,8 @@ class Bounce(Procedure):
         if roll_scatter.get_sum() in [6, 7, 8]:
             y = 1
 
-        self.game.state.field.ball_position[0] += x
-        self.game.state.field.ball_position[1] += y
+        self.game.state.field.ball_position.x += x
+        self.game.state.field.ball_position.y += y
         if self.kick:
             # Kick - out of bounds
             if self.game.state.field.is_ball_out() or \
@@ -2245,13 +2245,13 @@ class ThrowIn(Procedure):
         # Scatter
         x = 0
         y = 0
-        if self.pos[0] < 0:  # Above
+        if self.pos.x < 0:  # Above
             y = -1
-        elif self.pos[0] > len(self.game.arena.board[0]):  # Below
+        elif self.pos.x > len(self.game.arena.board[0]):  # Below
             y = 1
-        elif self.pos[1] < 0:  # Right
+        elif self.pos.y < 0:  # Right
             x = 1
-        elif self.pos[1] < len(self.game.arena.board[1]):  # Left
+        elif self.pos.y < len(self.game.arena.board[1]):  # Left
             x = -1
 
         if roll_scatter.get_sum() == 1:
@@ -2266,12 +2266,12 @@ class ThrowIn(Procedure):
                 y = -1
 
         for i in range(roll_distance.get_sum()):
-            self.game.state.field.ball_position[0] += x
-            self.game.state.field.ball_position[1] += y
+            self.game.state.field.ball_position.x += x
+            self.game.state.field.ball_position.y += y
             if self.game.state.field.is_ball_out():
                 # Move ball back
-                self.game.state.field.ball_position[0] -= x
-                self.game.state.field.ball_position[1] -= y
+                self.game.state.field.ball_position.x -= x
+                self.game.state.field.ball_position.y -= y
                 ThrowIn(self.game, self.home, self.game.state.field.ball_position)
                 self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
                                          team_home=self.home, rolls=[roll_scatter, roll_distance]))
