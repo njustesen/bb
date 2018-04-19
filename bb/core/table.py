@@ -111,6 +111,8 @@ class OutcomeType(Enum):
     TAILS_LOSS = 87
     TOUCHBACK = 88
     BALL_ON_GROUND = 89
+    GAME_STARTED = 90
+    BALL_SCATTER = 91
 
 
 class PlayerActionType(Enum):

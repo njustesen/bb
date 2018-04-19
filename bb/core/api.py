@@ -30,6 +30,7 @@ def step(game_id, action):
         done = game.step(action)
         if done:
             break
+        action = None
 
     # If game is over
     if game.game_over:

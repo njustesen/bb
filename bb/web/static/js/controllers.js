@@ -345,7 +345,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
-        $scope.currentProc = function currentProc(){
+        $scope.currentProc = function currentProc(header){
             if ($scope.loading){
                 return "";
             } else if ($scope.game.stack[$scope.game.stack.length-1] == "Pregame"){
@@ -356,6 +356,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 return "Coin Toss";
             } else if ($scope.game.stack[$scope.game.stack.length-1] == "PostGame"){
                 return "Post-Game";
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "QuickSnap" && header){
+                return "Quick Snap!";
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Blitz" && header){
+                return "Blitz!";
             } else if ($scope.game.game_over){
                 return "Game is Over";
             } else if ($scope.game.state.half == 1){

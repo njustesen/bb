@@ -416,6 +416,10 @@ class Bounce(Procedure):
 
         self.game.state.field.ball_position.x += x
         self.game.state.field.ball_position.y += y
+
+        self.game.report(Outcome(OutcomeType.BALL_SCATTER, pos=self.game.state.field.ball_position,
+                                         team_home=self.home, rolls=[roll_scatter]))
+
         if self.kick:
             # Kick - out of bounds
             if self.game.state.field.is_ball_out() or \
@@ -650,7 +654,8 @@ class CoinToss(Procedure):
             self.game.state.kicking_team = self.away_won_toss
         if self.game.state.kicking_team:
             self.game.report(Outcome(OutcomeType.AWAY_RECEIVE))
-        self.game.report(Outcome(OutcomeType.HOME_RECEIVE))
+        else:
+            self.game.report(Outcome(OutcomeType.HOME_RECEIVE))
 
     def available_actions(self):
         return self.aa
@@ -735,8 +740,8 @@ class Half(Procedure):
 
         # Add turns
         for i in range(8):
-            Turn(self.game, home=self.kicking_team)
-            Turn(self.game, home=not self.kicking_team)
+            Turn(self.game, self.kicking_team, self.half, 8-i)
+            Turn(self.game, not self.kicking_team, self.half, 8-i)
 
         # Setup and kickoff
         KickOff(self.game, self.kicking_team)
@@ -996,7 +1001,7 @@ class HighKick(Procedure):
         return True
 
     def available_actions(self):
-        return []
+        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home))]
 
 
 class CheeringFans(Procedure):
@@ -1159,10 +1164,10 @@ class KickOffTable(Procedure):
             BrilliantCoaching(self.game)
             self.game.report(Outcome(OutcomeType.KICKOFF_BRILLIANT_COACHING, rolls=[roll]))
         elif result == 9:  # Quick Snap
-            Turn(self.game, not self.home, quick_snap=True)
+            Turn(self.game, not self.home, None, None, quick_snap=True)
             self.game.report(Outcome(OutcomeType.KICKOFF_QUICK_SNAP, rolls=[roll]))
         elif result == 10:  # Blitz
-            Turn(self.game, self.home, blitz=True)
+            Turn(self.game, self.home, None, None, blitz=True)
             self.game.report(Outcome(OutcomeType.KICKOFF_BLITZ, rolls=[roll]))
         elif result == 11:  # Throw a Rock
             ThrowARock(self.game)
@@ -1910,6 +1915,23 @@ class PlayerAction(Procedure):
         return []
 
 
+class StartGame(Procedure):
+
+    def __init__(self, game):
+        super().__init__(game)
+
+    def step(self, action):
+        for player in self.game.home.players:
+            self.game.state.home_dugout.reserves.append(player.player_id)
+        for player in self.game.away.players:
+            self.game.state.away_dugout.reserves.append(player.player_id)
+        self.game.report(Outcome(OutcomeType.GAME_STARTED))
+        return True
+
+    def available_actions(self):
+        return [ActionChoice(ActionType.START_GAME, team=None)]
+
+
 class Pregame(Procedure):
 
     def __init__(self, game):
@@ -1919,6 +1941,7 @@ class Pregame(Procedure):
         # self.game.stack.push(Inducements(self.game, False))
         # self.game.stack.push(GoldToPettyCash(self.game))
         WeatherTable(self.game)
+        StartGame(self.game)
         self.done = True
 
     def step(self, action):
@@ -2150,10 +2173,17 @@ class ClearBoard(Procedure):
         super().__init__(game)
 
     def step(self, action):
+        self.game.state.field.ball_position = None
         for team in [True, False]:
             for player_id in self.game.get_team(team).get_player_ids():
                 # If player not in reserves. move it to it
                 if self.game.state.field.get_player_position(player_id) is not None:
+                    # Set to ready
+                    self.game.state.set_player_state(player_id, team, PlayerState.READY)
+                    # Remove from field
+                    self.game.state.field.remove(player_id)
+                    # Move to reserves
+                    self.game.state.get_dugout(team).reserves.append(player_id)
                     # Check if heat exhausted
                     if self.game.state.weather == WeatherType.SWELTERING_HEAT:
                         roll = DiceRoll([D6()])
@@ -2161,13 +2191,6 @@ class ClearBoard(Procedure):
                             self.game.state.set_player_state(player_id, team, PlayerState.HEATED)
                             self.game.report(Outcome(OutcomeType.PLAYER_HEATED, player_id=action.player_from_id, rolls=[roll]))
                         self.game.report(Outcome(OutcomeType.PLAYER_NOT_HEATED, player_id=action.player_from_id, rolls=[roll]))
-                        # Remove from field
-                        self.game.state.field.remove(player_id)
-                else:
-                    self.game.state.set_player_state(player_id, team, PlayerState.READY)
-
-                # Move to reserves
-                self.game.state.get_dugout(team).reserves.append(player_id)
         return True
 
     def available_actions(self):
@@ -2350,9 +2373,11 @@ class Turn(Procedure):
     start_actions = [ActionType.START_MOVE, ActionType.START_BLITZ, ActionType.START_BLOCK, ActionType.START_MOVE,
                      ActionType.START_FOUL, ActionType.START_PASS, ActionType.START_HANDOFF]
 
-    def __init__(self, game, home, blitz=False, quick_snap=False):
+    def __init__(self, game, home, half, turn, blitz=False, quick_snap=False):
         super().__init__(game)
         self.home = home
+        self.half = half
+        self.turn = turn
         self.blitz = blitz
         self.quick_snap = quick_snap
         self.blitz_available = not quick_snap

@@ -64,38 +64,74 @@ class Game:
             elif self.stack.peek().effect == -1:
                 self._remove_turn()
 
-        # Run proc
+        # Get proc
         proc = self.stack.peek()
+
+        # If no action and action is required
+        available_actions = proc.available_actions()
+        if action is None and len(available_actions) > 0:
+            return True
+
+        # If action but it's available
+        if action is not None:
+            in_set = False
+            for action_choice in available_actions:
+                if action.action_type == action_choice.action_type:
+                    in_set = True
+                    break
+            if not in_set:
+                return True
+
+        # Run proc
         proc.done = proc.step(action)
 
         # Remove done procs
-        proc = self.stack.peek()
-        while proc.done:
+        if proc.done:
 
-            # Remove proc
-            self.stack.pop()
+            # Clear done procs
+            while not self.stack.is_empty() and self.stack.peek().done:
+
+                # If Half is done
+                if isinstance(proc, Half):
+                    if proc.half == 1:
+                        self.state.half = self.stack.peek().half + 1
+                        self.state.home_state.turn = 0
+                        self.state.away_state.turn = 0
+                    self.stack.pop()
+
+                # If pre-game is over
+                elif isinstance(self.stack.peek(), Pregame) and self.stack.peek().done:
+                    self.stack.pop()
+                    Half(self, 2)
+                    Half(self, 1)
+
+                else:
+                    self.stack.pop()
 
             # Is game over
             if self.stack.is_empty():
                 self.game_over = True
                 return False
 
-            # If pre-game is over
-            if isinstance(self.stack.peek(), Pregame) and self.stack.peek().done:
-                Half(self, 1)
-                Half(self, 2)
+            # Set turn and half in state
+            if isinstance(self.stack.peek(), Turn):
+                self.state.team_turn = self.stack.peek().home
+                if self.state.team_turn is None:
+                    self.state.home_state.turn = None
+                else:
+                    if self.state.team_turn:
+                        self.state.home_state.turn = self.stack.peek().turn
+                    elif not self.state.team_turn:
+                        self.state.away_state.turn = self.stack.peek().turn
+                    self.state.half = self.stack.peek().half
 
-            # Go to next proc
-            proc = self.stack.peek()
-
-        # Otherwise, request for user input
-        if isinstance(self.stack.peek(), Turn):
-            self.state.team_turn = self.stack.peek().home
-
+        # Update available actions
         self.set_available_actions()
         if len(self.available_actions) == 0:
+            # We can continue without user input
             return False
 
+        # Game needs user input
         return True
 
     def set_available_actions(self):
@@ -112,7 +148,6 @@ class Game:
                 break
 
     def _add_turn(self):
-        home = False
         for idx in reversed(range(self.stack.size())):
             if isinstance(self.stack.items[idx], Turn):
                 home = self.stack.items[idx].home
@@ -176,5 +211,10 @@ class Game:
     def procs(self):
         procs = []
         for proc in self.stack.items:
-            procs.append(proc.__class__.__name__)
+            if isinstance(proc, Turn) and proc.quick_snap:
+                procs.append("QuickSnap")
+            elif isinstance(proc, Turn) and proc.blitz:
+                procs.append("Blitz")
+            else:
+                procs.append(proc.__class__.__name__)
         return procs

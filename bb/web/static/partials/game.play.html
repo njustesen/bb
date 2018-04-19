@@ -53,13 +53,15 @@
                 </div>
             </div>
             <div class="col-xs-1 text-center {{ game.state.team_turn == true ? 'bold' : '' }}">
-                <div class="proclabel">{{game.state.home_state.turn}} / 8</div>
+                <div class="proclabel" ng-if="game.state.home_state.turn != null">{{ game.state.home_state.turn }} / 8</div>
+                <div class="proclabel" ng-if="game.state.home_state.turn == null">{{ currentProc(false) }}</div>
             </div>
             <div class="col-xs-2 text-center">
-                <div class="proclabel">{{ currentProc() }}</div>
+                <div class="proclabel">{{ currentProc(true) }}</div>
             </div>
             <div class="col-xs-1 text-center {{ game.state.team_turn == false ? 'bold' : '' }}">
-                <div class="proclabel">{{game.state.home_state.turn}} / 8</div>
+                <div class="proclabel" ng-if="game.state.away_state.turn != null">{{ game.state.away_state.turn }} / 8</div>
+                <div class="proclabel" ng-if="game.state.away_state.turn == null">{{ currentProc(false) }}</div>
             </div>
             <div class="col-xs-4">
                 <div class="team-icons">
@@ -69,8 +71,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6 {{ game.state.team_turn == true ? 'turnmarker-home-turn' : 'turnmarker-home' }}"></div>
-            <div class="col-sm-6 {{ game.state.team_turn == false ? 'turnmarker-away-turn' : 'turnmarker-away' }}"></div>
+            <div class="col-sm-6 turnmarker {{ game.state.team_turn == true ? 'turnmarker-home-turn' : 'turnmarker-home' }}"></div>
+            <div class="col-sm-6 turnmarker {{ game.state.team_turn == false ? 'turnmarker-away-turn' : 'turnmarker-away' }}"></div>
         </div>
     </div>
 </div>
@@ -202,7 +204,7 @@
             </div>
             <div class="action-bar text-center">
                 <span ng-repeat="action in game.available_actions">
-                    <button ng-if="showAction(action)" type="button" class="btn btn-sm {{action.team ? 'btn-danger' : 'btn-primary'}}" ng-click="pickActionType(action)">
+                    <button ng-if="showAction(action)" type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}}" ng-click="pickActionType(action)">
                         {{ prettify(action.action_type) }}
                     </button>
                 </span>

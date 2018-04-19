@@ -121,7 +121,8 @@ appServices.factory('GameLogService', function() {
             'ACCURATE_PASS': "ACCURATE_PASS",
             'INACCURATE_PASS': "INACCURATE_PASS",
             'FUMBLE': "FUMBLE",
-            'CATCH_FAILED': "CATCH_FAILED"
+            'CATCH_FAILED': "CATCH_FAILED",
+            'BALL_SCATTER': "BALL_SCATTER"
         }
     };
 });
