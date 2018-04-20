@@ -873,7 +873,7 @@ class Touchback(Procedure):
         return True
 
     def available_actions(self):
-        return []
+        return [ActionChoice(ActionType.SELECT_PLAYER, player_ids=self.game.state.field.get_team_player_ids(self.home))]
 
 
 class LandKick(Procedure):
@@ -955,7 +955,6 @@ class Riot(Procedure):
         self.effect = 0
 
     def step(self, action):
-        roll = None
         if self.game.state.get_team_state(not self.home).turn == 7:
             self.effect = -1
         elif self.game.state.get_team_state(not self.home).turn == 0:
@@ -969,7 +968,7 @@ class Riot(Procedure):
 
         self.game.state.get_team_state(self.home).turn += self.effect
         self.game.state.get_team_state(not self.home).turn += self.effect
-        self.game.report(Outcome(OutcomeType.RIOT, n=self.effect, rolls=[roll]))
+        self.game.report(Outcome(OutcomeType.RIOT, n=self.effect, rolls=[] if roll is None else [roll]))
         return True
 
     def available_actions(self):
@@ -1203,11 +1202,11 @@ class KnockDown(Procedure):
     def step(self, action):
 
         # Knock down player
-        self.game.state.get_team(self.home).player_states[self.player_id] = PlayerState.DOWN_READY
-        self.game.report(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id)
+        self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.DOWN_READY
+        self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id))
         if self.both_down:
-            self.game.state.get_team(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN_READY
-            self.game.report(OutcomeType.KNOCKED_DOWN, player_id=self.opp_player_id, opp_player_id=self.player_id)
+            self.game.state.get_team_state(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN_READY
+            self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.opp_player_id, opp_player_id=self.player_id))
 
         # Turnover
         if self.turnover:

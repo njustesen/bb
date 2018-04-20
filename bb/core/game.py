@@ -110,6 +110,7 @@ class Game:
 
             # Is game over
             if self.stack.is_empty():
+                self.state.team_turn = None
                 self.game_over = True
                 return False
 
@@ -138,6 +139,8 @@ class Game:
         self.available_actions = self.stack.peek().available_actions()
 
     def report(self, outcome):
+        print(outcome.outcome_type.name)
+        print(json.dumps(outcome.to_simple()))
         self.reports.append(outcome)
 
     def _remove_turn(self):

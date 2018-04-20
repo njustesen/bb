@@ -327,8 +327,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.resetSquares();
                 $scope.setAvailablePositions();
             } else {
-                // Clicked on a player - select it
-                if ($scope.main_action.action_type != "PLACE_BALL"){
+                // Clicked on a player - select it - unless only non-player actions
+                if ($scope.main_action != null && $scope.main_action.action_type != "PLACE_BALL"){
                     $scope.resetSquares();
                     $scope.select(square);
                     $scope.setAvailablePositions();
