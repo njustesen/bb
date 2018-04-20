@@ -86,14 +86,14 @@
         </div>
 
         <div class="gameboard">
-            <div class="dugout">
+            <div class="dugout home">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square {{ local_state.home_dugout[$index][0].selected ? 'selected' : '' }} {{ local_state.home_dugout[$index][0].available_position ? 'green' : '' }}" ng-click="square(local_state.home_dugout[$index][0])" ng-mouseover="squareHover(local_state.home_dugout[$index][0])">
+                    <div class="square home {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }} {{ local_state.home_dugout[$index][0].selected ? 'selected' : '' }} {{ local_state.home_dugout[$index][0].available_position ? 'green' : '' }}" ng-click="square(local_state.home_dugout[$index][0])" ng-mouseover="squareHover(local_state.home_dugout[$index][0])">
                         <div class="playericon align-middle text-center" ng-if="local_state.home_dugout[$index][0].player != null">
                             <img src="static/img/iconssmall/{{ local_state.home_dugout[$index][0].player_icon }}" />
                         </div>
                     </div>
-                    <div class="square {{ local_state.home_dugout[$index][1].selected ? 'selected' : ''}} {{ local_state.home_dugout[$index][1].available_position ? 'green' : '' }}" ng-click="square(local_state.home_dugout[$index][1])" ng-mouseover="squareHover(local_state.home_dugout[$index][1])">
+                    <div class="square home {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }} {{ local_state.home_dugout[$index][1].selected ? 'selected' : ''}} {{ local_state.home_dugout[$index][1].available_position ? 'green' : '' }}" ng-click="square(local_state.home_dugout[$index][1])" ng-mouseover="squareHover(local_state.home_dugout[$index][1])">
                         <div class="playericon align-middle text-center" ng-if="local_state.home_dugout[$index][1].player != null">
                             <img src="static/img/iconssmall/{{ local_state.home_dugout[$index][1].player_icon }}" />
                         </div>
@@ -113,14 +113,14 @@
                     </div>
                 </div>
             </div>
-            <div class="dugout">
+            <div class="dugout away">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square {{ local_state.away_dugout[$index][0].selected ? 'selected' : ''}} {{ local_state.away_dugout[$index][0].available_position ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][0])" ng-mouseover="squareHover(local_state.away_dugout[$index][0])">
+                    <div class="square away {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }}  {{ local_state.away_dugout[$index][0].selected ? 'selected' : ''}} {{ local_state.away_dugout[$index][0].available_position ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][0])" ng-mouseover="squareHover(local_state.away_dugout[$index][0])">
                         <div class="playericon align-middle text-center" ng-if="local_state.away_dugout[$index][0].player != null">
                             <img src="static/img/iconssmall/{{ local_state.away_dugout[$index][0].player_icon }}" />
                         </div>
                     </div>
-                    <div class="square {{ local_state.away_dugout[$index][1].selected ? 'selected' : ''}} {{ local_state.away_dugout[$index][1].available_position ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][1])" ng-mouseover="squareHover(local_state.away_dugout[$index][1])">
+                    <div class="square away {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }}  {{ local_state.away_dugout[$index][1].selected ? 'selected' : ''}} {{ local_state.away_dugout[$index][1].available_position ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][1])" ng-mouseover="squareHover(local_state.away_dugout[$index][1])">
                         <div class="playericon align-middle text-center" ng-if="local_state.away_dugout[$index][1].player != null">
                             <img src="static/img/iconssmall/{{ local_state.away_dugout[$index][1].player_icon }}" />
                         </div>

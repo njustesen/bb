@@ -180,7 +180,7 @@ a, a:focus, a:hover {
 
 .gamecontent {
 
-    height: 452px;
+    height: 454px;
 
     .actions {
         width: 902px;
@@ -209,11 +209,11 @@ a, a:focus, a:hover {
         }
     }
 
-    .selected {
+    .square.selected {
         background-color: rgba(255,255,255,0.33);
     }
 
-    .green {
+    .square.green {
         background-color: rgba(0,255,0,0.33);
         &:hover {
             background-color: rgba(0,255,0,0.66);
@@ -221,10 +221,42 @@ a, a:focus, a:hover {
         }
     }
 
-    .selected.green {
+    .square.selected.green {
         background-color: rgba(0,255,0,0.66);
         &:hover {
             background-color: rgba(0,255,0,1.0);
+            cursor: pointer;
+        }
+    }
+
+    .square.home.kod {
+        background-color: rgb(100, 0, 0);
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(255,255,255,0.33);
+        }
+    }
+
+    .square.home.casualties {
+        background-color: rgb(75, 0, 0);
+        &:hover {
+            background-color: rgba(255,255,255,0.33);
+            cursor: pointer;
+        }
+    }
+
+    .square.away.kod {
+        background-color: rgb(0, 0, 100);
+        &:hover {
+            cursor: pointer;
+            background-color: rgba(255,255,255,0.33);
+        }
+    }
+
+    .square.away.casualties {
+        background-color: rgb(0, 0, 75);
+        &:hover {
+            background-color: rgba(255,255,255,0.33);
             cursor: pointer;
         }
     }
@@ -350,6 +382,14 @@ a, a:focus, a:hover {
             height:100%;
             float: left;
             position: relative;
+        }
+
+        .dugout.home {
+            background-color: rgb(125, 0, 0);
+        }
+
+        .dugout.away {
+            background-color: rgb(0, 0, 125);
         }
 
         .field {
