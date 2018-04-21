@@ -74,7 +74,7 @@ class Apothecary(Procedure):
 
                 self.game.state.get_team_state(self.home).apothecary = False
 
-                self.game.report(Outcome(OutcomeType.CASUALTY_APOTHECARY, player_id=self.player_id, team_home=self.home, n=[self.casualty_first, self.effect_first, self.casualty_second, self.effect_second], rolls=[self.roll_first, self.roll_second]))
+                self.game.report(Outcome(OutcomeType.CASUALTY_APOTHECARY, player_id=self.player_id, team_home=self.home, rolls=[self.roll_first, self.roll_second]))
 
                 self.waiting_apothecary = True
 
@@ -103,7 +103,7 @@ class Apothecary(Procedure):
                     # Apothecary puts badly hurt players in the reserves
                     self.game.state.get_dugout(self.home).reserves.append(self.player_id)
 
-                self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=[casualty, effect], rolls=[roll]))
+                self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=effect.name, rolls=[roll]))
 
         return True
 
@@ -472,7 +472,7 @@ class Casualty(Procedure):
             self.casualty = CasualtyType(n)
             self.effect = Rules.casualty_effect[self.casualty]
 
-            self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=[self.casualty, self.effect], rolls=[self.roll]))
+            self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=self.effect.name, rolls=[self.roll]))
 
             if self.game.state.get_team_state(self.home).apothecary:
                 self.waiting_apothecary = True
@@ -903,6 +903,38 @@ class LandKick(Procedure):
         return []
 
 
+class Fans(Procedure):
+
+    def __init__(self, game):
+        super().__init__(game)
+
+    def step(self, action):
+        roll_home = DiceRoll([D6(), D6()])
+        roll_away = DiceRoll([D6(), D6()])
+        self.game.spectators = (roll_home.get_sum() + roll_away.get_sum()) * 1000
+        self.game.fame_team = None
+        self.game.fame = 0
+        if roll_home.get_sum() >= roll_away.get_sum() * 2:
+            self.game.fame = 2
+            self.game.fame_team = True
+        elif roll_home.get_sum() > roll_away.get_sum():
+            self.game.fame = 1
+            self.game.fame_team = True
+        elif roll_home.get_sum() <= roll_away.get_sum() * 2:
+            self.game.fame = 2
+            self.game.fame_team = False
+        elif roll_home.get_sum() < roll_away.get_sum():
+            self.game.fame = 1
+            self.game.fame_team = False
+        self.game.report(Outcome(OutcomeType.SPECTATORS, n=self.game.spectators, rolls=[roll_home, roll_away]))
+        self.game.report(Outcome(OutcomeType.FAME, n=self.game.fame, team_home=self.game.fame_team))
+
+        return True
+
+    def available_actions(self):
+        return []
+
+
 class KickOff(Procedure):
 
     def __init__(self, game, home):
@@ -968,7 +1000,7 @@ class Riot(Procedure):
 
         self.game.state.get_team_state(self.home).turn += self.effect
         self.game.state.get_team_state(not self.home).turn += self.effect
-        self.game.report(Outcome(OutcomeType.RIOT, n=self.effect, rolls=[] if roll is None else [roll]))
+        self.game.report(Outcome(OutcomeType.RIOT, n=self.effect.name, rolls=[] if roll is None else [roll]))
         return True
 
     def available_actions(self):
@@ -1117,9 +1149,9 @@ class PitchInvasionRoll(Procedure):
                 KnockOut(self.game, self.home, self.player_id)
             else:
                 self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
-                self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerState.STUNNED))
+                self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerState.STUNNED.name))
         else:
-            self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerState.READY))
+            self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerState.READY.name))
 
         return True
 
@@ -1940,6 +1972,7 @@ class Pregame(Procedure):
         # self.game.stack.push(Inducements(self.game, False))
         # self.game.stack.push(GoldToPettyCash(self.game))
         WeatherTable(self.game)
+        Fans(self.game)
         StartGame(self.game)
         self.done = True
 
@@ -2360,7 +2393,7 @@ class TurnStunned(Procedure):
             if player_states[player_id] == PlayerState.STUNNED:
                 self.game.state.get_team_state(self.home).player_states[player_id] = PlayerState.DOWN_USED
                 players.append(player_id)
-        self.game.report(Outcome(OutcomeType.STUNNED_TURNED, n=players))
+        self.game.report(Outcome(OutcomeType.STUNNED_TURNED))
         return True
 
     def available_actions(self):

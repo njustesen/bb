@@ -113,6 +113,8 @@ class OutcomeType(Enum):
     BALL_ON_GROUND = 89
     GAME_STARTED = 90
     BALL_SCATTER = 91
+    SPECTATORS = 92
+    FAME = 93
 
 
 class PlayerActionType(Enum):

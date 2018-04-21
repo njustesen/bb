@@ -27,14 +27,30 @@ appControllers.controller('GameListCtrl', ['$scope', 'GameService',
     }
 ]);
 
-appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService', 'TeamService',
-    function GameCreateCtrl($scope, $location, GameService, TeamService) {
+appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService', 'TeamService', 'IconService',
+    function GameCreateCtrl($scope, $location, GameService, TeamService, IconService) {
+
+        $scope.teams = [];
+        $scope.home_team_id = null;
+        $scope.away_team_id = null;
 
         TeamService.findAll().success(function(data) {
             $scope.teams = data;
-            $scope.home_team_id = data[0].team_id;
-            $scope.away_team_id = data[1].team_id;
         });
+
+        $scope.prettify = function prettify(text){
+            let pretty = text.toLowerCase().split("_").join(" ");
+            return pretty.charAt(0).toUpperCase() + pretty.slice(1);
+        };
+
+        $scope.getTeam = function getTeam(team_id){
+            for (let i in $scope.teams){
+                if ($scope.teams[i].team_id == team_id){
+                    return $scope.teams[i];
+                }
+            }
+            return null;
+        };
 
         $scope.home_player = "human"
         $scope.away_player = "human"
@@ -54,6 +70,15 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
                 console.log(data);
             });
         }
+
+        $scope.playerIcon = function playerIcon(player, home, race, angled){
+            let icon_base = IconService.playerIcons[race][player.position_name];
+            let icon_num = "1";
+            let team_letter = home ? "" : "b";
+            let angle = "";
+            let icon_name = icon_base + icon_num + team_letter + angle + ".gif";
+            return icon_name;
+        };
     }
 ]);
 
@@ -82,6 +107,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     let line = GameLogService.log_texts[$scope.game.reports[i].outcome_type] + "\n";
                     line = line.replace("<home_team>", $scope.game.home_team.name);
                     line = line.replace("<away_team>", $scope.game.away_team.name);
+                    line = line.replace("<n>", $scope.game.reports[i].n);
+                    line = line.replace("<team>", $scope.game.reports[i].team_home ? $scope.game.home_team.name : $scope.game.away_team.name );
                     text += line;
                 }
             }

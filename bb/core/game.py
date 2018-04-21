@@ -15,6 +15,9 @@ class Game:
         self.config = config
         self.game_over = False
         self.available_actions = []
+        self.spectators = None
+        self.fame = None
+        self.fame_team = None
 
         if self.state is None:
             self.state = GameState(self)
@@ -34,7 +37,10 @@ class Game:
             'game_over': self.game_over,
             'stack': self.procs(),
             'available_actions': available_actions,
-            'reports': reports
+            'reports': reports,
+            'spectators': self.spectators,
+            'fame': self.fame,
+            'fame_team': self.fame_team
         }
 
     def init(self):

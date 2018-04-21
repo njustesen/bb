@@ -786,7 +786,7 @@ class Race:
 class Team:
 
     def __init__(self, team_id, name, race, coach, players=[], treasury=0, apothecary=False, rerolls=0, ass_coaches=0,
-                 cheerleaders=0):
+                 cheerleaders=0, fan_factor=0):
         self.team_id = team_id
         self.name = name
         self.coach = coach
@@ -795,6 +795,7 @@ class Team:
         self.treasury = treasury
         self.apothecary = apothecary
         self.rerolls = rerolls
+        self.fan_factor = fan_factor
         self.ass_coaches = ass_coaches
         self.cheerleaders = cheerleaders
 
@@ -819,6 +820,8 @@ class Team:
             'apothecary': self.apothecary,
             'rerolls': self.rerolls,
             'ass_coaches': self.ass_coaches,
+            'cheerleaders': self.cheerleaders,
+            'fan_factor': self.fan_factor,
             'players': players,
             'players_by_id': players_by_id
         }
@@ -861,7 +864,7 @@ class Outcome:
             'opp_player_id': self.opp_player_id,
             'rolls': rolls,
             'team_home': self.team_home if self.team_home is not None else None,
-            #'n': self.n if self.n is not None else None
+            'n': self.n if self.n is not None else None
         }
 
 

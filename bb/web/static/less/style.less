@@ -33,6 +33,13 @@ a, a:focus, a:hover {
     border-radius: 0px;
 }
 
+.team-name {
+    font-size: 24px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
 .game {
 	background: #fff;
 	box-shadow: 0px 1px 0px #aaa;
@@ -42,6 +49,39 @@ a, a:focus, a:hover {
 		margin-top: 1.8em;
 	}
 
+}
+
+.rerolls {
+
+    display: inline-block;
+    height: 24px;
+
+    .reroll{
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        margin-top: 4px;
+        display: inline-block;
+        opacity: 0.66;
+    }
+
+    .home {
+        background-color: red;
+        margin-left: 4px;
+    }
+
+    .away {
+        background-color: blue;
+        margin-right: 4px;
+    }
+
+    .used {
+        background-color: #ccc;
+    }
+
+    .none {
+        opacity: 0.0;
+    }
 }
 
 .game-free {
@@ -107,39 +147,6 @@ a, a:focus, a:hover {
                     opacity: 0.25;
                 }
 
-            }
-
-            .rerolls {
-
-                display: inline-block;
-                height: 24px;
-
-                .reroll{
-                    border-radius: 50%;
-                    width: 18px;
-                    height: 18px;
-                    margin-top: 4px;
-                    display: inline-block;
-                    opacity: 0.66;
-                }
-
-                .home {
-                    background-color: red;
-                    margin-left: 4px;
-                }
-
-                .away {
-                    background-color: blue;
-                    margin-right: 4px;
-                }
-
-                .used {
-                    background-color: #ccc;
-                }
-
-                .none {
-                    opacity: 0.0;
-                }
             }
 
         }
@@ -418,7 +425,7 @@ a, a:focus, a:hover {
             background-image: url("@{img-url}/arenas/bb_field/default/nice.jpg");
         }
 
-        .field.rain {
+        .field.pouringrain {
             background-image: url("@{img-url}/arenas/bb_field/default/rain.jpg");
         }
 

@@ -5,7 +5,7 @@
         <div class="alert alert-danger" ng-show="message.is_error">{{message.message}}</div>
         <div class="alert alert-success" ng-show="message.is_success">{{message.message}}</div>
 
-        <a href="#/game/create" class="btn btn-success" style="margin-bottom: 15px;">Create a new game</a>
+        <a href="#/game/create" class="btn btn-default" style="margin-bottom: 15px;">Create a new game</a>
 
         <table class="table table-condensed table-hover">
             <thead>
@@ -15,7 +15,6 @@
                     <th></th>
                     <th></th>
                     <th>Away Team</th>
-                    <th>Half</th>
                     <th></th>
                 </tr>
             </thead>
@@ -26,7 +25,6 @@
                     <td class="text-center">-</td>
                     <td>{{game.state.away_state.score}}</td>
                     <td>{{game.away_team.name}}</td>
-                    <td>{{game.state.half}}</td>
                     <td class="text-right">
                         <a href="#/game/play/{{game.game_id}}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-play"></span> Play</a>
                         <button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>

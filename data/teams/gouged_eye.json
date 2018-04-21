@@ -9,6 +9,7 @@
   "treasury": 0,
   "apothecary": false,
   "rerolls": 2,
+  "fan_factor": 5,
   "ass_coaches": 2,
   "cheerleaders": 1,
   "players": [
