@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/core/game.py" afterPath="$PROJECT_DIR$/bb/core/game.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/core/load.py" afterPath="$PROJECT_DIR$/bb/core/load.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/core/model.py" afterPath="$PROJECT_DIR$/bb/core/model.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/core/procedure.py" afterPath="$PROJECT_DIR$/bb/core/procedure.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/core/table.py" afterPath="$PROJECT_DIR$/bb/core/table.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/js/services.js" afterPath="$PROJECT_DIR$/bb/web/static/js/services.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/less/style.less" afterPath="$PROJECT_DIR$/bb/web/static/less/style.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/partials/game.create.html" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.create.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/partials/game.list.html" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.list.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/teams/gouged_eye.json" afterPath="$PROJECT_DIR$/data/teams/gouged_eye.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/teams/reikland_reivers.json" afterPath="$PROJECT_DIR$/data/teams/reikland_reivers.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,8 +29,8 @@
       <file leaf-file-name="game.play.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.5294118">
-              <caret line="16" column="119" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="119" />
+            <state vertical-scroll-proportion="-7.745098">
+              <caret line="204" column="232" selection-start-line="204" selection-start-column="232" selection-end-line="204" selection-end-column="232" />
               <folding>
                 <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
               </folding>
@@ -76,17 +67,17 @@
       <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.703704">
-              <caret line="109" column="20" selection-start-line="109" selection-start-column="20" selection-end-line="109" selection-end-column="73" />
+            <state vertical-scroll-proportion="-22.74074">
+              <caret line="474" column="3" selection-start-line="474" selection-start-column="3" selection-end-line="474" selection-end-column="3" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="services.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="services.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/services.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33229813">
+            <state vertical-scroll-proportion="-7.9259257">
               <caret line="55" column="36" selection-start-line="55" selection-start-column="36" selection-end-line="55" selection-end-column="36" />
               <folding />
             </state>
@@ -115,11 +106,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.9259257">
-              <caret line="249" column="152" selection-start-line="249" selection-start-column="149" selection-end-line="249" selection-end-column="152" />
+            <state vertical-scroll-proportion="0.5885093">
+              <caret line="1035" column="0" selection-start-line="1035" selection-start-column="0" selection-end-line="1035" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -140,8 +131,8 @@
       <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
+            <state vertical-scroll-proportion="-19.592592">
+              <caret line="126" column="61" selection-start-line="126" selection-start-column="61" selection-end-line="126" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -204,16 +195,16 @@
         <option value="$PROJECT_DIR$/data/teams/gouged_eye.json" />
         <option value="$PROJECT_DIR$/bb/core/load.py" />
         <option value="$PROJECT_DIR$/data/teams/reikland_reivers.json" />
-        <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.list.html" />
         <option value="$PROJECT_DIR$/bb/web/static/less/style.less" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.create.html" />
         <option value="$PROJECT_DIR$/bb/core/table.py" />
-        <option value="$PROJECT_DIR$/bb/core/game.py" />
         <option value="$PROJECT_DIR$/bb/core/model.py" />
-        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
-        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
+        <option value="$PROJECT_DIR$/bb/core/game.py" />
+        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
+        <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
+        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
       </list>
     </option>
   </component>
@@ -1179,16 +1170,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.5294118">
-          <caret line="16" column="119" selection-start-line="16" selection-start-column="20" selection-end-line="16" selection-end-column="119" />
-          <folding>
-            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/static/less/style.less">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-13.481482">
@@ -1216,30 +1197,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-17.37037">
           <caret line="866" column="55" selection-start-line="866" selection-start-column="55" selection-end-line="866" selection-end-column="55" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.9259257">
-          <caret line="249" column="152" selection-start-line="249" selection-start-column="149" selection-end-line="249" selection-end-column="152" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1255,19 +1218,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/services.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.703704">
-          <caret line="109" column="20" selection-start-line="109" selection-start-column="20" selection-end-line="109" selection-end-column="73" />
+        <state vertical-scroll-proportion="-7.9259257">
+          <caret line="55" column="36" selection-start-line="55" selection-start-column="36" selection-end-line="55" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/js/services.js">
+    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33229813">
-          <caret line="55" column="36" selection-start-line="55" selection-start-column="36" selection-end-line="55" selection-end-column="36" />
+        <state vertical-scroll-proportion="-19.592592">
+          <caret line="126" column="61" selection-start-line="126" selection-start-column="61" selection-end-line="126" selection-end-column="61" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-22.74074">
+          <caret line="474" column="3" selection-start-line="474" selection-start-column="3" selection-end-line="474" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.745098">
+          <caret line="204" column="232" selection-start-line="204" selection-start-column="232" selection-end-line="204" selection-end-column="232" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5885093">
+          <caret line="1035" column="0" selection-start-line="1035" selection-start-column="0" selection-end-line="1035" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

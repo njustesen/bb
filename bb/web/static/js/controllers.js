@@ -375,23 +375,23 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.currentProc = function currentProc(header){
             if ($scope.loading){
                 return "";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Pregame"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Pregame"){
                 return "Pre-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "WeatherTable"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "WeatherTable"){
                 return "Pre-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "CoinToss"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "CoinToss"){
                 return "Coin Toss";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "PostGame"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "PostGame"){
                 return "Post-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "QuickSnap" && header){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "QuickSnap" && header){
                 return "Quick Snap!";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Blitz" && header){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Blitz" && header){
                 return "Blitz!";
-            } else if ($scope.game.game_over){
+            } else if ($scope.game.game_over){
                 return "Game is Over";
-            } else if ($scope.game.state.half == 1){
+            } else if ($scope.game.state.half == 1){
                 return "1st half";
-            } else if ($scope.game.state.half == 2){
+            } else if ($scope.game.state.half == 2){
                 return "2nd half";
             }
         };

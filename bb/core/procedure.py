@@ -1032,7 +1032,7 @@ class HighKick(Procedure):
         return True
 
     def available_actions(self):
-        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home))]
+        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home), positions=[self.game.state.field.ball_position])]
 
 
 class CheeringFans(Procedure):

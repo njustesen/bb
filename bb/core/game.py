@@ -110,7 +110,9 @@ class Game:
                     self.stack.pop()
                     Half(self, 2)
                     Half(self, 1)
-
+                    self.state.half = 1
+                    self.state.home_state.turn = 0
+                    self.state.away_state.turn = 0
                 else:
                     self.stack.pop()
 
@@ -123,14 +125,7 @@ class Game:
             # Set turn and half in state
             if isinstance(self.stack.peek(), Turn):
                 self.state.team_turn = self.stack.peek().home
-                if self.state.team_turn is None:
-                    self.state.home_state.turn = None
-                else:
-                    if self.state.team_turn:
-                        self.state.home_state.turn = self.stack.peek().turn
-                    elif not self.state.team_turn:
-                        self.state.away_state.turn = self.stack.peek().turn
-                    self.state.half = self.stack.peek().half
+                self.state.half = self.stack.peek().half
 
         # Update available actions
         self.set_available_actions()
