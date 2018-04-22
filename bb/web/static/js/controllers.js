@@ -107,10 +107,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.reportBlock = function reportBlock(report) {
             if ($scope.showReport(report)){
                 let line = GameLogService.log_texts[report.outcome_type] + "\n";
-                line = line.replace("<home_team>", $scope.game.home_team.name);
-                line = line.replace("<away_team>", $scope.game.away_team.name);
+                line = line.replace("<home_team>", "<span class='label label-primary'>" + $scope.game.home_team.name + "</span> ");
+                line = line.replace("<away_team>", "<span class='label label-danger'>" + $scope.game.away_team.name + "</span> ");
                 line = line.replace("<n>", report.n);
-                line = line.replace("<team>", report.team_home ? $scope.game.home_team.name : $scope.game.away_team.name );
+                line = line.replace("<team>", "<span class='label label-" + (report.team_home ? ("primary'>" + $scope.game.home_team.name) : ("danger'>" + $scope.game.away_team.name)) + "</span> " );
                 return line;
             }
             return null;
@@ -444,6 +444,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.selected_square = null;
                 $scope.setAvailablePositions();
                 $scope.refreshing = false;
+                document.getElementById('gamelog').scrollTop = 0;
             }).error(function(status, data) {
                 $location.path("/#/");
             });

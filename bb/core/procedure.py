@@ -653,7 +653,7 @@ class CoinToss(Procedure):
         elif action.action_type == ActionType.RECEIVE:
             self.game.state.kicking_team = self.away_won_toss
         if self.game.state.kicking_team:
-            self.game.report(Outcome(OutcomeType.AWAY_RECEIVE))
+            self.game.report(Outcome(OutcomeType.AWAY_RECEIVE, team_home=False))
         else:
             self.game.report(Outcome(OutcomeType.HOME_RECEIVE))
 

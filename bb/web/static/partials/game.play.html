@@ -207,10 +207,10 @@
                     </button>
                 </span>
             </div>
-            <div class="gamelog">
-                <div ng-repeat="report in game.reports" ng-if="showReport(report)" class="report">
+            <div id="gamelog" class="gamelog">
+                <div ng-repeat="report in game.reports | reverse" ng-if="showReport(report)" class="report">
                     <div ng-repeat="roll in report.rolls" class="roll">
-                        <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase().replace(' ', '-') : die.die_type+'-'+die.result }}">
+                        <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase() : die.die_type+'-'+die.result }}">
                         </span>
                     </div>
                     <div>

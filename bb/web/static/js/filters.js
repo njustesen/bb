@@ -15,3 +15,9 @@ appFilters.filter('board', function() {
     return input;
   };
 });
+
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});

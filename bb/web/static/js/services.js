@@ -37,14 +37,15 @@ appServices.factory('GameLogService', function() {
 
     return {
         log_texts: {
+            'GAME_STARTED': "<b>Game started.</b>",
             'SPECTATORS': "<n> spectators showed up to watch the game.",
             'FAME': "<team> has +<n> Fan Advantage ModifiEr (FAME).",
             'HEADS_WON': "<b>Heads!</b> <away_team> won the coin toss.",
             'HEADS_LOSS': "<b>Heads!</b> <home_team> won the coin toss.",
             'TAILS_WON': "<b>Tails!</b> <away_team> won the coin toss.",
             'TAILS_LOSS': "<b>Tails!</b> <home_team> won the coin toss.",
-            'HOME_RECEIVE': "<home_team> will receive the ball.",
-            'AWAY_RECEIVE': "<away_team> will receive the ball.",
+            'HOME_RECEIVE': "<away_team> will set up to kick the ball.",
+            'AWAY_RECEIVE': "<home_team> will set uo to kick the ball.",
             'WEATHER_SWELTERING_HEAT': "<b>Sweltering Heat:</b> It’s so hot and humid that some players collapse from heat exhaustion. Roll a D6 for each player on the pitch at the end of a drive. On a roll of 1 the player collapses and may not be set up for the next kick-off.",
             'WEATHER_VERY_SUNNY': "<b>Very Sunny:</b> A glorious day, but the blinding sunshine causes a -1 modifier on all passing rolls.",
             'WEATHER_NICE': "<b>Nice weather:</b> Perfect Blood Bowl weather.",
