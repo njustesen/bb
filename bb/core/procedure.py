@@ -394,7 +394,7 @@ class Bounce(Procedure):
 
     def __init__(self, game, home, kick=False):
         super().__init__(game)
-        self.home = home  # With turn
+        self.home = home  # With turn / kicking team
         self.kick = kick
 
     def step(self, action):
@@ -423,7 +423,7 @@ class Bounce(Procedure):
         if self.kick:
             # Kick - out of bounds
             if self.game.state.field.is_ball_out() or \
-                    self.game.arena.is_team_side(self.game.state.field.ball_position, not self.home):
+                    not self.game.arena.is_team_side(self.game.state.field.ball_position, not self.home):
                 self.game.report(Outcome(OutcomeType.TOUCHBACK, pos=self.game.state.field.ball_position,
                                          team_home=self.home, rolls=[roll_scatter]))
         else:
@@ -520,7 +520,7 @@ class Catch(Procedure):
         self.catch_used = False
         self.waiting_for_reroll = False
         self.waiting_for_catch = False
-        self.game.state.move_ball(self.pos)
+        self.game.state.field.move_ball(self.pos)
         self.interception = interception
 
     def step(self, action):
@@ -755,7 +755,10 @@ class Half(Procedure):
             PreHalf(self.game, True)
 
     def step(self, action):
-        self.game.report(Outcome(OutcomeType.END_OF_HALF))
+        if self.half == 1:
+            self.game.report(Outcome(OutcomeType.END_OF_FIRST_HALF))
+        elif self.half == 2:
+            self.game.report(Outcome(OutcomeType.END_OF_SECOND_HALF))
         return True
 
     def available_actions(self):
@@ -884,6 +887,13 @@ class LandKick(Procedure):
         self.landed = False
 
     def step(self, action):
+
+        # Gentle gust
+        if self.game.state.gentle_gust:
+            Scatter(self.game, home=self.home, kick=True, gentle_gust=True)
+            self.game.state.gentle_gust = False
+            return False
+
         if not self.game.arena.is_team_side(self.game.state.field.ball_position, not self.home):
             Touchback(self.game, home=not self.home)
             self.game.report(Outcome(OutcomeType.TOUCHBACK, team_home=not self.home))
@@ -911,23 +921,32 @@ class Fans(Procedure):
     def step(self, action):
         roll_home = DiceRoll([D6(), D6()])
         roll_away = DiceRoll([D6(), D6()])
-        self.game.spectators = (roll_home.get_sum() + roll_away.get_sum()) * 1000
-        self.game.fame_team = None
-        self.game.fame = 0
-        if roll_home.get_sum() >= roll_away.get_sum() * 2:
-            self.game.fame = 2
-            self.game.fame_team = True
-        elif roll_home.get_sum() > roll_away.get_sum():
-            self.game.fame = 1
-            self.game.fame_team = True
-        elif roll_home.get_sum() <= roll_away.get_sum() * 2:
-            self.game.fame = 2
-            self.game.fame_team = False
-        elif roll_home.get_sum() < roll_away.get_sum():
-            self.game.fame = 1
-            self.game.fame_team = False
-        self.game.report(Outcome(OutcomeType.SPECTATORS, n=self.game.spectators, rolls=[roll_home, roll_away]))
-        self.game.report(Outcome(OutcomeType.FAME, n=self.game.fame, team_home=self.game.fame_team))
+        fans_home = (roll_home.get_sum() + self.game.home.fan_factor) * 1000
+        fans_away = (roll_away.get_sum() + self.game.away.fan_factor) * 1000
+        self.game.state.spectators = fans_home + fans_away
+        fame_team = None
+        fame = 0
+        if fans_home >= fans_away * 2:
+            self.game.state.home_state.fame = 2
+            fame = 2
+            fame_team = True
+        elif fans_home > fans_away:
+            self.game.state.home_state.fame = 1
+            fame_team = True
+            fame = 1
+        elif fans_away >= fans_home * 2:
+            self.game.state.away_state.fame = 2
+            fame_team = False
+            fame = 2
+        elif fans_away > fans_home:
+            self.game.state.away_state.fame = 1
+            fame = 1
+            fame_team = False
+        self.game.report(Outcome(OutcomeType.SPECTATORS, n=self.game.state.spectators, rolls=[roll_home, roll_away]))
+        if fame == 0:
+            self.game.report(Outcome(OutcomeType.NO_FAME, n=fame))
+        else:
+            self.game.report(Outcome(OutcomeType.FAME, n=fame, team_home=fame_team))
 
         return True
 
@@ -1000,7 +1019,7 @@ class Riot(Procedure):
 
         self.game.state.get_team_state(self.home).turn += self.effect
         self.game.state.get_team_state(not self.home).turn += self.effect
-        self.game.report(Outcome(OutcomeType.RIOT, n=self.effect.name, rolls=[] if roll is None else [roll]))
+        self.game.report(Outcome(OutcomeType.RIOT, n=self.effect, rolls=[] if roll is None else [roll]))
         return True
 
     def available_actions(self):
@@ -1020,19 +1039,14 @@ class HighKick(Procedure):
 
     def step(self, action):
         if action.action_type == ActionType.PLACE_PLAYER:
-            if self.game.arena.is_team_side(action.pos_to, self.home) and \
-                    np.array_equal(self.game.state.field.ball_position, action.pos_to) and \
-                    self.game.state.field.get_player_id_at(action.pos_to) is None:
-                self.game.state.field.move(action.player_from_id, action.pos_to)
-                self.game.report(Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, team_home=self.home))
-            else:
-                raise IllegalActionExcpetion("Illegal position")
+            self.game.state.field.move(action.player_from_id, action.pos_to)
+            self.game.report(Outcome(OutcomeType.PLAYER_PLACED_HIGH_KICK, pos=action.pos_to, team_home=self.home))
         elif action.action_type == ActionType.END_SETUP:
             self.game.report(Outcome(OutcomeType.SETUP_DONE, team_home=self.home))
         return True
 
     def available_actions(self):
-        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home), positions=[self.game.state.field.ball_position]),
+        return [ActionChoice(ActionType.PLACE_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home), positions=[self.game.state.field.ball_position]),
                 ActionChoice(ActionType.SELECT_NONE, team=self.home)]
 
 
@@ -1057,10 +1071,11 @@ class CheeringFans(Procedure):
 
         if rh >= ra:
             self.game.state.home_state.rerolls += 1
+            self.game.report(Outcome(OutcomeType.CHEERING_FANS, team_home=True, rolls=[roll_home, roll_away]))
         if ra >= rh:
             self.game.state.away_state.rerolls += 1
+            self.game.report(Outcome(OutcomeType.CHEERING_FANS, team_home=False, rolls=[roll_home, roll_away]))
 
-        self.game.report(Outcome(OutcomeType.CHEERING_FANS, rolls=[roll_home, roll_away]))
         return True
 
     def available_actions(self):
@@ -1088,10 +1103,11 @@ class BrilliantCoaching(Procedure):
 
         if rh >= ra:
             self.game.state.home_state.rerolls += 1
+            self.game.report(Outcome(OutcomeType.BRILLIANT_COACHING, team_home=True, rolls=[roll_home, roll_away]))
         if ra >= rh:
             self.game.state.away_state.rerolls += 1
+            self.game.report(Outcome(OutcomeType.BRILLIANT_COACHING, team_home=False, rolls=[roll_home, roll_away]))
 
-        self.game.report(Outcome(OutcomeType.BRILLIANT_COACHING, rolls=[roll_home, roll_away]))
         return True
 
     def available_actions(self):
@@ -1247,7 +1263,7 @@ class KnockDown(Procedure):
 
         # Check fumble
         pos = self.game.state.field.get_player_position(self.player_id)
-        if self.game.state.ball_at(pos):
+        if self.game.state.field.ball_at(pos):
             Bounce(self.game, self.home)
             self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_id, opp_player_id=self.opp_player_id))
 
@@ -2122,17 +2138,18 @@ class Push(Procedure):
 
 class Scatter(Procedure):
 
-    def __init__(self, game, home, kick=False, is_pass=False):
+    def __init__(self, game, home, kick=False, is_pass=False, gentle_gust=False):
         super().__init__(game)
-        self.home = home  # Having the turn
+        self.home = home  # Having the turn / Kicking team
         self.kick = kick
         self.is_pass = is_pass
+        self.gentle_gust = gentle_gust
 
     def step(self, action):
 
         # Roll
         roll_scatter = DiceRoll([D8()])
-        if self.kick:
+        if self.kick and not self.gentle_gust:
             roll_distance = DiceRoll([D6()])
 
         # Scatter
@@ -2146,11 +2163,11 @@ class Scatter(Procedure):
             y = -1
         if roll_scatter.get_sum() in [6, 7, 8]:
             y = 1
-        distance = 1 if not self.kick else roll_distance.get_sum()
+        distance = 1 if not self.kick and not self.gentle_gust else roll_distance.get_sum()
 
         n = 3 if self.is_pass else 1
 
-        for x in range(n):
+        for s in range(n):
             for i in range(distance):
                 # Move ball on square
                 self.game.state.field.ball_position.x += x
@@ -2158,11 +2175,26 @@ class Scatter(Procedure):
 
                 # Check out of bounds
                 if self.kick:
-                    if self.game.state.field.is_ball_out() or \
-                            self.game.arena.is_team_side(self.game.state.field.ball_position, not self.home):
-                        # Touchback will be enforced in after kick-off table when ball lands
-                        self.game.report(Outcome(OutcomeType.KICK_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
-                                       team_home=self.home, rolls=[roll_scatter, roll_distance]))
+                    if self.game.state.field.is_ball_out():
+                        if self.gentle_gust:
+                            # Touchback will be enforced after kick-off table when ball lands
+                            self.game.report(Outcome(OutcomeType.GENTLE_GUST_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
+                                           team_home=self.home, rolls=[roll_scatter]))
+                        else:
+                            # Touchback will be enforced after kick-off table when ball lands
+                            self.game.report(Outcome(OutcomeType.KICK_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
+                                           team_home=self.home, rolls=[roll_scatter, roll_distance]))
+                        return True
+                    elif self.game.arena.is_team_side(self.game.state.field.ball_position, self.home):
+                        if self.gentle_gust:
+                            # Touchback will be enforced after kick-off table when ball lands
+                            self.game.report(Outcome(OutcomeType.GENTLE_GUST_OPP_HALF, pos=self.game.state.field.ball_position,
+                                           team_home=self.home, rolls=[roll_scatter]))
+                        else:
+                            # Touchback will be enforced after kick-off table when ball lands
+                            self.game.report(Outcome(OutcomeType.KICK_OPP_HALF, pos=self.game.state.field.ball_position,
+                                           team_home=self.home, rolls=[roll_scatter, roll_distance]))
+                        return True
                 else:
                     # Throw in
                     if self.game.state.field.is_ball_out():
@@ -2174,7 +2206,7 @@ class Scatter(Procedure):
                                        team_home=self.home, rolls=[roll_scatter]))
                         return True
 
-                    # Keep scattering passes until the last
+                    # Passes are scattered three times
                     if self.is_pass and x < n-1:
                         continue
 
@@ -2187,12 +2219,16 @@ class Scatter(Procedure):
                         return True
 
         if self.kick:
-            # Wait for ball to land
-            self.game.report(Outcome(OutcomeType.KICK_IN_BOUNDS, pos=self.game.state.field.ball_position, team_home=self.home))
+            if self.gentle_gust:
+                # Wait for ball to land
+                self.game.report(Outcome(OutcomeType.GENTLE_GUST_IN_BOUNDS, pos=self.game.state.field.ball_position, team_home=self.home, rolls=[roll_scatter]))
+            else:
+                # Wait for ball to land
+                self.game.report(Outcome(OutcomeType.KICK_IN_BOUNDS, pos=self.game.state.field.ball_position, team_home=self.home, rolls=[roll_scatter, roll_distance]))
         else:
             # Bounce ball
             Bounce(self.game, self.home)
-            self.game.report(Outcome(OutcomeType.BALL_HIT_GROUND, pos=self.game.state.field.ball_position, team_home=self.home))
+            self.game.report(Outcome(OutcomeType.BALL_HIT_GROUND, pos=self.game.state.field.ball_position, team_home=self.home, rolls=[roll_scatter]))
 
         return True
 
@@ -2433,7 +2469,12 @@ class Turn(Procedure):
 
         # Handle End Turn action
         if action.action_type == ActionType.END_TURN:
-            self.game.report(Outcome(OutcomeType.END_OF_TURN, team_home=self.home))
+            if self.blitz:
+                self.game.report(Outcome(OutcomeType.END_OF_BLITZ, team_home=self.home))
+            elif self.quick_snap:
+                self.game.report(Outcome(OutcomeType.END_OF_QUICK_SNAP, team_home=self.home))
+            else:
+                self.game.report(Outcome(OutcomeType.END_OF_TURN, team_home=self.home))
             return True
 
         # Handle Start Move action

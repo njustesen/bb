@@ -91,7 +91,7 @@ class OutcomeType(Enum):
     END_OF_GAME = 67
     END_OF_PREGAME = 68
     END_OF_TURN = 69
-    END_OF_HALF = 70
+    END_OF_FIRST_HALF = 70
     TOUCHDOWN = 71
     TURNOVER = 72
     CASUALTY = 73
@@ -115,6 +115,15 @@ class OutcomeType(Enum):
     BALL_SCATTER = 91
     SPECTATORS = 92
     FAME = 93
+    NO_FAME = 94
+    KICK_OPP_HALF = 95
+    GENTLE_GUST_OUT_OF_BOUNDS = 96
+    GENTLE_GUST_IN_BOUNDS = 97
+    GENTLE_GUST_OPP_HALF = 98
+    END_OF_BLITZ = 99
+    END_OF_QUICK_SNAP = 100
+    END_OF_SECOND_HALF = 101
+    PLAYER_PLACED_HIGH_KICK = 102
 
 
 class PlayerActionType(Enum):

@@ -15,9 +15,6 @@ class Game:
         self.config = config
         self.game_over = False
         self.available_actions = []
-        self.spectators = None
-        self.fame = None
-        self.fame_team = None
 
         if self.state is None:
             self.state = GameState(self)
@@ -38,9 +35,6 @@ class Game:
             'stack': self.procs(),
             'available_actions': available_actions,
             'reports': reports,
-            'spectators': self.spectators,
-            'fame': self.fame,
-            'fame_team': self.fame_team
         }
 
     def init(self):
@@ -126,11 +120,11 @@ class Game:
             if isinstance(self.stack.peek(), Turn):
                 self.state.team_turn = self.stack.peek().home
                 self.state.half = self.stack.peek().half
-                if self.state.team_turn:
-                    self.state.home_state.turn += 1
-                elif not self.state.team_turn:
-                    self.state.away_state.turn += 1
-
+                if not self.stack.peek().blitz and not self.stack.peek().quick_snap:
+                    if self.state.team_turn:
+                        self.state.home_state.turn += 1
+                    elif not self.state.team_turn:
+                        self.state.away_state.turn += 1
 
         # Update available actions
         self.set_available_actions()

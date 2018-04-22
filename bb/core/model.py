@@ -87,6 +87,7 @@ class GameState:
         self.weather = WeatherType.NICE
         self.gentle_gust = False
         self.team_turn = None
+        self.spectators = 0
 
     def to_simple(self):
         return {
@@ -99,7 +100,8 @@ class GameState:
             'away_state': self.away_state.to_simple(),
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
-            'team_turn': self.team_turn
+            'team_turn': self.team_turn,
+            'spectators': self.spectators
         }
 
     def reset_turn(self, home):
@@ -266,7 +268,7 @@ class Field:
         return self.is_out_of_bounds(self.ball_position)
 
     def is_out_of_bounds(self, pos):
-        return not (pos.x < 0 or pos.x >= len(self.board[0]) or pos.y < 0 or pos.y >= len(self.board))
+        return pos.x < 0 or pos.x >= len(self.board[0]) or pos.y < 0 or pos.y >= len(self.board)
 
     def has_tackle_zone(self, player):
         if Rules.has_tackle_zone[self.game.state.get_player_state(player.player_id)]:
