@@ -123,7 +123,7 @@ a, a:focus, a:hover {
         -webkit-box-shadow: 0 0 1px rgba(0,0,0,0.6);
         -o-box-shadow: 0 0 1px rgba(0,0,0,0.6);
 	    padding-top: 12px;
-	    padding-bottom: 0px;
+	    padding-bottom: 4px;
 
         .scoreboard-content {
             min-width: 900px;
@@ -165,7 +165,8 @@ a, a:focus, a:hover {
         }
 
         .turnmarker {
-            height: 2px;
+            height: 4px;
+            background-color: #ccc;
         }
 
         .turnmarker-home {
@@ -516,6 +517,9 @@ a, a:focus, a:hover {
                 background-size: 16px 16px;
                 display: inline-block;
                 background-position: 1px 1px;
+                font-size: 16px;
+                line-height: 18px;
+                text-align: center;
             }
 
             .die.BB-attacker_down {
@@ -551,6 +555,16 @@ a, a:focus, a:hover {
             }
             .die.D6-6 {
                 background-image: url("@{img-url}/dice/6.png");
+            }
+
+            .die.D3-1 {
+                background-image: url("@{img-url}/dice/1.png");
+            }
+            .die.D3-2 {
+                background-image: url("@{img-url}/dice/2.png");
+            }
+            .die.D3-3 {
+                background-image: url("@{img-url}/dice/3.png");
             }
         }
 

@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="">
             <div class="col-sm-6 turnmarker {{ game.state.team_turn == true ? 'turnmarker-home-turn' : 'turnmarker-home' }}"></div>
             <div class="col-sm-6 turnmarker {{ game.state.team_turn == false ? 'turnmarker-away-turn' : 'turnmarker-away' }}"></div>
         </div>
@@ -211,6 +211,7 @@
                 <div ng-repeat="report in game.reports | reverse" ng-if="showReport(report)" class="report">
                     <div ng-repeat="roll in report.rolls" class="roll">
                         <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase() : die.die_type+'-'+die.result }}">
+                            {{die.die_type == 'D8' ? die.result : '' }}
                         </span>
                     </div>
                     <div>

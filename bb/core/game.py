@@ -126,6 +126,11 @@ class Game:
             if isinstance(self.stack.peek(), Turn):
                 self.state.team_turn = self.stack.peek().home
                 self.state.half = self.stack.peek().half
+                if self.state.team_turn:
+                    self.state.home_state.turn += 1
+                elif not self.state.team_turn:
+                    self.state.away_state.turn += 1
+
 
         # Update available actions
         self.set_available_actions()
