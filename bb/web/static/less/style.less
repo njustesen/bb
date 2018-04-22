@@ -477,7 +477,67 @@ a, a:focus, a:hover {
     .report {
         margin: 4px;
         padding: 4px;
+        height: 28px;
         background-color: #f3f3f3;
+
+        .roll{
+
+            float:right;
+            margin-top: -3px;
+            background-color: #ccc;
+            margin-left:4px;
+            height: 25px;
+            padding: 1px;
+
+            .die {
+                width: 20px;
+                height: 20px;
+                background-color: #fff;
+                border-radius: .25em;
+                border: 1px solid #333;
+                margin: 2px;
+                background-size: 16px 16px;
+                display: inline-block;
+                    background-position: 1px 1px;
+            }
+
+            .die.BB-attacker-down {
+                background-image: url("@{img-url}/dice/aFall.gif");
+            }
+            .die.BB-both-down {
+                background-image: url("@{img-url}/dice/bFall.gif");
+            }
+            .die.BB-push {
+                background-image: url("@{img-url}/dice/push.gif");
+            }
+            .die.BB-defender-stumbles {
+                background-image: url("@{img-url}/dice/dDodge.gif");
+            }
+            .die.BB-defender-down {
+                background-image: url("@{img-url}/dice/dFall.gif");
+            }
+
+            .die.D6-1 {
+                background-image: url("@{img-url}/dice/1.png");
+            }
+            .die.D6-2 {
+                background-image: url("@{img-url}/dice/2.png");
+            }
+            .die.D6-3 {
+                background-image: url("@{img-url}/dice/3.png");
+            }
+            .die.D6-4 {
+                background-image: url("@{img-url}/dice/4.png");
+            }
+            .die.D6-5 {
+                background-image: url("@{img-url}/dice/5.png");
+            }
+            .die.D6-6 {
+                background-image: url("@{img-url}/dice/6.png");
+            }
+        }
+
+
     }
 
     .report.second {

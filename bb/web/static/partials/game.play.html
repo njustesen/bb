@@ -209,7 +209,13 @@
             </div>
             <div class="gamelog">
                 <div ng-repeat="report in game.reports" ng-if="showReport(report)" class="report">
-                    <span ng-bind-html="reportBlock(report)"></span>
+                    <div ng-repeat="roll in report.rolls" class="roll">
+                        <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase().replace(' ', '-') : die.die_type+'-'+die.result }}">
+                        </span>
+                    </div>
+                    <div>
+                        <span ng-bind-html="reportBlock(report)"></span>
+                    </div>
                 </div>
             </div>
         </div>
