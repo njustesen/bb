@@ -100,6 +100,22 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         var id = $routeParams.id;
 
+        $scope.showReport = function showReport(report){
+            return report.outcome_type in GameLogService.log_texts;
+        };
+
+        $scope.reportBlock = function reportBlock(report) {
+            if ($scope.showReport(report)){
+                let line = GameLogService.log_texts[report.outcome_type] + "\n";
+                line = line.replace("<home_team>", $scope.game.home_team.name);
+                line = line.replace("<away_team>", $scope.game.away_team.name);
+                line = line.replace("<n>", report.n);
+                line = line.replace("<team>", report.team_home ? $scope.game.home_team.name : $scope.game.away_team.name );
+                return line;
+            }
+            return null;
+        };
+
         $scope.generateGameLog = function generateGameLog() {
             let text = "";
             for (let i in $scope.game.reports){

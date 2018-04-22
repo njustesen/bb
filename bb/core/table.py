@@ -234,6 +234,7 @@ class ActionType(Enum):
     CONTINUE = 35
     ROLL_FOR_WEATHER = 36
     SELECT_PLAYER = 37
+    SELECT_NONE = 38
 
 
 class WeatherType(Enum):

@@ -207,7 +207,11 @@
                     </button>
                 </span>
             </div>
-            <textarea class="form-control" rows="5" id="gamelog" disabled>{{ gamelog }}</textarea>
+            <div class="gamelog">
+                <div ng-repeat="report in game.reports" ng-if="showReport(report)" class="report">
+                    <span ng-bind-html="reportBlock(report)"></span>
+                </div>
+            </div>
         </div>
 
     </div>
