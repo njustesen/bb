@@ -39,7 +39,7 @@ appServices.factory('GameLogService', function() {
         log_texts: {
             'GAME_STARTED': "<b>Game started.</b>",
             'SPECTATORS': "<n> spectators showed up to watch the game.",
-            'FAME': "<team> has +<n> Fan Advantage ModifiEr (FAME).",
+            'FAME': "<team> has <b>+<n> FAME</b> (Fan Advantage ModifiEr).",
             'HEADS_WON': "<b>Heads!</b> <away_team> won the coin toss.",
             'HEADS_LOSS': "<b>Heads!</b> <home_team> won the coin toss.",
             'TAILS_WON': "<b>Tails!</b> <away_team> won the coin toss.",
