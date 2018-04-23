@@ -451,16 +451,15 @@ class Casualty(Procedure):
 
     miss_next_game = [CasualtyEffect.MNG, CasualtyEffect.AG, CasualtyEffect.AV, CasualtyEffect.MA, CasualtyEffect.ST, CasualtyEffect.NI]
 
-    def __init__(self, game, home, player_id, opp_player_id=None):
+    def __init__(self, game, home, player_id, roll, opp_player_id=None):
         super().__init__(game)
         self.game = game
         self.home = home
         self.player_id = player_id
         self.opp_player_id = opp_player_id
         self.player = game.get_player(player_id)
-        self.opp_player = game.get_player(opp_player_id)
         self.waiting_apothecary = False
-        self.roll = None
+        self.roll = roll
         self.casualty = None
         self.effect = None
 
@@ -474,7 +473,7 @@ class Casualty(Procedure):
 
         self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=self.effect.name, rolls=[self.roll]))
 
-        if self.game.state.get_team_state(self.home).apothecary:
+        if self.game.state.get_team_state(self.home).apothecary_available:
             Apothecary(self.game, self.home, self.player_id, roll=self.roll, outcome=OutcomeType.CASUALTY, casualty=self.casualty, effect=self.effect, opp_player_id=self.opp_player_id)
         else:
             # Apply casualty
@@ -485,7 +484,7 @@ class Casualty(Procedure):
             elif self.effect == CasualtyEffect.DEAD:
                 self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.DEAD
 
-            self.game.state.get_team_state(self.home).injuries.put(self.player_id, self.effect)
+            self.game.state.get_team_state(self.home).injuries[self.player_id] = self.effect
             self.game.state.field.remove(self.player_id)
             self.game.state.get_dugout(self.home).casualties.append(self.player_id)
 
@@ -821,14 +820,12 @@ class Injury(Procedure):
             roll.modifiers = stunty + mighty_blow + dirty_player
             self.game.state.casualty(self.player_id)
             self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, opp_player_id=self.opp_player_id, rolls=[roll]))
-            Casualty(self.game, self.home, self.player_id)
+            Casualty(self.game, self.home, self.player_id, roll, opp_player_id=self.opp_player_id)
 
         # KOD
         else:
             roll.modifiers = thick_skull + stunty + mighty_blow + dirty_player
-            self.game.state.knock_out(self.player_id)
-            self.game.report(Outcome(OutcomeType.KNOCKED_OUT, player_id=self.player_id, opp_player_id=self.opp_player_id, rolls=[roll]))
-            KnockOut(self.game, self.home, self.player_id)
+            KnockOut(self.game, self.home, self.player_id, roll=roll, opp_player_id=self.opp_player_id)
 
         # Referee
         if self.foul and not self.ejected:
@@ -1135,13 +1132,16 @@ class ThrowARock(Procedure):
         rh = roll_home.get_sum() + self.game.state.home_state.fame
         ra = roll_away.get_sum() + self.game.state.away_state.fame
 
+        rh = 1
+        ra = 1
+
         if ra >= rh:
-            player_home_id = self.game.state.field.get_random_player(False)
+            player_home_id = self.game.state.field.get_random_player(True)
             KnockDown(self.game, True, player_home_id, armor_roll=False)
             self.game.report(Outcome(OutcomeType.HIT_BY_ROCK, player_id=player_home_id, rolls=[roll_home, roll_away]))
 
         if rh >= ra:
-            player_away_id = self.game.state.field.get_random_player(True)
+            player_away_id = self.game.state.field.get_random_player(False)
             KnockDown(self.game, False, player_away_id, armor_roll=False)
             self.game.report(Outcome(OutcomeType.HIT_BY_ROCK, player_id=player_away_id, rolls=[roll_home, roll_away]))
 
@@ -2023,9 +2023,12 @@ class PreHalf(Procedure):
                 roll = DiceRoll([D6()])
                 if roll.get_sum() >= 4:
                     self.game.state.get_team_state(self.home).player_states[player_id] = PlayerState.READY
+                    self.game.state.get_dugout(self.home).kod.remove(player_id)
+                    self.game.state.get_dugout(self.home).reserves.append(player_id)
                     self.checked.append(player_id)
                     self.game.report(Outcome(OutcomeType.PLAYER_READY, player_id=player_id, rolls=[roll]))
                     return False
+                self.checked.append(player_id)
                 self.game.report(Outcome(OutcomeType.PLAYER_NOT_READY, player_id=player_id, rolls=[roll]))
                 return False
         self.game.state.reset_kickoff()

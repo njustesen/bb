@@ -10,7 +10,6 @@ from bb.core.exception import *
 class Configuration:
 
     def __init__(self):
-        self.fast_mode = False
         self.name = "Default"
         self.arena = None
         self.ruleset = None
@@ -45,12 +44,15 @@ class TeamState:
         player_states = {}
         for player_id in self.player_states.keys():
             player_states[player_id] = self.player_states[player_id].name
+        injuries = {}
+        for player_id, effect in self.injuries:
+            injuries[player_id] = effect.name
         return {
             'bribes': self.bribes,
             'babes': self.babes,
             'apothecary_available': self.apothecary_available,
             'player_states': player_states,
-            'injuries': self.injuries,
+            'injuries': injuries,
             'score': self.score,
             'turn': self.turn,
             'rerolls_start': self.rerolls_start,

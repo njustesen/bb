@@ -28,7 +28,7 @@ def step(game_id, action):
     # Run until user input is required
     while True:
         done = game.step(action)
-        if done:
+        if done or not game.config.fast_mode:
             break
         action = None
 

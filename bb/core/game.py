@@ -74,13 +74,17 @@ class Game:
 
         # If action but it's available
         if action is not None:
-            in_set = False
-            for action_choice in available_actions:
-                if action.action_type == action_choice.action_type:
-                    in_set = True
-                    break
-            if not in_set:
-                return True
+            if len(available_actions) == 0 and action.action_type == ActionType.CONTINUE:
+                # Allow no action
+                action.action_type = None
+            else:
+                in_set = False
+                for action_choice in available_actions:
+                    if action.action_type == action_choice.action_type:
+                        in_set = True
+                        break
+                if not in_set:
+                    return True
 
         # Run proc
         proc.done = proc.step(action)
@@ -123,8 +127,10 @@ class Game:
                 if not self.stack.peek().blitz and not self.stack.peek().quick_snap:
                     if self.state.team_turn:
                         self.state.home_state.turn += 1
+                        self.report(Outcome(OutcomeType.TURN_START, team_home=True, n=self.state.home_state.turn))
                     elif not self.state.team_turn:
                         self.state.away_state.turn += 1
+                        self.report(Outcome(OutcomeType.TURN_START, team_home=False, n=self.state.away_state.turn))
 
         # Update available actions
         self.set_available_actions()

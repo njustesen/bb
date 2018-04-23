@@ -88,7 +88,7 @@ appServices.factory('GameLogService', function() {
             'ARMOR_NOT_BROKEN': "ARMOR_NOT_BROKEN",
             'HIT_BY_ROCK': "<player> was hit by a rock!",
             'STUNNED': "<player> got <b>stunned</b>.",
-            'KNOCKED_OUT': "KNOCKED_OUT",
+            'KNOCKED_OUT': "<player> got <b>KO'ed!</B>",
             'BADLY_HURT': "BADLY_HURT",
             'INTERCEPTION': "INTERCEPTION",
             'BALL_CAUGhT': "BALL_CAUGhT",
@@ -133,7 +133,10 @@ appServices.factory('GameLogService', function() {
             'BALL_SCATTER': "The ball scattered.",
             "GENTLE_GUST_OUT_OF_BOUNDS": "A gentle gust makes the ball scatter out of bounds.",
             "GENTLE_GUST_OPP_FIELD": "A gentle gust makes the ball scatter into the opponents half.",
-            "GENTLE_GUST_IN_BOUNDS": "A gentle gust makes the ball scatter an additional square."
+            "GENTLE_GUST_IN_BOUNDS": "A gentle gust makes the ball scatter an additional square.",
+            "TURN_START": "<team> <b>Turn <n>.</b>",
+            "PLAYER_READY": "<player> is no longer KO'd.",
+            "PLAYER_NOT_READY": "<player> is still KO'd."
         }
     };
 });

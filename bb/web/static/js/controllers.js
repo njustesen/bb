@@ -86,6 +86,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService, GameLogService) {
         $scope.game = {};
         $scope.loading = true;
+        $scope.refreshing = false;
         $scope.hover_player = null;
         $scope.selected_square = null;
         $scope.main_action = null;
@@ -136,20 +137,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return null;
         };
 
-        $scope.generateGameLog = function generateGameLog() {
-            let text = "";
-            for (let i in $scope.game.reports){
-                if ($scope.game.reports[i].outcome_type in GameLogService.log_texts){
-                    let line = GameLogService.log_texts[$scope.game.reports[i].outcome_type] + "\n";
-                    line = line.replace("<home_team>", $scope.game.home_team.name);
-                    line = line.replace("<away_team>", $scope.game.away_team.name);
-                    line = line.replace("<n>", $scope.game.reports[i].n);
-                    line = line.replace("<team>", $scope.game.reports[i].team_home ? $scope.game.home_team.name : $scope.game.away_team.name );
-                }
-            }
-            return text;
-        }
-
         $scope.teamOfPlayer = function teamOfPlayer(player){
             if (player.player_id in $scope.game.home_team.players_by_id){
                 return $scope.game.home_team;
@@ -171,9 +158,20 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.newSquare = function newSquare(player_id, x, y, area, sub_area){
-            let player = player_id != null ? $scope.playersById[player_id] : null;
-            let player_state = player_id != null ? $scope.game.state.home_state.player_states[player_id] : null;
-            let player_icon = player != null ? $scope.playerIcon(player, false) : null;
+            let player = null;
+            let player_state = null;
+            let player_icon = null;
+            if (player_id != null){
+                player = $scope.playersById[player_id];
+                let team = $scope.teamOfPlayer(player);
+                player_state = null;
+                if (team.team_id == $scope.game.home_team.team_id){
+                    player_state = $scope.game.state.home_state.player_states[player_id];
+                } else {
+                    player_state = $scope.game.state.away_state.player_states[player_id];
+                }
+                player_icon = player != null ? $scope.playerIcon(player, false) : null;
+            }
             let ball = $scope.game.state.field.ball_position != null ? ($scope.game.state.field.ball_position.x == x && $scope.game.state.field.ball_position.y == y) : null;
             return {
                 x: x,
@@ -258,14 +256,14 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     let away_player_id = null;
                     let away_square = null;
                     let idx = y*2+x;
-                    if (y >= 11){
+                    if (y >= 12){
                         sub_area = 'casualties';
-                        home_player_id = $scope.game.state.home_dugout.casualties[idx];
-                        away_player_id = $scope.game.state.away_dugout.casualties[idx];
-                    } else if (y >= 7){
+                        home_player_id = $scope.game.state.home_dugout.casualties[idx-12*2];
+                        away_player_id = $scope.game.state.away_dugout.casualties[idx-12*2];
+                    } else if (y >= 8){
                         sub_area = 'kod';
-                        home_player_id = $scope.game.state.home_dugout.kod[idx];
-                        away_player_id = $scope.game.state.away_dugout.kod[idx];
+                        home_player_id = $scope.game.state.home_dugout.kod[idx-8*2];
+                        away_player_id = $scope.game.state.away_dugout.kod[idx-8*2];
                     } else {
                         sub_area = 'reserves';
                         home_player_id = $scope.game.state.home_dugout.reserves[idx];
@@ -284,14 +282,36 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
+        $scope.newAction = function newAction(action_type){
+            return {
+                'player_from_id': null,
+                'player_to_id': null,
+                'pos_from': null,
+                'pos_to': null,
+                'team_home': null,
+                'idx': -1,
+                'action_type': action_type
+            };
+        };
+
+        $scope.checkForReload =  function checkForReload(time){
+            if ($scope.available_positions.length == 0){
+                setTimeout(function(){
+                    if (!$scope.loading && !$scope.refreshing && $scope.game.available_actions.length == 0){
+                        $scope.act($scope.newAction('CONTINUE'));
+                    }
+                }, time);
+            }
+        };
+
         GameService.get(id).success(function(data) {
             $scope.game = data;
             $scope.playersById = Object.assign({}, $scope.game.home_team.players_by_id, $scope.game.away_team.players_by_id);
-            $scope.gamelog = $scope.generateGameLog();
             $scope.setLocalState();
             $scope.setAvailablePositions();
             console.log(data);
             $scope.loading = false;
+            $scope.checkForReload(2500);
         }).error(function(status, data) {
             $location.path("/#/");
         });
@@ -459,28 +479,17 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.refreshing = true;
             GameService.act($scope.game.game_id, action).success(function(data) {
                 $scope.game = data;
-                $scope.gamelog = $scope.generateGameLog($scope.game);
                 console.log(data);
                 $scope.setLocalState();
                 $scope.selected_square = null;
                 $scope.setAvailablePositions();
                 $scope.refreshing = false;
                 document.getElementById('gamelog').scrollTop = 0;
+                let time = $scope.showReport($scope.game.reports[$scope.game.reports.length-1]) ? 1000 : 0;
+                $scope.checkForReload(time);
             }).error(function(status, data) {
                 $location.path("/#/");
             });
-        };
-
-        $scope.newAction = function newAction(action_type){
-            return {
-                'player_from_id': null,
-                'player_to_id': null,
-                'pos_from': null,
-                'pos_to': null,
-                'team_home': null,
-                'idx': -1,
-                'action_type': action_type
-            };
         };
 
         $scope.pickActionType = function pickActionType(action){

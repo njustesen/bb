@@ -126,7 +126,9 @@ class OutcomeType(Enum):
     PLAYER_PLACED_HIGH_KICK = 102
     TOUCHBACK_BALL_PLACED = 103
     HIT_BY_ROCK = 104
-
+    TURN_START = 105
+    PLAYER_READY = 106
+    PLAYER_NOT_READY = 107
 
 class PlayerActionType(Enum):
     MOVE = 1
