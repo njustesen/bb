@@ -104,13 +104,33 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return report.outcome_type in GameLogService.log_texts;
         };
 
+        $scope.getPlayer = function getPlayer(player_id){
+            if (player_id in $scope.game.home_team.players_by_id){
+                return $scope.game.home_team.players_by_id[player_id];
+            }
+            if (player_id in $scope.game.away_team.players_by_id){
+                return $scope.game.away_team.players_by_id[player_id];
+            }
+            return null;
+        };
+
         $scope.reportBlock = function reportBlock(report) {
             if ($scope.showReport(report)){
                 let line = GameLogService.log_texts[report.outcome_type] + "\n";
                 line = line.replace("<home_team>", "<span class='label label-danger'>" + $scope.game.home_team.name + "</span> ");
                 line = line.replace("<away_team>", "<span class='label label-primary'>" + $scope.game.away_team.name + "</span> ");
-                line = line.replace("<n>", report.n);
                 line = line.replace("<team>", "<span class='label label-" + (report.team_home ? ("danger'>" + $scope.game.home_team.name) : ("primary'>" + $scope.game.away_team.name)) + "</span> " );
+
+                let n = report.n;
+                if (typeof(n) == "string"){
+                    n = report.n.toLowerCase();
+                }
+                line = line.replace("<n>", n);
+                if (report.player_id != null){
+                    let player = $scope.getPlayer(report.player_id);
+                    let team = $scope.teamOfPlayer(report);
+                    line = line.replace("<player>", "<span class='label label-" + (team.team_id == $scope.game.home_team.team_id ? ("danger'>" + player.nr + ". " + player.name) : ("primary'>" + player.nr + ". " + player.name)) + "</span> " );
+                }
                 return line;
             }
             return null;
@@ -125,7 +145,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     line = line.replace("<away_team>", $scope.game.away_team.name);
                     line = line.replace("<n>", $scope.game.reports[i].n);
                     line = line.replace("<team>", $scope.game.reports[i].team_home ? $scope.game.home_team.name : $scope.game.away_team.name );
-                    text += line;
                 }
             }
             return text;

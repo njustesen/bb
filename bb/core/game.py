@@ -185,11 +185,9 @@ class Game:
         return self.home if home else self.away
 
     def get_player(self, player_id):
-        home = self.home.get_player_by_id(player_id)
-        if home is not None:
-            return home
-        away = self.away.get_player_by_id(player_id)
-        return away
+        if self.get_home_by_player_id(player_id):
+            return self.home.get_player_by_id(player_id)
+        return self.away.get_player_by_id(player_id)
 
     def get_home_by_player_id(self, player_id):
         if self.home.has_player_by_id(player_id):

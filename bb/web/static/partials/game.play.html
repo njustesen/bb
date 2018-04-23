@@ -108,6 +108,11 @@
                             <img ng-if="local_state.ball_in_air" src="static/img/ball/sball_30x30.png" />
                             <img ng-if="!local_state.ball_in_air" src="static/img/ball/sball_30x30.png" />
                         </div>
+                        <div class="stateicon align-middle text-center">
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'STUNNED'" src="static/img/player_status/stunned.gif" />
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'DOWN_READY'" src="static/img/player_status/prone.gif" />
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'DOWN_USED'" src="static/img/player_status/prone.gif" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -212,6 +217,9 @@
                     <div ng-repeat="roll in report.rolls" class="roll">
                         <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase() : die.die_type+'-'+die.result }}">
                             {{die.die_type == 'D8' ? die.result : '' }}
+                        </span>
+                        <span ng-if="roll.modifiers != null && roll.modifiers != 0" class="modifiers">
+                            {{ roll.modifiers > 0 ? '+' + roll.modifiers : '-' + roll.modifiers }}
                         </span>
                     </div>
                     <div>

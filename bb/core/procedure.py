@@ -530,7 +530,7 @@ class Catch(Procedure):
 
             # Can player even catch ball?
             player = self.game.get_player(self.player_id)
-            if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_state(self.player_id) not in Rules.ready_to_catch:
+            if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_state(self.player_id, self.home) not in Rules.ready_to_catch:
                 Bounce(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.DROP, player_id=self.player_id))
 
@@ -728,6 +728,20 @@ class Foul(Procedure):
         return []
 
 
+class ResetHalf(Procedure):
+
+    def __init__(self, game):
+        super().__init__(game)
+
+    def step(self, action):
+        self.game.state.home_state.rerolls = self.game.home.rerolls
+        self.game.state.away_state.rerolls = self.game.away.rerolls
+        return True
+
+    def available_actions(self):
+        return []
+
+
 class Half(Procedure):
 
     def __init__(self, game, half):
@@ -735,7 +749,7 @@ class Half(Procedure):
         self.half = half
 
         # Determine kicking team
-        self.kicking_team = self.game.state.kicking_team if self.game.state.half == 1 \
+        self.kicking_team = self.game.state.kicking_team if self.half == 1 \
             else not self.game.state.kicking_team
 
         # Add turns
@@ -747,6 +761,7 @@ class Half(Procedure):
         KickOff(self.game, self.kicking_team)
         Setup(self.game, home=not self.kicking_team)
         Setup(self.game, home=self.kicking_team)
+        ResetHalf(self.game)
         ClearBoard(self.game)
 
         # If second half
@@ -869,14 +884,12 @@ class Touchback(Procedure):
 
     def step(self, action):
         player_id = self.game.state.field.get_player_id_at(action.pos_to)
-        if player_id is None or self.game.is_on_team(player_id, home=not self.home):
-            raise IllegalActionExcpetion("You must pick a player on your own team")
         self.game.state.field.move_ball(action.pos_to)
         self.game.report(Outcome(OutcomeType.BALL_PLACED, pos=action.pos_to))
         return True
 
     def available_actions(self):
-        return [ActionChoice(ActionType.SELECT_PLAYER, player_ids=self.game.state.field.get_team_player_ids(self.home))]
+        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home))]
 
 
 class LandKick(Procedure):
@@ -1157,7 +1170,7 @@ class PitchInvasionRoll(Procedure):
     def step(self, action):
         roll = DiceRoll([D6()])
 
-        roll.modifiers = self.game.state.home_state.fame
+        roll.modifiers = self.game.state.get_team_state(self.home).fame
         result = roll.get_sum() + roll.modifiers
 
         if result >= 6:
@@ -1187,6 +1200,9 @@ class KickOffTable(Procedure):
 
         roll = DiceRoll([D6(), D6()])
         result = roll.get_sum()
+
+        # Test hack
+        result = 12
 
         self.rolled = True
 
@@ -2147,6 +2163,10 @@ class Scatter(Procedure):
 
     def step(self, action):
 
+        # Don't scatter if ball is out
+        if self.game.state.field.is_ball_out():
+            return True
+
         # Roll
         roll_scatter = DiceRoll([D8()])
         if self.kick and not self.gentle_gust:
@@ -2163,7 +2183,7 @@ class Scatter(Procedure):
             y = -1
         if roll_scatter.get_sum() in [6, 7, 8]:
             y = 1
-        distance = 1 if not self.kick and not self.gentle_gust else roll_distance.get_sum()
+        distance = 1 if not self.kick or self.gentle_gust else roll_distance.get_sum()
 
         n = 3 if self.is_pass else 1
 
@@ -2437,6 +2457,20 @@ class TurnStunned(Procedure):
         return []
 
 
+class ResetTurn(Procedure):
+
+    def __init__(self, game, home):
+        super().__init__(game)
+        self.home = home
+
+    def step(self, action):
+        self.game.state.reset_turn(self.home)
+        return True
+
+    def available_actions(self):
+        return []
+
+
 class Turn(Procedure):
 
     start_actions = [ActionType.START_MOVE, ActionType.START_BLITZ, ActionType.START_BLOCK, ActionType.START_MOVE,
@@ -2452,11 +2486,11 @@ class Turn(Procedure):
         self.blitz_available = not quick_snap
         self.pass_available = not quick_snap
         self.handoff_available = not quick_snap
-        self.game.state.reset_turn(self.home)
         self.pass_action_taken = False
         self.blitz_action_taken = False
         self.foul_action_taken = False
         TurnStunned(self.game, self.home)
+        ResetTurn(self.game, self.home)
 
     def start_player_action(self, outcome_type, player_action_type, player_id):
 

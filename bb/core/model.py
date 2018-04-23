@@ -268,7 +268,7 @@ class Field:
         return self.is_out_of_bounds(self.ball_position)
 
     def is_out_of_bounds(self, pos):
-        return pos.x < 0 or pos.x >= len(self.board[0]) or pos.y < 0 or pos.y >= len(self.board)
+        return pos.x < 1 or pos.x >= len(self.board[0])-1 or pos.y < 1 or pos.y >= len(self.board)-1
 
     def has_tackle_zone(self, player):
         if Rules.has_tackle_zone[self.game.state.get_player_state(player.player_id)]:
