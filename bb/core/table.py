@@ -124,6 +124,8 @@ class OutcomeType(Enum):
     END_OF_QUICK_SNAP = 100
     END_OF_SECOND_HALF = 101
     PLAYER_PLACED_HIGH_KICK = 102
+    TOUCHBACK_BALL_PLACED = 103
+    HIT_BY_ROCK = 104
 
 
 class PlayerActionType(Enum):
@@ -244,6 +246,9 @@ class ActionType(Enum):
     ROLL_FOR_WEATHER = 36
     SELECT_PLAYER = 37
     SELECT_NONE = 38
+    AUTO = 39
+    DONT_USE_APOTHECARY = 40
+    SELECT_ROLL = 41
 
 
 class WeatherType(Enum):

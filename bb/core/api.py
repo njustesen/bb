@@ -49,3 +49,7 @@ def get_games():
 
 def get_teams():
     return get_all_teams(host.ruleset)
+
+
+# Initialize with one game
+new_game("a1", "b2")

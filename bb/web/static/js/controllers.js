@@ -199,6 +199,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0)){
                         $scope.available_positions = action.positions;
                     }
+                } else if (action.player_ids.length > 0){
+                    $scope.main_action = action;
                 }
             }
             for (let i in $scope.available_positions){
@@ -482,14 +484,19 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.pickActionType = function pickActionType(action){
-            if (action.positions.length == 0){
-                let a = $scope.newAction(action.action_type);
-                $scope.act(a);
-            } else if (action.action_type == "PLACE_BALL" && $scope.local_state.ball_position != null){
+            if (action.action_type == "PLACE_BALL" && $scope.local_state.ball_position != null){
                 let a = $scope.newAction(action.action_type);
                 a.pos_to = $scope.local_state.ball_position;
                 $scope.act(a);
+            } else if (action.player_ids.length > 0){
+                let a = $scope.newAction(action.action_type);
+                a.pos_to = $scope.local_state.ball_position;
+                $scope.act(a);
+            } else if (action.positions.length == 0){
+                let a = $scope.newAction(action.action_type);
+                $scope.act(a);
             }
+
         };
 
         $scope.showAction = function showAction(action) {

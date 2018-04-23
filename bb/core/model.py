@@ -77,6 +77,7 @@ class TeamState:
 class GameState:
 
     def __init__(self, game):
+        self.game = game
         self.half = 1
         self.kicking_team = None
         self.field = Field(game)
@@ -129,12 +130,14 @@ class GameState:
     def get_dugout(self, home):
         return self.home_dugout if home else self.away_dugout
 
-    def knock_out(self, home, player_id):
+    def knock_out(self, player_id):
+        home = self.game.get_home_by_player_id(player_id)
         self.get_team_state(home).player_states[player_id] = PlayerState.KOD
         self.field.remove(player_id)
         self.get_dugout(home).kod.append(player_id)
 
-    def badly_hurt(self, home, player_id):
+    def casualty(self, player_id):
+        home = self.game.get_home_by_player_id(player_id)
         self.get_team_state(home).player_states[player_id] = PlayerState.BH
         self.field.remove(player_id)
         self.get_dugout(home).casualties.append(player_id)
@@ -454,18 +457,20 @@ class Field:
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=[], player_ids=[]):
+    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[]):
         self.action_type = action_type
         self.positions = positions
         self.player_ids = player_ids
         self.team = team
+        self.indexes = indexes
 
     def to_simple(self):
         return {
             'action_type': self.action_type.name,
             'positions': [position.to_simple() if position is not None else None for position in self.positions],
             'player_ids': self.player_ids,
-            'team': self.team
+            'team': self.team,
+            'indexes': self.indexes
         }
 
 

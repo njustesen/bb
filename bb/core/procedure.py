@@ -71,11 +71,8 @@ class Apothecary(Procedure):
                 n = min(61, max(38, result))
                 self.casualty_second = CasualtyType(n)
                 self.effect_second = Rules.casualty_effect[self.casualty_second]
-
-                self.game.state.get_team_state(self.home).apothecary = False
-
+                self.game.state.get_team_state(self.home).apothecary_available = False
                 self.game.report(Outcome(OutcomeType.CASUALTY_APOTHECARY, player_id=self.player_id, team_home=self.home, rolls=[self.roll_first, self.roll_second]))
-
                 self.waiting_apothecary = True
 
                 return False
@@ -108,7 +105,11 @@ class Apothecary(Procedure):
         return True
 
     def available_actions(self):
-        return []
+        if self.outcome == OutcomeType.KNOCKED_OUT or self.waiting_apothecary:
+            return [ActionChoice(ActionType.USE_APOTHECARY, team=self.home),
+                ActionChoice(ActionType.DONT_USE_APOTHECARY, team=self.home)]
+        else:
+            return [ActionChoice(ActionType.SELECT_ROLL, team=self.home, indexes=[0, 1])]
 
 
 class Armor(Procedure):
@@ -465,27 +466,17 @@ class Casualty(Procedure):
 
     def step(self, action):
 
-        if self.roll is None:
-            self.roll = DiceRoll([D6(), D8()])
-            result = self.roll.get_sum()
-            n = min(61, max(38, result))
-            self.casualty = CasualtyType(n)
-            self.effect = Rules.casualty_effect[self.casualty]
+        self.roll = DiceRoll([D6(), D8()])
+        result = self.roll.get_sum()
+        n = min(61, max(38, result))
+        self.casualty = CasualtyType(n)
+        self.effect = Rules.casualty_effect[self.casualty]
 
-            self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=self.effect.name, rolls=[self.roll]))
+        self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=self.effect.name, rolls=[self.roll]))
 
-            if self.game.state.get_team_state(self.home).apothecary:
-                self.waiting_apothecary = True
-                return False
-
-            return True
-
-        elif self.waiting_apothecary:
-
-            if action.action_type == ActionType.USE_APOTHECARY:
-                Apothecary(self.game, self.home, self.player_id, roll=self.roll, outcome=OutcomeType.CASUALTY, casualty=self.casualty, effect=self.effect, opp_player_id=self.opp_player_id)
-                return True
-
+        if self.game.state.get_team_state(self.home).apothecary:
+            Apothecary(self.game, self.home, self.player_id, roll=self.roll, outcome=OutcomeType.CASUALTY, casualty=self.casualty, effect=self.effect, opp_player_id=self.opp_player_id)
+        else:
             # Apply casualty
             if self.effect == CasualtyEffect.NONE:
                 self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.BH
@@ -795,7 +786,7 @@ class Injury(Procedure):
         self.dirty_player_used = dirty_player_used
         self.ejected = ejected
         self.player = game.get_player(player_id)
-        self.opp_player = game.get_player(opp_player_id)
+        self.opp_player = game.get_player(opp_player_id) if opp_player_id is not None else None
         self.apothecary_used = False
 
     def step(self, action):
@@ -803,40 +794,40 @@ class Injury(Procedure):
         # TODO: Necromancer
 
         # Roll
-        roll = DiceRoll(D6(), D6())
+        roll = DiceRoll([D6(), D6()])
         result = roll.get_sum()
         self.injury_rolled = True
 
         # Skill modifiers
         thick_skull = -1 if self.player.has_skill(Skill.THICK_SKULL) else 0
         stunty = 1 if self.player.has_skill(Skill.STUNTY) else 0
-        mighty_blow = 1 if self.opp_player.has_skill(Skill.MIGHTY_BLOW) and not self.mighty_blow_used and not self.foul else 0
-        dirty_player = 1 if self.opp_player.has_skill(Skill.DIRTY_PLAYER) and not self.dirty_player_used and self.foul else 0
+        mighty_blow = 0
+        dirty_player = 0
+        if self.opp_player is not None:
+            mighty_blow = 1 if self.opp_player.has_skill(Skill.MIGHTY_BLOW) and not self.mighty_blow_used and not self.foul else 0
+            dirty_player = 1 if self.opp_player.has_skill(Skill.DIRTY_PLAYER) and not self.dirty_player_used and self.foul else 0
 
         # STUNNED
         if result + thick_skull + stunty + mighty_blow + dirty_player <= 7:
             roll.modifiers = thick_skull + stunty + mighty_blow + dirty_player
             if self.game.get_player(self.player_id).has_skill(Skill.BALL_AND_CHAIN):
-                self.game.state.set_player_state(self.player_id, self.home, PlayerState.KOD)
-                self.game.state.field.remove(self.player_id)
-                self.game.state.get_dugout(self.home).kod.append(self.player_id)
-                self.game.report(Outcome(OutcomeType.KNOCKED_OUT, player_id=self.player_id, rolls=[roll]))
+                KnockOut(self.game, self.home, self.player_id, roll=roll, opp_player_id=self.opp_player_id)
             else:
-                self.game.state.get_home_state(self.home).player_states[self.player_id] = PlayerState.STUNNED
-                self.game.report(Outcome(OutcomeType.STUNNED, player_id=self.player_id, rolls=[roll]))
+                self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.STUNNED
+                self.game.report(Outcome(OutcomeType.STUNNED, player_id=self.player_id, opp_player_id=self.opp_player_id, rolls=[roll]))
 
         # CASUALTY
         elif result + stunty + mighty_blow + dirty_player >= 10:
             roll.modifiers = stunty + mighty_blow + dirty_player
-            self.game.state.badly_hurt(self.player_id)
-            self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, rolls=[roll]))
+            self.game.state.casualty(self.player_id)
+            self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, opp_player_id=self.opp_player_id, rolls=[roll]))
             Casualty(self.game, self.home, self.player_id)
 
         # KOD
         else:
             roll.modifiers = thick_skull + stunty + mighty_blow + dirty_player
             self.game.state.knock_out(self.player_id)
-            self.game.report(Outcome(OutcomeType.KNOCKED_OUT, player_id=self.player_id, rolls=[roll]))
+            self.game.report(Outcome(OutcomeType.KNOCKED_OUT, player_id=self.player_id, opp_player_id=self.opp_player_id, rolls=[roll]))
             KnockOut(self.game, self.home, self.player_id)
 
         # Referee
@@ -883,9 +874,9 @@ class Touchback(Procedure):
         self.home = home
 
     def step(self, action):
-        player_id = self.game.state.field.get_player_id_at(action.pos_to)
-        self.game.state.field.move_ball(action.pos_to)
-        self.game.report(Outcome(OutcomeType.BALL_PLACED, pos=action.pos_to))
+        pos = self.game.state.field.get_player_position(action.player_from_id)
+        self.game.state.field.move_ball(pos)
+        self.game.report(Outcome(OutcomeType.TOUCHBACK_BALL_PLACED, player_id=action.player_from_id, pos=pos))
         return True
 
     def available_actions(self):
@@ -1139,19 +1130,22 @@ class ThrowARock(Procedure):
         self.rolled = False
 
     def step(self, action):
-            roll_home = DiceRoll([D6()])
-            roll_away = DiceRoll([D6()])
-            rh = roll_home.get_sum() + self.game.state.home_state.fame
-            ra = roll_away.get_sum() + self.game.state.away_state.fame
+        roll_home = DiceRoll([D6()])
+        roll_away = DiceRoll([D6()])
+        rh = roll_home.get_sum() + self.game.state.home_state.fame
+        ra = roll_away.get_sum() + self.game.state.away_state.fame
 
-            if rh >= ra:
-                player_away_id = self.game.state.field.get_random_player(True)
-                KnockDown(self.game, False, player_away_id, armor_roll=False)
-            if ra >= rh:
-                player_home_id = self.game.state.field.get_random_player(False)
-                KnockDown(self.game, True, player_home_id, armor_roll=False)
+        if ra >= rh:
+            player_home_id = self.game.state.field.get_random_player(False)
+            KnockDown(self.game, True, player_home_id, armor_roll=False)
+            self.game.report(Outcome(OutcomeType.HIT_BY_ROCK, player_id=player_home_id, rolls=[roll_home, roll_away]))
 
-            return Outcome(OutcomeType.THROW_A_ROCK, rolls=[roll_home, roll_away]), False
+        if rh >= ra:
+            player_away_id = self.game.state.field.get_random_player(True)
+            KnockDown(self.game, False, player_away_id, armor_roll=False)
+            self.game.report(Outcome(OutcomeType.HIT_BY_ROCK, player_id=player_away_id, rolls=[roll_home, roll_away]))
+
+        return True
 
     def available_actions(self):
         return []
@@ -1202,7 +1196,7 @@ class KickOffTable(Procedure):
         result = roll.get_sum()
 
         # Test hack
-        result = 12
+        result = 11
 
         self.rolled = True
 
@@ -1279,7 +1273,7 @@ class KnockDown(Procedure):
 
         # Check fumble
         pos = self.game.state.field.get_player_position(self.player_id)
-        if self.game.state.field.ball_at(pos):
+        if self.game.state.field.is_ball_at(pos):
             Bounce(self.game, self.home)
             self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_id, opp_player_id=self.opp_player_id))
 
@@ -1309,26 +1303,26 @@ class KnockDown(Procedure):
 
 class KnockOut(Procedure):
 
-    def __init__(self, game, home, player_id, opp_player_id=None):
+    def __init__(self, game, home, player_id, roll, opp_player_id=None):
         super().__init__(game)
         self.game = game
         self.home = home
         self.player_id = player_id
         self.opp_player_id = opp_player_id
         self.player = game.get_player(player_id)
-        self.opp_player = game.get_player(opp_player_id)
-        self.waiting_apothecary = False
-        self.roll = None
+        self.opp_player = game.get_player(opp_player_id) if opp_player_id is not None else None
+        self.roll = roll
 
     def step(self, action):
-
-        if action.action_type == ActionType.USE_APOTHECARY:
+        if self.game.state.get_team_state(self.home).apothecary_available:
             Apothecary(self.game, self.home, self.player_id, roll=self.roll, outcome=OutcomeType.KNOCKED_OUT, opp_player_id=self.opp_player_id)
             return True
-
-        self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.KOD
-        self.game.state.field.remove(self.player_id)
-        self.game.state.get_dugout(self.home).kod.append(self.player_id)
+        else:
+            # Knock out player
+            self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.KOD
+            self.game.state.field.remove(self.player_id)
+            self.game.state.get_dugout(self.home).kod.append(self.player_id)
+            self.game.report(Outcome(OutcomeType.KNOCKED_OUT, rolls=[self.roll], player_id=self.player_id, team_home=self.home))
 
         return True
 
@@ -2295,10 +2289,24 @@ class Setup(Procedure):
         self.selected_player = None
         self.aa = [
             ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.get_team(home).get_player_ids(), positions=game.arena.get_team_side(home) + [None]),
-            ActionChoice(ActionType.END_SETUP, team=home)
+            ActionChoice(ActionType.END_SETUP, team=home),
+            ActionChoice(ActionType.AUTO, team=home)
         ]
 
     def step(self, action):
+
+        if action.action_type == ActionType.AUTO:
+            i = 0
+            for i in range(min(11, len(self.game.state.get_dugout(self.home).reserves))):
+                player_id = self.game.state.get_dugout(self.home).reserves[0]
+                y = 3
+                x = 13 if self.home else 14
+                self.step(Action(ActionType.PLACE_PLAYER, player_from_id=player_id, pos_from=None, pos_to=Square(x, y+i)))
+                i += 1
+                if i == 11:
+                    self.step(Action(ActionType.END_SETUP))
+                    break
+            return True
 
         if action.action_type == ActionType.END_SETUP:
             if not self.game.state.field.is_setup_legal(self.home):
