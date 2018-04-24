@@ -129,7 +129,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 line = line.replace("<n>", n);
                 if (report.player_id != null){
                     let player = $scope.getPlayer(report.player_id);
-                    let team = $scope.teamOfPlayer(report);
+                    let team = $scope.teamOfPlayer(player);
                     line = line.replace("<player>", "<span class='label label-" + (team.team_id == $scope.game.home_team.team_id ? ("danger'>" + player.nr + ". " + player.name) : ("primary'>" + player.nr + ". " + player.name)) + "</span> " );
                 }
                 return line;
@@ -429,28 +429,50 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
-        $scope.currentProc = function currentProc(header){
+        $scope.currentProc = function currentProc(team){
             if ($scope.loading){
                 return "";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Pregame"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Pregame" && team == null){
                 return "Pre-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "WeatherTable"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "WeatherTable" && team == null){
                 return "Pre-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "CoinToss"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "CoinToss" && team == null){
                 return "Coin Toss";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "PostGame"){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "PostGame" && team == null){
                 return "Post-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "QuickSnap" && header){
-                return "Quick Snap!";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Blitz" && header){
-                return "Blitz!";
-            } else if ($scope.game.game_over){
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "QuickSnap"){
+                if (team != null && team == $scope.game.state.team_turn){
+                    return "Quick Snap!";
+                } else if (team == null){
+                    if ($scope.game.state.half == 1 && team == null){
+                        return "1st half";
+                    } else if ($scope.game.state.half == 2 && team == null){
+                        return "2nd half";
+                    }
+                }
+            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Blitz"){
+                if (team != null && team == $scope.game.state.team_turn){
+                    return "Blitz!";
+                } else if (team == null){
+                    if ($scope.game.state.half == 1 && team == null){
+                        return "1st half";
+                    } else if ($scope.game.state.half == 2 && team == null){
+                        return "2nd half";
+                    }
+                }
+            } else if ($scope.game.game_over && team == null){
                 return "Game is Over";
-            } else if ($scope.game.state.half == 1){
+            } else if ($scope.game.state.half == 1 && team == null){
                 return "1st half";
-            } else if ($scope.game.state.half == 2){
+            } else if ($scope.game.state.half == 2 && team == null){
                 return "2nd half";
             }
+            if (team != null && team){
+                return $scope.game.state.home_state.turn + " / 8";
+            } else if (team != null && !team){
+                return $scope.game.state.away_state.turn + " / 8";
+            }
+            return "";
         };
 
         $scope.playerInFocus = function playerInFocus(team) {
@@ -485,7 +507,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.setAvailablePositions();
                 $scope.refreshing = false;
                 document.getElementById('gamelog').scrollTop = 0;
-                let time = $scope.showReport($scope.game.reports[$scope.game.reports.length-1]) ? 1000 : 0;
+                let time = $scope.showReport($scope.game.reports[$scope.game.reports.length-1]) ? 10 : 0;
                 $scope.checkForReload(time);
             }).error(function(status, data) {
                 $location.path("/#/");
@@ -497,9 +519,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let a = $scope.newAction(action.action_type);
                 a.pos_to = $scope.local_state.ball_position;
                 $scope.act(a);
-            } else if (action.player_ids.length > 0){
+            } else if (action.player_ids.length > 0 && $scope.selectedPlayer != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0){
                 let a = $scope.newAction(action.action_type);
-                a.pos_to = $scope.local_state.ball_position;
+                a.player_from_id = $scope.selectedPlayer().player_id;
                 $scope.act(a);
             } else if (action.positions.length == 0){
                 let a = $scope.newAction(action.action_type);

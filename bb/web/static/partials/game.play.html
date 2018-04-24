@@ -48,23 +48,29 @@
         <div class="row scoreboard-content">
             <div class="col-xs-4">
                 <div class="team-icons text-right">
-                    <span class="team-icon"><img src="static/img/team_status/wizard.gif" class="{{ game.state.home_state.wizard_available ? 'available' : 'used' }}" title="Wizard {{ game.state.home_state.wizard_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/team_status/apoth.gif" class="{{ game.state.home_state.apothecary_available ? 'available' : 'used' }}" title="Apothecary {{ game.state.home_state.apothecary_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/apothecary_38x38.png" ng-if="game.state.home_state.wizard_available" class="available" title="Wizard" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/wizard_38x38.png" ng-if="game.state.home_state.apothecary_available" class="available" title="Apothecary" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bribe_38x38.png" ng-repeat="n in [] | range:game.state.home_state.bribes" class="available" title="Bribe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bloodweiser_babe_38x38.png" ng-repeat="n in [] | range:game.state.home_state.babes" class="available" title="Bloodweiser babe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/master_chef_38x38.png" ng-if="game.state.home_state.masterchef" class="available" title="Master chef" width="20px" height="20px" /></span>
                 </div>
             </div>
-            <div class="col-xs-1 text-center {{ game.state.team_turn == true ? 'bold' : '' }}">
-                <div class="proclabel" ng-if="game.state.home_state.turn != null">{{ game.state.home_state.turn }} / 8</div>
+            <div class="col-xs-1 text-center {{ game.state.team_turn == true ? 'bold' : '' }} {{ currentProc(true) == 'Quick Snap!' ? 'small-text' : '' }}">
+                <div class="proclabel" ng-if="game.state.home_state.turn != null">{{ currentProc(true) }}</div>
             </div>
             <div class="col-xs-2 text-center">
-                <div class="proclabel">{{ currentProc(true) }}</div>
+                <div class="proclabel">{{ currentProc(null) }}</div>
             </div>
-            <div class="col-xs-1 text-center {{ game.state.team_turn == false ? 'bold' : '' }}">
-                <div class="proclabel" ng-if="game.state.away_state.turn != null">{{ game.state.away_state.turn }} / 8</div>
+            <div class="col-xs-1 text-center {{ game.state.team_turn == false ? 'bold' : '' }} {{ currentProc(false) == 'Quick Snap!' ? 'small-text' : '' }}">
+                <div class="proclabel" ng-if="game.state.away_state.turn != null">{{ currentProc(false) }}</div>
             </div>
             <div class="col-xs-4">
                 <div class="team-icons">
-                    <span class="team-icon"><img src="static/img/team_status/apoth.gif" class="{{ game.state.away_state.apothecary_available ? 'available' : 'used' }}" title="Apothecary {{ game.state.away_state.apothecary_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/team_status/wizard.gif" class="{{ game.state.away_state.wizard_available ? 'available' : 'used' }}" title="Wizard {{ game.state.away_state.wizard_available ? 'ready' : 'not available' }}" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/apothecary_38x38.png" ng-if="game.state.away_state.wizard_available" class="available" title="Wizard" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/wizard_38x38.png" ng-if="game.state.away_state.apothecary_available" class="available" title="Apothecary" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bribe_38x38.png" ng-repeat="n in [] | range:game.state.away_state.bribes" class="available" title="Bribe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bloodweiser_babe_38x38.png" ng-repeat="n in [] | range:game.state.away_state.babes" class="available" title="Bloodweiser babe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/master_chef_38x38.png" ng-if="game.state.away_state.masterchef" class="available" title="Master chef" width="20px" height="20px" /></span>
                 </div>
             </div>
         </div>
@@ -214,12 +220,15 @@
             </div>
             <div id="gamelog" class="gamelog">
                 <div ng-repeat="report in game.reports | reverse" ng-if="showReport(report)" class="report">
-                    <div ng-repeat="roll in report.rolls" class="roll">
+                    <div ng-repeat="roll in report.rolls | reverse" class="roll">
                         <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase() : die.die_type+'-'+die.result }}">
                             {{die.die_type == 'D8' ? die.result : '' }}
                         </span>
                         <span ng-if="roll.modifiers != null && roll.modifiers != 0" class="modifiers">
-                            {{ roll.modifiers > 0 ? '+' + roll.modifiers : '-' + roll.modifiers }}
+                            {{ roll.modifiers > 0 ? '+' + roll.modifiers : roll.modifiers }}
+                        </span>
+                        <span ng-if="roll.target != null" class="modifiers">
+                            ({{ roll.target }})
                         </span>
                     </div>
                     <div>

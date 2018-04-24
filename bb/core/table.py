@@ -129,6 +129,9 @@ class OutcomeType(Enum):
     TURN_START = 105
     PLAYER_READY = 106
     PLAYER_NOT_READY = 107
+    CATCH = 108
+    CATCH_FAILED_CATCH = 109
+
 
 class PlayerActionType(Enum):
     MOVE = 1
@@ -385,7 +388,7 @@ class Rules:
         CasualtyType.DEAD: CasualtyEffect.DEAD
     }
 
-    has_tackle_zone = {
+    has_tackle_zone = [
         PlayerState.READY,
         PlayerState.USED
-    }
+    ]

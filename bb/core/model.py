@@ -29,6 +29,7 @@ class TeamState:
         self.babes = 0
         self.apothecary_available = team.apothecary
         self.wizard_available = False
+        self.masterchef = False
         self.player_states = {player.player_id: PlayerState.READY for player in team.players}
         self.injuries = {}
         self.score = 0
@@ -51,6 +52,7 @@ class TeamState:
             'bribes': self.bribes,
             'babes': self.babes,
             'apothecary_available': self.apothecary_available,
+            'masterchef': self.masterchef,
             'player_states': player_states,
             'injuries': injuries,
             'score': self.score,
@@ -217,10 +219,6 @@ class Field:
             return self.ball_position is not None and self.ball_position == self.get_player_position(player_id)
 
     def get_player_id_at(self, pos):
-        if pos.y < 0 or pos.y >= len(self.board[0]) or pos.x < 0 or pos.x >= len(self.board[0]):
-            raise Exception("Position is out of the board")
-        if self.board[pos.y][pos.x] is None:
-            return None
         return self.board[pos.y][pos.x]
 
     def get_player_position(self, player_id):
@@ -275,8 +273,8 @@ class Field:
     def is_out_of_bounds(self, pos):
         return pos.x < 1 or pos.x >= len(self.board[0])-1 or pos.y < 1 or pos.y >= len(self.board)-1
 
-    def has_tackle_zone(self, player):
-        if Rules.has_tackle_zone[self.game.state.get_player_state(player.player_id)]:
+    def has_tackle_zone(self, player, home):
+        if self.game.state.get_player_state(player.player_id, home) not in Rules.has_tackle_zone:
             return False
         if player.has_skill(Skill.TITCHY):
             return False
@@ -309,37 +307,38 @@ class Field:
 
     def get_adjacent_squares(self, pos, manhattan=False, include_out=False):
         squares = []
-        for yy in range(-1, 0, 1):
-            for xx in range(-1, 0, 1):
+        for yy in [-1, 0, 1]:
+            for xx in [-1, 0, 1]:
                 if yy == 0 and xx == 0:
                     continue
-                sq = Square(xx, yy)
+                sq = Square(pos.x+xx, pos.y+yy)
                 if not include_out and self.is_out_of_bounds(sq):
                     continue
                 if not manhattan:
                     squares.append(sq)
-                else:
-                    if xx == 0 or yy == 0:
-                        squares.append(sq)
+                elif xx == 0 or yy == 0:
+                    squares.append(sq)
         return squares
 
     def get_adjacent_player_squares(self, pos, home=True, away=True, manhattan=False):
         squares = []
         for square in self.get_adjacent_squares(pos, manhattan=manhattan):
             player_id = self.get_player_id_at(square)
+            if player_id is None:
+                continue
             team_home = self.game.get_home_by_player_id(player_id)
             if team_home and home or not team_home and away:
-                squares.append(squares)
+                squares.append(square)
         return squares
 
     def get_tackle_zones(self, pos):
         tackle_zones = 0
         own_player_id = self.get_player_id_at(pos)
-        own_team_home = self.game.get_team_by_player_id(own_player_id)
+        own_team_home = self.game.get_home_by_player_id(own_player_id)
         for square in self.get_adjacent_player_squares(pos, home=not own_team_home, away=own_team_home):
             player_id = self.get_player_id_at(square)
             player = self.game.get_player(player_id)
-            if player_id is not None and self.has_tackle_zone(player):
+            if player_id is not None and self.has_tackle_zone(player, not own_team_home):
                 tackle_zones += 1
         return tackle_zones
 
@@ -549,7 +548,10 @@ class DiceRoll:
 
     def __init__(self, dice, target=None, modifiers=None):
         self.dice = dice
-        self.sum = -1
+        self.sum = 0
+        for d in self.dice:
+            if not isinstance(d, BBDie):
+                self.sum += d.get_value()
         self.target = target
         self.modifiers = modifiers
 
@@ -571,16 +573,10 @@ class DiceRoll:
         return False
 
     def get_values(self):
-        return [d.get_value for d in self.dice]
+        return [d.get_value() for d in self.dice]
 
     def get_sum(self):
-        if self.sum >= 0:
-            return self.sum
-        s = 0
-        for d in self.dice:
-            assert not isinstance(d, BBDie)
-            s += d.get_value()
-        return s
+        return self.sum
 
     def same(self):
         value = None

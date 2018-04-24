@@ -402,17 +402,18 @@ class Bounce(Procedure):
 
         # Roll
         roll_scatter = DiceRoll([D8()])
+        result = roll_scatter.get_sum()
 
         # Bounce
         x = 0
         y = 0
-        if roll_scatter.get_sum() in [1, 4, 6]:
+        if result in [1, 4, 6]:
             x = -1
-        if roll_scatter.get_sum() in [3, 5, 9]:
+        if result in [3, 5, 9]:
             x = 1
-        if roll_scatter.get_sum() in [1, 2, 3]:
+        if result in [1, 2, 3]:
             y = -1
-        if roll_scatter.get_sum() in [6, 7, 8]:
+        if result in [6, 7, 8]:
             y = 1
 
         self.game.state.field.ball_position.x += x
@@ -425,20 +426,25 @@ class Bounce(Procedure):
             # Kick - out of bounds
             if self.game.state.field.is_ball_out() or \
                     not self.game.arena.is_team_side(self.game.state.field.ball_position, not self.home):
+                Touchback(self.game, not self.home)
                 self.game.report(Outcome(OutcomeType.TOUCHBACK, pos=self.game.state.field.ball_position,
-                                         team_home=self.home, rolls=[roll_scatter]))
+                                         team_home=not self.home, rolls=[roll_scatter]))
+                return True
         else:
             # Out of bounds
             if self.game.state.field.is_ball_out():
                 ThrowIn(self.game, self.home, self.game.state.field.ball_position)
                 self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
                                          team_home=self.home, rolls=[roll_scatter]))
-            # On player -> Catch
-            player_id = self.game.field.get_player_id_at(self.game.state.field.ball_position)
-            if player_id is not None:
-                Pickup(self.game, self.home, player_id, self.game.state.field.ball_position)
-                self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
-                                         player_id=player_id, rolls=[roll_scatter]))
+                return True
+
+        # On player -> Catch
+        player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
+        if player_id is not None:
+            Catch(self.game, self.game.get_home_by_player_id(player_id), player_id, self.game.state.field.ball_position)
+            self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
+                                     player_id=player_id, rolls=[roll_scatter]))
+            return True
 
         self.game.report(Outcome(OutcomeType.BALL_ON_GROUND, pos=self.game.state.field.ball_position, team_home=self.home))
         return True
@@ -516,13 +522,14 @@ class Catch(Procedure):
     def step(self, action):
 
         # Otherwise roll if player hasn't rolled
-        if action is None and not self.rolled:
+        if not self.rolled:
 
             # Can player even catch ball?
             player = self.game.get_player(self.player_id)
             if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_state(self.player_id, self.home) not in Rules.ready_to_catch:
                 Bounce(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.DROP, player_id=self.player_id))
+                return True
 
             # Set modifiers
             modifiers = 1 if self.accurate else 0
@@ -530,7 +537,8 @@ class Catch(Procedure):
             if self.interception and player.has_skill(Skill.LONG_LEGS):
                 modifiers += 1
 
-            tackle_zones = self.game.state.field.in_tackle_zones(self.player_id)
+            pos = self.game.state.field.get_player_position(self.player_id)
+            tackle_zones = self.game.state.field.get_tackle_zones(pos)
             modifiers -= tackle_zones
 
             # Weather
@@ -547,43 +555,37 @@ class Catch(Procedure):
             roll = DiceRoll([D6()], target=target)
             roll.modifiers = modifiers
             result = roll.get_sum()
-            mod_result = result + roll.modifiers
+            mod_result = max(1, min(6, result + roll.modifiers))
             if result == 6 or (result != 1 and mod_result >= target):
                 if self.interception:
-                    self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id))
+                    self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id), rolls=[roll])
                     Turnover(self.game, not self.home)
                 else:
-                    self.game.report(Outcome(OutcomeType.CATCH, player_id=self.player_id))
+                    self.game.report(Outcome(OutcomeType.CATCH, player_id=self.player_id, rolls=[roll]))
                 return True
             else:
                 # Check if catch
-                player = self.game.get_player(self.player_id)
                 if player.has_skill(Skill.CATCH) and not self.catch_used:
                     self.catch_used = True
                     self.waiting_for_catch = True
-                    self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, pos=self.pos, rolls=[roll]))
+                    self.game.report(Outcome(OutcomeType.CATCH_FAILED_CATCH, player_id=self.player_id, pos=self.pos, rolls=[roll]))
                     return False
 
                 # Check if reroll available
                 if self.game.state.can_use_reroll(self.home) and not self.catch_used:
                     self.waiting_for_reroll = True
-                    self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
+                    self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, rolls=[roll]))
                     return False
 
                 Bounce(self.game, self.home)
-                self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
+                self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, rolls=[roll]))
                 return True
 
         # If catch used
         if self.waiting_for_catch:
-            if action.action_type == ActionType.USE_SKILL:
-                self.catch_used = True
-                self.rolled = False
-                return self.step(None)
-            else:
-                Bounce(self.game, self.home)
-                self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
-                return True
+            self.catch_used = True
+            self.rolled = False
+            return self.step(None)
 
         # If re-roll used
         if self.waiting_for_reroll:
@@ -594,11 +596,12 @@ class Catch(Procedure):
                 return self.step(None)
             else:
                 Bounce(self.game, self.home)
-                self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id))
 
         return True
 
     def available_actions(self):
+        if self.waiting_for_reroll:
+            return [ActionChoice(ActionType.USE_REROLL, team=self.home), ActionChoice(ActionType.DONT_USE_REROLL, team=self.home)]
         return []
 
 
@@ -868,7 +871,7 @@ class Touchback(Procedure):
 
     def __init__(self, game, home):
         super().__init__(game)
-        self.home = home
+        self.home = home  # Player who can place the ball
 
     def step(self, action):
         pos = self.game.state.field.get_player_position(action.player_from_id)
@@ -905,9 +908,9 @@ class LandKick(Procedure):
                 self.game.report(Outcome(OutcomeType.BALL_HIT_GROUND, pos=self.game.state.field.ball_position,
                                          team_home=self.home))
             else:
-                Catch(self.game, self.home, player_id=player_id, pos=self.game.state.field.ball_position)
+                Catch(self.game, not self.home, player_id=player_id, pos=self.game.state.field.ball_position)
                 self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
-                                         team_home=not self.home))
+                                         team_home=not self.home, player_id=player_id))
         return True
 
     def available_actions(self):
@@ -1007,6 +1010,7 @@ class Riot(Procedure):
         self.effect = 0
 
     def step(self, action):
+        roll = None
         if self.game.state.get_team_state(not self.home).turn == 7:
             self.effect = -1
         elif self.game.state.get_team_state(not self.home).turn == 0:
@@ -1194,9 +1198,6 @@ class KickOffTable(Procedure):
 
         roll = DiceRoll([D6(), D6()])
         result = roll.get_sum()
-
-        # Test hack
-        result = 11
 
         self.rolled = True
 
@@ -1722,13 +1723,14 @@ class Pickup(Procedure):
     def step(self, action):
 
         # Otherwise roll if player hasn't rolled
-        if action is None and not self.rolled:
+        if not self.rolled:
 
             # Set modifiers
             modifiers = 1
 
             player = self.game.get_player(self.player_id)
-            tackle_zones = self.game.state.field.in_tackle_zones(self.player_id)
+            pos = self.game.state.field.get_player_position(player.player_id)
+            tackle_zones = self.game.state.field.get_tackle_zones(pos)
             if not player.has_skill(Skill.BIG_HAND):
                 modifiers -= tackle_zones
 
@@ -1738,7 +1740,7 @@ class Pickup(Procedure):
                     modifiers -= 1
 
             # Extra arms
-            if not player.has_skill(Skill.EXTRA_ARMS):
+            if player.has_skill(Skill.EXTRA_ARMS):
                 modifiers += 1
 
             # Find success target
@@ -1750,16 +1752,15 @@ class Pickup(Procedure):
                 self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id))
 
             # Roll
-            roll = DiceRoll([D6], target=target)
+            roll = DiceRoll([D6()], target=target)
             roll.modifiers = modifiers
             result = roll.get_sum()
-            mod_result = result + modifiers
+            mod_result = max(1, min(6, result + modifiers))
             if result == 6 or (result != 1 and mod_result >= target):
                 self.game.report(Outcome(OutcomeType.SUCCESSFUL_PICKUP, player_id=self.player_id))
                 return True
             else:
                 # Check if sure hands
-                player = self.game.get_player(self.player_id)
                 if player.has_skill(Skill.SURE_HANDS) and not self.sure_hands_used:
                     self.sure_hands_used = True
                     self.waiting_for_sure_hands = True
@@ -1778,14 +1779,9 @@ class Pickup(Procedure):
 
         # If catch used
         if self.waiting_for_sure_hands:
-            if action.action_type == ActionType.USE_SKILL:
-                self.sure_hands_used = True
-                self.rolled = False
-                return self.step(None)
-            else:
-                Bounce(self.game, self.home)
-                self.game.report(Outcome(OutcomeType.DROP, player_id=self.player_id))
-                return True
+            self.sure_hands_used = True
+            self.rolled = False
+            return self.step(None)
 
         # If re-roll used
         if self.waiting_for_reroll:
@@ -1801,6 +1797,8 @@ class Pickup(Procedure):
         return True
 
     def available_actions(self):
+        if self.waiting_for_reroll:
+            return [ActionChoice(ActionType.USE_REROLL, team=self.home), ActionChoice(ActionType.DONT_USE_REROLL, team=self.home)]
         return []
 
 
@@ -2166,21 +2164,23 @@ class Scatter(Procedure):
 
         # Roll
         roll_scatter = DiceRoll([D8()])
+        result_scatter = roll_scatter.get_sum()
         if self.kick and not self.gentle_gust:
             roll_distance = DiceRoll([D6()])
+            result_distance = roll_distance.get_sum()
 
         # Scatter
         x = 0
         y = 0
-        if roll_scatter.get_sum() in [1, 4, 6]:
+        if result_scatter in [1, 4, 6]:
             x = -1
-        if roll_scatter.get_sum() in [3, 5, 9]:
+        if result_scatter in [3, 5, 9]:
             x = 1
-        if roll_scatter.get_sum() in [1, 2, 3]:
+        if result_scatter in [1, 2, 3]:
             y = -1
-        if roll_scatter.get_sum() in [6, 7, 8]:
+        if result_scatter in [6, 7, 8]:
             y = 1
-        distance = 1 if not self.kick or self.gentle_gust else roll_distance.get_sum()
+        distance = 1 if not self.kick or self.gentle_gust else result_distance
 
         n = 3 if self.is_pass else 1
 
@@ -2196,21 +2196,21 @@ class Scatter(Procedure):
                         if self.gentle_gust:
                             # Touchback will be enforced after kick-off table when ball lands
                             self.game.report(Outcome(OutcomeType.GENTLE_GUST_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
-                                           team_home=self.home, rolls=[roll_scatter]))
+                                                     team_home=self.home, rolls=[roll_scatter]))
                         else:
                             # Touchback will be enforced after kick-off table when ball lands
                             self.game.report(Outcome(OutcomeType.KICK_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
-                                           team_home=self.home, rolls=[roll_scatter, roll_distance]))
+                                                     team_home=self.home, rolls=[roll_scatter, roll_distance]))
                         return True
                     elif self.game.arena.is_team_side(self.game.state.field.ball_position, self.home):
                         if self.gentle_gust:
                             # Touchback will be enforced after kick-off table when ball lands
                             self.game.report(Outcome(OutcomeType.GENTLE_GUST_OPP_HALF, pos=self.game.state.field.ball_position,
-                                           team_home=self.home, rolls=[roll_scatter]))
+                                                     team_home=self.home, rolls=[roll_scatter]))
                         else:
                             # Touchback will be enforced after kick-off table when ball lands
                             self.game.report(Outcome(OutcomeType.KICK_OPP_HALF, pos=self.game.state.field.ball_position,
-                                           team_home=self.home, rolls=[roll_scatter, roll_distance]))
+                                                     team_home=self.home, rolls=[roll_scatter, roll_distance]))
                         return True
                 else:
                     # Throw in
@@ -2220,7 +2220,7 @@ class Scatter(Procedure):
                         self.game.state.field.ball_position.y -= y
                         ThrowIn(self.game, self.home, self.game.state.field.ball_position)
                         self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
-                                       team_home=self.home, rolls=[roll_scatter]))
+                                                 team_home=self.home, rolls=[roll_scatter]))
                         return True
 
                     # Passes are scattered three times
@@ -2228,11 +2228,11 @@ class Scatter(Procedure):
                         continue
 
                     # On player -> Catch
-                    player_id = self.game.field.get_player_id_at(self.game.state.field.ball_position)
+                    player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
                     if player_id is not None:
-                        Catch(self.game, self.home, player_id, self.game.state.field.ball_position)
+                        Catch(self.game, self.game.get_home_by_player_id(player_id), player_id, self.game.state.field.ball_position)
                         self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
-                                       player_id=player_id, rolls=[roll_scatter]))
+                                                 player_id=player_id, rolls=[roll_scatter]))
                         return True
 
         if self.kick:
@@ -2290,8 +2290,12 @@ class Setup(Procedure):
         self.home = home
         self.reorganize = reorganize
         self.selected_player = None
+        if self.reorganize:
+            positions = game.arena.get_team_side(home)
+        else:
+            positions = game.arena.get_team_side(home) + [None]
         self.aa = [
-            ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.get_team(home).get_player_ids(), positions=game.arena.get_team_side(home) + [None]),
+            ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.get_team(home).get_player_ids(), positions=positions),
             ActionChoice(ActionType.END_SETUP, team=home),
             ActionChoice(ActionType.AUTO, team=home)
         ]
@@ -2403,7 +2407,7 @@ class ThrowIn(Procedure):
                 # On player -> Catch
                 player_id = self.game.field.get_player_id_at(self.game.state.field.ball_position)
                 if player_id is not None:
-                    Catch(self.game, self.home, player_id, self.game.state.field.ball_position)
+                    Catch(self.game, self.game.get_home_by_player_id(player_id), player_id, self.game.state.field.ball_position)
                     self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
                                              player_id=player_id, rolls=[roll_scatter]))
 

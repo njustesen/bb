@@ -111,8 +111,12 @@ class Game:
                     self.state.half = 1
                     self.state.home_state.turn = 0
                     self.state.away_state.turn = 0
+                elif isinstance(self.stack.peek(), Half):
+                    self.stack.pop()
+                    self.state.half += 1
                 else:
                     self.stack.pop()
+
 
             # Is game over
             if self.stack.is_empty():
@@ -123,7 +127,6 @@ class Game:
             # Set turn and half in state
             if isinstance(self.stack.peek(), Turn):
                 self.state.team_turn = self.stack.peek().home
-                self.state.half = self.stack.peek().half
                 if not self.stack.peek().blitz and not self.stack.peek().quick_snap:
                     if self.state.team_turn:
                         self.state.home_state.turn += 1
