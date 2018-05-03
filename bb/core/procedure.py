@@ -1834,7 +1834,9 @@ class PlayerAction(Procedure):
     def step(self, action):
 
         if action.action_type == ActionType.END_PLAYER_TURN:
-            return Outcome(OutcomeType.END_PLAYER_TURN), True
+            self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.USED
+            self.game.report(Outcome(OutcomeType.END_PLAYER_TURN))
+            return True
 
         # Action attributes
         player_from = self.game.get_team(self.home).get_player_by_id(action.player_from_id)
@@ -1968,7 +1970,7 @@ class PlayerAction(Procedure):
             self.turn.pass_available = False
 
     def available_actions(self):
-        return []
+        return [ActionChoice(ActionType.END_PLAYER_TURN, team=self.home)]
 
 
 class StartGame(Procedure):
@@ -2488,9 +2490,6 @@ class ResetTurn(Procedure):
 
 class Turn(Procedure):
 
-    start_actions = [ActionType.START_MOVE, ActionType.START_BLITZ, ActionType.START_BLOCK, ActionType.START_MOVE,
-                     ActionType.START_FOUL, ActionType.START_PASS, ActionType.START_HANDOFF]
-
     def __init__(self, game, home, half, turn, blitz=False, quick_snap=False):
         super().__init__(game)
         self.home = home
@@ -2501,9 +2500,7 @@ class Turn(Procedure):
         self.blitz_available = not quick_snap
         self.pass_available = not quick_snap
         self.handoff_available = not quick_snap
-        self.pass_action_taken = False
-        self.blitz_action_taken = False
-        self.foul_action_taken = False
+        self.foul_available = not quick_snap
         TurnStunned(self.game, self.home)
         ResetTurn(self.game, self.home)
 
@@ -2526,45 +2523,78 @@ class Turn(Procedure):
                 self.game.report(Outcome(OutcomeType.END_OF_TURN, team_home=self.home))
             return True
 
-        # Handle Start Move action
-        if action.action_type in Turn.start_actions:
-            player_state = self.game.state.get_player_state(action.player_from_id, self.home)
+        # Start movement action
+        if action.action_type == ActionType.START_MOVE:
+            return self.start_player_action(OutcomeType.MOVE_ACTION_STARTED, PlayerActionType.MOVE, action.player_from_id)
 
-            # Is player ready
-            if player_state not in [PlayerState.DOWN_READY, PlayerState.READY]:
-                raise IllegalActionExcpetion("Player is not ready to take an action")
+        # Start blitz action
+        if action.action_type == ActionType.START_BLITZ:
+            self.blitz_available = False
+            return self.start_player_action(OutcomeType.BLITZ_ACTION_STARTED, PlayerActionType.BLITZ, action.player_from_id)
 
-            # Start movement action
-            if action.action_type == ActionType.START_MOVE:
-                return self.start_player_action(OutcomeType.MOVE_ACTION_STARTED, PlayerActionType.MOVE, action.player_from_id)
+        # Start foul action
+        if action.action_type == ActionType.START_FOUL:
+            self.foul_available = False
+            return self.start_player_action(OutcomeType.FOUL_ACTION_STARTED, PlayerActionType.FOUL, action.player_from_id)
 
-            # Start blitz action
-            if action.action_type == ActionType.START_BLITZ and not self.blitz_action_taken:
-                self.blitz_action_taken = True
-                return self.start_player_action(OutcomeType.BLITZ_ACTION_STARTED, PlayerActionType.BLITZ, action.player_from_id)
+        # Start block action
+        if action.action_type == ActionType.START_BLOCK:
+            return self.start_player_action(OutcomeType.BLOCK_ACTION_STARTED, PlayerActionType.BLOCK, action.player_from_id)
 
-            # Start foul action
-            if action.action_type == ActionType.START_FOUL and not self.foul_action_taken:
-                self.foul_action_taken = True
-                return self.start_player_action(OutcomeType.FOUL_ACTION_STARTED, PlayerActionType.FOUL, action.player_from_id)
+        # Start pass action
+        if action.action_type == ActionType.START_PASS:
+            self.pass_available = False
+            return self.start_player_action(OutcomeType.PASS_ACTION_STARTED, PlayerActionType.PASS, action.player_from_id)
 
-            # Start block action
-            if action.action_type == ActionType.START_BLOCK:
-                return self.start_player_action(OutcomeType.BLOCK_ACTION_STARTED, PlayerActionType.BLOCK, action.player_from_id)
+        # Start handoff action
+        if action.action_type == ActionType.START_HANDOFF:
+            self.handoff_available = False
+            return self.start_player_action(OutcomeType.HANDOFF_ACTION_STARTED, PlayerActionType.HANDOFF, action.player_from_id)
 
-            # Start pass action
-            if action.action_type == ActionType.START_PASS and not self.pass_action_taken:
-                self.pass_action_taken = True
-                return self.start_player_action(OutcomeType.PASS_ACTION_STARTED, PlayerActionType.PASS, action.player_from_id)
-
-            # Start handoff action
-            if action.action_type == ActionType.START_HANDOFF:
-                return self.start_player_action(OutcomeType.HANDOFF_ACTION_STARTED, PlayerActionType.HANDOFF, action.player_from_id)
-
-        raise IllegalActionExcpetion("Unknown action")
+    def start_actions(self, player_ids, action_type):
+        return ActionChoice(action_type, team=self.home, player_ids=player_ids)
 
     def available_actions(self):
-        return [ActionChoice(ActionType.END_TURN, team=self.home)]
+        move_player_ids = []
+        block_player_ids = []
+        blitz_player_ids = []
+        pass_player_ids = []
+        handoff_player_ids = []
+        foul_player_ids = []
+        for player_id, player_state in self.game.state.get_team_state(self.home).player_states.items():
+            if self.blitz:
+                pos = self.game.state.field.get_player_position(player_id)
+                if self.game.state.field.get_tackle_zones(pos) > 0:
+                    continue
+            if player_state == PlayerState.READY or player_state == PlayerState.DOWN_READY:
+                move_player_ids.append(player_id)
+                if self.blitz_available:
+                    blitz_player_ids.append(player_id)
+                if self.pass_available:
+                    pass_player_ids.append(player_id)
+                if self.handoff_available:
+                    handoff_player_ids.append(player_id)
+                if self.foul_available:
+                    foul_player_ids.append(player_id)
+            if player_state == PlayerState.READY:
+                block_player_ids.append(player_id)
+
+        actions = []
+        if len(move_player_ids) > 0:
+            actions.append(self.start_actions(move_player_ids, ActionType.START_MOVE))
+        if len(block_player_ids) > 0:
+            actions.append(self.start_actions(block_player_ids, ActionType.START_BLOCK))
+        if len(blitz_player_ids) > 0:
+            actions.append(self.start_actions(blitz_player_ids, ActionType.START_BLITZ))
+        if len(pass_player_ids) > 0:
+            actions.append(self.start_actions(pass_player_ids, ActionType.START_PASS))
+        if len(handoff_player_ids) > 0:
+            actions.append(self.start_actions(handoff_player_ids, ActionType.START_HANDOFF))
+        if len(foul_player_ids) > 0:
+            actions.append(self.start_actions(foul_player_ids, ActionType.START_FOUL))
+        actions.append(ActionChoice(ActionType.END_TURN, team=self.home))
+
+        return actions
 
 
 class WeatherTable(Procedure):
