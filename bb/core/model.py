@@ -305,7 +305,7 @@ class Field:
             return squares_out
         return squares
 
-    def get_adjacent_squares(self, pos, manhattan=False, include_out=False):
+    def get_adjacent_squares(self, pos, manhattan=False, include_out=False, exclude_occupied=False):
         squares = []
         for yy in [-1, 0, 1]:
             for xx in [-1, 0, 1]:
@@ -313,6 +313,8 @@ class Field:
                     continue
                 sq = Square(pos.x+xx, pos.y+yy)
                 if not include_out and self.is_out_of_bounds(sq):
+                    continue
+                if exclude_occupied and self.get_player_id_at(sq) is not None:
                     continue
                 if not manhattan:
                     squares.append(sq)
@@ -344,30 +346,31 @@ class Field:
 
     def get_tackle_zones_detailed(self, pos):
         tackle_zones = 0
-        tackle_id = None
-        prehensile_tail_id = None
-        diving_tackle_id = None
-        shadowing_id = None
-        tentacles_id = None
-        own_player_id = self.get_player_id_at(pos)
-        own_team_home = self.game.get_team_by_player_id(own_player_id)
-        for square in self.get_adjacent_player_squares(pos, home=not own_team_home, away=own_team_home):
+        tackle_ids = []
+        prehensile_tail_ids = []
+        diving_tackle_ids = []
+        shadowing_ids = []
+        tentacles_ids = []
+        own_player_id = self.game.state.field.get_player_id_at(pos)
+        own_home = self.game.get_home_by_player_id(own_player_id)
+        for square in self.get_adjacent_player_squares(pos, home=not own_home, away=own_home):
             player_id = self.get_player_id_at(square)
             player = self.game.get_player(player_id)
-            if player_id is not None and self.has_tackle_zone(player):
+            home = self.game.get_home_by_player_id(player_id) if player_id is not None else None
+            if player_id is not None and self.has_tackle_zone(player, home):
                 tackle_zones += 1
-            if tackle_id is None and player.has_skill(Skill.TACKLE):
-                tackle_id = player_id
-            if prehensile_tail_id is None and player.has_skill(Skill.PREHENSILE_TAIL):
-                prehensile_tail_id = player_id
-            if diving_tackle_id is None and player.has_skill(Skill.DIVING_TACKLE):
-                diving_tackle_id = player_id
-            if shadowing_id is None and player.has_skill(Skill.SHADOWING):
-                diving_tackle_id = player_id
-            if tentacles_id is None and player.has_skill(Skill.TENTACLES):
-                tentacles_id = player_id
+            if player_id is None and player.has_skill(Skill.TACKLE):
+                tackle_ids.append(player_id)
+            if player_id is None and player.has_skill(Skill.PREHENSILE_TAIL):
+                prehensile_tail_ids.append(player_id)
+            if player_id is None and player.has_skill(Skill.DIVING_TACKLE):
+                diving_tackle_ids.append(player_id)
+            if player_id is None and player.has_skill(Skill.SHADOWING):
+                shadowing_ids.append(player_id)
+            if player_id is None and player.has_skill(Skill.TENTACLES):
+                tentacles_ids.append(player_id)
 
-        return tackle_zones, tackle_id, prehensile_tail_id, diving_tackle_id, shadowing_id, tentacles_id
+        return tackle_zones, tackle_ids, prehensile_tail_ids, diving_tackle_ids, shadowing_ids, tentacles_ids
 
     def assists(self, home, player_from, player_to, ignore_guard=False):
         pos_from = self.get_player_position(player_from.player_id)
@@ -716,9 +719,12 @@ class Player:
     def has_skill(self, skill):
         return skill in self.extra_skills or skill in self.position.skills
 
+    def get_skills(self):
+        return self.extra_skills + self.position.skills
+
     def to_simple(self):
         skills = []
-        for skill in self.extra_skills + self.position.skills:
+        for skill in self.get_skills():
             skills.append(skill.name)
         return {
             'player_id': self.player_id,

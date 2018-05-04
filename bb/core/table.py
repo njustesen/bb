@@ -254,6 +254,7 @@ class ActionType(Enum):
     AUTO = 39
     DONT_USE_APOTHECARY = 40
     SELECT_ROLL = 41
+    DONT_USE_REROLL = 42
 
 
 class WeatherType(Enum):

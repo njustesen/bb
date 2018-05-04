@@ -131,7 +131,7 @@ class Armor(Procedure):
     def step(self, action):
 
         # Roll
-        roll = DiceRoll(D6(), D6())
+        roll = DiceRoll([D6(), D6()])
         roll.modifiers = self.modifiers
         result = roll.get_sum() + self.modifiers
         self.armor_rolled = True
@@ -1349,7 +1349,7 @@ class Move(Procedure):
         # TODO: Check if in bounds
 
         had_ball_before = self.game.state.field.has_ball(self.player_id)
-        self.game.state.field.move(self.from_pos, self.to_pos)
+        self.game.state.field.move(self.player_id, self.to_pos)
         had_ball_after = self.game.state.field.has_ball(self.player_id)
 
         # Check if player moved onto the ball
@@ -1402,7 +1402,7 @@ class GFI(Procedure):
             if roll.get_sum() >= 2 + roll.modifiers:
 
                 # Success
-                self.game.report(Outcome(OutcomeType.SUCCESSFUL_GFI, player_id=self.player_id, pos=self.to_pos))
+                self.game.report(Outcome(OutcomeType.SUCCESSFUL_GFI, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
                 return True
 
             else:
@@ -1478,31 +1478,31 @@ class Dodge(Procedure):
         if not self.rolled:
 
             # Check opp skills
-            tackle_zones, tackle_id, prehensile_tail_id, diving_tackle_id, shadowing_id, tentacles_id = \
-                self.game.state.field.get_tackle_zones_detailed(self.to_pos, self.home)
+            tackle_zones, tackle_ids, prehensile_tail_ids, diving_tackle_ids, shadowing_ids, tentacles_ids = \
+                self.game.state.field.get_tackle_zones_detailed(self.from_pos)
 
             # TODO: Allow player to select if shadowing and diving tackle
             # TODO: Put diving tackle or shadowing proc on stack
-            # Auto-use other skills
+            # TODO: Auto-use other skills
 
             # Roll
             roll = DiceRoll([D6()])
             self.rolled = True
 
             # Calculate target
-            modifiers = 1
+            roll.modifiers = 1
             ignore_opp_mods = False
             if self.player.has_skill(Skill.STUNTY):
-                modifiers = 1
+                roll.modifiers = 1
                 ignore_opp_mods = True
             if self.player.has_skill(Skill.TITCHY):
-                modifiers -= 1
+                roll.modifiers -= 1
                 ignore_opp_mods = True
             if self.player.has_skill(Skill.TWO_HEADS):
-                modifiers -= 1
+                roll.modifiers -= 1
 
             if not ignore_opp_mods:
-                modifiers -= tackle_zones
+                roll.modifiers -= tackle_zones
 
             # Break tackle - use st instead of ag
             attribute = self.player.get_ag()
@@ -1516,7 +1516,7 @@ class Dodge(Procedure):
             if result == 6 or (result != 1 and mod_result >= target):
 
                 # Success
-                self.game.report(Outcome(OutcomeType.SUCCESSFUL_DODGE, player_id=self.player_id, pos=self.to_pos))
+                self.game.report(Outcome(OutcomeType.SUCCESSFUL_DODGE, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
                 return True
 
             else:
@@ -1533,7 +1533,6 @@ class Dodge(Procedure):
                 # Check if reroll available
                 if self.game.state.can_use_reroll(self.home) and not self.dodge_used:
                     self.awaiting_reroll = True
-                    self.game.report(Outcome(OutcomeType.FAILED_DODGE, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
                     return False
 
                 # Player trips
@@ -1542,14 +1541,12 @@ class Dodge(Procedure):
 
         # If sure feet used
         if self.awaiting_dodge:
-            if action.action_type == ActionType.USE_SKILL:
-                self.dodge_used = True
-                self.rolled = False
-                self.step(None)
-            else:
-                # Player trips
-                KnockDown(self.game, self.home, self.player_id, self.to_pos)
-                return True
+            self.dodge_used = True
+            self.rolled = False
+            self.step(None)
+            # Player trips
+            KnockDown(self.game, self.home, self.player_id, self.to_pos)
+            return True
 
         # If reroll used
         if self.awaiting_reroll:
@@ -1565,6 +1562,8 @@ class Dodge(Procedure):
                 return True
 
     def available_actions(self):
+        if self.awaiting_reroll:
+            return [ActionChoice(ActionType.USE_REROLL, team=self.home), ActionChoice(ActionType.DONT_USE_REROLL, team=self.home)]
         return []
 
 
@@ -1827,6 +1826,7 @@ class PlayerAction(Procedure):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
+        self.player_from = self.game.get_player(player_id)
         self.moves = 0
         self.player_action_type = player_action_type
         self.turn = turn
@@ -1839,36 +1839,17 @@ class PlayerAction(Procedure):
             return True
 
         # Action attributes
-        player_from = self.game.get_team(self.home).get_player_by_id(action.player_from_id)
-        player_to = self.game.get_team(self.home).get_player_by_id(action.player_to_id)
+        player_to = self.game.get_player(action.player_to_id) if action.player_to_id is not None else None
 
-        player_state_from = self.game.state.get_player_state(action.player_id, self.home)
-        player_state_to = None
-        if player_to is not None:
-            player_state_to = self.game.state.get_player_state(action.player_to_id, self.home)
+        player_state_from = self.game.state.get_player_state(self.player_id, self.home)
+        player_state_to = self.game.state.get_player_state(action.player_to_id, self.home) if player_to is not None else None
 
         if action.action_type == ActionType.MOVE:
 
-            # Check if action is allowed
-            if self.player_action_type == PlayerActionType.BLOCK:
-                raise IllegalActionExcpetion("Players cannot move if they are doing a block player action")
-
-            # Check if ready
-            if player_state_from not in [PlayerState.READY, PlayerState.DOWN_READY]:
-                raise IllegalActionExcpetion("Player is not ready")
-
-            # Check if square is nearby
-            if not action.pos_from.is_adjacent(action.pos_to):
-                raise IllegalActionExcpetion("Square is not nearby")
-
-            # Check if square is empty
-            if self.game.field.get_player_id_at(action.pos_to) is not None:
-                raise IllegalActionExcpetion("Square is occupied")
-
             # Check GFI
             move_needed = 3 if player_state_from == PlayerState.DOWN_READY else 1
-            gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
-            if self.moves + move_needed > player_from.get_ma() + gfi_allowed:
+            gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
+            if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed:
                 raise IllegalActionExcpetion("No movement points left")
 
             # Check dodge
@@ -1876,11 +1857,11 @@ class PlayerAction(Procedure):
                 # Ball and chain -> Auto-dodge
                 dodge = True
             else:
-                tackle_zones_from = self.game.state.field.get_tackle_zones(action.pos_from, self.home)
+                tackle_zones_from = self.game.state.field.get_tackle_zones(action.pos_from)
                 dodge = tackle_zones_from > 0
 
             # Check GFI
-            gfi = self.moves + move_needed > player_from.get_ma()
+            gfi = self.moves + move_needed > self.player_from.get_ma()
 
             # Add proc
             Move(self.game, self.home, self.player_id, action.pos_from, action.pos_to, gfi, dodge)
@@ -1890,87 +1871,77 @@ class PlayerAction(Procedure):
 
         elif action.action_type == ActionType.BLOCK:
 
-            # Check if action is allowed
-            if self.player_action_type != PlayerActionType.BLOCK or self.player_action_type != PlayerActionType.BLITZ:
-                raise IllegalActionExcpetion("Players cannot block if they are not doing a block of blitz player action")
-
-            if player_state_to == PlayerState.DOWN_READY or player_state_to == PlayerState.DOWN_USED:
-                raise IllegalActionExcpetion("Players cannot block opponent players that are down")
-
             # Check GFI
             gfi = False
             if action.action_type == ActionType.BLITZ:
                 move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
-                gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
-                if self.moves + move_needed > player_from.get_ma() + gfi_allowed:
+                gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
+                if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed:
                     raise IllegalActionExcpetion("No movement points left")
-                gfi = self.moves + move_needed > player_from.get_ma()
+                gfi = self.moves + move_needed > self.player_from.get_ma()
                 # Use movement
                 self.moves += move_needed
-                self.game.state.set_player_state(player_from.player_id, self.home, PlayerState.READY)
+                self.game.state.set_player_state(self.player_from.player_id, self.home, PlayerState.READY)
 
             # Check frenzy
-            if player_from.has_skill(Skill.FRENZY):
+            if self.player_from.has_skill(Skill.FRENZY):
                 move_needed = 0
                 if self.player_action_type == ActionType.BLITZ:
                     move_needed = 1
-                gfi_allowed = 3 if player_from.has_skill(Skill.SPRINT) else 2
-                if self.moves + move_needed <= player_from.get_ma() + gfi_allowed:
-                    gfi_2 = self.moves + move_needed > player_from.get_ma()
-                    Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi)
+                gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
+                if self.moves + move_needed <= self.player_from.get_ma() + gfi_allowed:
+                    gfi_2 = self.moves + move_needed > self.player_from.get_ma()
+                    Block(self.game, self.home, self.player_from, player_to, action.pos_to, gfi=gfi)
                     gfi = gfi_2  # Switch gfi
                 # Use movement
                 self.moves += move_needed
 
             # Block
-            Block(self.game, self.home, player_from, player_to, action.pos_to, gfi=gfi)
+            Block(self.game, self.home, self.player_from, player_to, action.pos_to, gfi=gfi)
 
             return False
 
         elif action.action_type == ActionType.FOUL:
 
-            if self.player_action_type != ActionType.FOUL:
-                raise IllegalActionExcpetion("Fouls can only be done in foul actions")
-
-            if player_state_to not in [PlayerState.DOWN_READY, PlayerState.DOWN_USED, PlayerState.STUNNED]:
-                raise IllegalActionExcpetion("Players cannot foul opponent players that are standing")
-
-            Foul(self.game, self.home, player_from, player_to)
+            Foul(self.game, self.home, self.player_from, player_to)
 
             # A foul is a players last thing to do
             return True
 
         elif action.action_type == ActionType.PASS:
 
-            if self.player_action_type != ActionType.PASS:
-                raise IllegalActionExcpetion("Passes can only be done in pass actions")
-
-            if player_state_to not in [PlayerState.READY, PlayerState.USED]:
-                raise IllegalActionExcpetion("Passes can only be directed towards standing players")
-
-            if not self.game.state.field.has_ball(player_from.player_id):
-                raise IllegalActionExcpetion("Player needs to have ball to pass")
-
-            if not self.turn.pass_available:
-                raise IllegalActionExcpetion("Pass is not available in this turn")
-
             # Check distance
-            pos_from = self.game.field.get_player_position(player_from.player_id)
+            pos_from = self.game.field.get_player_position(self.player_from.player_id)
             pass_distance = self.game.field.pass_distance(pos_from, action.pos_to)
 
             if self.game.state.weather == WeatherType.BLIZZARD:
                 if pass_distance != PassDistance.QUICK_PASS or pass_distance != PassDistance.SHORT_PASS:
                     raise IllegalActionExcpetion("Only quick and short passes during blizzards")
 
-            if pass_distance == PassDistance.HAIL_MARY and not player_from.has_skill(Skill.HAIL_MARY):
+            if pass_distance == PassDistance.HAIL_MARY and not self.player_from.has_skill(Skill.HAIL_MARY):
                 raise IllegalActionExcpetion("Hail mary passes requires the Hail Mary skill")
 
-            PassAction(self.game, self.home, player_from, pos_from, player_to, action.pos_to, pass_distance)
+            PassAction(self.game, self.home, self.player_from, pos_from, player_to, action.pos_to, pass_distance)
 
             self.turn.pass_available = False
 
     def available_actions(self):
-        return [ActionChoice(ActionType.END_PLAYER_TURN, team=self.home)]
+        actions = []
+        pos = self.game.state.field.get_player_position(self.player_id)
+        if self.player_action_type == PlayerActionType.MOVE:
+            move_positions = []
+            player_state_from = self.game.state.get_player_state(self.player_id, self.home)
+            move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
+            gif = self.moves + move_needed > self.player_from.get_ma()
+            sprints = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
+            if self.moves + move_needed <= self.player_from.get_ma() + sprints:
+                for square in self.game.state.field.get_adjacent_squares(pos, exclude_occupied=True):
+                    move_positions.append(square)
+                if len(move_positions) > 0:
+                    actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions))
+
+        actions.append(ActionChoice(ActionType.END_PLAYER_TURN, team=self.home))
+        return actions
 
 
 class StartGame(Procedure):
@@ -2562,8 +2533,10 @@ class Turn(Procedure):
         handoff_player_ids = []
         foul_player_ids = []
         for player_id, player_state in self.game.state.get_team_state(self.home).player_states.items():
+            pos = self.game.state.field.get_player_position(player_id)
+            if pos is None:
+                continue
             if self.blitz:
-                pos = self.game.state.field.get_player_position(player_id)
                 if self.game.state.field.get_tackle_zones(pos) > 0:
                     continue
             if player_state == PlayerState.READY or player_state == PlayerState.DOWN_READY:
