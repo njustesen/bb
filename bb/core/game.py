@@ -57,6 +57,10 @@ class Game:
         if isinstance(self.stack.peek(), Turnover):
             self._end_turn()
 
+        # If player turn ends
+        if isinstance(self.stack.peek(), EndPlayerTurn):
+            self._end_player_turn()
+
         # If riot -> remove one turn
         if isinstance(self.stack.peek(), Riot):
             if self.stack.peek().effect == 1:
@@ -175,6 +179,18 @@ class Game:
         for i in reversed(range(self.stack.size())):
             x += 1
             if isinstance(self.stack.items[i], Turn):
+                break
+        for i in range(x):
+            self.stack.pop()
+
+    def _end_player_turn(self):
+        """
+        Removes all procs in the current turn - including the current turn proc.
+        """
+        x = 0
+        for i in reversed(range(self.stack.size())):
+            x += 1
+            if isinstance(self.stack.items[i], PlayerAction):
                 break
         for i in range(x):
             self.stack.pop()

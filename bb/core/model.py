@@ -72,6 +72,11 @@ class TeamState:
 
     def reset_turn(self):
         self.reroll_used = False
+        for player_id, player_state in self.player_states.items():
+            if player_state == PlayerState.USED:
+                self.player_states[player_id] = PlayerState.READY
+            elif player_state == PlayerState.DOWN_USED:
+                self.player_states[player_id] = PlayerState.DOWN_READY
 
     def use_reroll(self):
         self.rerolls -= 1

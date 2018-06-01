@@ -1263,10 +1263,10 @@ class KnockDown(Procedure):
     def step(self, action):
 
         # Knock down player
-        self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.DOWN_READY
+        self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.DOWN_USED
         self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id))
         if self.both_down:
-            self.game.state.get_team_state(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN_READY
+            self.game.state.get_team_state(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN_USED
             self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.opp_player_id, opp_player_id=self.player_id))
 
         # Turnover
@@ -1289,11 +1289,11 @@ class KnockDown(Procedure):
         if self.injury_roll and not self.armor_roll:
             Injury(self.game, self.home, self.player_id, opp_player_id=self.opp_player_id if not self.in_crowd else None)
         elif self.armor_roll:
-            Armor(self.game, not self.home, self.player_id, modifiers=self.modifiers, opp_player_id=self.player_id)
+            Armor(self.game, self.home, self.player_id, modifiers=self.modifiers, opp_player_id=self.opp_player_id)
 
         if self.both_down:
             if self.injury_roll and not self.armor_roll:
-                Injury(self.game, self.home, self.opp_player_id, opp_player_id=self.player_id if not self.in_crowd else None)
+                Injury(self.game, not self.home, self.opp_player_id, opp_player_id=self.player_id if not self.in_crowd else None)
             elif self.armor_roll:
                 Armor(self.game, not self.home, self.opp_player_id, modifiers=self.modifiers, opp_player_id=self.player_id)
 
@@ -1425,7 +1425,8 @@ class GFI(Procedure):
                     return False
 
                 # Player trips
-                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                self.game.state.field.move(self.player_id, self.to_pos)
+                KnockDown(self.game, self.home, self.player_id, self.to_pos, turnover=True)
                 return True
 
         # If sure feet used
@@ -1436,7 +1437,8 @@ class GFI(Procedure):
                 self.step(None)
             else:
                 # Player trips
-                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                self.game.state.field.move(self.player_id, self.to_pos)
+                KnockDown(self.game, self.home, self.player_id, self.to_pos, turnover=True)
                 return True
 
         # If reroll used
@@ -1449,8 +1451,24 @@ class GFI(Procedure):
                 self.step(None)
             else:
                 # Player trips
-                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                self.game.state.field.move(self.player_id, self.to_pos)
+                KnockDown(self.game, self.home, self.player_id, self.to_pos, turnover=True)
                 return True
+
+    def available_actions(self):
+        return []
+
+
+class EndPlayerTurn(Procedure):
+
+    def __init__(self, game, home, player_id):
+        super().__init__(game)
+        self.home = home
+        self.player_id = player_id
+        self.player = self.game.get_player(player_id)
+
+    def step(self, action):
+        return True
 
     def available_actions(self):
         return []
@@ -1461,7 +1479,7 @@ class Dodge(Procedure):
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     success = [6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1]
 
-    def __init__(self, game, home, player_id, from_pos, to_pos):
+    def __init__(self, game, home, player_id, from_pos, to_pos, cause_turnover=True):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
@@ -1472,6 +1490,7 @@ class Dodge(Procedure):
         self.awaiting_dodge = False
         self.awaiting_reroll = False
         self.rolled = False
+        self.cause_turnover = cause_turnover
 
     def step(self, action):
 
@@ -1510,11 +1529,11 @@ class Dodge(Procedure):
             if self.player.has_skill(Skill.BREAK_TACKLE) and self.player.get_st() > self.player.get_st():
                 attribute = self.player.get_st()
 
-            target = Dodge.success[attribute]
+            roll.target = Dodge.success[attribute]
             result = roll.get_sum()
             mod_result = result + roll.modifiers
 
-            if result == 6 or (result != 1 and mod_result >= target):
+            if result == 6 or (result != 1 and mod_result >= roll.target):
 
                 # Success
                 self.game.report(Outcome(OutcomeType.SUCCESSFUL_DODGE, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
@@ -1537,17 +1556,16 @@ class Dodge(Procedure):
                     return False
 
                 # Player trips
-                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                self.game.state.field.move(self.player_id, self.to_pos)
+                KnockDown(self.game, self.home, self.player_id, turnover=self.cause_turnover)
+
                 return True
 
-        # If sure feet used
+        # If has dodge
         if self.awaiting_dodge:
             self.dodge_used = True
             self.rolled = False
-            self.step(None)
-            # Player trips
-            KnockDown(self.game, self.home, self.player_id, self.to_pos)
-            return True
+            return self.step(None)
 
         # If reroll used
         if self.awaiting_reroll:
@@ -1556,10 +1574,11 @@ class Dodge(Procedure):
                 self.game.state.get_team_state(self.home).reroll_used = True
                 self.game.state.get_team_state(self.home).rerolls -= 1
                 self.rolled = False
-                self.step(None)
+                return self.step(None)
             else:
                 # Player trips
-                KnockDown(self.game, self.home, self.player_id, self.to_pos)
+                self.game.state.field.move(self.player_id, self.to_pos)
+                KnockDown(self.game, self.home, self.player_id, turnover=self.cause_turnover)
                 return True
 
     def available_actions(self):
@@ -1709,7 +1728,7 @@ class Pickup(Procedure):
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     success = [6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1]
 
-    def __init__(self, game, home, player_id, pos):
+    def __init__(self, game, home, player_id, pos, cause_turnover=True):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
@@ -1719,6 +1738,7 @@ class Pickup(Procedure):
         self.sure_hands_used = False
         self.waiting_for_reroll = False
         self.waiting_for_sure_hands = False
+        self.cause_turnover = cause_turnover
 
     def step(self, action):
 
@@ -1775,9 +1795,14 @@ class Pickup(Procedure):
 
                 Scatter(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id, rolls=[roll]))
+
+                # Turnover?
+                if self.cause_turnover:
+                    Turnover(self.game, self.home)
+
                 return True
 
-        # If catch used
+        # If has sure hands
         if self.waiting_for_sure_hands:
             self.sure_hands_used = True
             self.rolled = False
@@ -1792,7 +1817,9 @@ class Pickup(Procedure):
                 return self.step(None)
             else:
                 Bounce(self.game, self.home)
-                #self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id, rolls=[]))
+                # Turnover?
+                if self.cause_turnover:
+                    Turnover(self.game, self.home)
 
         return True
 
