@@ -148,8 +148,8 @@ class Game:
         self.available_actions = self.stack.peek().available_actions()
 
     def report(self, outcome):
-        print(outcome.outcome_type.name)
-        print(json.dumps(outcome.to_simple()))
+        #print(outcome.outcome_type.name)
+        #print(json.dumps(outcome.to_simple()))
         self.reports.append(outcome)
 
     def _remove_turn(self):

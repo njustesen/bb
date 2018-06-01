@@ -139,7 +139,7 @@ class PlayerActionType(Enum):
     BLITZ = 3
     PASS = 4
     HANDOFF = 5
-    FOUL = 7
+    FOUL = 6
 
 
 class PlayerState(Enum):

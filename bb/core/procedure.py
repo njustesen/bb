@@ -902,6 +902,7 @@ class LandKick(Procedure):
             Touchback(self.game, home=not self.home)
             self.game.report(Outcome(OutcomeType.TOUCHBACK, team_home=not self.home))
         else:
+            self.game.state.field.ball_in_air = False
             player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
             if player_id is None:
                 Bounce(self.game, home=self.home, kick=True)
@@ -1348,12 +1349,12 @@ class Move(Procedure):
 
         # TODO: Check if in bounds
 
-        had_ball_before = self.game.state.field.has_ball(self.player_id)
+        on_ball_before = self.game.state.field.has_ball(self.player_id)
         self.game.state.field.move(self.player_id, self.to_pos)
-        had_ball_after = self.game.state.field.has_ball(self.player_id)
+        on_ball_after = self.game.state.field.has_ball(self.player_id)
 
         # Check if player moved onto the ball
-        if had_ball_before != had_ball_after:
+        if on_ball_before != on_ball_after:
 
             # Attempt to pick up the ball - unless no hands
             player = self.game.get_player(self.player_id)
@@ -1364,7 +1365,7 @@ class Move(Procedure):
                 Pickup(self.game, self.home, self.player_id, self.to_pos)
                 return True
 
-        elif had_ball_before and self.game.arena.is_touchdown(self.to_pos, self.home):
+        elif on_ball_before and self.game.arena.is_touchdown(self.to_pos, self.home):
 
             # Touchdown if player had the ball with him/her
             Touchdown(self.game, self.home, self.player_id)
@@ -1756,7 +1757,7 @@ class Pickup(Procedure):
             result = roll.get_sum()
             mod_result = max(1, min(6, result + modifiers))
             if result == 6 or (result != 1 and mod_result >= target):
-                self.game.report(Outcome(OutcomeType.SUCCESSFUL_PICKUP, player_id=self.player_id))
+                self.game.report(Outcome(OutcomeType.SUCCESSFUL_PICKUP, player_id=self.player_id, rolls=[roll]))
                 return True
             else:
                 # Check if sure hands
@@ -1769,11 +1770,11 @@ class Pickup(Procedure):
                 # Check if reroll available
                 if self.game.state.can_use_reroll(self.home) and not self.sure_hands_used:
                     self.waiting_for_reroll = True
-                    self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id))
+                    self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id, rolls=[roll]))
                     return False
 
                 Scatter(self.game, self.home)
-                self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id))
+                self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id, rolls=[roll]))
                 return True
 
         # If catch used
@@ -1791,7 +1792,7 @@ class Pickup(Procedure):
                 return self.step(None)
             else:
                 Bounce(self.game, self.home)
-                self.game.report(Outcome(OutcomeType.DROP, player_id=self.player_id))
+                #self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id, rolls=[]))
 
         return True
 
