@@ -1,23 +1,19 @@
 import random
-from abc import ABC, abstractmethod
 from bb.core.model import *
 from bb.core.table import *
 from bb.core.exception import *
 
 
-class Procedure(ABC):
+class Procedure():
 
     def __init__(self, game):
         self.game = game
         self.game.stack.push(self)
         self.done = False
-        super().__init__()
 
-    @abstractmethod
     def step(self, action):
         pass
 
-    @abstractmethod
     def available_actions(self):
         pass
 
@@ -294,8 +290,6 @@ class Block(Procedure):
 
             # Re-roll
             if action.action_type == ActionType.USE_REROLL:
-                if self.reroll_used or not self.game.state.can_use_reroll(self.home):
-                    raise IllegalActionExcpetion("Team can't use re-roll")
 
                 # Roll again
                 self.reroll_used = True
@@ -999,10 +993,10 @@ class GetTheRef(Procedure):
 class Riot(Procedure):
     """
     The trash talk between two opposing players explodes and rapidly degenerates, involving the rest of the players.
-    If the receiving team’s turn marker is on turn 7 for the half, both teams move their turn marker back one space as
+    If the receiving team's turn marker is on turn 7 for the half, both teams move their turn marker back one space as
     the referee resets the clock back to before the fight started. If the receiving team has not yet taken a turn this
-    half the referee lets the clock run on during the fight and both teams’ turn markers are moved forward one space.
-    Otherwise roll a D6. On a 1-3, both teams’ turn markers are moved forward one space. On a 4-6, both team’s turn
+    half the referee lets the clock run on during the fight and both teams' turn markers are moved forward one space.
+    Otherwise roll a D6. On a 1-3, both teams' turn markers are moved forward one space. On a 4-6, both team's turn
     markers are moved back one space.
     """
     def __init__(self, game, home):
@@ -1035,7 +1029,7 @@ class Riot(Procedure):
 class HighKick(Procedure):
     """
     High Kick: The ball is kicked very high, allowing a player on the receiving team time to move into the
-    perfect position to catch it. Any one player on the receiving team who is not in an opposing player’s
+    perfect position to catch it. Any one player on the receiving team who is not in an opposing player's
     tackle zone may be moved into the square where the ball will land no matter what their MA may be, as long
     as the square is unoccupied.
     """
@@ -1058,7 +1052,7 @@ class HighKick(Procedure):
 
 class CheeringFans(Procedure):
     """
-    Each coach rolls a D3 and adds their team’s FAME (see page 18) and the number of cheerleaders on their team to the
+    Each coach rolls a D3 and adds their team's FAME (see page 18) and the number of cheerleaders on their team to the
     score. The team with the highest score is inspired by their fans' cheering and gets an extra re-roll this half.
     If both teams have the same score, then both teams get a re-roll.
     """

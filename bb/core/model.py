@@ -1,10 +1,9 @@
-from abc import ABC, abstractmethod
 import numpy as np
+import secrets
 import random
 from math import sqrt
 from bb.core.util import *
 from bb.core.table import *
-from bb.core.exception import *
 
 
 class Configuration:
@@ -263,7 +262,7 @@ class Field:
         return list(set(self.player_positions.keys()) & set(self.game.away.get_player_ids()))
 
     def get_random_player(self, home):
-        return random.choice(self.get_team_player_ids(home))
+        return secrets.choice(self.get_team_player_ids(home))
 
     def is_ball_at(self, pos, in_air=False):
         return self.ball_position == pos and not self.ball_in_air
@@ -545,9 +544,8 @@ class Arena:
         return self.board[pos.y][pos.x] in Arena.wing_left_tiles
 
 
-class Die(ABC):
+class Die:
 
-    @abstractmethod
     def get_value(self):
         pass
 
