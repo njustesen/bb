@@ -508,6 +508,8 @@ class Arena:
     scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
     wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
+    home_td_tiles = [Tile.HOME_TOUCHDOWN]
+
 
     def __init__(self, board):
         self.board = board
@@ -534,9 +536,10 @@ class Arena:
         :param team: True if home team and False if away team.
         :return: Whether pos is within team's touchdown zone (such that they would score)
         """
-        if self.is_team_side(pos, not team):
-            return self.board[pos.y][pos.x] in Arena.scrimmage_tiles
-        return False
+        if team:
+            return self.board[pos.y][pos.x] == Tile.AWAY_TOUCHDOWN
+
+        return self.board[pos.y][pos.x] == Tile.HOME_TOUCHDOWN
 
     def is_wing(self, pos, right):
         if right:

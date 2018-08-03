@@ -200,6 +200,7 @@ class Game:
         Removes all procs in the current turn - including the current turn proc, and then creates procs to
         prepare for kickoff.
         """
+        proc.step(None)
         self._end_turn()
         KickOff(self, proc.home)
         Setup(self, not proc.home)

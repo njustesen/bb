@@ -2441,6 +2441,7 @@ class Touchdown(Procedure):
 
     def step(self, action):
         self.game.report(Outcome(OutcomeType.TOUCHDOWN, team_home=self.home, player_id=self.player_id))
+        self.game.state.get_team_state(self.home).score += 1
         return True
 
     def available_actions(self):

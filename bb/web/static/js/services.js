@@ -115,7 +115,7 @@ appServices.factory('GameLogService', function() {
             'END_OF_BLITZ': "<team> ended their blitz.",
             'END_OF_QUICK_SNAP': "<team> ended their quick snap.",
             'END_OF_HALF': "END_OF_HALF",
-            'TOUCHDOWN': "TOUCHDOWN",
+            'TOUCHDOWN': "<b>Touchdown</b> by <player>.",
             'TOUCHBACK': "<b>Touchback! </b> <team> can give the ball to any player on the field.",
             'TURNOVER': "TURNOVER",
             'CASUALTY': "CASUALTY",
