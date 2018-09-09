@@ -199,12 +199,12 @@ class Field:
     def move(self, player_id, pos_to):
         pos_from = self.player_positions[player_id]
         if self.has_ball(player_id):
-            self.ball_position = pos_to
+            self.ball_position = Square(pos_to.x, pos_to.y)
         if self.board[pos_to.y][pos_to.x] is not None:
             raise Exception("Player cannot be moved on top of another player")
         self.board[pos_from.y][pos_from.x] = None
         self.board[pos_to.y][pos_to.x] = player_id
-        self.player_positions[player_id] = pos_to
+        self.player_positions[player_id] = Square(pos_to.x, pos_to.y)
 
     def swap(self, pos_from, pos_to):
         """
@@ -214,11 +214,11 @@ class Field:
         """
         player_from_id = self.board[pos_from.y][pos_from.x]
         if player_from_id in self.player_positions:
-            self.player_positions[player_from_id] = pos_to
+            self.player_positions[player_from_id] = Square(pos_to.x, pos_to.y)
 
         player_to_id = self.board[pos_to.y][pos_to.x]
         if player_to_id is not None:
-            self.player_positions[player_to_id] = pos_from
+            self.player_positions[player_to_id] = Square(pos_from.x, pos_from.y)
         self.board[pos_to.y][pos_to.x] = player_from_id
         self.board[pos_from.y][pos_from.x] = player_to_id
 

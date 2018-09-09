@@ -92,7 +92,18 @@ class Game:
                     return True
 
         # Run proc
+        print("Action={}".format(action.action_type if action is not None else ""))
+        print("Proc={}".format(proc))
         proc.done = proc.step(action)
+
+        ''' Enable if cloning happens
+        for player_id, pos in self.state.field.player_positions.items():
+            assert self.state.field.board[pos.y][pos.x] == player_id
+
+        for y in range(len(self.state.field.board)):
+            for x in range(len(self.state.field.board[0])):
+                assert self.state.field.board[y][x] is None or (self.state.field.player_positions[self.state.field.board[y][x]].x == x and self.state.field.player_positions[self.state.field.board[y][x]].y == y)
+        '''
 
         # Remove done procs
         if proc.done:
@@ -130,7 +141,7 @@ class Game:
 
             # If new turn on stack - set turn and half counters
             if isinstance(self.stack.peek(), Turn) and self.stack.peek() != self.last_turn:
-                last_turn = self.stack.peek()
+                self.last_turn = self.stack.peek()
                 self.state.team_turn = self.stack.peek().home
                 if not self.stack.peek().blitz and not self.stack.peek().quick_snap:
                     if self.state.team_turn:

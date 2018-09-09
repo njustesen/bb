@@ -1415,7 +1415,6 @@ class GFI(Procedure):
                 # Check if reroll available
                 if self.game.state.can_use_reroll(self.home) and not self.sure_feet_used:
                     self.awaiting_reroll = True
-                    self.game.report(Outcome(OutcomeType.FAILED_GFI, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
                     return False
 
                 # Player trips
@@ -2593,7 +2592,7 @@ class Turn(Procedure):
                     handoff_player_ids.append(player_id)
                 if self.foul_available:
                     foul_player_ids.append(player_id)
-            if player_state == PlayerState.READY:
+            if player_state == PlayerState.READY and not self.quick_snap and not self.blitz:
                 block_player_ids.append(player_id)
 
         actions = []
