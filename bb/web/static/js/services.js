@@ -102,7 +102,7 @@ appServices.factory('GameLogService', function() {
             'INCOMPLETE_PASS': "<b>Pass incomplete</b> by <player>.",
             'COMPLETE_HANDOFF': "<b>Handoff completed</b> by <player>.",
             'INCOMPLETE_HANDOFF': "<b>Handoff failed</b> by <player>.",
-            'END_PLAYER_TURN': "END_PLAYER_TURN",
+            'END_PLAYER_TURN': "<player>'s turn is over.",
             'MOVE_ACTION_STARTED': "<player> starts a movement action.",
             'BLOCK_ACTION_STARTED': "<player> starts a block action.",
             'BLITZ_ACTION_STARTED': "<player> starts a blitz action.",

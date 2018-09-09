@@ -131,6 +131,9 @@ class OutcomeType(Enum):
     PLAYER_NOT_READY = 107
     CATCH = 108
     CATCH_FAILED_CATCH = 109
+    PLAYER_STAND_UP_SUCCESS = 110
+    PLAYER_STAND_UP_FAILUE = 111
+    BALL_OUT_OF_BOUNDS = 112
 
 
 class PlayerActionType(Enum):
@@ -255,7 +258,7 @@ class ActionType(Enum):
     DONT_USE_APOTHECARY = 40
     SELECT_ROLL = 41
     DONT_USE_REROLL = 42
-
+    STAND_UP = 43
 
 class WeatherType(Enum):
     SWELTERING_HEAT = 1

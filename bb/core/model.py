@@ -45,7 +45,7 @@ class TeamState:
         for player_id in self.player_states.keys():
             player_states[player_id] = self.player_states[player_id].name
         injuries = {}
-        for player_id, effect in self.injuries:
+        for player_id, effect in self.injuries.items():
             injuries[player_id] = effect.name
         return {
             'bribes': self.bribes,
@@ -80,6 +80,10 @@ class TeamState:
     def use_reroll(self):
         self.rerolls -= 1
         self.reroll_used = True
+
+    def injure_player(self, player_id, injury_effect):
+        print("injury_effect={}".format(injury_effect))
+        self.injuries[player_id] = injury_effect
 
 
 class GameState:
@@ -144,11 +148,11 @@ class GameState:
         self.field.remove(player_id)
         self.get_dugout(home).kod.append(player_id)
 
-    def casualty(self, player_id):
-        home = self.game.get_home_by_player_id(player_id)
-        self.get_team_state(home).player_states[player_id] = PlayerState.BH
+    def casualty(self, player_id, home, player_state, effect):
+        self.set_player_state(player_id, home, player_state)
         self.field.remove(player_id)
         self.get_dugout(home).casualties.append(player_id)
+        self.game.state.get_team_state(home).injure_player(player_id, effect)
 
     def can_use_reroll(self, home):
         return not self.get_team_state(home).reroll_used and self.get_team_state(home).rerolls > 0 and self.team_turn == home
@@ -326,25 +330,23 @@ class Field:
                     squares.append(sq)
         return squares
 
-    def get_adjacent_player_squares(self, pos, home=True, away=True, manhattan=False):
+    def get_adjacent_player_squares(self, pos, include_home=True, include_away=True, manhattan=False):
         squares = []
         for square in self.get_adjacent_squares(pos, manhattan=manhattan):
             player_id = self.get_player_id_at(square)
             if player_id is None:
                 continue
             team_home = self.game.get_home_by_player_id(player_id)
-            if team_home and home or not team_home and away:
+            if include_home and team_home or include_away and not team_home:
                 squares.append(square)
         return squares
 
-    def get_tackle_zones(self, pos):
+    def get_tackle_zones(self, pos, home=True):
         tackle_zones = 0
-        own_player_id = self.get_player_id_at(pos)
-        own_team_home = self.game.get_home_by_player_id(own_player_id)
-        for square in self.get_adjacent_player_squares(pos, home=not own_team_home, away=own_team_home):
+        for square in self.get_adjacent_player_squares(pos, include_home=not home, include_away=home):
             player_id = self.get_player_id_at(square)
             player = self.game.get_player(player_id)
-            if player_id is not None and self.has_tackle_zone(player, not own_team_home):
+            if player_id is not None and self.has_tackle_zone(player, not home):
                 tackle_zones += 1
         return tackle_zones
 
@@ -357,7 +359,7 @@ class Field:
         tentacles_ids = []
         own_player_id = self.game.state.field.get_player_id_at(pos)
         own_home = self.game.get_home_by_player_id(own_player_id)
-        for square in self.get_adjacent_player_squares(pos, home=not own_home, away=own_home):
+        for square in self.get_adjacent_player_squares(pos, include_home=not own_home, include_away=own_home):
             player_id = self.get_player_id_at(square)
             player = self.game.get_player(player_id)
             home = self.game.get_home_by_player_id(player_id) if player_id is not None else None
@@ -555,7 +557,7 @@ class Die:
 
 class DiceRoll:
 
-    def __init__(self, dice, target=None, modifiers=None):
+    def __init__(self, dice, modifiers=0, target=None):
         self.dice = dice
         self.sum = 0
         for d in self.dice:
@@ -586,6 +588,11 @@ class DiceRoll:
 
     def get_sum(self):
         return self.sum
+
+    def is_d6_success(self):
+        if self.sum == 1:
+            return False
+        return self.sum == 6 or self.sum + self.modifiers >= self.target
 
     def same(self):
         value = None

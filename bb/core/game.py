@@ -15,6 +15,7 @@ class Game:
         self.config = config
         self.game_over = False
         self.available_actions = []
+        self.last_turn = None
 
         if self.state is None:
             self.state = GameState(self)
@@ -121,15 +122,15 @@ class Game:
                 else:
                     self.stack.pop()
 
-
             # Is game over
             if self.stack.is_empty():
                 self.state.team_turn = None
                 self.game_over = True
                 return False
 
-            # Set turn and half in state
-            if isinstance(self.stack.peek(), Turn):
+            # If new turn on stack - set turn and half counters
+            if isinstance(self.stack.peek(), Turn) and self.stack.peek() != self.last_turn:
+                last_turn = self.stack.peek()
                 self.state.team_turn = self.stack.peek().home
                 if not self.stack.peek().blitz and not self.stack.peek().quick_snap:
                     if self.state.team_turn:
@@ -144,6 +145,10 @@ class Game:
         if len(self.available_actions) == 0:
             # We can continue without user input
             return False
+
+        # If player can't do more end turn
+        if len(self.available_actions) == 1 and self.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
+            self.step(self.available_actions[0])
 
         # Game needs user input
         return True
