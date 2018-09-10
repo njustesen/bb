@@ -467,12 +467,13 @@ class Field:
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[]):
+    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[]):
         self.action_type = action_type
         self.positions = positions
         self.player_ids = player_ids
         self.team = team
         self.indexes = indexes
+        self.rolls = rolls
 
     def to_simple(self):
         return {
@@ -480,7 +481,8 @@ class ActionChoice:
             'positions': [position.to_simple() if position is not None else None for position in self.positions],
             'player_ids': self.player_ids,
             'team': self.team,
-            'indexes': self.indexes
+            'indexes': self.indexes,
+            "rolls": self.rolls
         }
 
 

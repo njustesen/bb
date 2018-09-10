@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/bb/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb/web/static/less/style.less" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/less/style.less" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
@@ -22,7 +25,7 @@
     <SUITE FILE_PATH="coverage/bb$Unittests_for_test_speed_TestLoaders_test_speed.coverage" NAME="Unittests for test_speed.TestLoaders.test_speed Coverage Results" MODIFIED="1527215188092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/bb$procedure.coverage" NAME="procedure Coverage Results" MODIFIED="1527878269844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/core" />
     <SUITE FILE_PATH="coverage/bb$test_speed.coverage" NAME="test_speed Coverage Results" MODIFIED="1527215870404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1536602348298" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
+    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1536610425146" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -32,11 +35,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="539" lean-forward="true" selection-start-line="539" selection-end-line="539" />
+            <state relative-caret-position="256">
+              <caret line="1986" column="97" selection-start-line="1986" selection-start-column="97" selection-end-line="1986" selection-end-column="97" />
             </state>
           </provider>
         </entry>
@@ -44,8 +47,8 @@
       <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="386" column="31" selection-start-line="386" selection-start-column="31" selection-end-line="386" selection-end-column="31" />
+            <state relative-caret-position="556">
+              <caret line="180" column="28" selection-start-line="180" selection-start-column="16" selection-end-line="180" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -53,8 +56,8 @@
       <file leaf-file-name="table.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/table.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="155" column="7" selection-start-line="155" selection-start-column="4" selection-end-line="155" selection-end-column="7" />
+            <state relative-caret-position="365">
+              <caret line="151" column="13" selection-start-line="151" selection-start-column="4" selection-end-line="151" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -71,8 +74,8 @@
       <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="105" column="7" lean-forward="true" selection-start-line="105" selection-start-column="7" selection-end-line="105" selection-end-column="7" />
+            <state relative-caret-position="258">
+              <caret line="228" column="8" selection-start-line="228" selection-start-column="8" selection-end-line="228" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -95,20 +98,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="services.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/web/static/js/services.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="104" column="58" selection-start-line="104" selection-start-column="58" selection-end-line="104" selection-end-column="58" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="162" selection-start-line="162" selection-end-line="162" />
+            <state relative-caret-position="152">
+              <caret line="761" column="8" selection-start-line="761" selection-start-column="8" selection-end-line="761" selection-end-column="8" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -116,15 +110,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.play.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="game.play.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="151" column="29" lean-forward="true" selection-start-line="151" selection-start-column="29" selection-end-line="151" selection-end-column="29" />
+            <state relative-caret-position="311">
+              <caret line="118" column="21" lean-forward="true" selection-start-line="118" selection-start-column="21" selection-end-line="118" selection-end-column="21" />
               <folding>
+                <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#div#1;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#span#1;n#div#0;n#div#1;n#div#1;n#div#0;n#div#3;n#div#0;n#div#1;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="style.less" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/web/static/less/style.less">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="254">
+              <caret line="463" column="12" lean-forward="true" selection-start-line="463" selection-start-column="12" selection-end-line="463" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -141,19 +145,13 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>GFI</find>
-      <find>Turn(</find>
-      <find>Bounce</find>
-      <find>Dodge</find>
-      <find>Dod</find>
-      <find>Pickup</find>
       <find>Setup</find>
       <find>resetSquares</find>
       <find>setSelected</find>
       <find>Setup(</find>
       <find>selected_sq</find>
       <find>selected_square</find>
-      <find>selected_square =</find>
+      <find />
       <find>setAvailablePositions</find>
       <find>selectedPlayer()</find>
       <find>act</find>
@@ -164,13 +162,19 @@
       <find>player.player_id</find>
       <find>setLocalState</find>
       <find>PlayerAct</find>
-      <find>Move(</find>
       <find>END</find>
-      <find>} else if (action.player_ids.length &gt; 0){</find>
+      <find />
       <find>Catch</find>
-      <find>NONE</find>
-      <find>rerolls</find>
       <find>team</find>
+      <find>Move(</find>
+      <find>PlayerAction(</find>
+      <find />
+      <find>positions</find>
+      <find>NONE</find>
+      <find>local_state</find>
+      <find>Square</find>
+      <find>PlayerAction</find>
+      <find>rerolls</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -218,18 +222,18 @@
         <option value="$USER_HOME$/Desktop/a2c_atari.py" />
         <option value="$PROJECT_DIR$/../baselines/baselines/a2c/a2c.py" />
         <option value="$PROJECT_DIR$/bb/web/gulpfile.js" />
-        <option value="$PROJECT_DIR$/bb/web/static/less/style.less" />
         <option value="$PROJECT_DIR$/tests/test_speed.py" />
         <option value="$PROJECT_DIR$/data/teams/human_team_2.json" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/bb/web/static/js/app.js" />
         <option value="$PROJECT_DIR$/bb/core/table.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
-        <option value="$PROJECT_DIR$/bb/core/model.py" />
         <option value="$PROJECT_DIR$/bb/core/game.py" />
-        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
+        <option value="$PROJECT_DIR$/bb/core/model.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
+        <option value="$PROJECT_DIR$/bb/web/static/less/style.less" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
+        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
       </list>
     </option>
   </component>
@@ -295,7 +299,15 @@
               <item name="bb" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
               <item name="static" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
+              <item name="img" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="bb" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bb" type="462c0819:PsiDirectoryNode" />
+              <item name="bb" type="462c0819:PsiDirectoryNode" />
+              <item name="web" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="less" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="bb" type="b2602c69:ProjectViewProjectNode" />
@@ -464,8 +476,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gulp.js.default" />
         <item itemvalue="Python.server" />
+        <item itemvalue="Gulp.js.default" />
         <item itemvalue="Python.table" />
         <item itemvalue="Python.procedure" />
         <item itemvalue="Python.test_speed" />
@@ -611,12 +623,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/model.py</url>
-          <line>477</line>
+          <line>478</line>
           <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/procedure.py</url>
-          <line>2424</line>
+          <line>2434</line>
           <option name="timeStamp" value="145" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -759,13 +771,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="11" column="22" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/less/style.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="292" column="5" lean-forward="true" selection-start-line="292" selection-start-column="5" selection-end-line="292" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -913,23 +918,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="105" column="7" lean-forward="true" selection-start-line="105" selection-start-column="7" selection-end-line="105" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="162" selection-start-line="162" selection-end-line="162" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/gulpfile.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
@@ -937,35 +925,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="539" lean-forward="true" selection-start-line="539" selection-end-line="539" />
+        <state relative-caret-position="258">
+          <caret line="228" column="8" selection-start-line="228" selection-start-column="8" selection-end-line="228" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/table.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="155" column="7" selection-start-line="155" selection-start-column="4" selection-end-line="155" selection-end-column="7" />
+        <state relative-caret-position="365">
+          <caret line="151" column="13" selection-start-line="151" selection-start-column="4" selection-end-line="151" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="386" column="31" selection-start-line="386" selection-start-column="31" selection-end-line="386" selection-end-column="31" />
+        <state relative-caret-position="556">
+          <caret line="180" column="28" selection-start-line="180" selection-start-column="16" selection-end-line="180" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/less/style.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="463" column="12" lean-forward="true" selection-start-line="463" selection-start-column="12" selection-end-line="463" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="761" column="8" selection-start-line="761" selection-start-column="8" selection-end-line="761" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="151" column="29" lean-forward="true" selection-start-line="151" selection-start-column="29" selection-end-line="151" selection-end-column="29" />
+        <state relative-caret-position="311">
+          <caret line="118" column="21" lean-forward="true" selection-start-line="118" selection-start-column="21" selection-end-line="118" selection-end-column="21" />
           <folding>
+            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#div#1;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#span#1;n#div#0;n#div#1;n#div#1;n#div#0;n#div#3;n#div#0;n#div#1;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="1986" column="97" selection-start-line="1986" selection-start-column="97" selection-end-line="1986" selection-end-column="97" />
         </state>
       </provider>
     </entry>

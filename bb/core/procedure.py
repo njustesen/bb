@@ -1971,17 +1971,27 @@ class PlayerAction(Procedure):
         pos = self.game.state.field.get_player_position(self.player_id)
         if self.player_action_type == PlayerActionType.MOVE:
             move_positions = []
+            rolls = []
             player_state_from = self.game.state.get_player_state(self.player_id, self.home)
             move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
-            gif = self.moves + move_needed > self.player_from.get_ma()
+            gfi = self.moves + move_needed > self.player_from.get_ma()
             sprints = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
             if player_state_from is PlayerState.DOWN_READY:
-                actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], team=self.home))
+                if self.game.get_player(self.player_id).get_ma() < 3:
+                    rolls.append(True)
+                else:
+                    rolls.append(False)
+                actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], team=self.home, rolls=rolls))
             elif (not self.turn.quick_snap and self.moves + move_needed <= self.player_from.get_ma() + sprints) or (self.turn.quick_snap and self.moves == 0):
                 for square in self.game.state.field.get_adjacent_squares(pos, exclude_occupied=True):
+                    ball = self.game.state.field.ball_position == square and not self.game.state.field.ball_in_air
                     move_positions.append(square)
+                    if not gfi and not ball and self.game.state.field.get_tackle_zones(pos, home=self.home) > 0:
+                        rolls.append(True)
+                    else:
+                        rolls.append(gfi or ball)
                 if len(move_positions) > 0:
-                    actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions))
+                    actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions, rolls=rolls))
 
         actions.append(ActionChoice(ActionType.END_PLAYER_TURN, player_ids=[self.player_id], team=self.home))
         return actions
