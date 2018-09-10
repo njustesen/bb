@@ -538,15 +538,12 @@ class Catch(Procedure):
             if player.has_skill(Skill.EXTRA_ARMS):
                 modifiers += 1
 
-            # Find success target
-            target = Catch.success[player.get_ag()]
-
             # Roll
-            roll = DiceRoll([D6()], target=target)
+            roll = DiceRoll([D6()])
             roll.modifiers = modifiers
-            result = roll.get_sum()
-            mod_result = max(1, min(6, result + roll.modifiers))
-            if result == 6 or (result != 1 and mod_result >= target):
+            roll.target = Catch.success[player.get_ag()]
+            self.rolled = True
+            if roll.is_d6_success():
                 if self.interception:
                     self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id), rolls=[roll])
                     Turnover(self.game, not self.home)
@@ -1867,6 +1864,7 @@ class PlayerAction(Procedure):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
+        self.pos_from = self.game.state.field.get_player_position(self.player_id)
         self.player_from = self.game.get_player(player_id)
         self.player_action_type = player_action_type
         self.moves = 0
@@ -1876,7 +1874,7 @@ class PlayerAction(Procedure):
 
         if action.action_type == ActionType.END_PLAYER_TURN:
             self.game.state.set_player_state(self.player_id, self.home, PlayerState.USED)
-            self.game.report(Outcome(OutcomeType.END_PLAYER_TURN))
+            self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player_id=self.player_id))
             return True
 
         # Action attributes
@@ -1907,7 +1905,7 @@ class PlayerAction(Procedure):
                     dodge = tackle_zones_from > 0
 
             # Add proc
-            Move(self.game, self.home, self.player_id, action.pos_from, action.pos_to, gfi, dodge)
+            Move(self.game, self.home, self.player_id, self.pos_from, action.pos_to, gfi, dodge)
             self.moves += 1
 
             return False
@@ -1985,7 +1983,7 @@ class PlayerAction(Procedure):
                 if len(move_positions) > 0:
                     actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions))
 
-        actions.append(ActionChoice(ActionType.END_PLAYER_TURN, team=self.home))
+        actions.append(ActionChoice(ActionType.END_PLAYER_TURN, player_ids=[self.player_id], team=self.home))
         return actions
 
 
