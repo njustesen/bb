@@ -149,9 +149,12 @@
                         <img src="static/img/iconssmall/{{ playerIcon(playerInFocus(game.home_team), false) }}" width="48px" height="48px" />
                     </div>
                     <div class="stats-box left">
-                        <span class="name-box">
-                            {{playerInFocus(game.home_team).nr}}. <b>{{playerInFocus(game.home_team).position_name}}:</b> {{playerInFocus(game.home_team).name}}
-                        </span>
+                        <div>
+                            <span class="name-box">
+                                {{playerInFocus(game.home_team).nr}}. <b>{{playerInFocus(game.home_team).position_name}}:</b> {{playerInFocus(game.home_team).name}}
+                            </span>
+                            <span style="float:right" class="label right label-{{ playerStateClass(playerInFocus(game.home_team)) }}">{{ playerState(playerInFocus(game.home_team)) }}</span>
+                        </div>
                         <div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">MA</div>
@@ -185,6 +188,7 @@
                             <span class="name-box">
                                 {{playerInFocus(game.away_team).nr}}. <b>{{playerInFocus(game.away_team).position_name}}:</b> {{playerInFocus(game.away_team).name}}
                             </span>
+                            <span style="float:right" class="label label-{{ playerStateClass(playerInFocus(game.away_team)) }}">{{ playerState(playerInFocus(game.away_team)) }}</span>
                         </div>
                         <div>
                             <div class="attribute text-center">

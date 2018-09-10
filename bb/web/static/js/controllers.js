@@ -363,6 +363,38 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return null;
         };
 
+        $scope.playerState = function playerState(player){
+            let state = undefined;
+            if ($scope.teamOfPlayer(player) == $scope.game.home_team){
+                state = $scope.game.state.home_state.player_states[player.player_id];
+                if (state == "MNG"){
+                    state = $scope.game.state.home_state.injures[player.player_id];
+                }
+            } else {
+                state = $scope.game.state.away_state.player_states[player.player_id];
+                if (state == "MNG"){
+                    state = $scope.game.state.away_state.injures[player.player_id];
+                }
+            }
+            return state.replace("_READY", "").replace("_", " ");
+        };
+
+        $scope.playerStateClass = function playerStateClass(player){
+            let state = $scope.playerState(player);
+            if (state == "READY" || state == "DOWN"){
+                return "success";
+            } if (state == "STUNNED"){
+                return "warning";
+            } else if (state == "USED" || state == "DOWN USED" || state == "STUNNED" || state == "HEATED" || state == "BONE HEADED" || state == "HYPNOTIZED" || state == "REALLY STUPID" || state == "REALLY STUPID"){
+                return "secondary";
+            } else if (state == "KOD"){
+                return "warning";
+            } else if (state == "BH" || state == "MNG" || state == "DEAD" || state == ""){
+                return "danger";
+            }
+            return "light";
+        };
+
         $scope.placeBall = function placeBall(square){
             // Remove ball first
             for (let y = 0; y < $scope.local_state.board.length; y++){
