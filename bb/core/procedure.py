@@ -1869,6 +1869,7 @@ class PlayerAction(Procedure):
         self.player_action_type = player_action_type
         self.moves = 0
         self.turn = turn
+        self.squares = []
 
     def step(self, action):
 
@@ -1906,6 +1907,8 @@ class PlayerAction(Procedure):
 
             # Add proc
             Move(self.game, self.home, self.player_id, self.pos_from, action.pos_to, gfi, dodge)
+            self.squares.append(action.pos_to)
+            
             self.moves += 1
 
             return False

@@ -158,7 +158,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return icon_name;
         };
 
-        $scope.newSquare = function newSquare(player_id, x, y, area, sub_area){
+        $scope.newSquare = function newSquare(player_id, x, y, area, sub_area, number){
             let player = null;
             let player_state = null;
             let player_icon = null;
@@ -185,7 +185,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 roll: false,
                 area: area,
                 sub_area: sub_area,
-                ball: ball
+                ball: ball,
+                num: number
             };
         };
 
@@ -245,7 +246,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 }
                 for (let x = 0; x < $scope.game.state.field.board[y].length; x++){
                     let player_id = $scope.game.state.field.board[y][x];
-                    let square = $scope.newSquare(player_id, x, y, 'field', '');
+                    let square = $scope.newSquare(player_id, x, y, 'field', '', undefined);
                     if ($scope.selected_square != null && $scope.selected_square.player != null && $scope.selected_square.player.player_id == player_id){
                         $scope.selected_square = square;
                     }
@@ -291,6 +292,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         $scope.local_state.away_dugout[y][x] = away_square;
                     }
                 }
+            }
+            for (let i = 0; i < $scope.game.squares_moved.length; i++){
+                $scope.local_state.board[$scope.game.squares_moved[i].y][$scope.game.squares_moved[i].x].number = i+1
             }
         };
 
@@ -339,13 +343,16 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
-        $scope.resetSquares = function resetSquares(){
-            //$scope.selected_square = null;
+        $scope.resetSquares = function resetSquares(deselect){
+            if (deselect){
+                $scope.selected_square = null;
+            }
             $scope.available_positions = [];
             for (let y = 0; y < $scope.local_state.board.length; y++){
                 for (let x = 0; x < $scope.local_state.board[y].length; x++){
                     $scope.local_state.board[y][x].selected = false;
                     $scope.local_state.board[y][x].available_position = false;
+                    $scope.local_state.board[y][x].roll = false;
                 }
             }
             for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
@@ -425,7 +432,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
                     // If the user clicked on the selected player
                     if (square.player != null && $scope.selectedPlayer() != null && $scope.selectedPlayer().player_id == square.player.player_id){
-                        $scope.resetSquares();
+                        $scope.resetSquares(true);
                         $scope.setAvailablePositions();
                         return;
                     } else {
@@ -452,12 +459,12 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
             if (square.player == null){
                 // Clicked on an empty square with no selected player
-                $scope.resetSquares();
+                $scope.resetSquares(true);
                 $scope.setAvailablePositions();
             } else {
                 // Clicked on a player - select it - unless only non-player actions
                 if ($scope.main_action != null && $scope.main_action.action_type != "PLACE_BALL"){
-                    $scope.resetSquares();
+                    $scope.resetSquares(true);
                     $scope.select(square);
                     $scope.setAvailablePositions();
                 }

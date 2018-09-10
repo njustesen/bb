@@ -107,6 +107,9 @@
             <div class="field {{ game.state.weather.toLowerCase().replace('_','') }}">
                 <div class="square-row" ng-repeat="row in game.state.field.board.slice(1, game.state.field.board.length-1)">
                     <div class="square {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ local_state.board[$parent.$index+1][$index+1].available_position ? 'green' : '' }}" ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])" ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])">
+                        <div class="movenum">
+                            {{ local_state.board[$parent.$index+1][$index+1].number }}
+                        </div>
                         <div class="playericon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].player != null">
                             <img src="static/img/iconssmall/{{ local_state.board[$parent.$parent.$index+1][$index+1].player_icon }}" class="{{ ['READY', 'DOWN_READY'].includes((local_state.board[$parent.$parent.$index+1][$index+1].player_state) ) ? '' : 'transparent'  }}" />
                         </div>

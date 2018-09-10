@@ -20,6 +20,15 @@ class Game:
         if self.state is None:
             self.state = GameState(self)
 
+    def _squares_moved(self):
+        for proc in self.stack.items:
+            if isinstance(proc, PlayerAction):
+                out = []
+                for square in proc.squares:
+                    out.append(square.to_simple())
+                return out
+        return []
+
     def to_simple(self):
         available_actions = []
         for action in self.available_actions:
@@ -36,6 +45,7 @@ class Game:
             'stack': self.procs(),
             'available_actions': available_actions,
             'reports': reports,
+            'squares_moved': self._squares_moved()
         }
 
     def init(self):
