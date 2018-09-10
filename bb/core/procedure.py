@@ -1802,10 +1802,10 @@ class Pickup(Procedure):
                 self.rolled = False
                 return self.step(None)
             else:
-                Bounce(self.game, self.home)
                 # Turnover?
                 if self.cause_turnover:
                     Turnover(self.game, self.home)
+                Bounce(self.game, self.home)
 
         return True
 
@@ -2314,9 +2314,10 @@ class Setup(Procedure):
             positions = game.arena.get_team_side(home) + [None]
         self.aa = [
             ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.get_team(home).get_player_ids(), positions=positions),
-            ActionChoice(ActionType.END_SETUP, team=home),
-            ActionChoice(ActionType.AUTO, team=home)
+            ActionChoice(ActionType.END_SETUP, team=home)
         ]
+        if not self.reorganize:
+            self.aa.append(ActionChoice(ActionType.AUTO, team=home))
 
     def step(self, action):
 

@@ -309,8 +309,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.playersById = Object.assign({}, $scope.game.home_team.players_by_id, $scope.game.away_team.players_by_id);
             $scope.setLocalState();
             $scope.setAvailablePositions();
-            console.log(data);
             $scope.loading = false;
+            console.log(data);
             $scope.checkForReload(2500);
         }).error(function(status, data) {
             $location.path("/#/");
@@ -328,7 +328,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.resetSquares = function resetSquares(){
-            $scope.selected_square = null;
+            //$scope.selected_square = null;
             $scope.available_positions = [];
             for (let y = 0; y < $scope.local_state.board.length; y++){
                 for (let x = 0; x < $scope.local_state.board[y].length; x++){
@@ -503,7 +503,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.game = data;
                 console.log(data);
                 $scope.setLocalState();
-                $scope.selected_square = null;
+                //$scope.selected_square = null;
                 $scope.setAvailablePositions();
                 $scope.refreshing = false;
                 document.getElementById('gamelog').scrollTop = 0;
