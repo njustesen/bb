@@ -289,7 +289,7 @@ class Field:
         return True
 
     def get_push_squares(self, pos_from, pos_to):
-        squares_to = self.game.field.get_adjacent_squares(pos_to, include_out=True)
+        squares_to = self.game.state.field.get_adjacent_squares(pos_to, include_out=True)
         squares_empty = []
         squares_out = []
         squares = []
@@ -386,15 +386,15 @@ class Field:
             for xx in range(-1, 0, 1):
                 if yy == 0 and xx == 0:
                     continue
-                p = [pos_to.y+xx, pos_to.x+yy]
-                if not self.is_out_of_bounds(p) and not np.array_equal(pos_from, p):
+                p = Square(pos_to.y+xx, pos_to.x+yy)
+                if not self.is_out_of_bounds(p) and pos_from != p:
                     player_id = self.get_player_id_at(p)
                     if player_id is not None:
                         if player_id in self.game.get_home_by_player_id(player_id) != home:
                             if self.game.state.get_player_state(player_id) == PlayerState.BONE_HEADED:
                                 continue
                             if (not ignore_guard and self.game.get_player(player_id).has_skill(Skill.GUARD)) or \
-                                            self.get_tackle_zones(player_id) <= 1:
+                                            self.get_tackle_zones(p) <= 1:  # TODO: Check if attacker has a tackle zone
                                 assists.append(player_id)
         return assists
 
@@ -467,13 +467,15 @@ class Field:
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[]):
+    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[], block_rolls=[], dice=[]):
         self.action_type = action_type
         self.positions = positions
         self.player_ids = player_ids
         self.team = team
         self.indexes = indexes
         self.rolls = rolls
+        self.block_rolls = block_rolls
+        self.dice = dice
 
     def to_simple(self):
         return {
@@ -482,7 +484,9 @@ class ActionChoice:
             'player_ids': self.player_ids,
             'team': self.team,
             'indexes': self.indexes,
-            "rolls": self.rolls
+            "rolls": self.rolls,
+            "block_rolls": self.block_rolls,
+            "dice": [die.to_simple() for die in self.dice]
         }
 
 

@@ -125,7 +125,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
                 let n = report.n;
                 if (typeof(n) == "string"){
-                    n = report.n.toLowerCase();
+                    n = report.n.replace("NONE", "badly hurt").toLowerCase();
                 }
                 line = line.replace("<n>", n);
                 if (report.player_id != null){
@@ -183,6 +183,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 selected: false,
                 available_position: false,
                 roll: false,
+                block_roll: 0,
                 area: area,
                 sub_area: sub_area,
                 ball: ball,
@@ -193,6 +194,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.setAvailablePositions = function setAvailablePositions(){
             $scope.available_positions = [];
             $scope.available_rolls = [];
+            $scope.available_block_rolls = [];
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
                 if (action.positions.length > 0){
@@ -201,6 +203,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0)){
                         $scope.available_positions = action.positions;
                         $scope.available_rolls = action.rolls;
+                        $scope.available_block_rolls = action.block_rolls;
                     }
                 } else if (action.player_ids.length > 0){
                     if (action.action_type != "END_PLAYER_TURN"){
@@ -232,6 +235,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     $scope.local_state.board[pos.y][pos.x].available_position = true;
                     if ($scope.available_rolls.length > i){
                         $scope.local_state.board[pos.y][pos.x].roll = $scope.available_rolls[i];
+                    }
+                    if ($scope.available_block_rolls.length > i){
+                        $scope.local_state.board[pos.y][pos.x].block_roll = $scope.available_block_rolls[i];
                     }
                 }
             }
@@ -353,6 +359,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     $scope.local_state.board[y][x].selected = false;
                     $scope.local_state.board[y][x].available_position = false;
                     $scope.local_state.board[y][x].roll = false;
+                    $scope.local_state.board[y][x].block_roll = 0;
                 }
             }
             for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
@@ -580,7 +587,18 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         };
 
-        $scope.showAction = function showAction(action) {
+        $scope.pickDice = function pickDice(idx) {
+
+            let a = $scope.newAction("SELECT_DIE");
+            a.n = idx;
+            $scope.act(a);
+
+        };
+
+        $scope.showActionAsButton = function showActionAsButton(action) {
+            if (action.action_type == "SELECT_DIE"){
+                return false;
+            }
             // If no args -> show
             if (action.player_ids.length == 0 && action.positions.length == 0){
                 return true;
@@ -595,5 +613,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
             return false;
         };
+
     }
 ]);

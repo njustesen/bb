@@ -120,6 +120,14 @@
                         <div class="ballicon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].roll">
                             <img src="static/img/icons/game/dice_small.png" class="transparent dice" />
                         </div>
+                        <div class="ballicon align-middle text-center">
+                            <img src="static/img/icons/decorations/block1dagainst.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == -1" />
+                            <img src="static/img/icons/decorations/block2dagainst.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == -2" />
+                            <img src="static/img/icons/decorations/block3dagainst.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == -3" />
+                            <img src="static/img/icons/decorations/block1d.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == 1" />
+                            <img src="static/img/icons/decorations/block2d.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == 2" />
+                            <img src="static/img/icons/decorations/block3d.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == 3" />
+                        </div>
                         <div class="stateicon align-middle text-center">
                             <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'STUNNED'" src="static/img/player_status/stunned.gif" />
                             <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'DOWN_READY'" src="static/img/player_status/prone.gif" />
@@ -223,9 +231,18 @@
             </div>
             <div class="action-bar text-center">
                 <span ng-repeat="action in game.available_actions">
-                    <button ng-if="showAction(action)" type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}}" ng-click="pickActionType(action)" ng-disabled="refreshing">
+                    <button ng-if="showActionAsButton(action)" type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}}" ng-click="pickActionType(action)" ng-disabled="refreshing">
                         {{ prettify(action.action_type) }}
                     </button>
+                    <span ng-repeat="die in action.dice">
+                        <button type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}} die" ng-click="pickDice($index)" ng-disabled="refreshing">
+                            <img src="static/img/dice/attacker_down.png" ng-show="die.result=='ATTACKER_DOWN'" />
+                            <img src="static/img/dice/both_down.png" ng-show="die.result=='BOTH_DOWN'" />
+                            <img src="static/img/dice/push.png" ng-show="die.result=='PUSH'" />
+                            <img src="static/img/dice/defender_down.png" ng-show="die.result=='DEFENDER_DOWN'" />
+                            <img src="static/img/dice/defender_stumbles.png" ng-show="die.result=='DEFENDER_STUMBLES'" />
+                        </button>
+                    </span>
                 </span>
             </div>
             <div id="gamelog" class="gamelog">

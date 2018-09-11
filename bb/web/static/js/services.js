@@ -118,7 +118,7 @@ appServices.factory('GameLogService', function() {
             'TOUCHDOWN': "<b>Touchdown</b> by <player>.",
             'TOUCHBACK': "<b>Touchback! </b> <team> can give the ball to any player on the field.",
             'TURNOVER': "TURNOVER",
-            'CASUALTY': "CASUALTY",
+            'CASUALTY': "<b>Casualty!</b> <player> is <n>.",
             'APOTHECARY_USED_KO': "APOTHECARY_USED_KO",
             'APOTHECARY_USED_CASUALTY': "APOTHECARY_USED_CASUALTY",
             'CASUALTY_APOTHECARY': "CASUALTY_APOTHECARY",
