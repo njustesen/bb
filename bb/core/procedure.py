@@ -288,87 +288,31 @@ class Block(Procedure):
             self.waiting_wrestle_to = False
             self.selected_die = BBDieResult.BOTH_DOWN
 
-        else:
+        elif action.action_type == ActionType.USE_REROLL:
 
-            # Re-roll
-            if action.action_type == ActionType.USE_REROLL:
+            # Roll again
+            self.reroll_used = True
+            self.game.state.get_team_state(self.home).use_reroll()
+            self.roll = None
+            return self.step(None)
 
-                # Roll again
-                self.reroll_used = True
-                self.game.state.get_team_state(self.home).use_reroll()
-                return self.step(None)
+        elif action.action_type == ActionType.USE_JUGGERNAUT:
+            self.selected_die = BBDieResult.PUSH
 
-            # Juggernaut - change 'both down' to 'push'
-            if action.action_type == ActionType.USE_JUGGERNAUT:
+        elif action.action_type == ActionType.SELECT_DIE:
+            die = self.roll.dice[action.idx]
+            self.selected_die = die.get_value()
 
-                if not self.player_from.has_skill(Skill.JUGGERNAUT):
-                    raise IllegalActionExcpetion("Player does not have the Juggernaut skill")
-
-                if not self.blitz:
-                    raise IllegalActionExcpetion("Juggernaut can only be used in blitz actions")
-
-                if not self.roll.contains(BBDieResult.BOTH_DOWN):
-                    raise IllegalActionExcpetion("Dice is not 'both down'")
-
-                self.selected_die = BBDieResult.PUSH
-
-            # Wrestle
-            '''
-            if action.action_type == ActionType.USE_WRESTLE:
-
-                if not self.player_to.has_skill(Skill.WRESTLE):
-                    raise IllegalActionExcpetion("Player does not have the Wrestle skill")
-
-                if not self.roll.contains(BBDieResult.BOTH_DOWN):
-                    raise IllegalActionExcpetion("Roll does not contain 'Both Down'")
-
-                self.wrestle = True
-            '''
-
-            # Select dice
-            #if not self.wrestle:
-
-            if action.action_type == ActionType.SELECT_DIE:
-
-                die = self.roll.dice[action.idx]
-
-                if die.get_value() == BBDieResult.ATTACKER_DOWN:
-                    self.selected_die = BBDieResult.ATTACKER_DOWN
-                elif die.get_value() == BBDieResult.DEFENDER_DOWN:
-                    self.selected_die = BBDieResult.DEFENDER_DOWN
-                elif die.get_value() == BBDieResult.DEFENDER_STUMBLES:
-                    self.selected_die = BBDieResult.DEFENDER_STUMBLES
-                elif die.get_value() == BBDieResult.PUSH:
-                    self.selected_die = BBDieResult.PUSH
-                elif die.get_value == BBDieResult.BOTH_DOWN:
-                    self.selected_die = BBDieResult.BOTH_DOWN
-                    # Wrestle - opponent
-                    '''
-                    if self.player_to.has_skill(Skill.WRESTLE) and \
-                            not (self.player_from.has_skill(Skill.JUGGERNAUT) and self.blitz):
-                        self.waiting_wrestle_to = True
-                        return False
-                    '''
-                return False
-
-        # Effect
-        '''
-        if self.wrestle:
-            if self.game.state.field.has_ball(self.player_from.player_id):
-                Turnover(self.game, self.home)
-            KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id, armor_roll=False, injury_roll=False, both_down=True)
-            return True
-        '''
-
+        # Dice result
         if self.selected_die == BBDieResult.ATTACKER_DOWN:
             Turnover(self.game, self.home)
             KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id)
             return True
 
         if self.selected_die == BBDieResult.BOTH_DOWN:
+            Turnover(self.game, self.home)
             if not self.player_from.has_skill(Skill.BLOCK):
-                Turnover(self.game, self.home)
-                KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id, both_down=not self.player_to.has_skill(Skill.BLOCK))
+                KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id)
             elif not self.player_to.has_skill(Skill.BLOCK):
                 KnockDown(self.game, self.home, self.player_to.player_id, opp_player_id=self.player_from.id)
             return True
@@ -391,13 +335,6 @@ class Block(Procedure):
     def available_actions(self):
 
         actions = []
-
-        '''
-        if self.waiting_wrestle_from or self.waiting_wrestle_to:
-            actions.append(ActionChoice(ActionType.USE_WRESTLE, self.waiting_wrestle_from))
-        else:
-            actions.append(ActionChoice(ActionType.DONT_USE_SKILL, self.waiting_wrestle_from))
-        '''
 
         if self.roll is not None and self.selected_die is None:
             if self.game.state.can_use_reroll(self.home):
@@ -890,7 +827,7 @@ class Touchback(Procedure):
         return True
 
     def available_actions(self):
-        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home))]
+        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home, state=PlayerState.READY))]
 
 
 class LandKick(Procedure):
@@ -1262,7 +1199,7 @@ class KickOffTable(Procedure):
 
 class KnockDown(Procedure):
 
-    def __init__(self, game, home, player_id, armor_roll=True, injury_roll=True, modifiers=0, opp_player_id=None, in_crowd=False, both_down=False, modifiers_opp=0, turnover=False):
+    def __init__(self, game, home, player_id, armor_roll=True, injury_roll=True, modifiers=0, opp_player_id=None, in_crowd=False, modifiers_opp=0, turnover=False):
         super().__init__(game)
         self.home = home  # owner of player_id
         self.player_id = player_id
@@ -1272,17 +1209,13 @@ class KnockDown(Procedure):
         self.modifiers_opp = modifiers_opp
         self.opp_player_id = opp_player_id
         self.in_crowd = in_crowd
-        self.both_down = both_down
         self.turnover = turnover
 
     def step(self, action):
 
         # Knock down player
-        self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.DOWN_USED
+        self.game.state.set_player_state(self.player_id, self.home, PlayerState.DOWN_USED)
         self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id))
-        if self.both_down:
-            self.game.state.get_team_state(not self.home).player_states[self.opp_player_id] = PlayerState.DOWN_USED
-            self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.opp_player_id, opp_player_id=self.player_id))
 
         # Turnover
         if self.turnover:
@@ -1294,23 +1227,11 @@ class KnockDown(Procedure):
             Bounce(self.game, self.home)
             self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_id, opp_player_id=self.opp_player_id))
 
-        if self.both_down:
-            pos = self.game.state.field.get_player_position(self.opp_player_id)
-            if self.game.state.ball_at(pos):
-                Bounce(self.game, not self.home)
-                self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.opp_player_id, opp_player_id=self.player_id))
-
         # If armor roll should be made. Injury is also nested in armor.
         if self.injury_roll and not self.armor_roll:
             Injury(self.game, self.home, self.player_id, opp_player_id=self.opp_player_id if not self.in_crowd else None)
         elif self.armor_roll:
             Armor(self.game, self.home, self.player_id, modifiers=self.modifiers, opp_player_id=self.opp_player_id)
-
-        if self.both_down:
-            if self.injury_roll and not self.armor_roll:
-                Injury(self.game, not self.home, self.opp_player_id, opp_player_id=self.player_id if not self.in_crowd else None)
-            elif self.armor_roll:
-                Armor(self.game, not self.home, self.opp_player_id, modifiers=self.modifiers, opp_player_id=self.player_id)
 
         return True
 
@@ -1882,6 +1803,23 @@ class PlaceBall(Procedure):
         return self.aa
 
 
+class EndPlayerTurn(Procedure):
+
+    def __init__(self, game, home, player_id):
+        super().__init__(game)
+        self.home = home
+        self.player_id = player_id
+
+    def step(self, action):
+        if self.game.state.get_player_state(self.player_id, self.home) == PlayerState.READY:
+            self.game.state.set_player_state(self.player_id, self.home, PlayerState.USED)
+            self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player_id=self.player_id))
+        return True
+
+    def available_actions(self):
+        return []
+
+
 class PlayerAction(Procedure):
 
     def __init__(self, game, home, player_id, player_action_type, turn):
@@ -1898,8 +1836,7 @@ class PlayerAction(Procedure):
     def step(self, action):
 
         if action.action_type == ActionType.END_PLAYER_TURN:
-            self.game.state.set_player_state(self.player_id, self.home, PlayerState.USED)
-            self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player_id=self.player_id))
+            EndPlayerTurn(self.game, self.home, self.player_from)
             return True
 
         # Action attributes
@@ -1963,10 +1900,13 @@ class PlayerAction(Procedure):
                 # Use movement
                 self.moves += move_needed
 
+            # End turn after block
+            EndPlayerTurn(self.game, self.home, self.player_from)
+
             # Block
             Block(self.game, self.home, self.player_from, player_to, action.pos_to, gfi=gfi)
 
-            return False
+            return True
 
         elif action.action_type == ActionType.FOUL:
 
@@ -2022,11 +1962,10 @@ class PlayerAction(Procedure):
         elif self.player_action_type == PlayerActionType.BLOCK:
             block_positions = []
             block_rolls = []
-            player_state_from = self.game.state.get_player_state(self.player_id, self.home)
-            for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=not self.home, include_away=self.home):
-                block_positions.append(square)
+            for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=not self.home, include_away=self.home, only_blockable=True):
                 opp_player_id = self.game.state.field.get_player_id_at(square)
                 player_to = self.game.get_player(opp_player_id)
+                block_positions.append(square)
                 dice, favor = Block.dice_and_favor(self.game, self.home, attacker=self.player_from, blocker=player_to, blitz=self.player_action_type == PlayerActionType.BLITZ, dauntless_success=False)
                 if favor != self.home:
                     dice *= -1
@@ -2127,7 +2066,7 @@ class Push(Procedure):
 
     def __init__(self, game, home, player_from, player_to, knock_down=False, blitz=False, chain=False):
         super().__init__(game)
-        self.home = home  # With turn
+        self.home = home
         self.player_from = player_from
         self.player_to = player_to
         self.knock_down = knock_down
@@ -2138,8 +2077,15 @@ class Push(Procedure):
         self.waiting_for_move = False
         self.player_at = None
         self.push_to = None
+        self.squares = None
 
     def step(self, action):
+
+        if self.squares is None:
+            pos_from = self.game.state.field.get_player_position(self.player_from.player_id)
+            pos_to = self.game.state.field.get_player_position(self.player_to.player_id)
+            self.squares = self.game.state.field.get_push_squares(pos_from, pos_to)
+            return False
 
         # Use stand firm
         if self.waiting_stand_firm:
@@ -2157,61 +2103,50 @@ class Push(Procedure):
                 self.waiting_stand_firm = True
                 return False
 
-        # Find push squares
-        pos_from = self.game.state.field.get_player_position(self.player_from.player_id)
-        pos_to = self.game.state.field.get_player_position(self.player_from.player_id)
-        squares = self.game.state.field.get_push_squares(pos_from, pos_to)
-
         if action.action_type == ActionType.SELECT_SQUARE:
-            if action.home == self.home and self.player_to.has_skill(Skill.SIDE_STEP):
-                raise IllegalActionExcpetion("Player with side step must choose square")
-            if action.away == self.home and not self.player_to.has_skill(Skill.SIDE_STEP):
-                raise IllegalActionExcpetion("Blocking player must choose square")
-            if action.pos_to not in squares:
-                raise IllegalActionExcpetion("Illegal square")
 
-            crowd = self.game.field.is_out_of_bounds(action.pos_to)
+            # Push to crowd?
+            crowd = self.game.state.field.is_out_of_bounds(action.pos_to)
 
             # Report
             if crowd:
-                self.game.report(Outcome(OutcomeType.PUSHED_INTO_CROWD, player_id=self.player_to))
+                self.game.report(Outcome(OutcomeType.PUSHED_INTO_CROWD, player_id=self.player_to.player_id))
             else:
-                self.game.report(Outcome(OutcomeType.PUSHED, player_id=self.player_to, pos=action.pos_to))
+                self.game.report(Outcome(OutcomeType.PUSHED, player_id=self.player_to.player_id, pos=action.pos_to))
 
             # Follow up
-            if not crowd:
-                FollowUp(self.game, self.home, self.player_to, action.pos_to, optional=not self.chain)
+            FollowUp(self.game, self.home, self.player_to, action.pos_to, optional=not self.chain)
 
             # Knock down
             if self.knock_down or crowd:
-                KnockDown(self.game, self.home, self.player_to, in_crowd=crowd)
+                KnockDown(self.game, self.home, self.player_to.player_id, in_crowd=crowd)
 
             # Chain push
-            player_id_at = self.game.field.get_player_id_at(action.pos_to)
+            player_id_at = self.game.state.field.get_player_id_at(action.pos_to)
             self.push_to = action.pos_to
             if player_id_at is not None:
                 self.player_at = self.game.get_player(player_id_at)
-                Push(self.game, self.player_to, self.player_at, action.pos_to, knock_down=False, chain=True)
+                Push(self.game, self.home, self.player_to, self.player_at, knock_down=False, chain=True)
                 # Wait for chain to finish
                 self.waiting_for_move = True
                 return False
-            else:
-                # Otherwise, move pushed player
-                if crowd:
-                    self.game.field.remove(self.player_to)
-                else:
-                    self.game.field.move(self.player_to, self.push_to)
+            elif not crowd:
+                self.game.state.field.move(self.player_to.player_id, self.push_to)
                 return True
 
         # When push chain is over, move player
         if self.waiting_for_move:
-            self.game.field.move(self.player_to, self.push_to)
+            self.game.state.field.move(self.player_to.player_id, self.push_to)
             return True
 
         raise Exception("Unknown push sequence")
 
     def available_actions(self):
-        return []
+        actions = []
+        if self.squares is not None:
+            actions.append(ActionChoice(ActionType.SELECT_SQUARE, team=self.home, positions=self.squares))
+
+        return actions
 
 
 class Scatter(Procedure):
@@ -2568,8 +2503,9 @@ class Turn(Procedure):
         self.pass_available = not quick_snap
         self.handoff_available = not quick_snap
         self.foul_available = not quick_snap
-        TurnStunned(self.game, self.home)
-        ResetTurn(self.game, self.home)
+        if not quick_snap and not blitz:
+            TurnStunned(self.game, self.home)
+            ResetTurn(self.game, self.home)
 
     def start_player_action(self, outcome_type, player_action_type, player_id):
 

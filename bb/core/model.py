@@ -260,10 +260,12 @@ class Field:
         return self.is_setup_legal(home, tile=Tile.AWAY_WING_LEFT, max_players=2, min_players=0) and \
                self.is_setup_legal(home, tile=Tile.AWAY_WING_RIGHT, max_players=2, min_players=0)
 
-    def get_team_player_ids(self, home):
-        if home:
-            return list(set(self.player_positions.keys()) & set(self.game.home.get_player_ids()))
-        return list(set(self.player_positions.keys()) & set(self.game.away.get_player_ids()))
+    def get_team_player_ids(self, home, state=None):
+        player_ids = []
+        for player_id in self.player_positions.keys():
+            if player_id in self.game.get_team(home).players_by_id.keys() and (state == None or self.game.state.get_player_state(player_id, home) == state):
+                player_ids.append(player_id)
+        return player_ids
 
     def get_random_player(self, home):
         return secrets.choice(self.get_team_player_ids(home))
@@ -293,14 +295,18 @@ class Field:
         squares_empty = []
         squares_out = []
         squares = []
+        print("From:", pos_from)
         for square in squares_to:
+            print("Checking: ", square)
+            print("Distance: ", pos_from.distance(square, manhattan=False))
             include = False
             if pos_from.x == pos_to.x or pos_from.y == pos_to.y:
                 if pos_from.distance(square, manhattan=False) >= 2:
                     include = True
             else:
-                if pos_from.distance(square, manhattan=False) >= 3:
+                if pos_from.distance(square, manhattan=True) >= 3:
                     include = True
+            print("Include: ", include)
             if include:
                 if self.game.state.field.get_player_id_at(square) is None:
                     squares_empty.append(square)
@@ -330,7 +336,7 @@ class Field:
                     squares.append(sq)
         return squares
 
-    def get_adjacent_player_squares(self, pos, include_home=True, include_away=True, manhattan=False):
+    def get_adjacent_player_squares(self, pos, include_home=True, include_away=True, manhattan=False, only_blockable=False):
         squares = []
         for square in self.get_adjacent_squares(pos, manhattan=manhattan):
             player_id = self.get_player_id_at(square)
@@ -338,7 +344,8 @@ class Field:
                 continue
             team_home = self.game.get_home_by_player_id(player_id)
             if include_home and team_home or include_away and not team_home:
-                squares.append(square)
+                if not only_blockable or self.game.state.get_player_state(player_id, team_home) in Rules.blockable:
+                    squares.append(square)
         return squares
 
     def get_tackle_zones(self, pos, home=True):

@@ -97,7 +97,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             ball_in_air: null,
             board: [],
             home_dugout: [],
-            away_dugout: []
+            away_dugout: [],
+            player_positions: {}
         };
 
         var id = $routeParams.id;
@@ -195,6 +196,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_positions = [];
             $scope.available_rolls = [];
             $scope.available_block_rolls = [];
+            $scope.available_positions = [];
+            $scope.main_action = null;
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
                 if (action.positions.length > 0){
@@ -204,10 +207,18 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         $scope.available_positions = action.positions;
                         $scope.available_rolls = action.rolls;
                         $scope.available_block_rolls = action.block_rolls;
+                    } else {
+                        $scope.available_positions = [];
+                        for (let p_idx in action.player_ids){
+                            $scope.available_positions.push($scope.local_state.player_positions[action.player_ids[p_idx]]);
+                        }
                     }
                 } else if (action.player_ids.length > 0){
-                    if (action.action_type != "END_PLAYER_TURN"){
+                    if (!(action.action_type.startsWith("END_") || action.action_type.startsWith("START_"))) {
                         $scope.main_action = action;
+                    }
+                    for (let p_idx in action.player_ids){
+                        $scope.available_positions.push($scope.local_state.player_positions[action.player_ids[p_idx]]);
                     }
                 }
             }
@@ -244,6 +255,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.setLocalState = function setLocalState(){
+            $scope.local_state.player_positions = {}
             $scope.local_state.ball_in_air = $scope.game.state.ball_in_air;
             $scope.local_state.ball_position = $scope.game.state.ball_position;
             for (let y = 0; y < $scope.game.state.field.board.length; y++){
@@ -253,6 +265,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 for (let x = 0; x < $scope.game.state.field.board[y].length; x++){
                     let player_id = $scope.game.state.field.board[y][x];
                     let square = $scope.newSquare(player_id, x, y, 'field', '', undefined);
+                    if (player_id != null){
+                        $scope.local_state.player_positions[player_id] = square;
+                    }
                     if ($scope.selected_square != null && $scope.selected_square.player != null && $scope.selected_square.player.player_id == player_id){
                         $scope.selected_square = square;
                     }
@@ -446,6 +461,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         // If action is PLACE_BALL - simply place the ball locally
                         if ($scope.main_action.action_type == "PLACE_BALL"){
                             $scope.placeBall(square);
+                            $scope.resetSquares(true);
+                            $scope.setAvailablePositions();
                         } else {
                             // Otherwise - send action
                             let action = {
@@ -470,7 +487,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.setAvailablePositions();
             } else {
                 // Clicked on a player - select it - unless only non-player actions
-                if ($scope.main_action != null && $scope.main_action.action_type != "PLACE_BALL"){
+                if ($scope.main_action == null || $scope.main_action.action_type != "PLACE_BALL"){
                     $scope.resetSquares(true);
                     $scope.select(square);
                     $scope.setAvailablePositions();

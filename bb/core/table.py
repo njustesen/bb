@@ -259,6 +259,7 @@ class ActionType(Enum):
     SELECT_ROLL = 41
     DONT_USE_REROLL = 42
     STAND_UP = 43
+    SELECT_SQUARE = 44
 
 class WeatherType(Enum):
     SWELTERING_HEAT = 1
@@ -395,4 +396,12 @@ class Rules:
     has_tackle_zone = [
         PlayerState.READY,
         PlayerState.USED
+    ]
+
+    blockable = [
+        PlayerState.READY,
+        PlayerState.USED,
+        PlayerState.BONE_HEADED,
+        PlayerState.HYPNOTIZED,
+        PlayerState.REALLY_STUPID
     ]
