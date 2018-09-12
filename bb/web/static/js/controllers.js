@@ -607,7 +607,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.pickDice = function pickDice(idx) {
 
             let a = $scope.newAction("SELECT_DIE");
-            a.n = idx;
+            a.idx = idx;
             $scope.act(a);
 
         };

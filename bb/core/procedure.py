@@ -313,8 +313,8 @@ class Block(Procedure):
             Turnover(self.game, self.home)
             if not self.player_from.has_skill(Skill.BLOCK):
                 KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id)
-            elif not self.player_to.has_skill(Skill.BLOCK):
-                KnockDown(self.game, self.home, self.player_to.player_id, opp_player_id=self.player_from.id)
+            if not self.player_to.has_skill(Skill.BLOCK):
+                KnockDown(self.game, not self.home, self.player_to.player_id, opp_player_id=self.player_from.player_id)
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_DOWN:
@@ -322,8 +322,7 @@ class Block(Procedure):
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_STUMBLES:
-            if not self.player_to.has_skill(Skill.DODGE):
-                Push(self.game, self.home, self.player_from, player_to=self.player_to, knock_down=True, blitz=self.blitz)
+            Push(self.game, self.home, self.player_from, player_to=self.player_to, knock_down=not self.player_to.has_skill(Skill.DODGE), blitz=self.blitz)
             return True
 
         if self.selected_die == BBDieResult.PUSH:
@@ -1394,21 +1393,6 @@ class GFI(Procedure):
         return []
 
 
-class EndPlayerTurn(Procedure):
-
-    def __init__(self, game, home, player_id):
-        super().__init__(game)
-        self.home = home
-        self.player_id = player_id
-        self.player = self.game.get_player(player_id)
-
-    def step(self, action):
-        return True
-
-    def available_actions(self):
-        return []
-
-
 class Dodge(Procedure):
 
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -1813,7 +1797,10 @@ class EndPlayerTurn(Procedure):
     def step(self, action):
         if self.game.state.get_player_state(self.player_id, self.home) == PlayerState.READY:
             self.game.state.set_player_state(self.player_id, self.home, PlayerState.USED)
-            self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player_id=self.player_id))
+        elif self.game.state.get_player_state(self.player_id, self.home) == PlayerState.DOWN_READY:
+            self.game.state.set_player_state(self.player_id, self.home, PlayerState.DOWN_USED)
+        self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player_id=self.player_id))
+
         return True
 
     def available_actions(self):
@@ -1836,7 +1823,7 @@ class PlayerAction(Procedure):
     def step(self, action):
 
         if action.action_type == ActionType.END_PLAYER_TURN:
-            EndPlayerTurn(self.game, self.home, self.player_from)
+            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
             return True
 
         # Action attributes
@@ -1901,7 +1888,7 @@ class PlayerAction(Procedure):
                 self.moves += move_needed
 
             # End turn after block
-            EndPlayerTurn(self.game, self.home, self.player_from)
+            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
 
             # Block
             Block(self.game, self.home, self.player_from, player_to, action.pos_to, gfi=gfi)
@@ -2044,22 +2031,29 @@ class PreHalf(Procedure):
 
 class FollowUp(Procedure):
 
-    def __init__(self, game, home, player_from, pos_to, chain=False, optional=True):
+    def __init__(self, game, home, player_from, pos_to, optional=True):
         super().__init__(game)
-        self.home = home  # With turn
+        self.home = home
         self.player_from = player_from
+        self.pos_from = self.game.state.field.get_player_position(player_from.player_id)
         self.pos_to = pos_to
         self.optional = optional
 
     def step(self, action):
 
-        if not self.optional or self.player_from.has_skill(Skill.FRENZY) or action.action_type == ActionType.FOLLOW_UP:
-            self.game.field.move(self.player_from, self.pos_to)
+        if action.pos_to == self.pos_to:
+            self.game.state.field.move(self.player_from.player_id, self.pos_to)
+            self.game.report(Outcome(OutcomeType.FOLLOW_UP, pos=self.pos_to, player_id=self.player_from.player_id))
 
         return True
 
     def available_actions(self):
-        return []
+        if self.optional and not self.player_from.has_skill(Skill.FRENZY):
+            return [ActionChoice(ActionType.SELECT_SQUARE, team=self.home, positions=[self.pos_from, self.pos_to],
+                                 player_ids=[self.player_from.player_id])]
+        else:
+            return [ActionChoice(ActionType.SELECT_SQUARE, team=self.home, positions=[self.pos_to],
+                                 player_ids=[self.player_from.player_id])]
 
 
 class Push(Procedure):
@@ -2115,11 +2109,12 @@ class Push(Procedure):
                 self.game.report(Outcome(OutcomeType.PUSHED, player_id=self.player_to.player_id, pos=action.pos_to))
 
             # Follow up
-            FollowUp(self.game, self.home, self.player_to, action.pos_to, optional=not self.chain)
+            pos_to = self.game.state.field.get_player_position(self.player_to.player_id)
+            FollowUp(self.game, self.home, self.player_from, pos_to, optional=not self.chain)
 
             # Knock down
             if self.knock_down or crowd:
-                KnockDown(self.game, self.home, self.player_to.player_id, in_crowd=crowd)
+                KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=crowd)
 
             # Chain push
             player_id_at = self.game.state.field.get_player_id_at(action.pos_to)
@@ -2132,7 +2127,7 @@ class Push(Procedure):
                 return False
             elif not crowd:
                 self.game.state.field.move(self.player_to.player_id, self.push_to)
-                return True
+            return True
 
         # When push chain is over, move player
         if self.waiting_for_move:
@@ -2512,7 +2507,6 @@ class Turn(Procedure):
         # Start action
         PlayerAction(self.game, self.home, player_id, player_action_type, turn=self)
         self.game.report(Outcome(outcome_type, player_id=player_id))
-        return False
 
     def step(self, action):
 
@@ -2528,31 +2522,37 @@ class Turn(Procedure):
 
         # Start movement action
         if action.action_type == ActionType.START_MOVE:
-            return self.start_player_action(OutcomeType.MOVE_ACTION_STARTED, PlayerActionType.MOVE, action.player_from_id)
+            self.start_player_action(OutcomeType.MOVE_ACTION_STARTED, PlayerActionType.MOVE, action.player_from_id)
+            return False
 
         # Start blitz action
         if action.action_type == ActionType.START_BLITZ:
             self.blitz_available = False
-            return self.start_player_action(OutcomeType.BLITZ_ACTION_STARTED, PlayerActionType.BLITZ, action.player_from_id)
+            self.start_player_action(OutcomeType.BLITZ_ACTION_STARTED, PlayerActionType.BLITZ, action.player_from_id)
+            return False
 
         # Start foul action
         if action.action_type == ActionType.START_FOUL:
             self.foul_available = False
-            return self.start_player_action(OutcomeType.FOUL_ACTION_STARTED, PlayerActionType.FOUL, action.player_from_id)
+            self.start_player_action(OutcomeType.FOUL_ACTION_STARTED, PlayerActionType.FOUL, action.player_from_id)
+            return False
 
         # Start block action
         if action.action_type == ActionType.START_BLOCK:
-            return self.start_player_action(OutcomeType.BLOCK_ACTION_STARTED, PlayerActionType.BLOCK, action.player_from_id)
+            self.start_player_action(OutcomeType.BLOCK_ACTION_STARTED, PlayerActionType.BLOCK, action.player_from_id)
+            return False
 
         # Start pass action
         if action.action_type == ActionType.START_PASS:
             self.pass_available = False
-            return self.start_player_action(OutcomeType.PASS_ACTION_STARTED, PlayerActionType.PASS, action.player_from_id)
+            self.start_player_action(OutcomeType.PASS_ACTION_STARTED, PlayerActionType.PASS, action.player_from_id)
+            return False
 
         # Start handoff action
         if action.action_type == ActionType.START_HANDOFF:
             self.handoff_available = False
-            return self.start_player_action(OutcomeType.HANDOFF_ACTION_STARTED, PlayerActionType.HANDOFF, action.player_from_id)
+            self.start_player_action(OutcomeType.HANDOFF_ACTION_STARTED, PlayerActionType.HANDOFF, action.player_from_id)
+            return False
 
     def available_actions(self):
         move_player_ids = []

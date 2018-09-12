@@ -137,7 +137,8 @@ appServices.factory('GameLogService', function() {
             "GENTLE_GUST_IN_BOUNDS": "A gentle gust makes the ball scatter an additional square.",
             "TURN_START": "<team> <b>Turn <n>.</b>",
             "PLAYER_READY": "<player> is no longer KO'd.",
-            "PLAYER_NOT_READY": "<player> is still KO'd."
+            "PLAYER_NOT_READY": "<player> is still KO'd.",
+            "FOLLOW_UP": "<player> follows up"
         }
     };
 });

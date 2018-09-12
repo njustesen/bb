@@ -134,6 +134,7 @@ class OutcomeType(Enum):
     PLAYER_STAND_UP_SUCCESS = 110
     PLAYER_STAND_UP_FAILUE = 111
     BALL_OUT_OF_BOUNDS = 112
+    FOLLOW_UP = 113
 
 
 class PlayerActionType(Enum):

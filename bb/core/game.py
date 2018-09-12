@@ -68,10 +68,6 @@ class Game:
         if isinstance(self.stack.peek(), Turnover):
             self._end_turn()
 
-        # If player turn ends
-        if isinstance(self.stack.peek(), EndPlayerTurn):
-            self._end_player_turn()
-
         # If riot -> remove one turn
         if isinstance(self.stack.peek(), Riot):
             if self.stack.peek().effect == 1:
@@ -83,18 +79,22 @@ class Game:
         proc = self.stack.peek()
 
         # If no action and action is required
-        available_actions = proc.available_actions()
-        if action is None and len(available_actions) > 0:
+        self.available_actions = proc.available_actions()
+        if action is None and len(self.available_actions) > 0:
             return True
 
-        # If action but it's available
+        # If action but it's not available
         if action is not None:
-            if len(available_actions) == 0 and action.action_type == ActionType.CONTINUE:
-                # Allow no action
-                action.action_type = None
+            if action.action_type == ActionType.CONTINUE:
+                if len(self.available_actions) == 0:
+                    # Consider this as no action
+                    action.action_type = None
+                else:
+                    return True
             else:
+                # Only allow
                 in_set = False
-                for action_choice in available_actions:
+                for action_choice in self.available_actions:
                     if action.action_type == action_choice.action_type:
                         in_set = True
                         break
@@ -102,9 +102,10 @@ class Game:
                     return True
 
         # Run proc
-        print("Action={}".format(action.action_type if action is not None else ""))
         print("Proc={}".format(proc))
+        print("Action={}".format(action.action_type if action is not None else ""))
         proc.done = proc.step(action)
+        print("Done={}".format(proc.done))
 
         ''' Enable if cloning happens
         for player_id, pos in self.state.field.player_positions.items():
@@ -121,6 +122,8 @@ class Game:
             # Clear done procs
             while not self.stack.is_empty() and self.stack.peek().done:
 
+                print("--Proc={}".format(self.stack.peek()))
+
                 # If Half is done
                 if isinstance(proc, Half):
                     if proc.half == 1:
@@ -130,7 +133,7 @@ class Game:
                     self.stack.pop()
 
                 # If pre-game is over
-                elif isinstance(self.stack.peek(), Pregame) and self.stack.peek().done:
+                elif isinstance(self.stack.peek(), Pregame):
                     self.stack.pop()
                     Half(self, 2)
                     Half(self, 1)
@@ -161,15 +164,19 @@ class Game:
                         self.state.away_state.turn += 1
                         self.report(Outcome(OutcomeType.TURN_START, team_home=False, n=self.state.away_state.turn))
 
+        print("-Proc={}".format(self.stack.peek()))
+
         # Update available actions
         self.set_available_actions()
         if len(self.available_actions) == 0:
             # We can continue without user input
             return False
 
-        # If player can't do more end turn
+        # If player can't do more than end turn
         if len(self.available_actions) == 1 and self.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
             self.step(self.available_actions[0])
+            # We can continue without user input
+            return False
 
         # Game needs user input
         return True
@@ -205,18 +212,6 @@ class Game:
         for i in reversed(range(self.stack.size())):
             x += 1
             if isinstance(self.stack.items[i], Turn):
-                break
-        for i in range(x):
-            self.stack.pop()
-
-    def _end_player_turn(self):
-        """
-        Removes all procs in the current turn - including the current turn proc.
-        """
-        x = 0
-        for i in reversed(range(self.stack.size())):
-            x += 1
-            if isinstance(self.stack.items[i], PlayerAction):
                 break
         for i in range(x):
             self.stack.pop()
