@@ -2108,13 +2108,13 @@ class Push(Procedure):
             else:
                 self.game.report(Outcome(OutcomeType.PUSHED, player_id=self.player_to.player_id, pos=action.pos_to))
 
-            # Follow up
-            pos_to = self.game.state.field.get_player_position(self.player_to.player_id)
-            FollowUp(self.game, self.home, self.player_from, pos_to, optional=not self.chain)
-
             # Knock down
             if self.knock_down or crowd:
                 KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=crowd)
+
+            # Follow up
+            pos_to = self.game.state.field.get_player_position(self.player_to.player_id)
+            FollowUp(self.game, self.home, self.player_from, pos_to, optional=not self.chain)
 
             # Chain push
             player_id_at = self.game.state.field.get_player_id_at(action.pos_to)

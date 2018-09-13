@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/bb/core/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/table.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/js/services.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/services.js" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,7 +21,7 @@
     <SUITE FILE_PATH="coverage/bb$Unittests_for_test_speed_TestLoaders_test_speed.coverage" NAME="Unittests for test_speed.TestLoaders.test_speed Coverage Results" MODIFIED="1527215188092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/bb$procedure.coverage" NAME="procedure Coverage Results" MODIFIED="1527878269844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/core" />
     <SUITE FILE_PATH="coverage/bb$test_speed.coverage" NAME="test_speed Coverage Results" MODIFIED="1527215870404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1536788144046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
+    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1536824952310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -35,11 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="316" column="41" selection-start-line="316" selection-start-column="41" selection-end-line="316" selection-end-column="41" />
+            <state relative-caret-position="194">
+              <caret line="1287" selection-start-line="1287" selection-end-line="1287" />
             </state>
           </provider>
         </entry>
@@ -62,11 +58,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="game.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="238" column="29" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="29" />
+            <state relative-caret-position="194">
+              <caret line="106" selection-start-line="106" selection-end-line="106" />
             </state>
           </provider>
         </entry>
@@ -119,8 +115,8 @@
       <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="135" column="8" selection-start-line="135" selection-start-column="8" selection-end-line="135" selection-end-column="8" />
+            <state relative-caret-position="194">
+              <caret line="203" selection-start-line="203" selection-end-line="203" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -167,9 +163,9 @@
       <find>EndTurn</find>
       <find>EndPlayerTurn</find>
       <find>Block</find>
+      <find>_end_pla</find>
       <find>Player:</find>
       <find>Block(</find>
-      <find>_end_pla</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -247,9 +243,10 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
-    <option name="width" value="1680" />
-    <option name="height" value="1027" />
+    <option name="x" value="252" />
+    <option name="y" value="280" />
+    <option name="width" value="2031" />
+    <option name="height" value="1085" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -279,21 +276,6 @@
               <item name="bb" type="462c0819:PsiDirectoryNode" />
               <item name="bb" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bb" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bb" type="462c0819:PsiDirectoryNode" />
-              <item name="bb" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bb" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bb" type="462c0819:PsiDirectoryNode" />
-              <item name="bb" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="bb" type="b2602c69:ProjectViewProjectNode" />
@@ -528,7 +510,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="1027" extended-state="0" />
+    <frame x="252" y="280" width="2031" height="1085" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="10" weight="0.22986037" />
@@ -538,12 +520,12 @@
       <window_info anchor="bottom" id="Version Control" order="2" weight="0.03113325" />
       <window_info anchor="bottom" id="Python Console" order="1" weight="0.32829374" />
       <window_info anchor="bottom" id="Terminal" order="3" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.4992764" visible="true" weight="0.16130953" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.4992764" visible="true" weight="0.1334318" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="7" visible="true" weight="0.37145856" />
+      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.35014838" />
       <window_info id="Favorites" order="0" sideWeight="0.5007236" side_tool="true" weight="0.18819444" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
@@ -629,11 +611,6 @@
           <url>file://$PROJECT_DIR$/bb/core/procedure.py</url>
           <line>1476</line>
           <option name="timeStamp" value="201" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bb/core/game.py</url>
-          <line>176</line>
-          <option name="timeStamp" value="228" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -951,25 +928,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="135" column="8" selection-start-line="135" selection-start-column="8" selection-end-line="135" selection-end-column="8" />
+        <state relative-caret-position="194">
+          <caret line="203" selection-start-line="203" selection-end-line="203" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="238" column="29" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="29" />
+        <state relative-caret-position="194">
+          <caret line="1287" selection-start-line="1287" selection-end-line="1287" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="316" column="41" selection-start-line="316" selection-start-column="41" selection-end-line="316" selection-end-column="41" />
+        <state relative-caret-position="194">
+          <caret line="106" selection-start-line="106" selection-end-line="106" />
         </state>
       </provider>
     </entry>
