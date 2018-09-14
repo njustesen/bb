@@ -53,6 +53,24 @@ class Game:
         self.set_available_actions()
         self.step(None)
 
+    def _action_allowed(self, action):
+        print(action.to_simple())
+        if action is None:
+            return True
+        for action_choice in self.available_actions:
+            if action.action_type == action_choice.action_type:
+                if len(action_choice.player_ids) > 0 and action.player_from_id is not None and action.player_from_id not in action_choice.player_ids:
+                    print("Illegal player_id")
+                    return False
+                if len(action_choice.positions) > 0 and action.pos_to is not None and action.pos_to not in action_choice.positions:
+                    print("Illegal position")
+                    return False
+                if len(action_choice.indexes) > 0 and action.idx is not None and action.idx >= 0 and action.idx not in action_choice.indexes:
+                    print("Illegal index")
+                    return False
+                break
+        return True
+
     def step(self, action):
         """
         Executes one step in the game. If in Fast Mode, it executes several steps until action is required.
@@ -93,12 +111,8 @@ class Game:
                     return True
             else:
                 # Only allow
-                in_set = False
-                for action_choice in self.available_actions:
-                    if action.action_type == action_choice.action_type:
-                        in_set = True
-                        break
-                if not in_set:
+                if not self._action_allowed(action):
+                    print("Action not allowed! ", action.action_type)
                     return True
 
         # Run proc
@@ -174,7 +188,7 @@ class Game:
 
         # If player can't do more than end turn
         if len(self.available_actions) == 1 and self.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
-            self.step(self.available_actions[0])
+            self.step(Action(ActionType.END_PLAYER_TURN, player_from_id=self.available_actions[0].player_ids[0]))
             # We can continue without user input
             return False
 
