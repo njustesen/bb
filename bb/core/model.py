@@ -348,7 +348,7 @@ class Field:
                     squares.append(square)
         return squares
 
-    def get_tackle_zones(self, pos, home=True):
+    def get_tackle_zones(self, pos, home):
         tackle_zones = 0
         for square in self.get_adjacent_player_squares(pos, include_home=not home, include_away=home):
             player_id = self.get_player_id_at(square)
@@ -389,19 +389,19 @@ class Field:
         pos_from = self.get_player_position(player_from.player_id)
         pos_to = self.get_player_position(player_to.player_id)
         assists = []
-        for yy in range(-1, 0, 1):
-            for xx in range(-1, 0, 1):
+        for yy in range(-1, 2, 1):
+            for xx in range(-1, 2, 1):
                 if yy == 0 and xx == 0:
                     continue
-                p = Square(pos_to.y+xx, pos_to.x+yy)
+                p = Square(pos_to.x+xx, pos_to.y+yy)
                 if not self.is_out_of_bounds(p) and pos_from != p:
                     player_id = self.get_player_id_at(p)
                     if player_id is not None:
-                        if player_id in self.game.get_home_by_player_id(player_id) != home:
-                            if self.game.state.get_player_state(player_id) == PlayerState.BONE_HEADED:
+                        if self.game.get_home_by_player_id(player_id) == home:
+                            if self.game.state.get_player_state(player_id, home) not in Rules.assistable:
                                 continue
                             if (not ignore_guard and self.game.get_player(player_id).has_skill(Skill.GUARD)) or \
-                                            self.get_tackle_zones(p) <= 1:  # TODO: Check if attacker has a tackle zone
+                                            self.get_tackle_zones(p, home=home) <= 1:  # TODO: Check if attacker has a tackle zone
                                 assists.append(player_id)
         return assists
 

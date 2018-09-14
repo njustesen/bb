@@ -406,3 +406,8 @@ class Rules:
         PlayerState.HYPNOTIZED,
         PlayerState.REALLY_STUPID
     ]
+
+    assistable = [
+        PlayerState.READY,
+        PlayerState.USED
+    ]

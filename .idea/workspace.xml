@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/bb/core/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb/core/table.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/table.py" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -22,7 +22,7 @@
     <SUITE FILE_PATH="coverage/bb$Unittests_for_test_speed_TestLoaders_test_speed.coverage" NAME="Unittests for test_speed.TestLoaders.test_speed Coverage Results" MODIFIED="1527215188092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/bb$procedure.coverage" NAME="procedure Coverage Results" MODIFIED="1527878269844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/core" />
     <SUITE FILE_PATH="coverage/bb$test_speed.coverage" NAME="test_speed Coverage Results" MODIFIED="1527215870404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1536923501188" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
+    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1536926498181" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -35,13 +35,13 @@
       <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="1960" column="88" selection-start-line="1960" selection-start-column="79" selection-end-line="1960" selection-end-column="88" />
+            <state relative-caret-position="175">
+              <caret line="208" selection-start-line="208" selection-end-line="208" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/game.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="190">
@@ -77,6 +77,15 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="table.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/core/table.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="447">
+              <caret line="411" column="24" selection-start-line="411" selection-start-column="24" selection-end-line="411" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="services.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/services.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -104,11 +113,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="506" column="27" selection-start-line="506" selection-start-column="13" selection-end-line="506" selection-end-column="27" />
+            <state relative-caret-position="241">
+              <caret line="395" column="51" selection-start-line="395" selection-start-column="51" selection-end-line="395" selection-end-column="51" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -128,7 +137,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find />
       <find>Touchback(</find>
       <find>KnockDown(</find>
       <find>players_by_id</find>
@@ -141,7 +149,6 @@
       <find>self.set</find>
       <find>EndTurn</find>
       <find>EndPlayerTurn</find>
-      <find>Block</find>
       <find>Player:</find>
       <find>pickDice</find>
       <find>Block(</find>
@@ -152,12 +159,14 @@
       <find>selecte</find>
       <find>$scope.only_player</find>
       <find>_end_pla</find>
-      <find>Action:</find>
       <find>select</find>
       <find>available_players</find>
       <find>console.log(data</find>
       <find />
       <find>PlayerAction</find>
+      <find>END_PL</find>
+      <find>Action:</find>
+      <find>Block</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -211,12 +220,12 @@
         <option value="$PROJECT_DIR$/bb/web/static/js/app.js" />
         <option value="$PROJECT_DIR$/bb/web/static/less/style.less" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
-        <option value="$PROJECT_DIR$/bb/core/model.py" />
-        <option value="$PROJECT_DIR$/bb/core/table.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
         <option value="$PROJECT_DIR$/bb/core/procedure.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
         <option value="$PROJECT_DIR$/bb/core/game.py" />
+        <option value="$PROJECT_DIR$/bb/core/table.py" />
+        <option value="$PROJECT_DIR$/bb/core/model.py" />
       </list>
     </option>
   </component>
@@ -599,6 +608,16 @@
           <line>1</line>
           <option name="timeStamp" value="176" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bb/core/procedure.py</url>
+          <line>208</line>
+          <option name="timeStamp" value="243" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bb/core/model.py</url>
+          <line>395</line>
+          <option name="timeStamp" value="244" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -610,24 +629,12 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="238" />
+      <option name="time" value="245" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
         <watch expression="r" />
         <watch expression="team" />
-      </configuration>
-      <configuration name="PythonConfigurationType">
-        <watch expression="r" />
-        <watch expression="team" />
-        <watch expression="y" />
-        <watch expression="x" />
-        <watch expression="self.game.arena.board[y][x]" />
-        <watch expression="ob_space" />
-        <watch expression="self.ball_position" />
-        <watch expression="self.get_player_position(player_id)" />
-        <watch expression="self.ball_position == self.get_player_position(player_id)" />
-        <watch expression="self.game.state.get_player_state('b6', False)" language="Python" />
       </configuration>
     </watches-manager>
   </component>
@@ -640,6 +647,11 @@
       </expression>
     </expressions>
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>p</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>self.get_player_position(player_id)</expression-string>
         <language-id>Python</language-id>
@@ -850,13 +862,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="136" column="19" selection-start-line="136" selection-start-column="19" selection-end-line="136" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/static/js/filters.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -899,16 +904,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="506" column="27" selection-start-line="506" selection-start-column="13" selection-end-line="506" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/host.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -923,10 +918,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/table.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="1960" column="88" selection-start-line="1960" selection-start-column="79" selection-end-line="1960" selection-end-column="88" />
+        <state relative-caret-position="447">
+          <caret line="411" column="24" selection-start-line="411" selection-start-column="24" selection-end-line="411" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -934,6 +929,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
           <caret line="190" column="113" selection-start-line="190" selection-start-column="113" selection-end-line="190" selection-end-column="113" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="208" selection-start-line="208" selection-end-line="208" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="395" column="51" selection-start-line="395" selection-start-column="51" selection-end-line="395" selection-end-column="51" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
