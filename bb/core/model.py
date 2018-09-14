@@ -69,8 +69,9 @@ class TeamState:
         self.rerolls = self.rerolls_start
         self.turn = 0
 
-    def reset_turn(self):
-        self.reroll_used = False
+    def reset_turn(self, reset_rerolls=True):
+        if reset_rerolls:
+            self.reroll_used = False
         for player_id, player_state in self.player_states.items():
             if player_state == PlayerState.USED:
                 self.player_states[player_id] = PlayerState.READY
@@ -119,7 +120,8 @@ class GameState:
 
     def reset_turn(self, home):
         self.team_turn = None
-        self.get_team_state(home).reset_turn()
+        self.get_team_state(home).reset_turn(reset_rerolls=True)
+        self.get_team_state(not home).reset_turn(reset_rerolls=False)
 
     def reset_kickoff(self):
         self.team_turn = None
@@ -260,11 +262,12 @@ class Field:
         return self.is_setup_legal(home, tile=Tile.AWAY_WING_LEFT, max_players=2, min_players=0) and \
                self.is_setup_legal(home, tile=Tile.AWAY_WING_RIGHT, max_players=2, min_players=0)
 
-    def get_team_player_ids(self, home, state=None):
+    def get_team_player_ids(self, home, state=None, only_field=False):
         player_ids = []
         for player_id in self.player_positions.keys():
             if player_id in self.game.get_team(home).players_by_id.keys() and (state == None or self.game.state.get_player_state(player_id, home) == state):
-                player_ids.append(player_id)
+                if not only_field or self.player_positions[player_id] is not None:
+                    player_ids.append(player_id)
         return player_ids
 
     def get_random_player(self, home):

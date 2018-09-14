@@ -219,7 +219,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         }
                     }
                 }
-                if ($scope.available_players.length > 1){
+                if ($scope.available_players.length > 1 && $scope.selectedPlayer() == null){
                     for (let p_idx in action.player_ids){
                         $scope.available_positions.push($scope.local_state.player_positions[action.player_ids[p_idx]]);
                     }
@@ -443,11 +443,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             // If position is available
             if ($scope.main_action != null && square.available_position){
 
-                // If action requires a selected player or a player is selected
+                // If action does notrequires a selected player or a player is selected
                 if ($scope.main_action.player_ids.length == 0 || ($scope.selectedPlayer() != null)){
 
-                    // If the user clicked on the selected player
-                    if (square.available_position && $scope.available_players.length <= 1){
+                    // If the user clicked on an available square and a player is selected or only one player available
+                    if (square.available_position && ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null)){
                         // Otherwise - send action
                         let action = {
                             'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,

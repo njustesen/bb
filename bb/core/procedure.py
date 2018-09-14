@@ -310,7 +310,8 @@ class Block(Procedure):
             return True
 
         if self.selected_die == BBDieResult.BOTH_DOWN:
-            Turnover(self.game, self.home)
+            if not self.player_from.has_skill(Skill.BLOCK):
+                Turnover(self.game, self.home)
             if not self.player_from.has_skill(Skill.BLOCK):
                 KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id)
             if not self.player_to.has_skill(Skill.BLOCK):
@@ -1151,7 +1152,7 @@ class KickOffTable(Procedure):
         roll.result = roll.get_sum()
 
         self.rolled = True
-        #roll.result = 5
+        #roll.result = 4
 
         if roll.result == 2:  # Get the ref!
             GetTheRef(self.game, self.home)
@@ -2292,7 +2293,7 @@ class Setup(Procedure):
         else:
             positions = game.arena.get_team_side(home) + [None]
         self.aa = [
-            ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.get_team(home).get_player_ids(), positions=positions),
+            ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.state.field.get_team_player_ids(home, only_field=True), positions=positions),
             ActionChoice(ActionType.END_SETUP, team=home)
         ]
         if not self.reorganize:
