@@ -1152,7 +1152,7 @@ class KickOffTable(Procedure):
         roll.result = roll.get_sum()
 
         self.rolled = True
-        #roll.result = 4
+        roll.result = 5
 
         if roll.result == 2:  # Get the ref!
             GetTheRef(self.game, self.home)
