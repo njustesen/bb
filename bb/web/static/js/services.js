@@ -138,7 +138,8 @@ appServices.factory('GameLogService', function() {
             "TURN_START": "<team> <b>Turn <n>.</b>",
             "PLAYER_READY": "<player> is no longer KO'd.",
             "PLAYER_NOT_READY": "<player> is still KO'd.",
-            "FOLLOW_UP": "<player> follows up"
+            "FOLLOW_UP": "<player> follows up",
+            "BALL_OUT_OF_BOUNDS": "<b>Out of bounds!</b>."
         }
     };
 });

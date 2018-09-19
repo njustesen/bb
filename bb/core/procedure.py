@@ -2401,24 +2401,24 @@ class ThrowIn(Procedure):
             self.game.state.field.ball_position.y += y
             if self.game.state.field.is_ball_out():
                 # Move ball back
-                self.game.state.field.ball_position.x -= x
-                self.game.state.field.ball_position.y -= y
+                #self.game.state.field.ball_position.x -= x
+                #self.game.state.field.ball_position.y -= y
                 ThrowIn(self.game, self.home, self.game.state.field.ball_position)
                 self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
                                          team_home=self.home, rolls=[roll_scatter, roll_distance]))
-            else:
+                return True
 
-                # On player -> Catch
-                player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
-                if player_id is not None:
-                    Catch(self.game, self.game.get_home_by_player_id(player_id), player_id, self.game.state.field.ball_position)
-                    self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
-                                             player_id=player_id, rolls=[roll_scatter]))
+        # On player -> Catch
+        player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
+        if player_id is not None:
+            Catch(self.game, self.game.get_home_by_player_id(player_id), player_id, self.game.state.field.ball_position)
+            self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
+                                     player_id=player_id, rolls=[roll_scatter]))
 
-                # On ground
-                else:
-                    self.game.report(Outcome(OutcomeType.BALL_ON_GROUND, pos=self.game.state.field.ball_position,
-                                             team_home=self.home))
+        # On ground
+        else:
+            self.game.report(Outcome(OutcomeType.BALL_ON_GROUND, pos=self.game.state.field.ball_position,
+                                     team_home=self.home, rolls=[roll_scatter, roll_distance]))
 
         return True
 
