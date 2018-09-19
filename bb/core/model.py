@@ -477,7 +477,7 @@ class Field:
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[], block_rolls=[], dice=[]):
+    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[], block_rolls=[], dice=[], disabled=False):
         self.action_type = action_type
         self.positions = positions
         self.player_ids = player_ids
@@ -486,6 +486,7 @@ class ActionChoice:
         self.rolls = rolls
         self.block_rolls = block_rolls
         self.dice = dice
+        self.disabled = disabled
 
     def to_simple(self):
         return {
@@ -496,7 +497,8 @@ class ActionChoice:
             'indexes': self.indexes,
             "rolls": self.rolls,
             "block_rolls": self.block_rolls,
-            "dice": [die.to_simple() for die in self.dice]
+            "dice": [die.to_simple() for die in self.dice],
+            "disabled": self.disabled
         }
 
 

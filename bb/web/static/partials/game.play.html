@@ -231,11 +231,11 @@
             </div>
             <div class="action-bar text-center">
                 <span ng-repeat="action in game.available_actions">
-                    <button ng-if="showActionAsButton(action)" type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}}" ng-click="pickActionType(action)" ng-disabled="refreshing">
+                    <button ng-if="showActionAsButton(action)" type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}}" ng-click="pickActionType(action)" ng-disabled="refreshing || action.disabled">
                         {{ prettify(action.action_type) }}
                     </button>
                     <span ng-repeat="die in action.dice">
-                        <button type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}} die" ng-click="pickDice($index)" ng-disabled="refreshing">
+                        <button type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}} die" ng-click="pickDice($index)" ng-disabled="refreshing || action.disabled">
                             <img src="static/img/dice/attacker_down.png" ng-show="die.result=='ATTACKER_DOWN'" />
                             <img src="static/img/dice/both_down.png" ng-show="die.result=='BOTH_DOWN'" />
                             <img src="static/img/dice/push.png" ng-show="die.result=='PUSH'" />

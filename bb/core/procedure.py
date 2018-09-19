@@ -337,11 +337,16 @@ class Block(Procedure):
         actions = []
 
         if self.roll is not None and self.selected_die is None:
+            disable_dice_pick = False
             if self.game.state.can_use_reroll(self.home):
                 actions.append(ActionChoice(ActionType.USE_REROLL, self.home))
+                if self.favor != self.home:
+                    actions.append(ActionChoice(ActionType.DONT_USE_REROLL, self.home))
+                    disable_dice_pick = True
+
             indexes = [i for i in range(len(self.roll.dice))]
             dice = [die for die in self.roll.dice]
-            actions.append(ActionChoice(ActionType.SELECT_DIE, self.favor, indexes=indexes, dice=dice))
+            actions.append(ActionChoice(ActionType.SELECT_DIE, self.favor, indexes=indexes, dice=dice, disabled=disable_dice_pick))
 
         return actions
 
