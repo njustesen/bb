@@ -1850,6 +1850,8 @@ class PlayerAction(Procedure):
 
             StandUp(self.game, self.home, self.player_id, roll=self.player_from.get_ma() < 3)
             self.moves += 3
+            for i in range(3):
+                self.squares.append(self.pos_from)
 
         elif action.action_type == ActionType.MOVE:
 
@@ -1980,7 +1982,7 @@ class PlayerAction(Procedure):
             if self.player_action_type == PlayerActionType.BLITZ:
                 move_needed = 3 if self.game.state.get_player_state(self.player_id, self.home) == PlayerState.DOWN_READY else 1
                 gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
-                if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed:
+                if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed or move_needed > 1:
                     can_block = False
 
             # Find adjacent enemies to block
