@@ -194,6 +194,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.setAvailablePositions = function setAvailablePositions(){
             $scope.available_positions = [];
+            $scope.available_block_positions = [];
             $scope.available_rolls = [];
             $scope.available_block_rolls = [];
             $scope.available_players = [];
@@ -204,9 +205,13 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     // If an available player is selected
                     $scope.main_action = action;
                     if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length == 1){
-                        $scope.available_positions = action.positions;
-                        $scope.available_rolls = action.rolls;
-                        $scope.available_block_rolls = action.block_rolls;
+                        if (action.action_type == "BLOCK"){
+                            $scope.available_block_positions = action.positions;
+                            $scope.available_block_rolls = action.block_rolls;
+                        } else {
+                            $scope.available_positions = action.positions;
+                            $scope.available_rolls = action.rolls;
+                        }
                     }
                 }
                 if (action.player_ids.length > 0){
@@ -227,6 +232,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
             for (let i in $scope.available_positions){
                 let pos = $scope.available_positions[i];
+                // Reserves positions
                 if (pos == null && $scope.selected_square != null && $scope.selected_square.area == 'field'){
                     if ($scope.main_action.team == true){
                         for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
@@ -245,14 +251,19 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                             }
                         }
                     }
+                    // Field positions
                 } else if (pos != null){
                     $scope.local_state.board[pos.y][pos.x].available_position = true;
                     if ($scope.available_rolls.length > i){
                         $scope.local_state.board[pos.y][pos.x].roll = $scope.available_rolls[i];
                     }
-                    if ($scope.available_block_rolls.length > i){
-                        $scope.local_state.board[pos.y][pos.x].block_roll = $scope.available_block_rolls[i];
-                    }
+                }
+            }
+            for (let i in $scope.available_block_positions) {
+                let pos = $scope.available_block_positions[i];
+                $scope.local_state.board[pos.y][pos.x].available_position = true;
+                if ($scope.available_block_rolls.length > i){
+                    $scope.local_state.board[pos.y][pos.x].block_roll = $scope.available_block_rolls[i];
                 }
             }
             if ($scope.available_players.length == 1){
@@ -437,6 +448,19 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.local_state.ball_position = square;
         };
 
+        $scope.get_action_from_square = function get_action_from_square(square){
+            for (let a in $scope.game.available_actions){
+                let action = $scope.game.available_actions[a];
+                for (let p in action.positions){
+                    let pos = action.positions[p];
+                    if (pos.x == square.x && pos.y == square.y){
+                        return action;
+                    }
+                }
+            }
+            console.log("Unknown action!");
+        };
+
         $scope.square = function square(square) {
             console.log("Click on: " + square);
 
@@ -456,7 +480,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                             'pos_to': square.area == 'field' ? {'x': square.x, 'y': square.y} : null,
                             'team_home': null,
                             'idx': -1,
-                            'action_type': $scope.main_action.action_type
+                            'action_type': $scope.get_action_from_square(square).action_type
                         };
                         $scope.act(action);
                     } else if (square.player != null && $scope.selectedPlayer() != null && $scope.selectedPlayer().player_id == square.player.player_id){

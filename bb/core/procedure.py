@@ -1157,7 +1157,7 @@ class KickOffTable(Procedure):
         roll.result = roll.get_sum()
 
         self.rolled = True
-        roll.result = 5
+        #roll.result = 5
 
         if roll.result == 2:  # Get the ref!
             GetTheRef(self.game, self.home)
@@ -1822,11 +1822,15 @@ class PlayerAction(Procedure):
         self.pos_from = self.game.state.field.get_player_position(self.player_id)
         self.player_from = self.game.get_player(player_id)
         self.player_action_type = player_action_type
+        self.blitz_block = False
         self.moves = 0
         self.turn = turn
         self.squares = []
 
     def step(self, action):
+
+        self.pos_from = self.game.state.field.get_player_position(self.player_id)
+        self.player_from = self.game.get_player(self.player_from.player_id)
 
         if action.action_type == ActionType.END_PLAYER_TURN:
             EndPlayerTurn(self.game, self.home, self.player_from.player_id)
@@ -1870,17 +1874,17 @@ class PlayerAction(Procedure):
 
             # Check GFI
             gfi = False
-            if action.action_type == ActionType.BLITZ:
-                move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
-                gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
-                if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed:
-                    raise IllegalActionExcpetion("No movement points left")
+            if self.player_action_type == PlayerActionType.BLITZ:
+                move_needed = 3 if player_state_from == PlayerState.DOWN_READY else 1
                 gfi = self.moves + move_needed > self.player_from.get_ma()
                 # Use movement
                 self.moves += move_needed
+                for i in range(move_needed):
+                    self.squares.append(self.pos_from)
                 self.game.state.set_player_state(self.player_from.player_id, self.home, PlayerState.READY)
 
             # Check frenzy
+            '''
             if self.player_from.has_skill(Skill.FRENZY):
                 move_needed = 0
                 if self.player_action_type == ActionType.BLITZ:
@@ -1892,14 +1896,20 @@ class PlayerAction(Procedure):
                     gfi = gfi_2  # Switch gfi
                 # Use movement
                 self.moves += move_needed
+            '''
 
-            # End turn after block
-            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
+            # End turn after block - if not a blitz action
+            if self.player_action_type == PlayerActionType.BLOCK:
+                EndPlayerTurn(self.game, self.home, self.player_from.player_id)
 
             # Block
             Block(self.game, self.home, self.player_from, player_to, action.pos_to, gfi=gfi)
+            self.blitz_block = True if self.player_action_type == PlayerActionType.BLITZ else False
 
-            return True
+            if self.player_action_type == PlayerActionType.BLOCK:
+                return True
+
+            return False
 
         elif action.action_type == ActionType.FOUL:
 
@@ -1927,8 +1937,11 @@ class PlayerAction(Procedure):
 
     def available_actions(self):
         actions = []
-        pos = self.game.state.field.get_player_position(self.player_id)
-        if self.player_action_type == PlayerActionType.MOVE:
+        self.pos_from = self.game.state.field.get_player_position(self.player_id)
+        self.player_from = self.game.get_player(self.player_from.player_id)
+
+        # Move actions
+        if self.player_action_type == PlayerActionType.MOVE or self.player_action_type == PlayerActionType.BLITZ:
             move_positions = []
             rolls = []
             player_state_from = self.game.state.get_player_state(self.player_id, self.home)
@@ -1942,29 +1955,42 @@ class PlayerAction(Procedure):
                     rolls.append(False)
                 actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], team=self.home, rolls=rolls))
             elif (not self.turn.quick_snap and self.moves + move_needed <= self.player_from.get_ma() + sprints) or (self.turn.quick_snap and self.moves == 0):
-                for square in self.game.state.field.get_adjacent_squares(pos, exclude_occupied=True):
+                for square in self.game.state.field.get_adjacent_squares(self.pos_from, exclude_occupied=True):
                     ball = self.game.state.field.ball_position == square and not self.game.state.field.ball_in_air
                     move_positions.append(square)
-                    if not gfi and not ball and self.game.state.field.get_tackle_zones(pos, home=self.home) > 0:
-                        rolls.append(True)
-                    else:
-                        rolls.append(gfi or ball)
+                    if not self.turn.quick_snap:
+                        if not gfi and not ball and self.game.state.field.get_tackle_zones(self.pos_from, home=self.home) > 0:
+                            rolls.append(True)
+                        else:
+                            rolls.append(gfi or ball)
                 if len(move_positions) > 0:
                     actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions, rolls=rolls))
 
-        elif self.player_action_type == PlayerActionType.BLOCK:
-            block_positions = []
-            block_rolls = []
-            for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=not self.home, include_away=self.home, only_blockable=True):
-                opp_player_id = self.game.state.field.get_player_id_at(square)
-                player_to = self.game.get_player(opp_player_id)
-                block_positions.append(square)
-                dice, favor = Block.dice_and_favor(self.game, self.home, attacker=self.player_from, blocker=player_to, blitz=self.player_action_type == PlayerActionType.BLITZ, dauntless_success=False)
-                if favor != self.home:
-                    dice *= -1
-                block_rolls.append(dice)
-            if len(block_positions) > 0:
-                actions.append(ActionChoice(ActionType.BLOCK, player_ids=[self.player_id], team=self.home, positions=block_positions, block_rolls=block_rolls))
+        # Block actions
+        if self.player_action_type == PlayerActionType.BLOCK or (self.player_action_type == PlayerActionType.BLITZ and not self.blitz_block):
+
+            # Check movement left if blitz,
+            can_block = True
+            if self.player_action_type == PlayerActionType.BLITZ:
+                move_needed = 3 if self.game.state.get_player_state(self.player_id, self.home) == PlayerState.DOWN_READY else 1
+                gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
+                if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed:
+                    can_block = False
+
+            # Find adjacent enemies to block
+            if can_block:
+                block_positions = []
+                block_rolls = []
+                for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=not self.home, include_away=self.home, only_blockable=True):
+                    opp_player_id = self.game.state.field.get_player_id_at(square)
+                    player_to = self.game.get_player(opp_player_id)
+                    block_positions.append(square)
+                    dice, favor = Block.dice_and_favor(self.game, self.home, attacker=self.player_from, blocker=player_to, blitz=self.player_action_type == PlayerActionType.BLITZ, dauntless_success=False)
+                    if favor != self.home:
+                        dice *= -1
+                    block_rolls.append(dice)
+                if len(block_positions) > 0:
+                    actions.append(ActionChoice(ActionType.BLOCK, player_ids=[self.player_id], team=self.home, positions=block_positions, block_rolls=block_rolls))
 
         actions.append(ActionChoice(ActionType.END_PLAYER_TURN, player_ids=[self.player_id], team=self.home))
         return actions

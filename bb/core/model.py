@@ -266,7 +266,7 @@ class Field:
         player_ids = []
         for player_id in self.game.get_team(home).players_by_id.keys():
             if state is None or self.game.state.get_player_state(player_id, home) == state:
-                if not only_field or self.player_positions[player_id] is not None:
+                if not only_field or player_id in self.player_positions.keys():
                     player_ids.append(player_id)
         return player_ids
 
