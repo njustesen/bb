@@ -264,8 +264,8 @@ class Field:
 
     def get_team_player_ids(self, home, state=None, only_field=False):
         player_ids = []
-        for player_id in self.player_positions.keys():
-            if player_id in self.game.get_team(home).players_by_id.keys() and (state == None or self.game.state.get_player_state(player_id, home) == state):
+        for player_id in self.game.get_team(home).players_by_id.keys():
+            if state is None or self.game.state.get_player_state(player_id, home) == state:
                 if not only_field or self.player_positions[player_id] is not None:
                     player_ids.append(player_id)
         return player_ids

@@ -2298,7 +2298,7 @@ class Setup(Procedure):
         else:
             positions = game.arena.get_team_side(home) + [None]
         self.aa = [
-            ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.state.field.get_team_player_ids(home, only_field=True), positions=positions),
+            ActionChoice(ActionType.PLACE_PLAYER, team=home, player_ids=game.state.field.get_team_player_ids(home, only_field=self.reorganize), positions=positions),
             ActionChoice(ActionType.END_SETUP, team=home)
         ]
         if not self.reorganize:
