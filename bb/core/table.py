@@ -135,6 +135,8 @@ class OutcomeType(Enum):
     PLAYER_STAND_UP_FAILUE = 111
     BALL_OUT_OF_BOUNDS = 112
     FOLLOW_UP = 113
+    FOUL = 114
+    PLAYER_EJECTED = 115
 
 
 class PlayerActionType(Enum):
@@ -405,6 +407,12 @@ class Rules:
         PlayerState.BONE_HEADED,
         PlayerState.HYPNOTIZED,
         PlayerState.REALLY_STUPID
+    ]
+
+    foulable = [
+        PlayerState.DOWN_READY,
+        PlayerState.DOWN_USED,
+        PlayerState.STUNNED
     ]
 
     assistable = [

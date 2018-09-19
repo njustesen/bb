@@ -339,7 +339,7 @@ class Field:
                     squares.append(sq)
         return squares
 
-    def get_adjacent_player_squares(self, pos, include_home=True, include_away=True, manhattan=False, only_blockable=False):
+    def get_adjacent_player_squares(self, pos, include_home=True, include_away=True, manhattan=False, only_blockable=False, only_foulable=False):
         squares = []
         for square in self.get_adjacent_squares(pos, manhattan=manhattan):
             player_id = self.get_player_id_at(square)
@@ -348,7 +348,8 @@ class Field:
             team_home = self.game.get_home_by_player_id(player_id)
             if include_home and team_home or include_away and not team_home:
                 if not only_blockable or self.game.state.get_player_state(player_id, team_home) in Rules.blockable:
-                    squares.append(square)
+                    if not only_foulable or self.game.state.get_player_state(player_id, team_home) in Rules.foulable:
+                        squares.append(square)
         return squares
 
     def get_tackle_zones(self, pos, home):

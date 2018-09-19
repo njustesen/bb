@@ -162,14 +162,14 @@ class Armor(Procedure):
             if result > self.player.get_av():
                 armor_broken = True
 
-        # Referee
+        # EJECTION?
         ejected = False
         if self.foul:
             if roll.same():
-                if not (self.opp_player.has_skill(Skill.SNEAKY_GIT) and not armor_broken):
+                if not self.opp_player.has_skill(Skill.SNEAKY_GIT) or armor_broken:
                     self.game.report(Outcome(OutcomeType.PLAYER_EJECTED, player_id=self.opp_player_id))
-                    Turnover(self.game, self.home)
-                    Ejection(self.game, self.home, self.player_id)
+                    Turnover(self.game, not self.home)
+                    Ejection(self.game, not self.home, self.player_id)
                     ejected = True
 
         # Break armor - roll injury
@@ -296,6 +296,11 @@ class Block(Procedure):
             self.roll = None
             return self.step(None)
 
+        elif action.action_type == ActionType.DONT_USE_REROLL:
+
+            # Roll again
+            self.reroll_used = True
+
         elif action.action_type == ActionType.USE_JUGGERNAUT:
             self.selected_die = BBDieResult.PUSH
 
@@ -338,7 +343,7 @@ class Block(Procedure):
 
         if self.roll is not None and self.selected_die is None:
             disable_dice_pick = False
-            if self.game.state.can_use_reroll(self.home):
+            if self.game.state.can_use_reroll(self.home) and not self.reroll_used:
                 actions.append(ActionChoice(ActionType.USE_REROLL, self.home))
                 if self.favor != self.home:
                     actions.append(ActionChoice(ActionType.DONT_USE_REROLL, self.home))
@@ -661,12 +666,12 @@ class Foul(Procedure):
         # Assists
         assists_from = self.game.state.field.assists(self.home, self.player_from, self.player_to, ignore_guard=True)
         assists_to = self.game.state.field.assists(not self.home, self.player_to, self.player_from, ignore_guard=True)
-        modifier = assists_from - assists_to
+        modifier = len(assists_from) - len(assists_to)
 
         self.game.report(Outcome(OutcomeType.FOUL, player_id=self.player_from.player_id, opp_player_id=self.player_to.player_id))
 
         # Armor roll
-        Armor(self.game, self.home, self.player_to.player_id, modifiers=modifier, opp_player_id=self.player_from.player_id, foul=True)
+        Armor(self.game, not self.home, self.player_to.player_id, modifiers=modifier, opp_player_id=self.player_from.player_id, foul=True)
 
         return True
 
@@ -759,8 +764,16 @@ class Injury(Procedure):
         mighty_blow = 0
         dirty_player = 0
         if self.opp_player is not None:
-            mighty_blow = 1 if self.opp_player.has_skill(Skill.MIGHTY_BLOW) and not self.mighty_blow_used and not self.foul else 0
             dirty_player = 1 if self.opp_player.has_skill(Skill.DIRTY_PLAYER) and not self.dirty_player_used and self.foul else 0
+            mighty_blow = 1 if self.opp_player.has_skill(Skill.MIGHTY_BLOW) and not self.mighty_blow_used and not self.foul else 0
+
+        # EJECTION
+        if self.foul and not self.ejected:
+            if roll.same():
+                if not self.opp_player.has_skill(Skill.SNEAKY_GIT):
+                    self.game.report(Outcome(OutcomeType.PLAYER_EJECTED, player_id=self.opp_player_id))
+                    Turnover(self.game, not self.home)
+                    Ejection(self.game, not self.home, self.opp_player_id)
 
         # STUNNED
         if result + thick_skull + stunty + mighty_blow + dirty_player <= 7:
@@ -768,7 +781,7 @@ class Injury(Procedure):
             if self.game.get_player(self.player_id).has_skill(Skill.BALL_AND_CHAIN):
                 KnockOut(self.game, self.home, self.player_id, roll=roll, opp_player_id=self.opp_player_id)
             else:
-                self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.STUNNED
+                self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
                 self.game.report(Outcome(OutcomeType.STUNNED, player_id=self.player_id, opp_player_id=self.opp_player_id, rolls=[roll]))
 
         # CASUALTY
@@ -781,14 +794,6 @@ class Injury(Procedure):
         else:
             roll.modifiers = thick_skull + stunty + mighty_blow + dirty_player
             KnockOut(self.game, self.home, self.player_id, roll=roll, opp_player_id=self.opp_player_id)
-
-        # Referee
-        if self.foul and not self.ejected:
-            if roll.same():
-                if not self.opp_player.has_skill(Skill.SNEAKY_GIT):
-                    self.game.report(Outcome(OutcomeType.PLAYER_EJECTED, player_id=self.opp_player_id))
-                    Turnover(self.game, self.home)
-                    Ejection(self.game, self.home, self.player_id)
 
         return True
 
@@ -1913,6 +1918,7 @@ class PlayerAction(Procedure):
 
         elif action.action_type == ActionType.FOUL:
 
+            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
             Foul(self.game, self.home, self.player_from, player_to)
 
             # A foul is a players last thing to do
@@ -1941,7 +1947,7 @@ class PlayerAction(Procedure):
         self.player_from = self.game.get_player(self.player_from.player_id)
 
         # Move actions
-        if self.player_action_type == PlayerActionType.MOVE or self.player_action_type == PlayerActionType.BLITZ:
+        if self.player_action_type == PlayerActionType.MOVE or self.player_action_type == PlayerActionType.BLITZ or self.player_action_type == PlayerActionType.FOUL:
             move_positions = []
             rolls = []
             player_state_from = self.game.state.get_player_state(self.player_id, self.home)
@@ -1991,6 +1997,25 @@ class PlayerAction(Procedure):
                     block_rolls.append(dice)
                 if len(block_positions) > 0:
                     actions.append(ActionChoice(ActionType.BLOCK, player_ids=[self.player_id], team=self.home, positions=block_positions, block_rolls=block_rolls))
+
+        # Foul actions
+        if self.player_action_type == PlayerActionType.FOUL:
+            foul_positions = []
+            foul_rolls = []
+            for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=not self.home,
+                                                                            include_away=self.home,
+                                                                            only_foulable=True):
+                opp_player_id = self.game.state.field.get_player_id_at(square)
+                player_to = self.game.get_player(opp_player_id)
+                foul_positions.append(square)
+                armor = player_to.get_av()
+                assists_from = self.game.state.field.assists(self.home, self.player_from, player_to, ignore_guard=True)
+                assists_to = self.game.state.field.assists(not self.home, player_to, self.player_from, ignore_guard=True)
+                foul_rolls.append(armor + 1 - len(assists_from) + len(assists_to))
+
+            if len(foul_positions) > 0:
+                actions.append(ActionChoice(ActionType.FOUL, player_ids=[self.player_id], team=self.home,
+                                            positions=foul_positions, block_rolls=foul_rolls))
 
         actions.append(ActionChoice(ActionType.END_PLAYER_TURN, player_ids=[self.player_id], team=self.home))
         return actions
