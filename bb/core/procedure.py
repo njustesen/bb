@@ -786,6 +786,7 @@ class Injury(Procedure):
                 if self.in_crowd:
                     self.game.state.field.remove(self.player_id)
                     self.game.state.get_dugout(self.home).reserves.append(self.player_id)
+                    self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
                 else:
                     self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
 

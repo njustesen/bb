@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,8 +35,17 @@
       <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="2148" column="24" lean-forward="true" selection-start-line="2148" selection-start-column="24" selection-end-line="2148" selection-end-column="24" />
+            <state relative-caret-position="328">
+              <caret line="788" column="100" selection-start-line="788" selection-start-column="100" selection-end-line="788" selection-end-column="100" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package-lock.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/web/package-lock.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="203">
+              <caret line="992" column="11" lean-forward="true" selection-start-line="992" selection-start-column="11" selection-end-line="992" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -70,8 +80,8 @@
       <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="477">
-              <caret line="295" column="142" selection-start-line="295" selection-start-column="142" selection-end-line="295" selection-end-column="142" />
+            <state relative-caret-position="284">
+              <caret line="521" column="42" selection-start-line="521" selection-start-column="42" selection-end-line="521" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -79,7 +89,7 @@
       <file leaf-file-name="game.play.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
+            <state relative-caret-position="149">
               <caret line="90" lean-forward="true" selection-start-line="90" selection-end-line="90" />
               <folding>
                 <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
@@ -131,9 +141,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ThrowIn(</find>
-      <find>Blitz</find>
-      <find>BALL_OUT_OF_BOUNDS</find>
       <find>available</find>
       <find>setAvailablePositions</find>
       <find>FOLLOW</find>
@@ -148,19 +155,22 @@
       <find>CasualtyType</find>
       <find>FollowUp</find>
       <find>FollowUp(</find>
-      <find>click</find>
       <find>local_state</find>
       <find>Arena</find>
-      <find />
-      <find />
+      <find>class Game</find>
+      <find>class Game:</find>
       <find>CASUALT</find>
       <find>setLoca</find>
-      <find />
+      <find>class Arena</find>
       <find>Push</find>
       <find>PUSHED_INTO_CROWD</find>
       <find>crowd</find>
       <find>Block(</find>
       <find>self.knock_down</find>
+      <find>ARR</find>
+      <find>angular</find>
+      <find>setAvail</find>
+      <find>click</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -216,9 +226,9 @@
         <option value="$PROJECT_DIR$/bb/core/table.py" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
         <option value="$PROJECT_DIR$/bb/core/game.py" />
-        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
         <option value="$PROJECT_DIR$/bb/core/model.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
+        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
         <option value="$PROJECT_DIR$/bb/core/procedure.py" />
       </list>
     </option>
@@ -449,8 +459,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.server" />
         <item itemvalue="Gulp.js.default" />
+        <item itemvalue="Python.server" />
         <item itemvalue="Python.table" />
         <item itemvalue="Python.procedure" />
         <item itemvalue="Python.test_speed" />
@@ -520,7 +530,7 @@
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="2" weight="0.03043022" />
       <window_info anchor="bottom" id="Python Console" order="1" weight="0.32829374" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.2864638" />
+      <window_info active="true" anchor="bottom" id="Run" order="6" sideWeight="0.49940476" visible="true" weight="0.2864638" />
       <window_info anchor="bottom" id="Terminal" order="3" />
       <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49842602" visible="true" weight="0.16130953" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
@@ -529,7 +539,7 @@
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.24970344" />
       <window_info id="Favorites" order="0" sideWeight="0.501574" side_tool="true" weight="0.16073547" />
-      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.3567681" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.3567681" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -606,7 +616,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/procedure.py</url>
-          <line>2479</line>
+          <line>2480</line>
           <option name="timeStamp" value="145" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -783,9 +793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/package-lock.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -891,17 +898,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
-          <caret line="90" lean-forward="true" selection-start-line="90" selection-end-line="90" />
-          <folding>
-            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#div#1;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/arenas/bb_pitch.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -920,13 +916,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
           <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="477">
-          <caret line="295" column="142" selection-start-line="295" selection-start-column="142" selection-end-line="295" selection-end-column="142" />
         </state>
       </provider>
     </entry>
@@ -954,10 +943,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/package-lock.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="992" column="11" lean-forward="true" selection-start-line="992" selection-start-column="11" selection-end-line="992" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="90" lean-forward="true" selection-start-line="90" selection-end-line="90" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#div#1;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="521" column="42" selection-start-line="521" selection-start-column="42" selection-end-line="521" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="2148" column="24" lean-forward="true" selection-start-line="2148" selection-start-column="24" selection-end-line="2148" selection-end-column="24" />
+        <state relative-caret-position="328">
+          <caret line="788" column="100" selection-start-line="788" selection-start-column="100" selection-end-line="788" selection-end-column="100" />
         </state>
       </provider>
     </entry>

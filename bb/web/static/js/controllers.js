@@ -204,8 +204,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 if (action.positions.length > 0){
                     // If an available player is selected
                     $scope.main_action = action;
-                    if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length == 1){
-                        if (action.action_type == "BLOCK"){
+                    if (action.player_ids.length === 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length === 1){
+                        if (action.action_type === "BLOCK"){
                             $scope.available_block_positions = action.positions;
                             $scope.available_block_rolls = action.block_rolls;
                         } else {
@@ -218,7 +218,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     if (!(action.action_type.startsWith("END_") || action.action_type.startsWith("START_"))) {
                         $scope.main_action = action;
                     }
-                    if ($scope.available_players.length != 1){
+                    if ($scope.available_players.length !== 1){
                         for (let p_idx in action.player_ids){
                             $scope.available_players.push(action.player_ids[p_idx]);
                         }
@@ -233,8 +233,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             for (let i in $scope.available_positions){
                 let pos = $scope.available_positions[i];
                 // Reserves positions
-                if (pos == null && $scope.selected_square != null && $scope.selected_square.area == 'field'){
-                    if ($scope.main_action.team == true){
+                if (pos == null && $scope.selected_square != null && $scope.selected_square.area === 'field'){
+                    if ($scope.main_action.team === true){
                         for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.home_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.home_dugout[y][x].player == null){
@@ -242,7 +242,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                                 }
                             }
                         }
-                    } else if ($scope.main_action.team == false){
+                    } else if ($scope.main_action.team === false){
                         for (let y = 0; y < $scope.local_state.away_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.away_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.away_dugout[y][x].player == null){
@@ -258,6 +258,14 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         $scope.local_state.board[pos.y][pos.x].roll = $scope.available_rolls[i];
                     }
                 }
+                // Crowd in dugouts - availavble during pushes
+                if (pos.x === 0 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
+                    $scope.local_state.home_dugout[pos.y-1][1].available_position = true;
+                }
+                if (pos.x === $scope.local_state.board[0].length - 1 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
+                    $scope.local_state.away_dugout[pos.y-1][0].available_position = true;
+                }
+
             }
             for (let i in $scope.available_block_positions) {
                 let pos = $scope.available_block_positions[i];
@@ -469,6 +477,18 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             console.log("Unknown action!");
         };
 
+        $scope.create_action = function create_action(square){
+            return {
+                'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
+                'player_to_id': square.player == null ? null : square.player.player_id,
+                'pos_from': $scope.selected_square != null && $scope.selected_square.area === 'field' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
+                'pos_to': square.area === 'field' ? {'x': square.x, 'y': square.y} : null,
+                'team_home': null,
+                'idx': -1,
+                'action_type': $scope.get_action_from_square(square).action_type
+            };
+        };
+
         $scope.square = function square(square) {
             console.log("Click on: " + square);
 
@@ -484,25 +504,36 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
                     // If the user clicked on an available square and a player is selected or only one player available
                     if (square.available_position && ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null)){
-                        // Otherwise - send action
-                        let action = {
-                            'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
-                            'player_to_id': square.player == null ? null : square.player.player_id,
-                            'pos_from': $scope.selected_square != null && $scope.selected_square.area == 'field' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
-                            'pos_to': square.area == 'field' ? {'x': square.x, 'y': square.y} : null,
-                            'team_home': null,
-                            'idx': -1,
-                            'action_type': $scope.get_action_from_square(square).action_type
+
+                        // Convert dugout squares to field (crowd) squares if push procedure
+                        let crowd = $scope.game.stack[$scope.game.stack.length-1] === "Push" && square.area.startsWith("dugout");
+                        let crowd_square = {
+                            y: square.y+1,
+                            area: 'field'
                         };
+                        if (crowd){
+                            if (square.area === "dugout-home"){
+                                crowd_square.x = 0;
+                            } else if (square.area === "dugout-away"){
+                                crowd_square.x = $scope.local_state.board[0].length-1;
+                            }
+                        }
+                        // Otherwise - send action
+                        let action = null;
+                        if (crowd){
+                            action = $scope.create_action(crowd_square);
+                        } else {
+                            action = $scope.create_action(square);
+                        }
                         $scope.act(action);
-                    } else if (square.player != null && $scope.selectedPlayer() != null && $scope.selectedPlayer().player_id == square.player.player_id){
+                    } else if (square.player != null && $scope.selectedPlayer() != null && $scope.selectedPlayer().player_id === square.player.player_id){
                         // Only deselect if other players are available
-                        if ($scope.available_players.length != 1) {
+                        if ($scope.available_players.length !== 1) {
                             $scope.resetSquares(true);
                             $scope.setAvailablePositions();
                         }
                         return;
-                    } else if ($scope.main_action.action_type == "PLACE_BALL"){
+                    } else if ($scope.main_action.action_type === "PLACE_BALL"){
                         $scope.placeBall(square);
                         $scope.resetSquares(true);
                         $scope.setAvailablePositions();
