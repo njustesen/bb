@@ -45,7 +45,8 @@ class Game:
             'stack': self.procs(),
             'available_actions': available_actions,
             'reports': reports,
-            'squares_moved': self._squares_moved()
+            'squares_moved': self._squares_moved(),
+            'arena': self.arena.to_simple()
         }
 
     def init(self):

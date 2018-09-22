@@ -271,8 +271,16 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
+        $scope.getTile = function(x, y){
+            let tile = $scope.game.arena.board[y][x];
+            if (tile === "CROWD"){
+                return "crowd";
+            }
+            return "field";
+        };
+
         $scope.setLocalState = function setLocalState(){
-            $scope.local_state.player_positions = {}
+            $scope.local_state.player_positions = {};
             $scope.local_state.ball_in_air = $scope.game.state.ball_in_air;
             $scope.local_state.ball_position = $scope.game.state.ball_position;
             for (let y = 0; y < $scope.game.state.field.board.length; y++){
@@ -281,11 +289,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 }
                 for (let x = 0; x < $scope.game.state.field.board[y].length; x++){
                     let player_id = $scope.game.state.field.board[y][x];
-                    let square = $scope.newSquare(player_id, x, y, 'field', '', undefined);
+                    let square = $scope.newSquare(player_id, x, y, $scope.getTile(x, y), '', undefined);
                     if (player_id != null){
                         $scope.local_state.player_positions[player_id] = square;
                     }
-                    if ($scope.selected_square != null && $scope.selected_square.player != null && $scope.selected_square.player.player_id == player_id){
+                    if ($scope.selected_square != null && $scope.selected_square.player != null && $scope.selected_square.player.player_id === player_id){
                         $scope.selected_square = square;
                     }
                     if ($scope.local_state.board[y].length <= x){
@@ -463,6 +471,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.square = function square(square) {
             console.log("Click on: " + square);
+
+            if (square === undefined){
+                return;
+            }
 
             // If position is available
             if ($scope.main_action != null && square.available_position){

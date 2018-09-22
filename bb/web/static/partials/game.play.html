@@ -86,7 +86,7 @@
     <div class="gamecontent">
 
         <div class="square-row">
-            <div class="square" ng-repeat="n in [] | range:30" ng-click="square('crowd', $index-1, 0)"></div>
+            <div class="square {{ local_state.board[0][$index-1].selected ? 'selected' : '' }} {{ local_state.board[0][$index-1].available_position ? 'green' : '' }}" ng-repeat="n in [] | range:local_state.board[0].length + 2" ng-click="square(local_state.board[0][$index-1])"></div>
         </div>
 
         <div class="gameboard">
@@ -105,7 +105,7 @@
                 </div>
             </div>
             <div class="field {{ game.state.weather.toLowerCase().replace('_','') }}">
-                <div class="square-row" ng-repeat="row in game.state.field.board.slice(1, game.state.field.board.length-1)">
+                <div class="square-row" ng-repeat="row in local_state.board.slice(1, local_state.board.length-1)">
                     <div class="square {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ local_state.board[$parent.$index+1][$index+1].available_position ? 'green' : '' }}" ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])" ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])">
                         <div class="movenum">
                             {{ local_state.board[$parent.$index+1][$index+1].number }}
@@ -153,7 +153,7 @@
         </div>
 
         <div class="square-row">
-            <div class="square" ng-repeat="n in [] | range:30" ng-click="square('crowd', $index-1, 16)"></div>
+            <div class="square {{ local_state.board[local_state.board.length-1][$index-1].selected ? 'selected' : '' }} {{ local_state.board[local_state.board.length-1][$index-1].available_position ? 'green' : '' }}" ng-repeat="n in [] | range:local_state.board[local_state.board.length-1].length + 2" ng-click="square(local_state.board[local_state.board.length-1][$index-1])"></div>
         </div>
 
         <div class="game-info">

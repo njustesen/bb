@@ -123,7 +123,7 @@ appServices.factory('GameLogService', function() {
             'APOTHECARY_USED_CASUALTY': "APOTHECARY_USED_CASUALTY",
             'CASUALTY_APOTHECARY': "CASUALTY_APOTHECARY",
             'DAUNTLESS_USED': "DAUNTLESS_USED",
-            'PUSHED_INTO_CROWD': "PUSHED_INTO_CROWD",
+            'PUSHED_INTO_CROWD': "<player> is pushed into the crowd!",
             'PUSHED': "<player> was pushed.",
             'ACCURATE_PASS': "ACCURATE_PASS",
             'INACCURATE_PASS': "INACCURATE_PASS",

@@ -734,7 +734,7 @@ class Half(Procedure):
 class Injury(Procedure):
 
     def __init__(self, game, home, player_id, opp_player_id=None, foul=False, mighty_blow_used=False, dirty_player_used=False,
-                 ejected=False):
+                 ejected=False, in_crowd=False):
         super().__init__(game)
         self.game = game
         self.home = home
@@ -748,6 +748,7 @@ class Injury(Procedure):
         self.player = game.get_player(player_id)
         self.opp_player = game.get_player(opp_player_id) if opp_player_id is not None else None
         self.apothecary_used = False
+        self.in_crowd = in_crowd
 
     def step(self, action):
 
@@ -781,8 +782,12 @@ class Injury(Procedure):
             if self.game.get_player(self.player_id).has_skill(Skill.BALL_AND_CHAIN):
                 KnockOut(self.game, self.home, self.player_id, roll=roll, opp_player_id=self.opp_player_id)
             else:
-                self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
                 self.game.report(Outcome(OutcomeType.STUNNED, player_id=self.player_id, opp_player_id=self.opp_player_id, rolls=[roll]))
+                if self.in_crowd:
+                    self.game.state.field.remove(self.player_id)
+                    self.game.state.get_dugout(self.home).reserves.append(self.player_id)
+                else:
+                    self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
 
         # CASUALTY
         elif result + stunty + mighty_blow + dirty_player >= 10:
@@ -1239,7 +1244,7 @@ class KnockDown(Procedure):
 
         # If armor roll should be made. Injury is also nested in armor.
         if self.injury_roll and not self.armor_roll:
-            Injury(self.game, self.home, self.player_id, opp_player_id=self.opp_player_id if not self.in_crowd else None)
+            Injury(self.game, self.home, self.player_id, opp_player_id=self.opp_player_id if not self.in_crowd else None, in_crowd=self.in_crowd)
         elif self.armor_roll:
             Armor(self.game, self.home, self.player_id, modifiers=self.modifiers, opp_player_id=self.opp_player_id)
 
@@ -2116,7 +2121,7 @@ class FollowUp(Procedure):
 
 class Push(Procedure):
 
-    def __init__(self, game, home, player_from, player_to, knock_down=False, blitz=False, chain=False, optional_follow_up=True):
+    def __init__(self, game, home, player_from, player_to, knock_down=False, blitz=False, chain=False):
         super().__init__(game)
         self.home = home
         self.player_from = player_from
@@ -2181,7 +2186,7 @@ class Push(Procedure):
 
             # Knock down
             if self.knock_down or crowd:
-                KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=crowd)
+                KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=crowd, armor_roll=not crowd)
 
             # Follow up - wait if push is delayed
             player_id_at = self.game.state.field.get_player_id_at(action.pos_to)

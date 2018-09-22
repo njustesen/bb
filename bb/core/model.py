@@ -182,11 +182,10 @@ class Field:
         ball = None
         if self.ball_position is not None:
             ball = self.ball_position.to_simple()
-        board = self.board
         return {
             'ball_position': ball,
             'ball_in_air': self.ball_in_air,
-            'board': board
+            'board': self.board
         }
 
     def put(self, player_id, pos):
@@ -531,9 +530,23 @@ class Arena:
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
     home_td_tiles = [Tile.HOME_TOUCHDOWN]
 
-
     def __init__(self, board):
         self.board = board
+        self.json = None
+
+    def to_simple(self):
+        if self.json is not None:
+            return self.json
+
+        board = []
+        for row in self.board:
+            board.append([])
+            for tile in self.board[0]:
+                board[-1].append(str(tile))
+        self.json = {
+            'board': board
+        }
+        return self.json
 
     def is_team_side(self, pos, home):
         if home:
@@ -566,7 +579,6 @@ class Arena:
         if right:
             return self.board[pos.y][pos.x] in Arena.wing_right_tiles
         return self.board[pos.y][pos.x] in Arena.wing_left_tiles
-
 
 class Die:
 
