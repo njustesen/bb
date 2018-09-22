@@ -1961,7 +1961,7 @@ class PlayerAction(Procedure):
                     rolls.append(True)
                 else:
                     rolls.append(False)
-                actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], team=self.home, rolls=rolls))
+                actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], positions=[self.pos_from], team=self.home, rolls=rolls))
             elif (not self.turn.quick_snap and self.moves + move_needed <= self.player_from.get_ma() + sprints) or (self.turn.quick_snap and self.moves == 0):
                 for square in self.game.state.field.get_adjacent_squares(self.pos_from, exclude_occupied=True):
                     ball = self.game.state.field.ball_position == square and not self.game.state.field.ball_in_air
