@@ -2090,13 +2090,12 @@ class PreHalf(Procedure):
 
 class FollowUp(Procedure):
 
-    def __init__(self, game, home, player_from, pos_to, optional=True):
+    def __init__(self, game, home, player_from, pos_to):
         super().__init__(game)
         self.home = home
         self.player_from = player_from
         self.pos_from = self.game.state.field.get_player_position(player_from.player_id)
         self.pos_to = pos_to
-        self.optional = optional
 
     def step(self, action):
 
@@ -2107,7 +2106,7 @@ class FollowUp(Procedure):
         return True
 
     def available_actions(self):
-        if self.optional and not self.player_from.has_skill(Skill.FRENZY):
+        if not self.player_from.has_skill(Skill.FRENZY):
             return [ActionChoice(ActionType.SELECT_SQUARE, team=self.home, positions=[self.pos_from, self.pos_to],
                                  player_ids=[self.player_from.player_id])]
         else:
@@ -2117,7 +2116,7 @@ class FollowUp(Procedure):
 
 class Push(Procedure):
 
-    def __init__(self, game, home, player_from, player_to, knock_down=False, blitz=False, chain=False):
+    def __init__(self, game, home, player_from, player_to, knock_down=False, blitz=False, chain=False, optional_follow_up=True):
         super().__init__(game)
         self.home = home
         self.player_from = player_from
@@ -2128,17 +2127,23 @@ class Push(Procedure):
         self.stand_firm_used = False
         self.chain = chain
         self.waiting_for_move = False
-        self.player_at = None
+        self.player_chain = None
         self.push_to = None
+        self.follow_to = None
         self.squares = None
 
     def step(self, action):
 
-        if self.squares is None:
-            pos_from = self.game.state.field.get_player_position(self.player_from.player_id)
-            pos_to = self.game.state.field.get_player_position(self.player_to.player_id)
-            self.squares = self.game.state.field.get_push_squares(pos_from, pos_to)
-            return False
+        # When proceeding pushes are over, move player(s)
+        if self.waiting_for_move:
+
+            # Move pushed player
+            self.game.state.field.move(self.player_to.player_id, self.push_to)
+
+            if not self.chain:
+                FollowUp(self.game, self.home, self.player_from, self.follow_to)
+
+            return True
 
         # Use stand firm
         if self.waiting_stand_firm:
@@ -2149,6 +2154,13 @@ class Push(Procedure):
             else:
                 self.waiting_stand_firm = False
                 self.stand_firm_used = True
+
+        # Get possible squares
+        if self.squares is None:
+            pos_from = self.game.state.field.get_player_position(self.player_from.player_id)
+            pos_to = self.game.state.field.get_player_position(self.player_to.player_id)
+            self.squares = self.game.state.field.get_push_squares(pos_from, pos_to)
+            return False
 
         # Stand firm
         if self.player_to.has_skill(Skill.STAND_FIRM) and not self.stand_firm_used:
@@ -2171,27 +2183,24 @@ class Push(Procedure):
             if self.knock_down or crowd:
                 KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=crowd)
 
-            # Follow up
+            # Follow up - wait if push is delayed
+            player_id_at = self.game.state.field.get_player_id_at(action.pos_to)
+
+            # Move players in next step - after chaining
+            self.waiting_for_move = True
+            self.squares = None
+
+            # Save positions before chaining
+            self.push_to = Square(action.pos_to.x, action.pos_to.y)
             pos_to = self.game.state.field.get_player_position(self.player_to.player_id)
-            FollowUp(self.game, self.home, self.player_from, pos_to, optional=not self.chain)
+            self.follow_to = Square(pos_to.x, pos_to.y)
 
             # Chain push
-            player_id_at = self.game.state.field.get_player_id_at(action.pos_to)
-            self.push_to = action.pos_to
             if player_id_at is not None:
-                self.player_at = self.game.get_player(player_id_at)
-                Push(self.game, self.home, self.player_to, self.player_at, knock_down=False, chain=True)
-                # Wait for chain to finish
-                self.waiting_for_move = True
-                return False
-            elif not crowd:
-                self.game.state.field.move(self.player_to.player_id, self.push_to)
-            return True
+                self.player_chain = self.game.get_player(player_id_at)
+                Push(self.game, self.home, self.player_to, self.player_chain, knock_down=False, chain=True)
 
-        # When push chain is over, move player
-        if self.waiting_for_move:
-            self.game.state.field.move(self.player_to.player_id, self.push_to)
-            return True
+            return False
 
         raise Exception("Unknown push sequence")
 
