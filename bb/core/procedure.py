@@ -2136,6 +2136,7 @@ class Push(Procedure):
         self.push_to = None
         self.follow_to = None
         self.squares = None
+        self.crowd = False
 
     def step(self, action):
 
@@ -2144,6 +2145,10 @@ class Push(Procedure):
 
             # Move pushed player
             self.game.state.field.move(self.player_to.player_id, self.push_to)
+
+            # Knock down
+            if self.knock_down or self.crowd:
+                KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=self.crowd, armor_roll=not self.crowd)
 
             if not self.chain:
                 FollowUp(self.game, self.home, self.player_from, self.follow_to)
@@ -2176,17 +2181,13 @@ class Push(Procedure):
         if action.action_type == ActionType.SELECT_SQUARE:
 
             # Push to crowd?
-            crowd = self.game.state.field.is_out_of_bounds(action.pos_to)
+            self.crowd = self.game.state.field.is_out_of_bounds(action.pos_to)
 
             # Report
-            if crowd:
+            if self.crowd:
                 self.game.report(Outcome(OutcomeType.PUSHED_INTO_CROWD, player_id=self.player_to.player_id))
             else:
                 self.game.report(Outcome(OutcomeType.PUSHED, player_id=self.player_to.player_id, pos=action.pos_to))
-
-            # Knock down
-            if self.knock_down or crowd:
-                KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=crowd, armor_roll=not crowd)
 
             # Follow up - wait if push is delayed
             player_id_at = self.game.state.field.get_player_id_at(action.pos_to)
