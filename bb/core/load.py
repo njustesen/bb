@@ -7,7 +7,6 @@ import glob
 import bb
 import pkg_resources
 
-
 arena_char_map = {
     'C': Tile.CROWD,
     'H': Tile.HOME,
@@ -168,13 +167,6 @@ def get_arena(name):
         board.append(np.array(row))
     file.close()
     return Arena(np.array(board))
-
-
-def get_data_path(rel_path):
-    bb_dir = bb.__file__.replace("__init__.py", "")
-    root_dir = os.path.abspath(os.path.join(bb_dir, os.pardir))
-    filename = os.path.join(root_dir, "data/" + rel_path)
-    return os.path.abspath(os.path.realpath(filename))
 
 
 def get_config(name):

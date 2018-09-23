@@ -1,4 +1,8 @@
 <div class="game-free" ng-if="!loading">
+    <div class="options">
+        <a href="/#/"><span class="glyphicon glyphicon-arrow-left"></span></a>
+        <div ng-click="saveGame()"><span class="glyphicon glyphicon-floppy-{{ saved ? 'saved' : 'disk' }}"></span></div>
+    </div>
     <div class="scoreboard">
         <div class="row scoreboard-content">
             <div>

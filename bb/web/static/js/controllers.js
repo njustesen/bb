@@ -1,6 +1,6 @@
 
-appControllers.controller('GameListCtrl', ['$scope', 'GameService',
-    function GameListCtrl($scope, GameService) {
+appControllers.controller('GameListCtrl', ['$scope', '$location', 'GameService',
+    function GameListCtrl($scope, $location, GameService) {
         $scope.games = [];
 
         GameService.findAll().success(function(data) {
@@ -23,7 +23,7 @@ appControllers.controller('GameListCtrl', ['$scope', 'GameService',
                     console.log(data);
                 });
             }
-        }
+        };
     }
 ]);
 
@@ -76,6 +76,7 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
 appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService', 'IconService', 'GameLogService',
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService, GameLogService) {
         $scope.game = {};
+        $scope.saved = false;
         $scope.loading = true;
         $scope.refreshing = false;
         $scope.hover_player = null;
@@ -90,6 +91,16 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             home_dugout: [],
             away_dugout: [],
             player_positions: {}
+        };
+
+        $scope.saveGame = function saveGame(){
+            // Get state
+            GameService.save($scope.game.game_id).success(function(data) {
+                $scope.saved = true;
+            }).error(function(status, data) {
+                alert(data);
+                $location.path("/#/");
+            });
         };
 
         var id = $routeParams.id;
@@ -639,6 +650,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 document.getElementById('gamelog').scrollTop = 0;
                 let time = $scope.showReport($scope.game.reports[$scope.game.reports.length-1]) ? 10 : 0;
                 $scope.checkForReload(time);
+                $scope.saved = false;
             }).error(function(status, data) {
                 $location.path("/#/");
             });
@@ -696,6 +708,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.loading = false;
             console.log(data);
             $scope.checkForReload(2500);
+            $scope.saved = false;
         }).error(function(status, data) {
             $location.path("/#/");
         });

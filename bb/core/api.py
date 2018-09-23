@@ -3,8 +3,14 @@ from bb.core.host import *
 from bb.core.game import *
 from bb.core.load import *
 
+# Create a game host
 ruleset = get_rule_set("LRB5-Experimental.xml")
 host = Host(ruleset)
+
+# Add all saved games to host
+saved_game_files = [game for game in host.get_saved_games()]
+for file in saved_game_files:
+    host.add_game(host.load_game(file))
 
 
 def new_game(home_team_id, away_team_id, config_name="bb.json"):
@@ -37,6 +43,10 @@ def step(game_id, action):
         host.end_game(game_id)
 
     return game
+
+
+def save_game(game_id):
+    host.save_game(game_id)
 
 
 def get_game(game_id):

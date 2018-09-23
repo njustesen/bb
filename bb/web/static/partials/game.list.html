@@ -10,6 +10,7 @@
         <table class="table table-condensed table-hover">
             <thead>
                 <tr>
+                    <th class="text-left">ID</th>
                     <th class="text-right" style="width=30%">Home Team</th>
                     <th class="text-right" style="width=30%"></th>
                     <th></th>
@@ -19,7 +20,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="game in games">
+                <tr ng-repeat="game in games" ng-click='openGame(game.game_id)'>
+                    <th class="text-left">{{game.game_id}}</th>
                     <td class="text-right">{{game.home_team.name}}</td>
                     <td class="text-right">{{game.state.home_state.score}}</td>
                     <td class="text-center">-</td>
@@ -27,7 +29,7 @@
                     <td>{{game.away_team.name}}</td>
                     <td class="text-right">
                         <a href="#/game/play/{{game.game_id}}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-play"></span> Play</a>
-                        <button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>
+                        <!--<button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>-->
                     </td>
                 </tr>
             </tbody>

@@ -8,10 +8,10 @@ html {
 		font-family: 'Varela Round', sans-serif;
 		background: #F2F2F2;
 		font-size: 1.3em;
-		padding-top: 70px;
+		/*padding-top: 70px;*/
         min-width:904px;
         margin: auto !important;  /* Firefox will set width as auto */
-        width:904px;            /* As IE6 ignores !important it will set width as 904px; */
+        /*width:904px;*/            /* As IE6 ignores !important it will set width as 904px; */
 	}
 }
 
@@ -97,8 +97,8 @@ a, a:focus, a:hover {
 }
 
 .game-free {
-    margin-top: -20px;
-	margin-bottom: 20px;
+    margin-top: 0px;
+	margin-bottom: 1px;
 
     .gamelabel {
         font-size: 0.6em;
@@ -116,6 +116,25 @@ a, a:focus, a:hover {
         &:hover {
             cursor: default;
         }
+    }
+
+    .options {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+
+        a { color: inherit; } 
+
+        div {
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        .glyphicon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
     }
 
 	.scoreboard {
@@ -523,7 +542,7 @@ a, a:focus, a:hover {
 .gamelog{
     background-color: #bbb;
     width: 100%;
-    height: 155px;
+    height: 200px;
     box-shadow: inset 0px 0px 0px #222;
     overflow: scroll;
     margin-bottom: 10px;

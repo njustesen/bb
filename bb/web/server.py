@@ -27,6 +27,11 @@ def create():
     game = api.new_game(data['game']['home_team_id'], data['game']['away_team_id'])
     return json.dumps(game.to_simple())
 
+@app.route('/game/save', methods=['POST'])
+def save():
+    game_id = json.loads(request.data)['game_id']
+    api.save_game(game_id)
+    return json.dumps("Game was successfully saved")
 
 @app.route('/games/', methods=['GET'])
 def get_all_games():

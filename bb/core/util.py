@@ -1,3 +1,6 @@
+import os
+import bb
+
 
 def parse_enum(enum_class, name):
     enum_name = name.upper().replace(" ", "_").replace("-", "_")
@@ -83,3 +86,9 @@ class Stack:
     def size(self):
         return len(self.items)
 
+
+def get_data_path(rel_path):
+    bb_dir = bb.__file__.replace("__init__.py", "")
+    root_dir = os.path.abspath(os.path.join(bb_dir, os.pardir))
+    filename = os.path.join(root_dir, "data/" + rel_path)
+    return os.path.abspath(os.path.realpath(filename))

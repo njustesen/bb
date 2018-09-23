@@ -1,5 +1,6 @@
 from bb.core.procedure import *
 import json
+import pickle
 
 
 class Game:
