@@ -253,7 +253,7 @@
                 <div ng-repeat="report in game.reports | reverse" ng-if="showReport(report)" class="report">
                     <div ng-repeat="roll in report.rolls | reverse" class="roll">
                         <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase() : die.die_type+'-'+die.result }}">
-                            {{die.die_type == 'D8' ? die.result : '' }}
+
                         </span>
                         <span ng-if="roll.modifiers != null && roll.modifiers != 0" class="modifiers">
                             {{ roll.modifiers > 0 ? '+' + roll.modifiers : roll.modifiers }}

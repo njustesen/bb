@@ -82,9 +82,12 @@ class Apothecary(Procedure):
                 # Apply casualty
                 if effect == CasualtyEffect.NONE:
                     self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.BH
+                    self.game.report(Outcome(OutcomeType.BADLY_HURT, player_id=self.player_id, team_home=self.home, rolls=[roll]))
                 elif effect in Casualty.miss_next_game:
                     self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.MNG
+                    self.game.report(Outcome(OutcomeType.MISS_NEXT_GAME, player_id=self.player_id, team_home=self.home, rolls=[roll]))
                 elif effect == CasualtyEffect.DEAD:
+                    self.game.report(Outcome(OutcomeType.DEAD, player_id=self.player_id, team_home=self.home, rolls=[roll]))
                     self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.DEAD
 
                 self.game.state.field.remove(self.player_id)
@@ -95,8 +98,6 @@ class Apothecary(Procedure):
                 else:
                     # Apothecary puts badly hurt players in the reserves
                     self.game.state.get_dugout(self.home).reserves.append(self.player_id)
-
-                self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=effect.name, rolls=[roll]))
 
         return True
 
@@ -442,17 +443,21 @@ class Casualty(Procedure):
         self.casualty = CasualtyType(n)
         self.effect = Rules.casualty_effect[self.casualty]
 
-        self.game.report(Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=self.effect.name, rolls=[self.roll]))
-
         if self.game.state.get_team_state(self.home).apothecary_available:
+            self.game.report(
+                Outcome(OutcomeType.CASUALTY, player_id=self.player_id, team_home=self.home, n=self.effect.name,
+                        rolls=[self.roll]))
             Apothecary(self.game, self.home, self.player_id, roll=self.roll, outcome=OutcomeType.CASUALTY, casualty=self.casualty, effect=self.effect, opp_player_id=self.opp_player_id)
         else:
             # Apply casualty
             if self.effect == CasualtyEffect.NONE:
                 self.game.state.casualty(self.player_id, self.home, PlayerState.BH, self.effect)
+                self.game.report(Outcome(OutcomeType.BADLY_HURT, player_id=self.player_id, team_home=self.home, rolls=[self.roll]))
             elif self.effect in Casualty.miss_next_game:
                 self.game.state.casualty(self.player_id, self.home, PlayerState.MNG, self.effect)
+                self.game.report(Outcome(OutcomeType.MISS_NEXT_GAME, player_id=self.player_id, team_home=self.home, rolls=[self.roll], n=str(self.effect).lower().replace("_", " ")))
             elif self.effect == CasualtyEffect.DEAD:
+                self.game.report(Outcome(OutcomeType.DEAD, player_id=self.player_id, team_home=self.home, rolls=[self.roll]))
                 self.game.state.casualty(self.player_id, self.home, PlayerState.DEAD, self.effect)
 
         return True
@@ -757,6 +762,7 @@ class Injury(Procedure):
         # Roll
         roll = DiceRoll([D6(), D6()])
         result = roll.get_sum()
+        result = 12
         self.injury_rolled = True
 
         # Skill modifiers

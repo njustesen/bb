@@ -137,6 +137,8 @@ class OutcomeType(Enum):
     FOLLOW_UP = 113
     FOUL = 114
     PLAYER_EJECTED = 115
+    MISS_NEXT_GAME = 116
+    DEAD = 117
 
 
 class PlayerActionType(Enum):
