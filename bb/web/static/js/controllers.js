@@ -69,15 +69,6 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
                 console.log(status);
                 console.log(data);
             });
-        }
-
-        $scope.playerIcon = function playerIcon(player, home, race, angled){
-            let icon_base = IconService.playerIcons[race][player.position_name];
-            let icon_num = "1";
-            let team_letter = home ? "" : "b";
-            let angle = "";
-            let icon_name = icon_base + icon_num + team_letter + angle + ".gif";
-            return icon_name;
         };
     }
 ]);
@@ -149,12 +140,12 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return null;
         };
 
-        $scope.playerIcon = function playerIcon(player, angled){
+        $scope.playerIcon = function playerIcon(player){
             let team = $scope.teamOfPlayer(player);
             let icon_base = IconService.playerIcons[team.race][player.position_name];
             let icon_num = "1";
             let team_letter = team.team_id == $scope.game.home_team.team_id ? "" : "b";
-            let angle = "";
+            let angle = player.player_id === $scope.game.state.active_player_id ? "an" : "";
             let icon_name = icon_base + icon_num + team_letter + angle + ".gif";
             return icon_name;
         };
@@ -172,7 +163,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 } else {
                     player_state = $scope.game.state.away_state.player_states[player_id];
                 }
-                player_icon = player != null ? $scope.playerIcon(player, false) : null;
+                player_icon = player != null ? $scope.playerIcon(player) : null;
             }
             let ball = $scope.game.state.field.ball_position != null ? ($scope.game.state.field.ball_position.x == x && $scope.game.state.field.ball_position.y == y) : null;
             return {
@@ -204,8 +195,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 if (action.positions.length > 0){
                     // If an available player is selected
                     $scope.main_action = action;
-                    if (action.player_ids.length === 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length === 1){
-                        if (action.action_type === "BLOCK"){
+                    if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length == 1){
+                        if (action.action_type == "BLOCK"){
                             $scope.available_block_positions = action.positions;
                             $scope.available_block_rolls = action.block_rolls;
                         } else {
@@ -218,7 +209,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     if (!(action.action_type.startsWith("END_") || action.action_type.startsWith("START_"))) {
                         $scope.main_action = action;
                     }
-                    if ($scope.available_players.length !== 1){
+                    if ($scope.available_players.length != 1){
                         for (let p_idx in action.player_ids){
                             $scope.available_players.push(action.player_ids[p_idx]);
                         }
@@ -233,8 +224,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             for (let i in $scope.available_positions){
                 let pos = $scope.available_positions[i];
                 // Reserves positions
-                if (pos == null && $scope.selected_square != null && $scope.selected_square.area === 'field'){
-                    if ($scope.main_action.team === true){
+                if (pos == null && $scope.selected_square != null && $scope.selected_square.area == 'field'){
+                    if ($scope.main_action.team == true){
                         for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.home_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.home_dugout[y][x].player == null){
@@ -242,7 +233,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                                 }
                             }
                         }
-                    } else if ($scope.main_action.team === false){
+                    } else if ($scope.main_action.team == false){
                         for (let y = 0; y < $scope.local_state.away_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.away_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.away_dugout[y][x].player == null){
@@ -259,13 +250,14 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     }
                 }
                 // Crowd in dugouts - availavble during pushes
-                if (pos.x === 0 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
-                    $scope.local_state.home_dugout[pos.y-1][1].available_position = true;
+                if (pos != null){
+                    if (pos.x === 0 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
+                        $scope.local_state.home_dugout[pos.y-1][1].available_position = true;
+                    }
+                    if (pos.x === $scope.local_state.board[0].length - 1 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
+                        $scope.local_state.away_dugout[pos.y-1][0].available_position = true;
+                    }
                 }
-                if (pos.x === $scope.local_state.board[0].length - 1 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
-                    $scope.local_state.away_dugout[pos.y-1][0].available_position = true;
-                }
-
             }
             for (let i in $scope.available_block_positions) {
                 let pos = $scope.available_block_positions[i];
@@ -291,6 +283,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.local_state.player_positions = {};
             $scope.local_state.ball_in_air = $scope.game.state.ball_in_air;
             $scope.local_state.ball_position = $scope.game.state.ball_position;
+            $scope.local_state.team_turn = $scope.game.state.team_turn;
             for (let y = 0; y < $scope.game.state.field.board.length; y++){
                 if ($scope.local_state.board.length <= y){
                     $scope.local_state.board.push([]);

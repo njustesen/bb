@@ -102,6 +102,7 @@ class GameState:
         self.gentle_gust = False
         self.team_turn = None
         self.spectators = 0
+        self.active_player_id = None
 
     def to_simple(self):
         return {
@@ -115,7 +116,8 @@ class GameState:
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
             'team_turn': self.team_turn,
-            'spectators': self.spectators
+            'spectators': self.spectators,
+            'active_player_id': self.active_player_id
         }
 
     def reset_turn(self, home):
@@ -588,14 +590,18 @@ class Die:
 
 class DiceRoll:
 
-    def __init__(self, dice, modifiers=0, target=None):
+    def __init__(self, dice, modifiers=0, target=None, d68=False):
         self.dice = dice
         self.sum = 0
-        for d in self.dice:
-            if not isinstance(d, BBDie):
-                self.sum += d.get_value()
+        self.d68 = d68
         self.target = target
         self.modifiers = modifiers
+        for d in self.dice:
+            if not isinstance(d, BBDie):
+                if d68 and isinstance(d, D6):
+                    self.sum += d.get_value() * 10
+                else:
+                    self.sum += d.get_value()
 
     def to_simple(self):
         dice = []

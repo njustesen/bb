@@ -250,7 +250,7 @@ class Block(Procedure):
         # GfI
         if self.gfi:
             self.gfi = False
-            GFI(self.game, self.home, self.player_from, self.pos_from, self.pos_to)
+            GFI(self.game, self.home, self.player_from.player_id, self.pos_from, self.pos_from)
             return False
 
         # Frenzy check
@@ -436,7 +436,7 @@ class Casualty(Procedure):
 
     def step(self, action):
 
-        self.roll = DiceRoll([D6(), D8()])
+        self.roll = DiceRoll([D6(), D8()], d68=True)
         result = self.roll.get_sum()
         n = min(61, max(38, result))
         self.casualty = CasualtyType(n)
@@ -1817,7 +1817,7 @@ class EndPlayerTurn(Procedure):
         elif self.game.state.get_player_state(self.player_id, self.home) == PlayerState.DOWN_READY:
             self.game.state.set_player_state(self.player_id, self.home, PlayerState.DOWN_USED)
         self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player_id=self.player_id))
-
+        self.game.state.active_player_id = None
         return True
 
     def available_actions(self):
@@ -2503,6 +2503,7 @@ class Turnover(Procedure):
 
     def step(self, action):
         self.game.report(Outcome(OutcomeType.TURNOVER, team_home=self.home))
+        self.game.state.active_player_id = None
         return True
 
     def available_actions(self):
@@ -2580,6 +2581,7 @@ class Turn(Procedure):
     def start_player_action(self, outcome_type, player_action_type, player_id):
 
         # Start action
+        self.game.state.active_player_id = player_id
         PlayerAction(self.game, self.home, player_id, player_action_type, turn=self)
         self.game.report(Outcome(outcome_type, player_id=player_id))
 
@@ -2593,6 +2595,7 @@ class Turn(Procedure):
                 self.game.report(Outcome(OutcomeType.END_OF_QUICK_SNAP, team_home=self.home))
             else:
                 self.game.report(Outcome(OutcomeType.END_OF_TURN, team_home=self.home))
+            self.game.state.active_player_id = None
             return True
 
         # Start movement action

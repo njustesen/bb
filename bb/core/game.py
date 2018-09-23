@@ -85,6 +85,7 @@ class Game:
 
         # If turnover, end turn
         if isinstance(self.stack.peek(), Turnover):
+            self.stack.peek().step(None)
             self._end_turn()
 
         # If riot -> remove one turn
