@@ -1,7 +1,61 @@
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#/">
+                <i class="fab fa-python"></i> Fantasy Football AI
+            </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a class="nav-link" href="#"><span class="glyphicon glyphicon-list"></span> Games</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="nav-link" ng-click="modalVisible=true" style="cursor: pointer;"><span class="glyphicon glyphicon-floppy-{{ saved ? 'saved' : 'disk' }}"></span> Save</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="modal" tabindex="-1" role="dialog" ng-show="modalVisible" style="display: block;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <form role="form" ng-submit="saveGame(saveName);">
+          <div class="modal-header">
+              <span style="width:70%">
+            <h5 class="modal-title">Save game</h5>
+                  </span>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <p>This will save the game one the server. Please, specify a name.</p>
+              <div class="form-group">
+                <label for="filename">Name</label>
+                <input type="text" ng-model="saveName" class="form-control {{ modalError ? 'has-error' : '' }}" id="filename" placeholder="Enter a name">
+              </div>
+              <div class="alert alert-danger" ng-show="modelError">
+                  <strong>Something went wrong!</strong> Try another name with more than 2 characters.
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="modalVisible=false">Cancel</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
 <div class="game-free" ng-if="!loading">
     <div class="options">
         <a href="/#/"><span class="glyphicon glyphicon-arrow-left"></span></a>
-        <div ng-click="saveGame()"><span class="glyphicon glyphicon-floppy-{{ saved ? 'saved' : 'disk' }}"></span></div>
+
+        <div ng-click="saveGame()"></div>
     </div>
     <div class="scoreboard">
         <div class="row scoreboard-content">

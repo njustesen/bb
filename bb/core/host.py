@@ -1,6 +1,7 @@
 from bb.core.util import *
 import pickle
 import glob
+import uuid
 
 
 class Host:
@@ -21,18 +22,38 @@ class Host:
     def get_games(self):
         return list(self.games.values())
 
-    def save_game(self, game_id):
+    def save_game(self, game_id, name):
         game = self.get_game(game_id)
-        filename = os.path.join(get_data_path("saves/"), game.game_id+".ffai")
+        filename = os.path.join(get_data_path("saves/"), name+".ffai")
         print("Saving game")
         pickle.dump(game, open(filename, "wb"))
         print("Game saved")
 
-    def load_game(self, filename):
+    def load_file(self, filename):
         print("Loading game")
         game = pickle.load(open(filename, "rb"))
         print("Game laoded")
         return game
 
+    def load_game(self, name):
+        game = self.load_file(get_data_path("saves/" + name.lower() + ".ffai"))
+        game.game_id = str(uuid.uuid1())
+        self.games[game.game_id] = game
+        return game
+
+    def get_savenames(self):
+        files = glob.glob(get_data_path("saves/*"))
+        out = []
+        for file in files:
+            file = file.lower()
+            if ".ffai" not in file:
+                continue
+            file = file.split(".ffai")[0]
+            if "/" in file:
+                file = file.split("/")[-1]
+            out.append(file)
+        return out
+
     def get_saved_games(self):
-        return glob.glob(get_data_path("saves/*"))
+        games = [self.load_file(filename) for filename in glob.glob(get_data_path("saves/*"))]
+        return zip(games, self.get_savenames())

@@ -7,11 +7,6 @@ from bb.core.load import *
 ruleset = get_rule_set("LRB5-Experimental.xml")
 host = Host(ruleset)
 
-# Add all saved games to host
-saved_game_files = [game for game in host.get_saved_games()]
-for file in saved_game_files:
-    host.add_game(host.load_game(file))
-
 
 def new_game(home_team_id, away_team_id, config_name="bb.json"):
     config = get_config(config_name)
@@ -45,16 +40,35 @@ def step(game_id, action):
     return game
 
 
-def save_game(game_id):
-    host.save_game(game_id)
+def save_game_exists(name):
+    for save in host.get_saved_games():
+        if save[1] == name.lower():
+            return True
+    return False
+
+
+def save_game(game_id, name):
+    name = name.replace("/", "").replace(".", "").lower()
+    host.save_game(game_id, name)
 
 
 def get_game(game_id):
-    return host.get_game(game_id)
+    if game_id in host.games:
+        return host.get_game(game_id)
+    else:
+        return host.reload_game(game_id)
+
+
+def load_game(name):
+    return host.load_game(name)
 
 
 def get_games():
     return host.get_games()
+
+
+def get_saved_games():
+    return host.get_saved_games()
 
 
 def get_teams():

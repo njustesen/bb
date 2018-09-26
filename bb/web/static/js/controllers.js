@@ -1,11 +1,22 @@
 
-appControllers.controller('GameListCtrl', ['$scope', '$location', 'GameService',
-    function GameListCtrl($scope, $location, GameService) {
+appControllers.controller('GameListCtrl', ['$scope', '$window', 'GameService',
+    function GameListCtrl($scope, $window, GameService) {
         $scope.games = [];
+        $scope.savedGames = [];
 
         GameService.findAll().success(function(data) {
-            $scope.games = data;
+            $scope.games = data.games;
+            $scope.savedGames = data.saved_games;
         });
+
+        $scope.loadGame = function loadGame(name){
+            GameService.load(name).success(function(data) {
+                 $window.location.href = '/#    /game/play/' + data.game_id
+            }).error(function(status, data) {
+                console.log(status);
+                console.log(data);
+            });
+        };
 
         $scope.deleteGame = function deletegame(id) {
             if (id != undefined) {
@@ -84,6 +95,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.selected_player = null;
         $scope.main_action = null;
         $scope.available_positions = [];
+        $scope.modalVisible = false;
+        $scope.modelError = false;
         $scope.local_state = {
             ball_position: null,
             ball_in_air: null,
@@ -93,13 +106,15 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             player_positions: {}
         };
 
-        $scope.saveGame = function saveGame(){
+        $scope.saveGame = function saveGame(name){
+            $scope.modelError = false;
             // Get state
-            GameService.save($scope.game.game_id).success(function(data) {
+            GameService.save($scope.game.game_id, name).success(function(data) {
                 $scope.saved = true;
+                $scope.modalVisible = false;
             }).error(function(status, data) {
-                alert(data);
-                $location.path("/#/");
+                $scope.modelError = true;
+                //$location.path("/#/");
             });
         };
 

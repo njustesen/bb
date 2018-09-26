@@ -27,20 +27,36 @@ def create():
     game = api.new_game(data['game']['home_team_id'], data['game']['away_team_id'])
     return json.dumps(game.to_simple())
 
-@app.route('/game/save', methods=['POST'])
+@app.route('/game/load', methods=['POST'])
 def save():
     game_id = json.loads(request.data)['game_id']
-    api.save_game(game_id)
-    return json.dumps("Game was successfully saved")
+    name = json.loads(request.data)['name']
+    if len(name) > 2 and len(name) < 40 and not api.save_game_exists(name):
+        api.save_game(game_id, name)
+        return json.dumps("Game was successfully saved")
+    else:
+        raise Exception("Cannot save this game")
 
+'''
 @app.route('/games/', methods=['GET'])
-def get_all_games():
+def get_games():
     games = api.get_games()
     game_list = []
     for game in games:
         game_list.append(game.to_simple())
     return json.dumps(game_list)
+'''
 
+@app.route('/games/', methods=['GET'])
+def get_all_games():
+    games = api.get_games()
+    saved_games = api.get_saved_games()
+    game_list = [game.to_simple() for game in games]
+    saved_game_list = [{'game': save[0].to_simple(), 'name': save[1]} for save in saved_games]
+    return json.dumps({
+        'games': game_list,
+        'saved_games': saved_game_list
+    })
 
 @app.route('/teams/', methods=['GET'])
 def get_all_teams():
@@ -69,6 +85,11 @@ def step(game_id):
 @app.route('/games/<game_id>', methods=['GET'])
 def get_game(game_id):
     return json.dumps(api.get_game(game_id).to_simple())
+
+
+@app.route('/game/load/<name>', methods=['GET'])
+def load_game(name):
+    return json.dumps(api.load_game(name).to_simple())
 
 
 if __name__ == '__main__':

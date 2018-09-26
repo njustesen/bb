@@ -2,31 +2,27 @@
 
     <section class="post">
 
-        <div class="alert alert-danger" ng-show="message.is_error">{{message.message}}</div>
-        <div class="alert alert-success" ng-show="message.is_success">{{message.message}}</div>
-
-        <a href="#/game/create" class="btn btn-default" style="margin-bottom: 15px;">Create a new game</a>
-
+        <hr />
+        <h3 class="text-center">Active Games</h3>
+        <hr />
         <table class="table table-condensed table-hover">
             <thead>
                 <tr>
-                    <th class="text-left">ID</th>
-                    <th class="text-right" style="width=30%">Home Team</th>
-                    <th class="text-right" style="width=30%"></th>
+                    <th class="text-center" style="width=30%">Home Team</th>
+                    <th class="text-center" style="width=30%"></th>
                     <th></th>
                     <th></th>
-                    <th>Away Team</th>
+                    <th class="text-center">Away Team</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="game in games" ng-click='openGame(game.game_id)'>
-                    <th class="text-left">{{game.game_id}}</th>
-                    <td class="text-right">{{game.home_team.name}}</td>
-                    <td class="text-right">{{game.state.home_state.score}}</td>
+                    <td class="text-center">{{game.home_team.name}}</td>
+                    <td class="text-center">{{game.state.home_state.score}}</td>
                     <td class="text-center">-</td>
-                    <td>{{game.state.away_state.score}}</td>
-                    <td>{{game.away_team.name}}</td>
+                    <td class="text-center">{{game.state.away_state.score}}</td>
+                    <td class="text-center">{{game.away_team.name}}</td>
                     <td class="text-right">
                         <a href="#/game/play/{{game.game_id}}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-play"></span> Play</a>
                         <!--<button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>-->
@@ -35,6 +31,46 @@
             </tbody>
         </table>
 
+        <hr />
+
+        <div style="height:30px" class="text-center">
+            <div class="alert alert-danger" ng-show="message.is_error">{{message.message}}</div>
+            <div class="alert alert-success" ng-show="message.is_success">{{message.message}}</div>
+            <a href="#/game/create" class="btn btn-default" style="margin-top: 0px;">Create Game</a>
+        </div>
+
     </section>
 
+    <section class="post">
+        <hr />
+        <h3 class="text-center">Saved Games</h3>
+        <hr />
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="test-center">Name</th>
+                    <th class="text-center" style="width=30%">Home Team</th>
+                    <th class="text-center" style="width=30%"></th>
+                    <th></th>
+                    <th></th>
+                    <th class="text-center">Away Team</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="save in savedGames" ng-click='openGame(game.game_id)'>
+                    <td class="text-left">{{save.name}}</td>
+                    <td class="text-center">{{save.game.home_team.name}}</td>
+                    <td class="text-center">{{save.game.state.home_state.score}}</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">{{save.game.state.away_state.score}}</td>
+                    <td class="text-center">{{save.game.away_team.name}}</td>
+                    <td class="text-right">
+                        <a href="#" ng-click="loadGame(save.name)" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-play"></span> Play</a>
+                        <!--<button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 </div>
