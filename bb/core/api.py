@@ -53,10 +53,7 @@ def save_game(game_id, name):
 
 
 def get_game(game_id):
-    if game_id in host.games:
-        return host.get_game(game_id)
-    else:
-        return host.reload_game(game_id)
+    return host.get_game(game_id)
 
 
 def load_game(name):

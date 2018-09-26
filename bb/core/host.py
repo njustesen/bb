@@ -27,17 +27,19 @@ class Host:
         filename = os.path.join(get_data_path("saves/"), name+".ffai")
         print("Saving game")
         pickle.dump(game, open(filename, "wb"))
+        game = pickle.load(open(filename, "rb"))
+        game.game_id = str(uuid.uuid1())
+        pickle.dump(game, open(filename, "wb"))
         print("Game saved")
 
     def load_file(self, filename):
         print("Loading game")
         game = pickle.load(open(filename, "rb"))
-        print("Game laoded")
+        print("Game loaded")
         return game
 
     def load_game(self, name):
         game = self.load_file(get_data_path("saves/" + name.lower() + ".ffai"))
-        game.game_id = str(uuid.uuid1())
         self.games[game.game_id] = game
         return game
 

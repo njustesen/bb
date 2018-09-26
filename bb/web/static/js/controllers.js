@@ -11,7 +11,7 @@ appControllers.controller('GameListCtrl', ['$scope', '$window', 'GameService',
 
         $scope.loadGame = function loadGame(name){
             GameService.load(name).success(function(data) {
-                 $window.location.href = '/#    /game/play/' + data.game_id
+                 $window.location.href = '/#/game/play/' + data.game_id
             }).error(function(status, data) {
                 console.log(status);
                 console.log(data);
