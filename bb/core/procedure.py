@@ -471,12 +471,13 @@ class Catch(Procedure):
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     success = [6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1]
 
-    def __init__(self, game, home, player_id, pos, accurate=False, interception=False):
+    def __init__(self, game, home, player_id, pos, accurate=False, interception=False, handoff=True):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
         self.pos = pos
         self.accurate = accurate
+        self.handoff = handoff
         self.rolled = False
         self.reroll_used = False
         self.catch_used = False
@@ -492,13 +493,13 @@ class Catch(Procedure):
 
             # Can player even catch ball?
             player = self.game.get_player(self.player_id)
-            if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_state(self.player_id, self.home) not in Rules.ready_to_catch:
+            if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_state(self.player_id, self.home) not in Rules.catchable:
                 Bounce(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.BALL_DROPPED, player_id=self.player_id))
                 return True
 
             # Set modifiers
-            modifiers = 1 if self.accurate else 0
+            modifiers = 1 if self.accurate or self.handoff else 0
             modifiers = -2 if self.interception else modifiers
             if self.interception and player.has_skill(Skill.LONG_LEGS):
                 modifiers += 1
@@ -1527,6 +1528,45 @@ class Dodge(Procedure):
         return []
 
 
+class TurnoverIfPossessionLost(Procedure):
+
+    def __init__(self, game, home):
+        super().__init__(game)
+        self.home = home
+
+    def step(self, action):
+        player_at_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
+        if player_at_id is None:
+            Turnover(self.game, self.home)
+        elif self.game.get_home_by_player_id(player_at_id) != self.home:
+            Turnover(self.game, self.home)
+        return True
+
+    def available_actions(self):
+        return []
+
+
+class Handoff(Procedure):
+
+    def __init__(self, game, home, player_id, pos_to, player_to_id):
+        super().__init__(game)
+        self.home = home
+        self.player_id = player_id
+        self.pos_to = pos_to
+        self.player_to_id = player_to_id
+
+    def step(self, action):
+        self.game.state.field.ball_position = self.pos_to
+        TurnoverIfPossessionLost(self.game, self.home)
+        EndPlayerTurn(self.game, self.home, self.player_id)
+        Catch(self.game, self.home, self.player_to_id, self.pos_to, handoff=True)
+        self.game.report(Outcome(OutcomeType.COMPLETE_HANDOFF, player_id=self.player_id, opp_player_id=self.player_to_id))
+        return True
+
+    def available_actions(self):
+        return []
+
+
 class PassAction(Procedure):
 
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
@@ -1938,6 +1978,13 @@ class PlayerAction(Procedure):
             # A foul is a players last thing to do
             return True
 
+        elif action.action_type == ActionType.HANDOFF:
+
+            catcher_id = self.game.state.field.get_player_id_at(action.pos_to)
+            Handoff(self.game, self.home, self.player_id, action.pos_to, catcher_id)
+
+            return True
+
         elif action.action_type == ActionType.PASS:
 
             # Check distance
@@ -1961,7 +2008,7 @@ class PlayerAction(Procedure):
         self.player_from = self.game.get_player(self.player_from.player_id)
 
         # Move actions
-        if self.player_action_type == PlayerActionType.MOVE or self.player_action_type == PlayerActionType.BLITZ or self.player_action_type == PlayerActionType.FOUL:
+        if self.player_action_type != PlayerActionType.BLOCK:
             move_positions = []
             rolls = []
             player_state_from = self.game.state.get_player_state(self.player_id, self.home)
@@ -2030,6 +2077,20 @@ class PlayerAction(Procedure):
             if len(foul_positions) > 0:
                 actions.append(ActionChoice(ActionType.FOUL, player_ids=[self.player_id], team=self.home,
                                             positions=foul_positions, block_rolls=foul_rolls))
+
+        # Handoff actions
+        if self.player_action_type == PlayerActionType.HANDOFF:
+            hand_off_positions = []
+            for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=self.home,
+                                                                            include_away=not self.home):
+                opp_player_id = self.game.state.field.get_player_id_at(square)
+                player_to = self.game.get_player(opp_player_id)
+                if self.game.state.get_player_state(player_to.player_id, self.home) in Rules.catchable and Skill.NO_HANDS not in player_to.get_skills():
+                    hand_off_positions.append(square)
+
+            if len(hand_off_positions) > 0:
+                actions.append(ActionChoice(ActionType.HANDOFF, player_ids=[self.player_id], team=self.home,
+                                            positions=hand_off_positions))
 
         actions.append(ActionChoice(ActionType.END_PLAYER_TURN, player_ids=[self.player_id], team=self.home))
         return actions

@@ -79,7 +79,6 @@ class OutcomeType(Enum):
     COMPLETE_PASS = 55
     INCOMPLETE_PASS = 56
     COMPLETE_HANDOFF = 57
-    INCOMPLETE_HANDOFF = 58
     STUNNED_TURNED = 59
     END_PLAYER_TURN = 60
     MOVE_ACTION_STARTED = 61
@@ -367,8 +366,6 @@ class PassDistance(Enum):
 
 class Rules:
 
-    ready_to_catch = [PlayerState.READY, PlayerState.USED]
-
     pass_modifiers = {
         PassDistance.QUICK_PASS: 1,
         PassDistance.SHORT_PASS: 0,
@@ -418,6 +415,11 @@ class Rules:
     ]
 
     assistable = [
+        PlayerState.READY,
+        PlayerState.USED
+    ]
+
+    catchable = [
         PlayerState.READY,
         PlayerState.USED
     ]

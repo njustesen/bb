@@ -164,7 +164,10 @@
             </div>
             <div class="field {{ game.state.weather.toLowerCase().replace('_','') }}">
                 <div class="square-row" ng-repeat="row in local_state.board.slice(1, local_state.board.length-1)">
-                    <div class="square {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ local_state.board[$parent.$index+1][$index+1].available_position ? 'green' : '' }}" ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])" ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])">
+                    <div class="square {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ local_state.board[$parent.$index+1][$index+1].available_position ? 'green' : '' }}"
+                         ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])"
+                         ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])"
+                         style="{{ getCursor(local_state.board[$parent.$index+1][$index+1]) }}">
                         <div class="movenum">
                             {{ local_state.board[$parent.$index+1][$index+1].number }}
                         </div>

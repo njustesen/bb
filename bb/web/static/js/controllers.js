@@ -176,6 +176,17 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return icon_name;
         };
 
+        $scope.getCursor = function getCursor(square){
+            if (square.available_handoff_position){
+                return "cursor: url(static/img/icons/actions/handover.gif), auto";
+            } else if (square.block_roll !== 0){
+                return "cursor: url(static/img/icons/actions/block.gif), auto";
+            } else if (square.available_foul_position){
+                return "cursor: url(static/img/icons/actions/foul.gif), auto";
+            }
+            return ""
+        };
+
         $scope.newSquare = function newSquare(player_id, x, y, area, sub_area, number){
             let player = null;
             let player_state = null;
@@ -200,6 +211,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 player_icon: player_icon,
                 selected: false,
                 available_position: false,
+                available_handoff_position: false,
+                available_foul_position: false,
                 roll: false,
                 block_roll: 0,
                 area: area,
@@ -215,6 +228,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_rolls = [];
             $scope.available_block_rolls = [];
             $scope.available_players = [];
+            $scope.available_handoff_positions = [];
             $scope.main_action = null;
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
@@ -222,9 +236,13 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     // If an available player is selected
                     $scope.main_action = action;
                     if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length == 1){
-                        if (action.action_type == "BLOCK"){
+                        if (action.action_type == "BLOCK") {
                             $scope.available_block_positions = action.positions;
                             $scope.available_block_rolls = action.block_rolls;
+                        } else if (action.action_type === "HANDOFF"){
+                            $scope.available_handoff_positions = action.positions;
+                        } else if (action.action_type === "FOUL"){
+                            $scope.available_foul_positions = action.positions;
                         } else {
                             $scope.available_positions = action.positions;
                             $scope.available_rolls = action.rolls;
@@ -285,6 +303,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     }
                 }
             }
+            // Block squares
             for (let i in $scope.available_block_positions) {
                 let pos = $scope.available_block_positions[i];
                 $scope.local_state.board[pos.y][pos.x].available_position = true;
@@ -292,6 +311,21 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     $scope.local_state.board[pos.y][pos.x].block_roll = $scope.available_block_rolls[i];
                 }
             }
+
+            // Foul squares
+            for (let i in $scope.available_foul_positions) {
+                let pos = $scope.available_foul_positions[i];
+                $scope.local_state.board[pos.y][pos.x].available_position = true;
+                $scope.local_state.board[pos.y][pos.x].available_foul_position = true;
+            }
+
+            // Hand-off squares
+            for (let i in $scope.available_handoff_positions) {
+                let pos = $scope.available_handoff_positions[i];
+                $scope.local_state.board[pos.y][pos.x].available_position = true;
+                $scope.local_state.board[pos.y][pos.x].available_handoff_position = true;
+            }
+
             if ($scope.available_players.length == 1){
                 $scope.select($scope.local_state.player_positions[$scope.available_players[0]])
             }

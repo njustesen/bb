@@ -746,6 +746,7 @@ class Player:
         self.name = name
         self.nr = nr
         self.extra_skills = extra_skills
+        self.skills = self.extra_skills + self.position.skills
         self.extra_ma = extra_ma
         self.extra_st = extra_st
         self.extra_ag = extra_ag
@@ -767,10 +768,10 @@ class Player:
         return self.position.av + self.extra_av
 
     def has_skill(self, skill):
-        return skill in self.extra_skills or skill in self.position.skills
+        return skill in self.skills
 
     def get_skills(self):
-        return self.extra_skills + self.position.skills
+        return self.skills
 
     def to_simple(self):
         skills = []
