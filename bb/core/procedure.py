@@ -618,26 +618,6 @@ class CoinToss(Procedure):
         return self.aa
 
 
-class DeterminePassSuccess(Procedure):
-
-    def __init__(self, game, home):
-        super().__init__(game)
-        self.game = game
-        self.home = home
-
-    def step(self, action):
-
-        ball_at = self.game.state.field.ball_position
-        player_at = self.game.state.field.get_player_id_at(ball_at)
-        if player_at is None or self.game.get_home_by_player_id(player_at) != self.home:
-            Turnover(self.game, self.home)
-
-        return True
-
-    def available_actions(self):
-        return []
-
-
 class Ejection(Procedure):
 
     def __init__(self, game, home, player_id):
@@ -1572,6 +1552,26 @@ class PassAction(Procedure):
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     success = [6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1]
 
+    @staticmethod
+    def pass_modifiers(game, home, player_from, pos_from, pass_distance):
+        modifiers = Rules.pass_modifiers[pass_distance]
+        tackle_zones = game.state.field.get_tackle_zones(pos_from, home)
+        modifiers -= tackle_zones
+
+        # Weather
+        if game.state.weather == WeatherType.VERY_SUNNY:
+            modifiers -= 1
+
+        if player_from.has_skill(Skill.ACCURATE):
+            modifiers += 1
+
+        if player_from.has_skill(Skill.STRONG_ARM):
+            if pass_distance == PassDistance.SHORT_PASS or pass_distance == PassDistance.LONG_PASS or \
+                    pass_distance == PassDistance.LONG_BOMB:
+                modifiers += 1
+
+        return modifiers
+
     def __init__(self, game, home, player_from, pos_from, player_to, pos_to, pass_distance):
         super().__init__(game)
         self.home = home
@@ -1601,47 +1601,27 @@ class PassAction(Procedure):
                     self.interception_tried = True
                     return False
 
-            # Set modifiers
-            modifiers = Rules.pass_modifiers[self.pass_distance]
-            tackle_zones = self.game.state.field.in_tackle_zones(self.player_from.player_id)
-            modifiers -= tackle_zones
-
-            # Weather
-            if self.game.state.weather == WeatherType.VERY_SUNNY:
-                modifiers -= 1
-
-            if self.player_from.has_skill(Skill.ACCURATE):
-                modifiers += 1
-
-            if self.player_from.has_skill(Skill.STRONG_ARM):
-                if self.pass_distance == PassDistance.SHORT_PASS or self.pass_distance == PassDistance.LONG_PASS or \
-                                self.pass_distance == PassDistance.LONG_BOMB:
-                    modifiers += 1
-
-            # Find success target
-            target = Catch.success[self.player_from.get_ag()]
-
             # Roll
-            roll = DiceRoll([D6], target=target)
-            roll.modifiers = modifiers
+            roll = DiceRoll([D6()])
+            roll.target = Catch.success[self.player_from.get_ag()]
+            roll.modifiers = PassAction.pass_modifiers(self.game, self.home, self.player_from, self.pos_from, self.pass_distance)
             result = roll.get_sum()
             mod_result = result + roll.modifiers
 
-            if result == 6 or (result != 1 and mod_result >= target):
-
+            if result == 6 or (result != 1 and mod_result >= roll.target):
                 # Accurate pass
                 self.game.report(Outcome(OutcomeType.ACCURATE_PASS, player_id=self.player_from.player_id, rolls=[roll]))
+                self.game.state.field.move_ball(self.pos_to)
+                TurnoverIfPossessionLost(self.game, self.home)
+                EndPlayerTurn(self.game, self.home, self.player_from.player_id)
                 Catch(self.game, self.home, self.player_from.player_id, self.pos_to, accurate=True)
                 return True
 
             elif result == 1 or mod_result <= 1:
-
                 # Fumble
                 self.fumble = True
                 self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_from.player_id, pos=self.pos_from, rolls=[roll]))
-
             else:
-
                 # Inaccurate pass
                 self.game.report(Outcome(OutcomeType.INACCURATE_PASS, player_id=self.player_from.player_id, pos=self.pos_from, rolls=[roll]))
 
@@ -1662,6 +1642,7 @@ class PassAction(Procedure):
                 Bounce(self.game, self.home)
             else:
                 DeterminePassSuccess(self.game, self.home)
+
                 Scatter(self.game, self.home, is_pass=True)
 
             return True
@@ -1677,7 +1658,8 @@ class PassAction(Procedure):
                 Bounce(self.game, self.home)
                 return True
 
-            DeterminePassSuccess(self.game, self.home)
+            TurnoverIfPossessionLost(self.game, self.home)
+            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
             Scatter(self.game, self.home, is_pass=True)
             return True
 
@@ -1693,13 +1675,17 @@ class PassAction(Procedure):
                 Bounce(self.game, self.home)
                 return True
 
-            DeterminePassSuccess(self.game, self.home)
+            TurnoverIfPossessionLost(self.game, self.home)
+            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
             Scatter(self.game, self.home, is_pass=True)
             return True
 
         return True
 
     def available_actions(self):
+
+        if self.waiting_for_reroll:
+            return [ActionChoice(ActionType.USE_REROLL, team=self.home), ActionChoice(ActionType.DONT_USE_REROLL, team=self.home)]
         return []
 
 
@@ -1988,16 +1974,8 @@ class PlayerAction(Procedure):
         elif action.action_type == ActionType.PASS:
 
             # Check distance
-            pos_from = self.game.field.get_player_position(self.player_from.player_id)
-            pass_distance = self.game.field.pass_distance(pos_from, action.pos_to)
-
-            if self.game.state.weather == WeatherType.BLIZZARD:
-                if pass_distance != PassDistance.QUICK_PASS or pass_distance != PassDistance.SHORT_PASS:
-                    raise IllegalActionExcpetion("Only quick and short passes during blizzards")
-
-            if pass_distance == PassDistance.HAIL_MARY and not self.player_from.has_skill(Skill.HAIL_MARY):
-                raise IllegalActionExcpetion("Hail mary passes requires the Hail Mary skill")
-
+            pos_from = self.game.state.field.get_player_position(self.player_from.player_id)
+            pass_distance = self.game.state.field.pass_distance(pos_from, action.pos_to)
             PassAction(self.game, self.home, self.player_from, pos_from, player_to, action.pos_to, pass_distance)
 
             self.turn.pass_available = False
@@ -2091,6 +2069,20 @@ class PlayerAction(Procedure):
             if len(hand_off_positions) > 0:
                 actions.append(ActionChoice(ActionType.HANDOFF, player_ids=[self.player_id], team=self.home,
                                             positions=hand_off_positions))
+
+        # Pass actions
+        if self.player_action_type == PlayerActionType.PASS and self.game.state.field.has_ball(self.player_id):
+            positions, distances = self.game.state.field.get_passes(self.player_from, self.pos_from)
+            agi_rolls = []
+            cache = {}
+            for distance in distances:
+                if distance not in cache:
+                    modifiers = PassAction.pass_modifiers(self.game, self.home, self.player_from, self.pos_from, distance)
+                    target = Catch.success[self.player_from.get_ag()]
+                    cache[distance] = target - modifiers
+                agi_rolls.append(cache[distance])
+            if len(positions) > 0:
+                actions.append(ActionChoice(ActionType.PASS, player_ids=[self.player_id], team=self.home, positions=positions, agi_rolls=agi_rolls))
 
         actions.append(ActionChoice(ActionType.END_PLAYER_TURN, player_ids=[self.player_id], team=self.home))
         return actions

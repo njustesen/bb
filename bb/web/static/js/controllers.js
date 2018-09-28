@@ -213,6 +213,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 available_position: false,
                 available_handoff_position: false,
                 available_foul_position: false,
+                available_pass_position: false,
+                available_agi_roll: 0,
                 roll: false,
                 block_roll: 0,
                 area: area,
@@ -229,6 +231,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_block_rolls = [];
             $scope.available_players = [];
             $scope.available_handoff_positions = [];
+            $scope.available_pass_positions = [];
+            $scope.available_agi_rolls = [];
             $scope.main_action = null;
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
@@ -239,6 +243,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         if (action.action_type == "BLOCK") {
                             $scope.available_block_positions = action.positions;
                             $scope.available_block_rolls = action.block_rolls;
+                        } else if (action.action_type === "PASS"){
+                            $scope.available_pass_positions = action.positions;
+                            $scope.available_agi_rolls = action.agi_rolls;
                         } else if (action.action_type === "HANDOFF"){
                             $scope.available_handoff_positions = action.positions;
                         } else if (action.action_type === "FOUL"){
@@ -324,6 +331,16 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let pos = $scope.available_handoff_positions[i];
                 $scope.local_state.board[pos.y][pos.x].available_position = true;
                 $scope.local_state.board[pos.y][pos.x].available_handoff_position = true;
+            }
+
+            // Pass squares
+            for (let i in $scope.available_pass_positions) {
+                let pos = $scope.available_pass_positions[i];
+                $scope.local_state.board[pos.y][pos.x].available_position = true;
+                $scope.local_state.board[pos.y][pos.x].available_pass_position = true;
+                if ($scope.available_agi_rolls.length > i){
+                    $scope.local_state.board[pos.y][pos.x].available_agi_roll = $scope.available_agi_rolls[i];
+                }
             }
 
             if ($scope.available_players.length == 1){

@@ -135,7 +135,7 @@ appServices.factory('GameLogService', function() {
             'DAUNTLESS_USED': "DAUNTLESS_USED",
             'PUSHED_INTO_CROWD': "<player> is pushed into the crowd!",
             'PUSHED': "<player> was pushed.",
-            'ACCURATE_PASS': "ACCURATE_PASS",
+            'ACCURATE_PASS': "<player> threw an <b>accurate</b> pass!",
             'INACCURATE_PASS': "INACCURATE_PASS",
             'FUMBLE': "<b>Fumble!</b>",
             'CATCH_FAILED': "<b>Catch failed</b> by <player>.",

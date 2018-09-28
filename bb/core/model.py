@@ -174,6 +174,10 @@ class Field:
         self.ball_in_air = False
         self.game = game
         self.board = []
+        self.positions = []
+        for y in range(len(game.arena.board)):
+            for x in range(len(game.arena.board[y])):
+                self.positions.append(Square(x, y))
         for y in range(len(game.arena.board)):
             row = []
             for x in range(len(game.arena.board[y])):
@@ -410,6 +414,22 @@ class Field:
                                 assists.append(player_id)
         return assists
 
+    def get_passes(self, player_from, pos_from):
+        squares = []
+        distances = []
+        distances_allowed = [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS, PassDistance.LONG_PASS, PassDistance.LONG_BOMB, PassDistance.HAIL_MARY] if Skill.HAIL_MARY_PASS in player_from.get_skills() \
+            else [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS, PassDistance.LONG_PASS, PassDistance.LONG_BOMB]
+        if self.game.state.weather == WeatherType.BLIZZARD:
+            distances_allowed = [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS]
+        for pos in self.game.state.field.positions:
+            if self.is_out_of_bounds(pos) or pos_from == pos:
+                continue
+            distance = self.pass_distance(pos_from, pos)
+            if distance in distances_allowed:
+                squares.append(pos)
+                distances.append(distance)
+        return squares, distances
+
     def pass_distance(self, pos_from, pos_to):
         distance = pos_from.distance(pos_to, flight=True)
         if distance <= 3.5:
@@ -456,11 +476,12 @@ class Field:
 
                 # 5) Remove squares without standing opponents with hands
                 player_at = self.get_player_id_at(neighbor)
+                player_home = self.game.get_home_by_player_id(player_at)
                 if player_at is None:
                     continue
-                if self.game.get_home_by_player_id(player_at) != home:
+                if player_home != home:
                     continue
-                if self.game.state.get_player_state(player_at) not in Rules.ready_to_catch:
+                if self.game.state.get_player_state(player_at, player_home) not in Rules.catchable:
                     continue
                 if self.game.get_player(player_at).has_skill(Skill.NO_HANDS):
                     continue
@@ -479,7 +500,7 @@ class Field:
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[], block_rolls=[], dice=[], disabled=False):
+    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[], block_rolls=[], dice=[], disabled=False, agi_rolls=[]):
         self.action_type = action_type
         self.positions = positions
         self.player_ids = player_ids
@@ -489,6 +510,7 @@ class ActionChoice:
         self.block_rolls = block_rolls
         self.dice = dice
         self.disabled = disabled
+        self.agi_rolls = agi_rolls
 
     def to_simple(self):
         return {
@@ -499,6 +521,7 @@ class ActionChoice:
             'indexes': self.indexes,
             "rolls": self.rolls,
             "block_rolls": self.block_rolls,
+            "agi_rolls": self.agi_rolls,
             "dice": [die.to_simple() for die in self.dice],
             "disabled": self.disabled
         }
@@ -809,6 +832,9 @@ class Square:
         if other is None or self is None:
             return False
         return self.x == other.x and self.y == other.y
+
+    def __hash__(self):
+        return self.x * 1000 + self.y
 
     def distance(self, other, manhattan=False, flight=False):
         if manhattan:
