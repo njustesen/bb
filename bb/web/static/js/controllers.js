@@ -97,6 +97,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.available_positions = [];
         $scope.modalVisible = false;
         $scope.modelError = false;
+        $scope.passOptions = false;
         $scope.local_state = {
             ball_position: null,
             ball_in_air: null,
@@ -105,6 +106,13 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             away_dugout: [],
             player_positions: {}
         };
+
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey){
+                $scope.passOptions = !$scope.passOptions;
+                $scope.setAvailablePositions();
+            }
+        });
 
         $scope.saveGame = function saveGame(name){
             $scope.modelError = false;
@@ -177,14 +185,16 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.getCursor = function getCursor(square){
-            if (square.available_handoff_position){
+            if (square.available && square.action_type === "HANDOFF"){
                 return "cursor: url(static/img/icons/actions/handover.gif), auto";
-            } else if (square.block_roll !== 0){
+            } else if (square.available && square.action_type === "BLOCK"){
                 return "cursor: url(static/img/icons/actions/block.gif), auto";
-            } else if (square.available_foul_position){
+            } else if (square.available && square.action_type === "FOUL"){
                 return "cursor: url(static/img/icons/actions/foul.gif), auto";
+            } else if (square.available && square.action_type === "PASS"){
+                return "cursor: url(static/img/icons/actions/pass.gif), auto";
             }
-            return ""
+            return "";
         };
 
         $scope.newSquare = function newSquare(player_id, x, y, area, sub_area, number){
@@ -195,14 +205,14 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 player = $scope.playersById[player_id];
                 let team = $scope.teamOfPlayer(player);
                 player_state = null;
-                if (team.team_id == $scope.game.home_team.team_id){
+                if (team.team_id === $scope.game.home_team.team_id){
                     player_state = $scope.game.state.home_state.player_states[player_id];
                 } else {
                     player_state = $scope.game.state.away_state.player_states[player_id];
                 }
                 player_icon = player != null ? $scope.playerIcon(player) : null;
             }
-            let ball = $scope.game.state.field.ball_position != null ? ($scope.game.state.field.ball_position.x == x && $scope.game.state.field.ball_position.y == y) : null;
+            let ball = $scope.game.state.field.ball_position != null ? ($scope.game.state.field.ball_position.x === x && $scope.game.state.field.ball_position.y === y) : null;
             return {
                 x: x,
                 y: y,
@@ -210,11 +220,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 player_state: player_state,
                 player_icon: player_icon,
                 selected: false,
-                available_position: false,
-                available_handoff_position: false,
-                available_foul_position: false,
-                available_pass_position: false,
-                available_agi_roll: 0,
+                available: false,
+                action_type: undefined,
+                agi_roll: 0,
                 roll: false,
                 block_roll: 0,
                 area: area,
@@ -224,96 +232,157 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             };
         };
 
+        $scope.clearSquareAction = function clearSquare(square) {
+            square.available = false;
+            square.agi_roll = 0;
+            square.block_roll = 0;
+            square.action_type = undefined;
+        };
+
         $scope.setAvailablePositions = function setAvailablePositions(){
-            $scope.available_positions = [];
+            $scope.available_select_positions = [];
+            $scope.available_move_positions = [];
             $scope.available_block_positions = [];
-            $scope.available_rolls = [];
-            $scope.available_block_rolls = [];
-            $scope.available_players = [];
             $scope.available_handoff_positions = [];
             $scope.available_pass_positions = [];
-            $scope.available_agi_rolls = [];
+            $scope.available_dodge_rolls = [];
+            $scope.available_block_rolls = [];
+            $scope.available_handoff_rolls = [];
+            $scope.available_pass_rolls = [];
+            $scope.available_players = [];
             $scope.main_action = null;
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
                 if (action.positions.length > 0){
                     // If an available player is selected
                     $scope.main_action = action;
-                    if (action.player_ids.length == 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length == 1){
-                        if (action.action_type == "BLOCK") {
+                    if (action.player_ids.length === 0 || ($scope.selectedPlayer() != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0) || action.player_ids.length === 1){
+                        if (action.action_type === "BLOCK") {
                             $scope.available_block_positions = action.positions;
                             $scope.available_block_rolls = action.block_rolls;
                         } else if (action.action_type === "PASS"){
                             $scope.available_pass_positions = action.positions;
-                            $scope.available_agi_rolls = action.agi_rolls;
+                            $scope.available_pass_rolls = action.agi_rolls;
                         } else if (action.action_type === "HANDOFF"){
                             $scope.available_handoff_positions = action.positions;
                         } else if (action.action_type === "FOUL"){
                             $scope.available_foul_positions = action.positions;
+                        } else if (action.action_type === "MOVE"){
+                            $scope.available_move_positions = action.positions;
+                            $scope.available_dodge_rolls = action.agi_rolls;
                         } else {
-                            $scope.available_positions = action.positions;
-                            $scope.available_rolls = action.rolls;
+                            $scope.available_select_positions = action.positions;
                         }
                     }
                 }
+                // Add available players
                 if (action.player_ids.length > 0){
                     if (!(action.action_type.startsWith("END_") || action.action_type.startsWith("START_"))) {
                         $scope.main_action = action;
                     }
-                    if ($scope.available_players.length != 1){
-                        for (let p_idx in action.player_ids){
-                            $scope.available_players.push(action.player_ids[p_idx]);
+                    if ($scope.available_players.length !== 1){
+                        for (let p in action.player_ids){
+                            $scope.available_players.push(action.player_ids[p]);
                         }
                     }
                 }
+                // Add player positions to available positions if none is selected
                 if ($scope.available_players.length > 1 && $scope.selectedPlayer() == null){
-                    for (let p_idx in action.player_ids){
-                        $scope.available_positions.push($scope.local_state.player_positions[action.player_ids[p_idx]]);
+                    for (let p in action.player_ids){
+                        $scope.available_select_positions.push($scope.local_state.player_positions[action.player_ids[p]]);
                     }
                 }
             }
-            for (let i in $scope.available_positions){
-                let pos = $scope.available_positions[i];
+            // Select squares
+            for (let i in $scope.available_select_positions){
+                let pos = $scope.available_select_positions[i];
                 // Reserves positions
-                if (pos == null && $scope.selected_square != null && $scope.selected_square.area == 'field'){
-                    if ($scope.main_action.team == true){
+                if (pos == null && $scope.selected_square != null && $scope.selected_square.area === 'field'){
+                    if ($scope.main_action.team === true){
                         for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.home_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.home_dugout[y][x].player == null){
-                                    $scope.local_state.home_dugout[y][x].available_position = true;
+                                    $scope.local_state.home_dugout[y][x].available = true;
+                                    $scope.local_state.home_dugout[y][x].action_type = $scope.main_action.action_type;
                                 }
                             }
                         }
-                    } else if ($scope.main_action.team == false){
+                    } else if ($scope.main_action.team === false){
                         for (let y = 0; y < $scope.local_state.away_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.away_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.away_dugout[y][x].player == null){
-                                    $scope.local_state.away_dugout[y][x].available_position = true;
+                                    $scope.local_state.away_dugout[y][x].available = true;
+                                    $scope.local_state.home_dugout[y][x].action_type = $scope.main_action.action_type;
                                 }
                             }
                         }
                     }
                     // Field positions
                 } else if (pos != null){
-                    $scope.local_state.board[pos.y][pos.x].available_position = true;
-                    if ($scope.available_rolls.length > i){
-                        $scope.local_state.board[pos.y][pos.x].roll = $scope.available_rolls[i];
-                    }
+                    $scope.local_state.board[pos.y][pos.x].available = true;
                 }
-                // Crowd in dugouts - availavble during pushes
+                // Crowd in dugouts - available during pushes
                 if (pos != null){
                     if (pos.x === 0 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
-                        $scope.local_state.home_dugout[pos.y-1][1].available_position = true;
+                        $scope.local_state.home_dugout[pos.y-1][1].available = true;
                     }
                     if (pos.x === $scope.local_state.board[0].length - 1 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
-                        $scope.local_state.away_dugout[pos.y-1][0].available_position = true;
+                        $scope.local_state.away_dugout[pos.y-1][0].available = true;
                     }
                 }
             }
+
+            // Select player if only one available
+            if ($scope.available_players.length === 1){
+                $scope.select($scope.local_state.player_positions[$scope.available_players[0]])
+            }
+
+            // Pass squares
+            let anyPass = false;
+            for (let i in $scope.available_pass_positions) {
+                let pos = $scope.available_pass_positions[i];
+                let player = $scope.local_state.board[pos.y][pos.x].player;
+                // If pass options are off, only show if square has team mate
+                if (!$scope.passOptions && player === null) {
+                    $scope.clearSquareAction($scope.local_state.board[pos.y][pos.x]);
+                    continue;
+                }
+                if (!$scope.passOptions && player !== null && ($scope.teamOfPlayer(player) === $scope.game.home_team) !== $scope.local_state.team_turn) {
+                    $scope.clearSquareAction($scope.local_state.board[pos.y][pos.x]);
+                    continue;
+                }
+                if (!$scope.passOptions && player !== null && ($scope.playerState(player) === "DOWN" || $scope.playerState(player) === "STUNNED" || $scope.playerState(player) === "DOWN_USED")) {
+                    $scope.clearSquareAction($scope.local_state.board[pos.y][pos.x]);
+                    continue;
+                }
+                $scope.local_state.board[pos.y][pos.x].available = true;
+                $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
+                if ($scope.available_pass_rolls.length > i){
+                    $scope.local_state.board[pos.y][pos.x].agi_roll = $scope.available_pass_rolls[i];
+                }
+                anyPass = true;
+            }
+
+            // Skip other than pass options
+            if (anyPass && $scope.passOptions){
+                return;
+            }
+
+            // Move squares
+            for (let i in $scope.available_move_positions) {
+                let pos = $scope.available_move_positions[i];
+                $scope.local_state.board[pos.y][pos.x].available = true;
+                $scope.local_state.board[pos.y][pos.x].action_type = "MOVE";
+                if ($scope.available_dodge_rolls.length > i){
+                    $scope.local_state.board[pos.y][pos.x].agi_roll = $scope.available_dodge_rolls[i];
+                }
+            }
+
             // Block squares
             for (let i in $scope.available_block_positions) {
                 let pos = $scope.available_block_positions[i];
-                $scope.local_state.board[pos.y][pos.x].available_position = true;
+                $scope.local_state.board[pos.y][pos.x].available = true;
+                $scope.local_state.board[pos.y][pos.x].action_type = "BLOCK";
                 if ($scope.available_block_rolls.length > i){
                     $scope.local_state.board[pos.y][pos.x].block_roll = $scope.available_block_rolls[i];
                 }
@@ -322,29 +391,16 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             // Foul squares
             for (let i in $scope.available_foul_positions) {
                 let pos = $scope.available_foul_positions[i];
-                $scope.local_state.board[pos.y][pos.x].available_position = true;
+                $scope.local_state.board[pos.y][pos.x].available = true;
+                $scope.local_state.board[pos.y][pos.x].action_type = "FOUL";
                 $scope.local_state.board[pos.y][pos.x].available_foul_position = true;
             }
 
             // Hand-off squares
             for (let i in $scope.available_handoff_positions) {
                 let pos = $scope.available_handoff_positions[i];
-                $scope.local_state.board[pos.y][pos.x].available_position = true;
-                $scope.local_state.board[pos.y][pos.x].available_handoff_position = true;
-            }
-
-            // Pass squares
-            for (let i in $scope.available_pass_positions) {
-                let pos = $scope.available_pass_positions[i];
-                $scope.local_state.board[pos.y][pos.x].available_position = true;
-                $scope.local_state.board[pos.y][pos.x].available_pass_position = true;
-                if ($scope.available_agi_rolls.length > i){
-                    $scope.local_state.board[pos.y][pos.x].available_agi_roll = $scope.available_agi_rolls[i];
-                }
-            }
-
-            if ($scope.available_players.length == 1){
-                $scope.select($scope.local_state.player_positions[$scope.available_players[0]])
+                $scope.local_state.board[pos.y][pos.x].available = true;
+                $scope.local_state.board[pos.y][pos.x].action_type = "HANDOFF";
             }
         };
 
@@ -534,19 +590,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.local_state.ball_position = square;
         };
 
-        $scope.get_action_from_square = function get_action_from_square(square){
-            for (let a in $scope.game.available_actions){
-                let action = $scope.game.available_actions[a];
-                for (let p in action.positions){
-                    let pos = action.positions[p];
-                    if (pos.x == square.x && pos.y == square.y){
-                        return action;
-                    }
-                }
-            }
-            console.log("Unknown action!");
-        };
-
         $scope.create_action = function create_action(square){
             return {
                 'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
@@ -555,7 +598,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 'pos_to': square.area === 'field' ? {'x': square.x, 'y': square.y} : null,
                 'team_home': null,
                 'idx': -1,
-                'action_type': $scope.get_action_from_square(square).action_type
+                'action_type': square.action_type
             };
         };
 
@@ -567,13 +610,13 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
 
             // If position is available
-            if ($scope.main_action != null && square.available_position){
+            if ($scope.main_action != null && square.available){
 
                 // If action does notrequires a selected player or a player is selected
                 if ($scope.main_action.player_ids.length == 0 || ($scope.selectedPlayer() != null)){
 
                     // If the user clicked on an available square and a player is selected or only one player available
-                    if (square.available_position && ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null)){
+                    if (square.available && ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null)){
 
                         // Convert dugout squares to field (crowd) squares if push procedure
                         let crowd = $scope.game.stack[$scope.game.stack.length-1] === "Push" && square.area.startsWith("dugout");
