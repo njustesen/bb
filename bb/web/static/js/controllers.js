@@ -844,6 +844,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             if (action.action_type == "SELECT_DIE"){
                 return false;
             }
+            if (action.action_type.indexOf("START_") > -1){
+                return false;
+            }
             // If no args -> show
             if (action.player_ids.length == 0 && action.positions.length == 0){
                 return true;
