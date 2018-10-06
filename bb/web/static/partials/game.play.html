@@ -168,6 +168,13 @@
                          ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])"
                          ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])"
                          style="{{ getCursor(local_state.board[$parent.$index+1][$index+1]) }}">
+                        <div class="player-action-bar">
+                            <span class="action-dot" ng-repeat="action in playerStartActions($index+1, $parent.$index+1)">
+                                <div ng-click="clickAction($event, action)">
+                                    <img src="static/img/icons/actions/{{action}}.gif">
+                                </div>
+                            </span>
+                        </div>
                         <div class="movenum" ng-show="local_state.board[$parent.$index+1][$index+1].number > 0">
                             {{ local_state.board[$parent.$index+1][$index+1].number }}
                         </div>

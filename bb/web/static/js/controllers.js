@@ -197,6 +197,54 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return "";
         };
 
+        $scope.clickAction = function clickAction(event, action){
+            event.stopPropagation();
+            for (let idx in $scope.game.available_actions) {
+                let a = $scope.game.available_actions[idx];
+                if (a.action_type === "START_MOVE" && action === "move"){
+                    $scope.pickActionType(a);
+                } else if (a.action_type === "START_BLOCK" && action === "block"){
+                    $scope.pickActionType(a);
+                } else if (a.action_type === "START_PASS" && action === "pass"){
+                    $scope.pickActionType(a);
+                } else if (a.action_type === "START_HANDOFF" && action === "handoff"){
+                    $scope.pickActionType(a);
+                } else if (a.action_type === "START_BLITZ" && action === "blitz"){
+                    $scope.pickActionType(a);
+                } else if (a.action_type === "START_FOUL" && action === "foul"){
+                    $scope.pickActionType(a);
+                }
+            }
+        };
+
+        $scope.playerStartActions = function playerStartActions(x, y){
+            let selectedPlayer = $scope.selectedPlayer();
+            if ($scope.selected_square == null || selectedPlayer == null || $scope.selected_square.x !== x || $scope.selected_square.y !== y){
+                return;
+            }
+            let startActions = [];
+            for (let idx in $scope.game.available_actions){
+                let action = $scope.game.available_actions[idx];
+                if (action.player_ids.indexOf(selectedPlayer.player_id) === -1) {
+                    continue;
+                }
+                if (action.action_type === "START_MOVE"){
+                    startActions.push("move");
+                } else if (action.action_type === "START_BLOCK"){
+                    startActions.push("block");
+                } else if (action.action_type === "START_PASS"){
+                    startActions.push("pass");
+                } else if (action.action_type === "START_HANDOFF"){
+                    startActions.push("handoff");
+                } else if (action.action_type === "START_BLITZ"){
+                    startActions.push("blitz");
+                } else if (action.action_type === "START_FOUL"){
+                    startActions.push("foul");
+                }
+            }
+            return startActions;
+        };
+
         $scope.newSquare = function newSquare(player_id, x, y, area, sub_area, number){
             let player = null;
             let player_state = null;
@@ -318,8 +366,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         }
                     }
                     // Field positions
-                } else if (pos != null){
+                } else if (pos != null) {
                     $scope.local_state.board[pos.y][pos.x].available = true;
+                    if ($scope.main_action !== null) {
+                        $scope.local_state.board[pos.y][pos.x].action_type = $scope.main_action.action_type;
+                    }
                 }
                 // Crowd in dugouts - available during pushes
                 if (pos != null){

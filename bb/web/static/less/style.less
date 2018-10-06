@@ -257,10 +257,36 @@ a, a:focus, a:hover {
         width: 30px;
         height: 30px;
         float: left;
+        position: relative;
 
         &:hover {
             background-color: rgba(255,255,255,0.33);
             cursor: pointer;
+        }
+
+        .player-action-bar {
+            z-index: 100;
+            position: absolute;
+            top: -40px;
+            left: -84px;
+            width: 192px;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            .action-dot {
+                height: 28px;
+                width: 28px;
+                margin: 2px;
+                background-color: rgba(0,0,0,1);
+                border: 1px solid rgba(0,0,0,1);
+                padding: 3px;
+                border-radius: 50%;
+                display: inline-block;
+                &:hover {
+                    border: 1px solid black;
+                    background-color: rgba(100,100,100,1);
+                    cursor: pointer;
+                }
+            }
         }
     }
 
@@ -271,13 +297,13 @@ a, a:focus, a:hover {
     .square.green0 {
         background-color: rgba(0,255,0,0.33);
         &:hover {
-            background-color: rgba(0,255,0,0.66);
+            background-color: rgba(0,255,0,1.0);
             cursor: pointer;
         }
     }
 
     .square.selected.green0 {
-        background-color: rgba(0,255,0,0.66);
+        background-color: rgba(0,255,0,1.0);
         &:hover {
             background-color: rgba(0,255,0,1.0);
             cursor: pointer;
@@ -287,13 +313,13 @@ a, a:focus, a:hover {
     .square.green2 {
         background-color: rgba(0,255,0,0.33);
         &:hover {
-            background-color: rgba(0,255,0,0.66);
+            background-color: rgba(0,255,0,1.0);
             cursor: pointer;
         }
     }
 
     .square.selected.green2 {
-        background-color: rgba(0,255,0,0.66);
+        background-color: rgba(0,255,0,1.0);
         &:hover {
             background-color: rgba(0,255,0,1.0);
             cursor: pointer;
@@ -303,13 +329,13 @@ a, a:focus, a:hover {
     .square.green3 {
         background-color: rgba(125,250,0,0.33);
         &:hover {
-            background-color: rgba(125,250,0,0.66);
+            background-color: rgba(125,250,0,1.0);
             cursor: pointer;
         }
     }
 
     .square.selected.green3 {
-        background-color: rgba(125,250,0,0.66);
+        background-color: rgba(125,250,0,1.0);
         &:hover {
             background-color: rgba(125,250,0,1.0);
             cursor: pointer;
@@ -319,13 +345,13 @@ a, a:focus, a:hover {
     .square.green4 {
         background-color: rgba(250,250,0,0.33);
         &:hover {
-            background-color: rgba(250,250,0,0.66);
+            background-color: rgba(250,250,0,1.0);
             cursor: pointer;
         }
     }
 
     .square.selected.green4 {
-        background-color: rgba(250,250,0,0.66);
+        background-color: rgba(250,250,0,1.0);
         &:hover {
             background-color: rgba(250,250,0,1.0);
             cursor: pointer;
@@ -335,13 +361,13 @@ a, a:focus, a:hover {
     .square.green5 {
         background-color: rgba(250,150,0,0.33);
         &:hover {
-            background-color: rgba(250,150,0,0.66);
+            background-color: rgba(250,150,0,1.0);
             cursor: pointer;
         }
     }
 
     .square.selected.green5 {
-        background-color: rgba(250,150,0,0.66);
+        background-color: rgba(250,150,0,1.0);
         &:hover {
             background-color: rgba(250,150,0,1.0);
             cursor: pointer;
@@ -352,13 +378,13 @@ a, a:focus, a:hover {
     .square.green6 {
         background-color: rgba(250,0,0,0.33);
         &:hover {
-            background-color: rgba(250,0,0,0.66);
+            background-color: rgba(250,0,0,1.0);
             cursor: pointer;
         }
     }
 
     .square.selected.green6 {
-        background-color: rgba(250,0,0,0.66);
+        background-color: rgba(250,0,0,1.0);
         &:hover {
             background-color: rgba(250,0,0,1.0);
             cursor: pointer;

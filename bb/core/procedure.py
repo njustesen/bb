@@ -1641,8 +1641,7 @@ class PassAction(Procedure):
                 Turnover(self.game, self.home)
                 Bounce(self.game, self.home)
             else:
-                DeterminePassSuccess(self.game, self.home)
-
+                TurnoverIfPossessionLost(self.game, self.home)
                 Scatter(self.game, self.home, is_pass=True)
 
             return True
