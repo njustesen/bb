@@ -932,7 +932,7 @@ class Team:
 
 class Outcome:
 
-    def __init__(self, outcome_type, pos=None, player_id=None, opp_player_id=None, rolls=[], team_home=None, n=0):
+    def __init__(self, outcome_type, pos=None, player_id=None, opp_player_id=None, rolls=[], team_home=None, n=0, skill=None):
         self.outcome_type = outcome_type
         self.pos = pos
         self.player_id = player_id
@@ -940,6 +940,7 @@ class Outcome:
         self.rolls = rolls
         self.team_home = team_home
         self.n = n
+        self.skill = skill
 
     def to_simple(self):
         rolls = []
@@ -952,7 +953,8 @@ class Outcome:
             'opp_player_id': self.opp_player_id,
             'rolls': rolls,
             'team_home': self.team_home if self.team_home is not None else None,
-            'n': self.n if self.n is not None else None
+            'n': self.n if self.n is not None else None,
+            'skill': self.skill.name if self.skill is not None else None
         }
 
 

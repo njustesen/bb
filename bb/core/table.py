@@ -129,7 +129,7 @@ class OutcomeType(Enum):
     PLAYER_READY = 106
     PLAYER_NOT_READY = 107
     CATCH = 108
-    CATCH_FAILED_CATCH = 109
+    SKILL_USED = 109
     PLAYER_STAND_UP_SUCCESS = 110
     PLAYER_STAND_UP_FAILUE = 111
     BALL_OUT_OF_BOUNDS = 112
@@ -138,6 +138,7 @@ class OutcomeType(Enum):
     PLAYER_EJECTED = 115
     MISS_NEXT_GAME = 116
     DEAD = 117
+    REROLL_USED = 118
 
 
 class PlayerActionType(Enum):

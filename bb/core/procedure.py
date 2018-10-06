@@ -294,6 +294,7 @@ class Block(Procedure):
             # Roll again
             self.reroll_used = True
             self.game.state.get_team_state(self.home).use_reroll()
+            self.game.report(Outcome(OutcomeType.REROLL_USED, team_home=self.home))
             self.roll = None
             return self.step(None)
 
@@ -318,10 +319,13 @@ class Block(Procedure):
         if self.selected_die == BBDieResult.BOTH_DOWN:
             if not self.player_from.has_skill(Skill.BLOCK):
                 Turnover(self.game, self.home)
-            if not self.player_from.has_skill(Skill.BLOCK):
                 KnockDown(self.game, self.home, self.player_from.player_id, opp_player_id=self.player_to.player_id)
+            else:
+                self.game.report(Outcome(OutcomeType.SKILL_USED, player_id=self.player_from.player_id, skill=Skill.BLOCK))
             if not self.player_to.has_skill(Skill.BLOCK):
                 KnockDown(self.game, not self.home, self.player_to.player_id, opp_player_id=self.player_from.player_id)
+            else:
+                self.game.report(Outcome(OutcomeType.SKILL_USED, player_id=self.player_to.player_id, skill=Skill.BLOCK))
             return True
 
         if self.selected_die == BBDieResult.DEFENDER_DOWN:
@@ -528,21 +532,22 @@ class Catch(Procedure):
                     self.game.report(Outcome(OutcomeType.CATCH, player_id=self.player_id, rolls=[roll]))
                 return True
             else:
+
+                self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, rolls=[roll]))
+
                 # Check if catch
                 if player.has_skill(Skill.CATCH) and not self.catch_used:
                     self.catch_used = True
                     self.waiting_for_catch = True
-                    self.game.report(Outcome(OutcomeType.CATCH_FAILED_CATCH, player_id=self.player_id, pos=self.pos, rolls=[roll]))
+                    self.game.report(Outcome(OutcomeType.SKILL_USED, player_id=self.player_id, skill=Skill.CATCH))
                     return False
 
                 # Check if reroll available
                 if self.game.state.can_use_reroll(self.home) and not self.catch_used:
                     self.waiting_for_reroll = True
-                    self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, rolls=[roll]))
                     return False
 
                 Bounce(self.game, self.home)
-                self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, rolls=[roll]))
                 return True
 
         # If catch used
@@ -556,6 +561,7 @@ class Catch(Procedure):
             if action.action_type == ActionType.USE_REROLL:
                 self.reroll_used = True
                 self.game.state.use_reroll(self.home)
+                self.game.report(Outcome(OutcomeType.REROLL_USED, team_home=self.home))
                 self.rolled = False
                 return self.step(None)
             else:
@@ -1355,6 +1361,7 @@ class GFI(Procedure):
                 if player.has_skill(Skill.SURE_FEET) and not self.sure_feet_used:
                     self.sure_feet_used = True
                     self.awaiting_sure_feet = True
+                    self.game.report(Outcome(OutcomeType.SKILL_USED, player_id=self.player_id, skill=Skill.SURE_FEET))
                     return False
 
                 # Check if reroll available
@@ -1383,6 +1390,7 @@ class GFI(Procedure):
         if self.awaiting_reroll:
             if action.action_type == ActionType.USE_REROLL:
                 # Remove reroll and roll again - recursive call
+                self.game.report(Outcome(OutcomeType.REROLL_USED, team_home=self.home))
                 self.game.state.get_team_state(self.home).reroll_used = True
                 self.game.state.get_team_state(self.home).rerolls -= 1
                 self.rolled = False
@@ -1470,6 +1478,7 @@ class Dodge(Procedure):
                 if self.player.has_skill(Skill.DODGE) and not self.dodge_used:
                     self.dodge_used = True
                     self.awaiting_dodge = True
+                    self.game.report(Outcome(OutcomeType.SKILL_USED, player_id=self.player_id, skill=Skill.DODGE))
                     return False
 
                 # Check if reroll available
@@ -1493,6 +1502,7 @@ class Dodge(Procedure):
         if self.awaiting_reroll:
             if action.action_type == ActionType.USE_REROLL:
                 # Remove reroll and roll again - recursive call
+                self.game.report(Outcome(OutcomeType.REROLL_USED, team_home=self.home))
                 self.game.state.use_reroll(self.home)
                 self.rolled = False
                 return self.step(None)
@@ -1629,6 +1639,7 @@ class PassAction(Procedure):
             if self.player_from.has_skill(Skill.PASS) and not self.pass_used:
                 self.pass_used = True
                 self.waiting_for_pass = True
+                self.game.report(Outcome(OutcomeType.SKILL_USED, player_id=self.player_from.player_id, skill=Skill.PASS))
                 return False
 
             # Check if reroll available
@@ -1666,6 +1677,7 @@ class PassAction(Procedure):
         if self.waiting_for_reroll:
             if action.action_type == ActionType.USE_REROLL:
                 self.reroll_used = True
+                self.game.report(Outcome(OutcomeType.REROLL_USED, team_home=self.home))
                 self.game.state.use_reroll(self.home)
                 self.pass_roll = None
                 return self.step(None)
@@ -1773,6 +1785,7 @@ class Pickup(Procedure):
         if self.waiting_for_reroll:
             if action.action_type == ActionType.USE_REROLL:
                 self.game.state.use_reroll(self.home)
+                self.game.report(Outcome(OutcomeType.REROLL_USED, team_home=self.home))
                 self.rolled = False
                 return self.step(None)
             else:
@@ -2509,7 +2522,7 @@ class ThrowIn(Procedure):
             y = 1
         elif self.pos.y < 0:  # Right
             x = 1
-        elif self.pos.y < len(self.game.arena.board[1]):  # Left
+        elif self.pos.y < len(self.game.arena.board):  # Left
             x = -1
 
         if roll_scatter.get_sum() == 1:

@@ -142,22 +142,33 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return null;
         };
 
+        $scope.title = function(str){
+            return str.replace(
+                /\w\S*/g,
+                function(txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+            );
+        };
+
         $scope.reportBlock = function reportBlock(report) {
             if ($scope.showReport(report)){
                 let line = GameLogService.log_texts[report.outcome_type] + "\n";
                 line = line.replace("<home_team>", "<span class='label label-danger'>" + $scope.game.home_team.name + "</span> ");
                 line = line.replace("<away_team>", "<span class='label label-primary'>" + $scope.game.away_team.name + "</span> ");
                 line = line.replace("<team>", "<span class='label label-" + (report.team_home ? ("danger'>" + $scope.game.home_team.name) : ("primary'>" + $scope.game.away_team.name)) + "</span> " );
-
+                if (report.skill !== null){
+                    line = line.replace("<skill>", '<span class="label label-success skill">' + $scope.title(report.skill) + '</span>');
+                }
                 let n = report.n;
-                if (typeof(n) == "string"){
+                if (typeof(n) === "string"){
                     n = report.n.replace("NONE", "badly hurt").toLowerCase();
                 }
                 line = line.replace("<n>", n);
                 if (report.player_id != null){
                     let player = $scope.getPlayer(report.player_id);
                     let team = $scope.teamOfPlayer(player);
-                    line = line.replace("<player>", "<span class='label label-" + (team.team_id == $scope.game.home_team.team_id ? ("danger'>" + player.nr + ". " + player.name) : ("primary'>" + player.nr + ". " + player.name)) + "</span> " );
+                    line = line.replace("<player>", "<span class='label label-" + (team.team_id === $scope.game.home_team.team_id ? ("danger'>" + player.nr + ". " + player.name) : ("primary'>" + player.nr + ". " + player.name)) + "</span> " );
                 }
                 return line;
             }
@@ -844,7 +855,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             if (action.action_type == "SELECT_DIE"){
                 return false;
             }
-            if (action.action_type.indexOf("START_") > -1){
+            if (action.action_type !== "START_GAME" && action.action_type.indexOf("START_") > -1){
                 return false;
             }
             // If no args -> show

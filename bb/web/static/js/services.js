@@ -136,7 +136,7 @@ appServices.factory('GameLogService', function() {
             'PUSHED_INTO_CROWD': "<player> is pushed into the crowd!",
             'PUSHED': "<player> was pushed.",
             'ACCURATE_PASS': "<player> threw an <b>accurate</b> pass!",
-            'INACCURATE_PASS': "INACCURATE_PASS",
+            'INACCURATE_PASS': "<player> threw an <b>inaccurate</b> pass!",
             'FUMBLE': "<b>Fumble!</b>",
             'CATCH_FAILED': "<b>Catch failed</b> by <player>.",
             "CATCH": "<b>Catch successful</b> by <player>.",
@@ -149,7 +149,8 @@ appServices.factory('GameLogService', function() {
             "PLAYER_READY": "<player> is no longer KO'd.",
             "PLAYER_NOT_READY": "<player> is still KO'd.",
             "FOLLOW_UP": "<player> follows up",
-            "BALL_OUT_OF_BOUNDS": "<b>Out of bounds!</b>."
+            "BALL_OUT_OF_BOUNDS": "<b>Out of bounds!</b>.",
+            "SKILL_USED": "<player> uses the <skill> skill.<b>"
         }
     };
 });
