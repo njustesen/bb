@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,11 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="1643" column="62" selection-start-line="1643" selection-start-column="62" selection-end-line="1643" selection-end-column="62" />
+            <state relative-caret-position="229">
+              <caret line="2058" column="113" selection-start-line="2058" selection-start-column="113" selection-end-line="2058" selection-end-column="113" />
             </state>
           </provider>
         </entry>
@@ -88,7 +88,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="257">
@@ -148,7 +148,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>available_handoff_position =</find>
       <find>available_agi_roll</find>
       <find>movenum</find>
       <find>pass_modifiers(</find>
@@ -178,6 +177,7 @@
       <find>$scope.main_action</find>
       <find>ng-click</find>
       <find>TurnoverIfPossessionLost</find>
+      <find>showActionAsButton</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -235,8 +235,8 @@
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
         <option value="$PROJECT_DIR$/bb/web/static/less/style.less" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
-        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
+        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
       </list>
     </option>
   </component>
@@ -988,16 +988,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="123" selection-start-line="123" selection-end-line="123" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/flask/app.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
@@ -1032,17 +1022,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="1643" column="62" selection-start-line="1643" selection-start-column="62" selection-end-line="1643" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="257">
           <caret line="846" column="58" selection-start-line="846" selection-start-column="58" selection-end-line="846" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="123" selection-start-line="123" selection-end-line="123" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="2058" column="113" selection-start-line="2058" selection-start-column="113" selection-end-line="2058" selection-end-column="113" />
         </state>
       </provider>
     </entry>

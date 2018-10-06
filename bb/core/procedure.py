@@ -2056,7 +2056,7 @@ class PlayerAction(Procedure):
                                             positions=foul_positions, block_rolls=foul_rolls))
 
         # Handoff actions
-        if self.player_action_type == PlayerActionType.HANDOFF:
+        if self.player_action_type == PlayerActionType.HANDOFF and self.game.state.field.has_ball(self.player_id):
             hand_off_positions = []
             for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=self.home,
                                                                             include_away=not self.home):
