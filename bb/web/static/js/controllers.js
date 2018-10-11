@@ -228,32 +228,28 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
-        $scope.playerStartActions = function playerStartActions(x, y){
-            let selectedPlayer = $scope.selectedPlayer();
-            if ($scope.selected_square == null || selectedPlayer == null || $scope.selected_square.x !== x || $scope.selected_square.y !== y){
-                return;
+        $scope.playerStartAction2 = function playerStartAction2(x, y, typeName){
+            if ($scope.selected_square == null || $scope.selectedPlayer().player_id == null || $scope.selected_square.x !== x || $scope.selected_square.y !== y){
+                return false;
             }
-            let startActions = [];
+            console.log(typeName);
+            return true;
+        };
+
+        $scope.playerStartAction = function playerStartAction(x, y, typeName){
+            if ($scope.selected_square == null || $scope.selectedPlayer().player_id == null || $scope.selected_square.x !== x || $scope.selected_square.y !== y){
+                return false;
+            }
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
-                if (action.player_ids.indexOf(selectedPlayer.player_id) === -1) {
+                if (action.player_ids.indexOf($scope.selectedPlayer().player_id) === -1) {
                     continue;
                 }
-                if (action.action_type === "START_MOVE"){
-                    startActions.push("move");
-                } else if (action.action_type === "START_BLOCK"){
-                    startActions.push("block");
-                } else if (action.action_type === "START_PASS"){
-                    startActions.push("pass");
-                } else if (action.action_type === "START_HANDOFF"){
-                    startActions.push("handoff");
-                } else if (action.action_type === "START_BLITZ"){
-                    startActions.push("blitz");
-                } else if (action.action_type === "START_FOUL"){
-                    startActions.push("foul");
+                if (action.action_type.indexOf("START_") >= 0 && action.action_type.split("START_")[1].toLowerCase() === typeName){
+                    return true;
                 }
             }
-            return startActions;
+            return false;
         };
 
         $scope.newSquare = function newSquare(player_id, x, y, area, sub_area, number){

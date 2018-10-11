@@ -168,10 +168,35 @@
                          ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])"
                          ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])"
                          style="{{ getCursor(local_state.board[$parent.$index+1][$index+1]) }}">
-                        <div class="player-action-bar">
-                            <span class="action-dot" ng-repeat="action in playerStartActions($index+1, $parent.$index+1)">
-                                <div ng-click="clickAction($event, action)">
-                                    <img src="static/img/icons/actions/{{action}}.gif">
+                        <div class="player-action-bar" ng-if="playerStartAction($index+1, $parent.$index+1, 'move')">
+                            <span class="action-dot {{ playerStartAction2($parent.$index+1, $parent.$parent.$index+1, 'move') ? 'active' : 'transparent'}}">
+                                <div ng-click="clickAction($event, 'move')">
+                                    <img src="static/img/icons/actions/move.gif">
+                                </div>
+                            </span>
+                            <span class="action-dot {{ playerStartAction($parent.$index+1, $parent.$parent.$index+1, 'block') ? 'active' : 'transparent'}}">
+                                <div ng-click="clickAction($event, 'block')">
+                                    <img src="static/img/icons/actions/block.gif">
+                                </div>
+                            </span>
+                            <span class="action-dot {{ playerStartAction($parent.$index+1, $parent.$parent.$index+1, 'blitz') ? 'active' : 'transparent'}}">
+                                <div ng-click="clickAction($event, 'blitz')">
+                                    <img src="static/img/icons/actions/blitz.gif">
+                                </div>
+                            </span>
+                            <span class="action-dot {{ playerStartAction($parent.$index+1, $parent.$parent.$index+1, 'pass') ? 'active' : 'transparent'}}">
+                                <div ng-click="clickAction($event, 'pass')">
+                                    <img src="static/img/icons/actions/pass.gif">
+                                </div>
+                            </span>
+                            <span class="action-dot {{ playerStartAction($parent.$index+1, $parent.$parent.$index+1, 'handoff') ? 'active' : 'transparent'}}">
+                                <div ng-click="clickAction($event, 'handoff')">
+                                    <img src="static/img/icons/actions/handoff.gif">
+                                </div>
+                            </span>
+                            <span class="action-dot {{ playerStartAction($parent.$index+1, $parent.$parent.$index+1, 'foul') ? 'active' : 'transparent'}}">
+                                <div ng-click="clickAction($event, 'foul')">
+                                    <img src="static/img/icons/actions/foul.gif">
                                 </div>
                             </span>
                         </div>
