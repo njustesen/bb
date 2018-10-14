@@ -228,14 +228,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
-        $scope.playerStartAction2 = function playerStartAction2(x, y, typeName){
-            if ($scope.selected_square == null || $scope.selectedPlayer().player_id == null || $scope.selected_square.x !== x || $scope.selected_square.y !== y){
-                return false;
-            }
-            console.log(typeName);
-            return true;
-        };
-
         $scope.playerStartAction = function playerStartAction(x, y, typeName){
             if ($scope.selected_square == null || $scope.selectedPlayer().player_id == null || $scope.selected_square.x !== x || $scope.selected_square.y !== y){
                 return false;

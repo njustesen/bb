@@ -605,6 +605,7 @@ class Arena:
             return self.board[pos.y][pos.x] in Arena.wing_right_tiles
         return self.board[pos.y][pos.x] in Arena.wing_left_tiles
 
+
 class Die:
 
     def get_value(self):
@@ -613,12 +614,14 @@ class Die:
 
 class DiceRoll:
 
-    def __init__(self, dice, modifiers=0, target=None, d68=False):
+    def __init__(self, dice, modifiers=0, target=None, d68=False, roll_type=RollType.AGILITY_ROLL):
         self.dice = dice
         self.sum = 0
         self.d68 = d68
         self.target = target
         self.modifiers = modifiers
+        self.roll_type = roll_type
+        # Roll dice
         for d in self.dice:
             if not isinstance(d, BBDie):
                 if d68 and isinstance(d, D6):
@@ -634,8 +637,15 @@ class DiceRoll:
             'dice': dice,
             'sum': self.sum,
             'target': self.target,
-            'modifiers': self.modifiers
+            'modifiers': self.modifiers,
+            'modified_target': self.modified_target(),
+            'roll_type': self.roll_type.name
         }
+
+    def modified_target(self):
+        if self.target is not None:
+            return max(1 * len(self.dice), min(6 * len(self.dice), self.target - self.modifiers))
+        return None
 
     def contains(self, value):
         for die in self.dice:
@@ -652,7 +662,11 @@ class DiceRoll:
     def is_d6_success(self):
         if self.sum == 1:
             return False
-        return self.sum == 6 or self.sum + self.modifiers >= self.target
+
+        if self.sum == 6:
+            return True
+
+        return self.sum + self.modifiers >= self.target
 
     def same(self):
         value = None

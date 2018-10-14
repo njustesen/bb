@@ -169,7 +169,7 @@
                          ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])"
                          style="{{ getCursor(local_state.board[$parent.$index+1][$index+1]) }}">
                         <div class="player-action-bar" ng-if="playerStartAction($index+1, $parent.$index+1, 'move')">
-                            <span class="action-dot {{ playerStartAction2($parent.$index+1, $parent.$parent.$index+1, 'move') ? 'active' : 'transparent'}}">
+                            <span class="action-dot {{ playerStartAction($parent.$index+1, $parent.$parent.$index+1, 'move') ? 'active' : 'transparent'}}">
                                 <div ng-click="clickAction($event, 'move')">
                                     <img src="static/img/icons/actions/move.gif">
                                 </div>
@@ -347,11 +347,8 @@
                         <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase() : die.die_type+'-'+die.result }}">
 
                         </span>
-                        <span ng-if="roll.modifiers != null && roll.modifiers != 0" class="modifiers">
-                            {{ roll.modifiers > 0 ? '+' + roll.modifiers : roll.modifiers }}
-                        </span>
-                        <span ng-if="roll.target != null" class="modifiers">
-                            ({{ roll.target }})
+                        <span ng-if="roll.modified_target != null" class="modifiers" class="{{ roll.sum >= roll.modified_target ? 'success' : 'danger' }}">
+                            {{roll.roll_type === "AGILITY_ROLL" || roll.roll_type === "ARMOR_ROLL" ? '(' + roll.modified_target + '+)' : '(' + roll.modified_target + ')' }}
                         </span>
                     </div>
                     <div>
