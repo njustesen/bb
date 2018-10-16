@@ -203,8 +203,10 @@
                         <div class="movenum" ng-show="local_state.board[$parent.$index+1][$index+1].number > 0">
                             {{ local_state.board[$parent.$index+1][$index+1].number }}
                         </div>
-                        <div class="agi" ng-show="local_state.board[$parent.$index+1][$index+1].available_agi_roll > 0">
-                            +{{ local_state.board[$parent.$index+1][$index+1].agi_roll }}
+                        <div class="agi-rolls">
+                            <span class="agi agi-{{local_state.board[$parent.$parent.$index+1][$parent.$index+1].agi_rolls.length}}" ng-repeat="roll in local_state.board[$parent.$index+1][$index+1].agi_rolls">
+                                {{ roll }}+
+                            </span>
                         </div>
                         <div class="playericon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].player != null">
                             <img src="static/img/iconssmall/{{ local_state.board[$parent.$parent.$index+1][$index+1].player_icon }}" class="{{ ['READY', 'DOWN_READY'].includes((local_state.board[$parent.$parent.$index+1][$index+1].player_state) ) ? '' : 'transparent'  }}" />

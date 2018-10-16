@@ -408,7 +408,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.local_state.board[pos.y][pos.x].available = true;
                 $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
                 if ($scope.available_pass_rolls.length > i){
-                    $scope.local_state.board[pos.y][pos.x].agi_roll = $scope.available_pass_rolls[i];
+                    $scope.local_state.board[pos.y][pos.x].agi_rolls = $scope.available_pass_rolls[i];
                 }
                 anyPass = true;
             }
@@ -424,7 +424,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.local_state.board[pos.y][pos.x].available = true;
                 $scope.local_state.board[pos.y][pos.x].action_type = "MOVE";
                 if ($scope.available_dodge_rolls.length > i){
-                    $scope.local_state.board[pos.y][pos.x].agi_roll = $scope.available_dodge_rolls[i];
+                    $scope.local_state.board[pos.y][pos.x].agi_rolls = $scope.available_dodge_rolls[i];
                 }
             }
 
@@ -451,6 +451,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let pos = $scope.available_handoff_positions[i];
                 $scope.local_state.board[pos.y][pos.x].available = true;
                 $scope.local_state.board[pos.y][pos.x].action_type = "HANDOFF";
+                if ($scope.available_dodge_rolls.length > i){
+                    $scope.local_state.board[pos.y][pos.x].agi_rolls = $scope.available_handoff_rolls[i];
+                }
             }
         };
 

@@ -476,10 +476,26 @@ class Catch(Procedure):
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     success = [6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1]
 
+    @staticmethod
+    def catch_modifiers(game, home, player, pos, accurate=False, interception=False, handoff=False):
+        modifiers = 1 if accurate or handoff else 0
+        modifiers = -2 if interception else modifiers
+        if interception and player.has_skill(Skill.LONG_LEGS):
+            modifiers += 1
+        pos = game.state.field.get_player_position(player.player_id)
+        tackle_zones = game.state.field.get_tackle_zones(pos, home=home)
+        modifiers -= tackle_zones
+        if game.state.weather == WeatherType.POURING_RAIN:
+            modifiers -= 1
+        if player.has_skill(Skill.EXTRA_ARMS):
+            modifiers += 1
+        return modifiers
+
     def __init__(self, game, home, player_id, pos, accurate=False, interception=False, handoff=True):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
+        self.player = self.game.get_player(player_id)
         self.pos = pos
         self.accurate = accurate
         self.handoff = handoff
@@ -504,21 +520,7 @@ class Catch(Procedure):
                 return True
 
             # Set modifiers
-            modifiers = 1 if self.accurate or self.handoff else 0
-            modifiers = -2 if self.interception else modifiers
-            if self.interception and player.has_skill(Skill.LONG_LEGS):
-                modifiers += 1
-
-            pos = self.game.state.field.get_player_position(self.player_id)
-            tackle_zones = self.game.state.field.get_tackle_zones(pos, home=self.home)
-            modifiers -= tackle_zones
-
-            # Weather
-            if self.game.state.weather == WeatherType.POURING_RAIN:
-                modifiers -= 1
-
-            if player.has_skill(Skill.EXTRA_ARMS):
-                modifiers += 1
+            modifiers = Catch.catch_modifiers(self.game, self.home, self.player, self.pos, accurate=self.accurate, interception=self.interception, handoff=self.handoff)
 
             # Roll
             roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
@@ -1411,6 +1413,27 @@ class Dodge(Procedure):
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     success = [6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1]
 
+    @staticmethod
+    def dodge_modifiers(game, home, player, to_pos):
+
+        modifiers = 1
+        tackle_zones_to = game.state.field.get_tackle_zones(to_pos, home=home)
+
+        ignore_opp_mods = False
+        if player.has_skill(Skill.STUNTY):
+            modifiers = 1
+            ignore_opp_mods = True
+        if player.has_skill(Skill.TITCHY):
+            modifiers -= 1
+            ignore_opp_mods = True
+        if player.has_skill(Skill.TWO_HEADS):
+            modifiers -= 1
+
+        if not ignore_opp_mods:
+            modifiers -= tackle_zones_to
+
+        return modifiers
+
     def __init__(self, game, home, player_id, from_pos, to_pos, cause_turnover=True):
         super().__init__(game)
         self.home = home
@@ -1430,9 +1453,7 @@ class Dodge(Procedure):
         if not self.rolled:
 
             # Check opp skills
-            tackle_zones_from, tackle_ids_from, prehensile_tail_ids_from, diving_tackle_ids_from, shadowing_ids_from, tentacles_ids_from = self.game.state.field.get_tackle_zones_detailed(self.from_pos)
-
-            tackle_zones_to = self.game.state.field.get_tackle_zones(self.to_pos, home=self.home)
+            # tackle_zones_from, tackle_ids_from, prehensile_tail_ids_from, diving_tackle_ids_from, shadowing_ids_from, tentacles_ids_from = self.game.state.field.get_tackle_zones_detailed(self.from_pos)
 
             # TODO: Allow player to select if shadowing and diving tackle
             # TODO: Put diving tackle or shadowing proc on stack
@@ -1443,19 +1464,7 @@ class Dodge(Procedure):
             self.rolled = True
 
             # Calculate target
-            roll.modifiers = 1
-            ignore_opp_mods = False
-            if self.player.has_skill(Skill.STUNTY):
-                roll.modifiers = 1
-                ignore_opp_mods = True
-            if self.player.has_skill(Skill.TITCHY):
-                roll.modifiers -= 1
-                ignore_opp_mods = True
-            if self.player.has_skill(Skill.TWO_HEADS):
-                roll.modifiers -= 1
-
-            if not ignore_opp_mods:
-                roll.modifiers -= tackle_zones_to
+            roll.modifiers = Dodge.dodge_modifiers(self.game, self.home, self.player, self.to_pos)
 
             # Break tackle - use st instead of ag
             attribute = self.player.get_ag()
@@ -1706,10 +1715,31 @@ class Pickup(Procedure):
     #          0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     success = [6, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1]
 
+    @staticmethod
+    def pickup_modifiers(game, home, player, pos):
+
+        modifiers = 0
+        tackle_zones = game.state.field.get_tackle_zones(pos, home=home)
+
+        if not player.has_skill(Skill.BIG_HAND):
+            modifiers -= tackle_zones
+
+        # Weather
+        if game.state.weather == WeatherType.POURING_RAIN:
+            if not player.has_skill(Skill.BIG_HAND):
+                modifiers -= 1
+
+        # Extra arms
+        if player.has_skill(Skill.EXTRA_ARMS):
+            modifiers += 1
+
+        return modifiers
+
     def __init__(self, game, home, player_id, pos, cause_turnover=True):
         super().__init__(game)
         self.home = home
         self.player_id = player_id
+        self.player = self.game.get_player(player_id)
         self.pos = pos
         self.rolled = False
         self.sure_hands_used = False
@@ -1724,23 +1754,10 @@ class Pickup(Procedure):
 
             player = self.game.get_player(self.player_id)
             pos = self.game.state.field.get_player_position(player.player_id)
-            tackle_zones = self.game.state.field.get_tackle_zones(pos, home=self.home)
 
             roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
             roll.target = Pickup.success[player.get_ag()]
-            roll.modifiers = 1
-
-            if not player.has_skill(Skill.BIG_HAND):
-                roll.modifiers -= tackle_zones
-
-            # Weather
-            if self.game.state.weather == WeatherType.POURING_RAIN:
-                if not player.has_skill(Skill.BIG_HAND):
-                    roll.modifiers -= 1
-
-            # Extra arms
-            if player.has_skill(Skill.EXTRA_ARMS):
-                roll.modifiers += 1
+            roll.modifiers = Pickup.pickup_modifiers(self.game, self.home, self.player, pos)
 
             # Can player even handle the ball?
             if player.has_skill(Skill.NO_HANDS):
@@ -2001,28 +2018,36 @@ class PlayerAction(Procedure):
         # Move actions
         if self.player_action_type != PlayerActionType.BLOCK:
             move_positions = []
-            rolls = []
+            agi_rolls = []
             player_state_from = self.game.state.get_player_state(self.player_id, self.home)
             move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
             gfi = self.moves + move_needed > self.player_from.get_ma()
             sprints = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
             if player_state_from is PlayerState.DOWN_READY:
                 if self.game.get_player(self.player_id).get_ma() < 3:
-                    rolls.append(True)
+                    agi_rolls.append([4])
                 else:
-                    rolls.append(False)
-                actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], positions=[self.pos_from], team=self.home, rolls=rolls))
+                    agi_rolls.append([])
+                actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], positions=[self.pos_from], team=self.home, agi_rolls=agi_rolls))
             elif (not self.turn.quick_snap and self.moves + move_needed <= self.player_from.get_ma() + sprints) or (self.turn.quick_snap and self.moves == 0):
                 for square in self.game.state.field.get_adjacent_squares(self.pos_from, exclude_occupied=True):
                     ball = self.game.state.field.ball_position == square and not self.game.state.field.ball_in_air
                     move_positions.append(square)
+                    rolls = []
                     if not self.turn.quick_snap:
-                        if not gfi and not ball and self.game.state.field.get_tackle_zones(self.pos_from, home=self.home) > 0:
-                            rolls.append(True)
-                        else:
-                            rolls.append(gfi or ball)
+                        if gfi:
+                            rolls.append(2)
+                        if self.game.state.field.get_tackle_zones(self.pos_from, home=self.home) > 0:
+                            modifiers = Dodge.dodge_modifiers(self.game, self.home, self.player_from, square)
+                            target = Dodge.success[self.player_from.get_ag()]
+                            rolls.append(target - modifiers)
+                        if ball:
+                            target = Pickup.success[self.player_from.get_ag()]
+                            modifiers = Pickup.pickup_modifiers(self.game, self.home, self.player_from, square)
+                            rolls.append(target - modifiers)
+                    agi_rolls.append(rolls)
                 if len(move_positions) > 0:
-                    actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions, rolls=rolls))
+                    actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions, agi_rolls=agi_rolls))
 
         # Block actions
         if self.player_action_type == PlayerActionType.BLOCK or (self.player_action_type == PlayerActionType.BLITZ and not self.blitz_block):
@@ -2072,16 +2097,20 @@ class PlayerAction(Procedure):
         # Handoff actions
         if self.player_action_type == PlayerActionType.HANDOFF and self.game.state.field.has_ball(self.player_id):
             hand_off_positions = []
+            agi_rolls = []
             for square in self.game.state.field.get_adjacent_player_squares(self.pos_from, include_home=self.home,
                                                                             include_away=not self.home):
                 opp_player_id = self.game.state.field.get_player_id_at(square)
                 player_to = self.game.get_player(opp_player_id)
                 if self.game.state.get_player_state(player_to.player_id, self.home) in Rules.catchable and Skill.NO_HANDS not in player_to.get_skills():
                     hand_off_positions.append(square)
+                    modifiers = Catch.catch_modifiers(self.game, self.home, self.player_from, square)
+                    target = Catch.success[self.player_from.get_ag()]
+                    agi_rolls.append([target - modifiers])
 
             if len(hand_off_positions) > 0:
                 actions.append(ActionChoice(ActionType.HANDOFF, player_ids=[self.player_id], team=self.home,
-                                            positions=hand_off_positions))
+                                            positions=hand_off_positions, agi_rolls=agi_rolls))
 
         # Pass actions
         if self.player_action_type == PlayerActionType.PASS and self.game.state.field.has_ball(self.player_id):
@@ -2091,9 +2120,9 @@ class PlayerAction(Procedure):
             for distance in distances:
                 if distance not in cache:
                     modifiers = PassAction.pass_modifiers(self.game, self.home, self.player_from, self.pos_from, distance)
-                    target = Catch.success[self.player_from.get_ag()]
+                    target = PassAction.success[self.player_from.get_ag()]
                     cache[distance] = target - modifiers
-                agi_rolls.append(cache[distance])
+                agi_rolls.append([cache[distance]])
             if len(positions) > 0:
                 actions.append(ActionChoice(ActionType.PASS, player_ids=[self.player_id], team=self.home, positions=positions, agi_rolls=agi_rolls))
 
