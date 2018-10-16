@@ -1346,9 +1346,10 @@ class GFI(Procedure):
             # Roll
             roll = DiceRoll([D6()], roll_type=RollType.GFI_ROLL)
             self.rolled = True
+            roll.target = 2
             roll.modifiers = 1 if self.game.state.weather == WeatherType.BLIZZARD else 0
 
-            if roll.get_sum() >= 2 + roll.modifiers:
+            if roll.is_d6_success():
 
                 # Success
                 self.game.report(Outcome(OutcomeType.SUCCESSFUL_GFI, player_id=self.player_id, pos=self.to_pos, rolls=[roll]))
@@ -1373,7 +1374,8 @@ class GFI(Procedure):
                     return False
 
                 # Player trips
-                self.game.state.field.move(self.player_id, self.to_pos)
+                if not self.from_pos == self.to_pos:
+                    self.game.state.field.move(self.player_id, self.to_pos)
                 KnockDown(self.game, self.home, self.player_id, self.to_pos, turnover=True)
                 return True
 
@@ -2054,11 +2056,14 @@ class PlayerAction(Procedure):
 
             # Check movement left if blitz,
             can_block = True
+            gfi = False
             if self.player_action_type == PlayerActionType.BLITZ:
                 move_needed = 3 if self.game.state.get_player_state(self.player_id, self.home) == PlayerState.DOWN_READY else 1
                 gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
                 if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed or move_needed > 1:
                     can_block = False
+                if move_needed == 1 and can_block:
+                    gfi = True
 
             # Find adjacent enemies to block
             if can_block:
@@ -2073,7 +2078,8 @@ class PlayerAction(Procedure):
                         dice *= -1
                     block_rolls.append(dice)
                 if len(block_positions) > 0:
-                    actions.append(ActionChoice(ActionType.BLOCK, player_ids=[self.player_id], team=self.home, positions=block_positions, block_rolls=block_rolls))
+                    agi_rolls = [([2] if gfi else [0]) for _ in block_positions]
+                    actions.append(ActionChoice(ActionType.BLOCK, player_ids=[self.player_id], team=self.home, positions=block_positions, block_rolls=block_rolls, agi_rolls=agi_rolls))
 
         # Foul actions
         if self.player_action_type == PlayerActionType.FOUL:

@@ -294,6 +294,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_pass_positions = [];
             $scope.available_dodge_rolls = [];
             $scope.available_block_rolls = [];
+            $scope.available_block_agi_rolls = [];
             $scope.available_handoff_rolls = [];
             $scope.available_pass_rolls = [];
             $scope.available_players = [];
@@ -307,6 +308,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         if (action.action_type === "BLOCK") {
                             $scope.available_block_positions = action.positions;
                             $scope.available_block_rolls = action.block_rolls;
+                            $scope.available_block_agi_rolls = action.agi_rolls;
                         } else if (action.action_type === "PASS"){
                             $scope.available_pass_positions = action.positions;
                             $scope.available_pass_rolls = action.agi_rolls;
@@ -435,6 +437,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.local_state.board[pos.y][pos.x].action_type = "BLOCK";
                 if ($scope.available_block_rolls.length > i){
                     $scope.local_state.board[pos.y][pos.x].block_roll = $scope.available_block_rolls[i];
+                }
+                if ($scope.available_block_agi_rolls.length > i){
+                    $scope.local_state.board[pos.y][pos.x].agi_rolls = $scope.available_block_agi_rolls[i];
                 }
             }
 
