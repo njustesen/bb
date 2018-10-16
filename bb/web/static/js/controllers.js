@@ -532,7 +532,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 }
             }
             for (let i = 0; i < $scope.game.squares_moved.length; i++){
-                $scope.local_state.board[$scope.game.squares_moved[i].y][$scope.game.squares_moved[i].x].number = i+1
+                $scope.local_state.board[$scope.game.squares_moved[i].y][$scope.game.squares_moved[i].x].number = i
             }
         };
 
@@ -580,6 +580,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     $scope.local_state.board[y][x].available_position = false;
                     $scope.local_state.board[y][x].roll = false;
                     $scope.local_state.board[y][x].block_roll = 0;
+                    $scope.local_state.board[y][x].agi_rolls = [];
                 }
             }
             for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
@@ -813,6 +814,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 console.log(data);
                 $scope.setLocalState();
                 $scope.setAvailablePositions();
+                //$scope.updateMoveLines();
                 $scope.refreshing = false;
                 document.getElementById('gamelog').scrollTop = 0;
                 let time = $scope.showReport($scope.game.reports[$scope.game.reports.length-1]) ? 10 : 0;
@@ -869,18 +871,41 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return false;
         };
 
-        // Get state
-        GameService.get(id).success(function(data) {
-            $scope.game = data;
-            $scope.playersById = Object.assign({}, $scope.game.home_team.players_by_id, $scope.game.away_team.players_by_id);
-            $scope.setLocalState();
-            $scope.setAvailablePositions();
-            $scope.loading = false;
-            console.log(data);
-            $scope.checkForReload(2500);
-            $scope.saved = false;
-        }).error(function(status, data) {
-            $location.path("/#/");
+        $scope.updateMoveLines = function updateMoveLines() {
+            let lastX = null;
+            let lastY = null;
+            $( ".moveline" ).sort(function (a, b) {
+                return parseInt(a.id.replace('moveline-', '')) > parseInt(b.id.replace('moveline-', ''));
+            }).each(function() {
+                let x = parseInt($( this ).attr('X'));
+                let y = parseInt($( this ).attr('Y'));
+                if (lastX !== null){
+                    let yDir = y - lastY;
+                    let xDir = x - lastX;
+                    $( this ).attr('x1', 30 - xDir*30);
+                    $( this ).attr('y1', 30 - yDir*30);
+                    console.log(x)
+                }
+                lastX = x;
+                lastY = y;
+            });
+        };
+
+        // Get game-state when document is ready
+        $( document ).ready(function() {
+            GameService.get(id).success(function (data) {
+                $scope.game = data;
+                $scope.playersById = Object.assign({}, $scope.game.home_team.players_by_id, $scope.game.away_team.players_by_id);
+                $scope.setLocalState();
+                $scope.setAvailablePositions();
+                //$scope.updateMoveLines();
+                $scope.loading = false;
+                console.log(data);
+                $scope.checkForReload(2500);
+                $scope.saved = false;
+            }).error(function (status, data) {
+                $location.path("/#/");
+            });
         });
 
 

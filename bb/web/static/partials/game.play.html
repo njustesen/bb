@@ -200,9 +200,14 @@
                                 </div>
                             </span>
                         </div>
-                        <div class="movenum" ng-show="local_state.board[$parent.$index+1][$index+1].number > 0">
-                            {{ local_state.board[$parent.$index+1][$index+1].number }}
+                        <div class="movedot" id="movedot-{{local_state.board[$parent.$parent.$index+1][$parent.$index+1].number}}" ng-if="local_state.board[$parent.$index+1][$index+1].number >= 0">
+
                         </div>
+                        <!--
+                        <svg style="position:absolute;top:-15;left:-15;height:200%;bottom:200%;z-index: -1" ng-if="local_state.board[$parent.$index+1][$index+1].number >= 0">
+                            <line class="moveline" X="{{$parent.$index+1}}" Y="{{$parent.$parent.$index+1}}" id="moveline-{{local_state.board[$parent.$parent.$index+1][$parent.$index+1].number}}" x1="30" y1="30" x2="30" y2="30" />
+                        </svg>
+                        -->
                         <div class="agi-rolls">
                             <span class="agi agi-{{local_state.board[$parent.$parent.$index+1][$parent.$index+1].agi_rolls.length}}" ng-repeat="roll in local_state.board[$parent.$index+1][$index+1].agi_rolls">
                                 {{ roll }}+

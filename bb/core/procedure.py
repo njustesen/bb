@@ -1936,11 +1936,13 @@ class PlayerAction(Procedure):
                     dodge = True
                     gfi = False
                 else:
-                    tackle_zones_from = self.game.state.field.get_tackle_zones(action.pos_from, home=self.home)
+                    tackle_zones_from = self.game.state.field.get_tackle_zones(self.pos_from, home=self.home)
                     dodge = tackle_zones_from > 0
 
             # Add proc
             Move(self.game, self.home, self.player_id, self.pos_from, action.pos_to, gfi, dodge)
+            if len(self.squares) == 0:
+                self.squares.append(self.pos_from)
             self.squares.append(action.pos_to)
 
             self.moves += 1
@@ -2062,8 +2064,7 @@ class PlayerAction(Procedure):
                 gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
                 if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed or move_needed > 1:
                     can_block = False
-                if move_needed == 1 and can_block:
-                    gfi = True
+                gfi = self.moves + move_needed > self.player_from.get_ma()
 
             # Find adjacent enemies to block
             if can_block:
@@ -2078,7 +2079,7 @@ class PlayerAction(Procedure):
                         dice *= -1
                     block_rolls.append(dice)
                 if len(block_positions) > 0:
-                    agi_rolls = [([2] if gfi else [0]) for _ in block_positions]
+                    agi_rolls = [([2] if gfi else []) for _ in block_positions]
                     actions.append(ActionChoice(ActionType.BLOCK, player_ids=[self.player_id], team=self.home, positions=block_positions, block_rolls=block_rolls, agi_rolls=agi_rolls))
 
         # Foul actions
