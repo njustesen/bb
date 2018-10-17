@@ -808,6 +808,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.act = function act(action){
             console.log(action);
+            if (action.action_type === "END_TURN"){
+                $scope.resetSquares(true);
+            }
             $scope.refreshing = true;
             GameService.act($scope.game.game_id, action).success(function(data) {
                 $scope.game = data;

@@ -2044,11 +2044,11 @@ class PlayerAction(Procedure):
                         if self.game.state.field.get_tackle_zones(self.pos_from, home=self.home) > 0:
                             modifiers = Dodge.dodge_modifiers(self.game, self.home, self.player_from, square)
                             target = Dodge.success[self.player_from.get_ag()]
-                            rolls.append(target - modifiers)
+                            rolls.append(min(6, max(1, target - modifiers)))
                         if ball:
                             target = Pickup.success[self.player_from.get_ag()]
                             modifiers = Pickup.pickup_modifiers(self.game, self.home, self.player_from, square)
-                            rolls.append(target - modifiers)
+                            rolls.append(min(6, max(1, target - modifiers)))
                     agi_rolls.append(rolls)
                 if len(move_positions) > 0:
                     actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions, agi_rolls=agi_rolls))
@@ -2095,7 +2095,7 @@ class PlayerAction(Procedure):
                 armor = player_to.get_av()
                 assists_from = self.game.state.field.assists(self.home, self.player_from, player_to, ignore_guard=True)
                 assists_to = self.game.state.field.assists(not self.home, player_to, self.player_from, ignore_guard=True)
-                foul_rolls.append(armor + 1 - len(assists_from) + len(assists_to))
+                foul_rolls.append(min(0, armor + 1 - len(assists_from) + len(assists_to)))
 
             if len(foul_positions) > 0:
                 actions.append(ActionChoice(ActionType.FOUL, player_ids=[self.player_id], team=self.home,
@@ -2113,7 +2113,7 @@ class PlayerAction(Procedure):
                     hand_off_positions.append(square)
                     modifiers = Catch.catch_modifiers(self.game, self.home, self.player_from, square)
                     target = Catch.success[self.player_from.get_ag()]
-                    agi_rolls.append([target - modifiers])
+                    agi_rolls.append([min(6, max(1, target - modifiers))])
 
             if len(hand_off_positions) > 0:
                 actions.append(ActionChoice(ActionType.HANDOFF, player_ids=[self.player_id], team=self.home,
@@ -2128,7 +2128,7 @@ class PlayerAction(Procedure):
                 if distance not in cache:
                     modifiers = PassAction.pass_modifiers(self.game, self.home, self.player_from, self.pos_from, distance)
                     target = PassAction.success[self.player_from.get_ag()]
-                    cache[distance] = target - modifiers
+                    cache[distance] = min(6, max(1, target - modifiers))
                 agi_rolls.append([cache[distance]])
             if len(positions) > 0:
                 actions.append(ActionChoice(ActionType.PASS, player_ids=[self.player_id], team=self.home, positions=positions, agi_rolls=agi_rolls))
