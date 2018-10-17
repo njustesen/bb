@@ -355,7 +355,7 @@
 
                         </span>
                         <span ng-if="roll.modified_target != null" class="modifiers" class="{{ roll.sum >= roll.modified_target ? 'success' : 'danger' }}">
-                            {{roll.roll_type === "AGILITY_ROLL" || roll.roll_type === "ARMOR_ROLL" ? '(' + roll.modified_target + '+)' : '(' + roll.modified_target + ')' }}
+                            {{roll.roll_type === "AGILITY_ROLL" || roll.roll_type === "ARMOR_ROLL" || roll.roll_type === "GFI_ROLL" ? '(' + roll.modified_target + '+)' : '(' + roll.modified_target + ')' }}
                         </span>
                     </div>
                     <div>
