@@ -644,7 +644,7 @@ class DiceRoll:
 
     def modified_target(self):
         if self.target is not None:
-            return max(1, min(6, self.target - self.modifiers))
+            return max(1*len(self.dice), min(6*len(self.dice), self.target - self.modifiers))
         return None
 
     def contains(self, value):
