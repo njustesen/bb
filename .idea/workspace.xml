@@ -4,7 +4,6 @@
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,7 +22,7 @@
     <SUITE FILE_PATH="coverage/bb$Unittests_for_test_speed_TestLoaders_test_speed.coverage" NAME="Unittests for test_speed.TestLoaders.test_speed Coverage Results" MODIFIED="1527215188092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/bb$procedure.coverage" NAME="procedure Coverage Results" MODIFIED="1527878269844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/core" />
     <SUITE FILE_PATH="coverage/bb$test_speed.coverage" NAME="test_speed Coverage Results" MODIFIED="1527215870404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1539777656790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
+    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1539787138392" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -36,8 +35,8 @@
       <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="444">
-              <caret line="2130" column="72" lean-forward="true" selection-start-line="2130" selection-start-column="72" selection-end-line="2130" selection-end-column="72" />
+            <state relative-caret-position="254">
+              <caret line="1908" column="45" selection-start-line="1908" selection-start-column="45" selection-end-line="1908" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -144,8 +143,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>roll</find>
-      <find>Dodge</find>
       <find>modifiers</find>
       <find>DiceRoll</find>
       <find>class=&quot;{{</find>
@@ -156,7 +153,6 @@
       <find>dodge_modi</find>
       <find>agi</find>
       <find>blitz_block</find>
-      <find>PlayerAction</find>
       <find>available_block_agi_rolls</find>
       <find>gfi</find>
       <find>PlayerAc</find>
@@ -174,6 +170,9 @@
       <find>AGILITY</find>
       <find>act(</find>
       <find>Dice</find>
+      <find>FollowUp</find>
+      <find>PlayerAction</find>
+      <find>self.squares.</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -471,8 +470,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gulp.js.default" />
         <item itemvalue="Python.server" />
+        <item itemvalue="Gulp.js.default" />
         <item itemvalue="Python.table" />
         <item itemvalue="Python.procedure" />
         <item itemvalue="Python.test_speed" />
@@ -540,7 +539,7 @@
       <window_info anchor="bottom" id="TODO" order="10" weight="0.22980063" />
       <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.5005952" side_tool="true" weight="0.32948583" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Run" order="6" sideWeight="0.49940476" visible="true" weight="0.14731182" />
+      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.14731182" />
       <window_info anchor="bottom" id="Version Control" order="2" weight="0.21212122" />
       <window_info anchor="bottom" id="Python Console" order="1" weight="0.32814023" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32911393" />
@@ -549,7 +548,7 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.24970344" />
-      <window_info anchor="bottom" id="Debug" order="7" weight="0.3268817" />
+      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.3268817" />
       <window_info id="Favorites" order="0" sideWeight="0.501574" side_tool="true" weight="0.16073547" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
@@ -893,8 +892,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="444">
-          <caret line="2130" column="72" lean-forward="true" selection-start-line="2130" selection-start-column="72" selection-end-line="2130" selection-end-column="72" />
+        <state relative-caret-position="254">
+          <caret line="1908" column="45" selection-start-line="1908" selection-start-column="45" selection-end-line="1908" selection-end-column="45" />
         </state>
       </provider>
     </entry>

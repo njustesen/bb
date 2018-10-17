@@ -1905,6 +1905,8 @@ class PlayerAction(Procedure):
     def step(self, action):
 
         self.pos_from = self.game.state.field.get_player_position(self.player_id)
+        if self.pos_from not in self.squares:
+            self.squares.append(self.pos_from)
         self.player_from = self.game.get_player(self.player_from.player_id)
 
         if action.action_type == ActionType.END_PLAYER_TURN:
@@ -1941,8 +1943,6 @@ class PlayerAction(Procedure):
 
             # Add proc
             Move(self.game, self.home, self.player_id, self.pos_from, action.pos_to, gfi, dodge)
-            if len(self.squares) == 0:
-                self.squares.append(self.pos_from)
             self.squares.append(action.pos_to)
 
             self.moves += 1
