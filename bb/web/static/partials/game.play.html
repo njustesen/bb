@@ -214,7 +214,7 @@
                             </span>
                         </div>
                         <div class="playericon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].player != null">
-                            <img src="static/img/iconssmall/{{ local_state.board[$parent.$parent.$index+1][$index+1].player_icon }}" class="{{ ['READY', 'DOWN_READY'].includes((local_state.board[$parent.$parent.$index+1][$index+1].player_state) ) ? '' : 'transparent'  }}" />
+                            <img src="static/img/iconssmall/{{ local_state.board[$parent.$parent.$index+1][$index+1].player_icon }}" class="{{ ['READY', 'DOWN_READY'].includes((local_state.board[$parent.$parent.$index+1][$index+1].player_state.player_ready_state) ) ? '' : 'transparent'  }}" />
                         </div>
                         <div class="ballicon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].ball">
                             <img ng-if="local_state.ball_in_air" src="static/img/ball/sball_30x30.png" />
@@ -232,9 +232,9 @@
                             <img src="static/img/icons/decorations/block3d.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == 3" />
                         </div>
                         <div class="stateicon align-middle text-center">
-                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'STUNNED'" src="static/img/player_status/stunned.gif" />
-                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'DOWN_READY'" src="static/img/player_status/prone.gif" />
-                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state == 'DOWN_USED'" src="static/img/player_status/prone.gif" />
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state.player_ready_state == 'STUNNED'" src="static/img/player_status/stunned.gif" />
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state.player_ready_state == 'DOWN_READY'" src="static/img/player_status/prone.gif" />
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player_state.player_ready_state == 'DOWN_USED'" src="static/img/player_status/prone.gif" />
                         </div>
                     </div>
                 </div>
@@ -270,12 +270,14 @@
                             <span class="name-box">
                                 {{playerInFocus(game.home_team).nr}}. <b>{{playerInFocus(game.home_team).position_name}}:</b> {{playerInFocus(game.home_team).name}}
                             </span>
-                            <span style="float:right" class="label right label-{{ playerStateClass(playerInFocus(game.home_team)) }}">{{ playerState(playerInFocus(game.home_team)) }}</span>
+                            <span style="float:right" class="label right label-{{ playerReadyStateClass(playerInFocus(game.home_team)) }}">{{ playerReadyState(playerInFocus(game.home_team)) }}</span>
                         </div>
                         <div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">MA</div>
-                                <div class="value label label-success red">{{playerInFocus(game.home_team).ma}}</div>
+                                <div class="value label label-success red" ng-if="playerStateInFocus(game.home_team).moves < playerInFocus(game.home_team).ma">{{playerInFocus(game.home_team).ma - playerStateInFocus(game.home_team).moves}}</div>
+                                <div class="value label label-danger red" ng-if="playerStateInFocus(game.home_team).moves == playerInFocus(game.home_team).ma">{{playerInFocus(game.home_team).ma - playerStateInFocus(game.home_team).moves}}</div>
+                                <div class="value label label-danger red" ng-if="playerStateInFocus(game.home_team).moves > playerInFocus(game.home_team).ma">+{{playerStateInFocus(game.home_team).moves - playerInFocus(game.home_team).ma}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">ST</div>
@@ -305,12 +307,15 @@
                             <span class="name-box">
                                 {{playerInFocus(game.away_team).nr}}. <b>{{playerInFocus(game.away_team).position_name}}:</b> {{playerInFocus(game.away_team).name}}
                             </span>
-                            <span style="float:right" class="label label-{{ playerStateClass(playerInFocus(game.away_team)) }}">{{ playerState(playerInFocus(game.away_team)) }}</span>
+                            <span style="float:right" class="label label-{{ playerReadyStateClass(playerInFocus(game.away_team)) }}">{{ playerReadyState(playerInFocus(game.away_team)) }}</span>
                         </div>
                         <div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">MA</div>
-                                <div class="value label label-success blue">{{playerInFocus(game.away_team).ma}}</div>
+                                <div class="value label blue" ng-if="playerStateInFocus(game.away_team).moves == 0">{{playerInFocus(game.away_team).ma - playerStateInFocus(game.away_team).moves}}</div>
+                                <div class="value label label-warning" ng-if="playerStateInFocus(game.away_team).moves != 0 && playerStateInFocus(game.away_team).moves < playerInFocus(game.away_team).ma">{{playerInFocus(game.away_team).ma - playerStateInFocus(game.away_team).moves}}</div>
+                                <div class="value label label-danger" ng-if="playerStateInFocus(game.away_team).moves == playerInFocus(game.away_team).ma">{{playerInFocus(game.away_team).ma - playerStateInFocus(game.away_team).moves}}</div>
+                                <div class="value label label-danger" ng-if="playerStateInFocus(game.away_team).moves > playerInFocus(game.away_team).ma">+{{playerStateInFocus(game.away_team).moves - playerInFocus(game.away_team).ma}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">ST</div>

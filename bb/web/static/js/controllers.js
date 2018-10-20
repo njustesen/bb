@@ -604,23 +604,32 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return null;
         };
 
-        $scope.playerState = function playerState(player){
+        $scope.playerState = function playerReadyState(player){
             let state = undefined;
-            if ($scope.teamOfPlayer(player) == $scope.game.home_team){
-                state = $scope.game.state.home_state.player_states[player.player_id];
-                if (state == "MNG"){
+            if ($scope.teamOfPlayer(player) === $scope.game.home_team){
+                return $scope.game.state.home_state.player_states[player.player_id];
+            } else {
+                return $scope.game.state.away_state.player_states[player.player_id];
+            }
+        };
+
+        $scope.playerReadyState = function playerReadyState(player){
+            let state = undefined;
+            if ($scope.teamOfPlayer(player) === $scope.game.home_team){
+                state = $scope.game.state.home_state.player_states[player.player_id].player_ready_state;
+                if (state === "MNG"){
                     state = $scope.game.state.home_state.injures[player.player_id];
                 }
             } else {
-                state = $scope.game.state.away_state.player_states[player.player_id];
-                if (state == "MNG"){
+                state = $scope.game.state.away_state.player_states[player.player_id].player_ready_state;
+                if (state === "MNG"){
                     state = $scope.game.state.away_state.injures[player.player_id];
                 }
             }
             return state.replace("_READY", "").replace("_", " ");
         };
 
-        $scope.playerStateClass = function playerStateClass(player){
+        $scope.playerReadyStateClass = function playerStateClass(player){
             let state = $scope.playerState(player);
             if (state == "READY" || state == "DOWN"){
                 return "success";
@@ -786,16 +795,39 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.playerInFocus = function playerInFocus(team) {
-            let player = null;
             if ($scope.hover_player != null){
-                player = $scope.hover_player;
-                if (player != null && team.team_id == $scope.teamOfPlayer(player).team_id){
+                let player = $scope.hover_player;
+                if (player != null && team.team_id === $scope.teamOfPlayer(player).team_id){
                     return player;
                 }
             }
             if ($scope.selected_square != null && $scope.selected_square.player != null){
-                if (team.team_id == $scope.teamOfPlayer($scope.selected_square.player).team_id){
+                if (team.team_id === $scope.teamOfPlayer($scope.selected_square.player).team_id){
                     return $scope.selected_square.player;
+                }
+            }
+            return null;
+        };
+
+        $scope.playerStateInFocus = function playerStateInFocus(team) {
+            if ($scope.hover_player != null){
+                let player = $scope.hover_player;
+                if (player != null && team.team_id === $scope.teamOfPlayer(player).team_id){
+                    if (team.team_id === $scope.game.home_team.team_id){
+                        return $scope.game.state.home_state.player_states[player.player_id];
+                    } else {
+                        return $scope.game.state.away_state.player_states[player.player_id];
+                    }
+                }
+            }
+            if ($scope.selected_square != null && $scope.selected_square.player != null){
+                let player = $scope.selected_square.player;
+                if (team.team_id === $scope.teamOfPlayer($scope.selected_square.player).team_id){
+                    if (team.team_id === $scope.game.home_team.team_id){
+                        return $scope.game.state.home_state.player_states[player.player_id];
+                    } else {
+                        return $scope.game.state.away_state.player_states[player.player_id];
+                    }
                 }
             }
             return null;

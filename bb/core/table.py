@@ -175,7 +175,7 @@ class PlayerActionType(Enum):
     FOUL = 6
 
 
-class PlayerState(Enum):
+class PlayerReadyState(Enum):
     READY = 1
     USED = 2
     DOWN_READY = 3
@@ -290,6 +290,7 @@ class ActionType(Enum):
     DONT_USE_REROLL = 42
     STAND_UP = 43
     SELECT_SQUARE = 44
+
 
 class WeatherType(Enum):
     SWELTERING_HEAT = 1
@@ -422,30 +423,30 @@ class Rules:
     }
 
     has_tackle_zone = [
-        PlayerState.READY,
-        PlayerState.USED
+        PlayerReadyState.READY,
+        PlayerReadyState.USED
     ]
 
     blockable = [
-        PlayerState.READY,
-        PlayerState.USED,
-        PlayerState.BONE_HEADED,
-        PlayerState.HYPNOTIZED,
-        PlayerState.REALLY_STUPID
+        PlayerReadyState.READY,
+        PlayerReadyState.USED,
+        PlayerReadyState.BONE_HEADED,
+        PlayerReadyState.HYPNOTIZED,
+        PlayerReadyState.REALLY_STUPID
     ]
 
     foulable = [
-        PlayerState.DOWN_READY,
-        PlayerState.DOWN_USED,
-        PlayerState.STUNNED
+        PlayerReadyState.DOWN_READY,
+        PlayerReadyState.DOWN_USED,
+        PlayerReadyState.STUNNED
     ]
 
     assistable = [
-        PlayerState.READY,
-        PlayerState.USED
+        PlayerReadyState.READY,
+        PlayerReadyState.USED
     ]
 
     catchable = [
-        PlayerState.READY,
-        PlayerState.USED
+        PlayerReadyState.READY,
+        PlayerReadyState.USED
     ]

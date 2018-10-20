@@ -21,6 +21,25 @@ class Configuration:
         self.fast_mode = False
 
 
+class PlayerState:
+
+    def __init__(self):
+        self.player_ready_state = PlayerReadyState.READY
+        self.spp_earned = 0
+        self.moves = 0
+        self.casualty_effect = None
+        self.casualty_type = None
+
+    def to_simple(self):
+        return {
+            'player_ready_state': self.player_ready_state.name,
+            'spp_earned': self.spp_earned,
+            'moves': self.moves,
+            'casualty_type': self.casualty_type.name if self.casualty_type is not None else None,
+            'casualty_effect': self.casualty_effect.name if self.casualty_effect is not None else None
+        }
+
+
 class TeamState:
 
     def __init__(self, team):
@@ -29,8 +48,7 @@ class TeamState:
         self.apothecary_available = team.apothecary
         self.wizard_available = False
         self.masterchef = False
-        self.player_states = {player.player_id: PlayerState.READY for player in team.players}
-        self.injuries = {}
+        self.player_states = {player.player_id: PlayerState() for player in team.players}
         self.score = 0
         self.turn = 0
         self.rerolls_start = team.rerolls
@@ -41,19 +59,12 @@ class TeamState:
         self.reroll_used = False
 
     def to_simple(self):
-        player_states = {}
-        for player_id in self.player_states.keys():
-            player_states[player_id] = self.player_states[player_id].name
-        injuries = {}
-        for player_id, effect in self.injuries.items():
-            injuries[player_id] = effect.name
         return {
             'bribes': self.bribes,
             'babes': self.babes,
             'apothecary_available': self.apothecary_available,
             'masterchef': self.masterchef,
-            'player_states': player_states,
-            'injuries': injuries,
+            'player_states': {player_id: player_state.to_simple() for player_id, player_state in self.player_states.items()},
             'score': self.score,
             'turn': self.turn,
             'rerolls_start': self.rerolls_start,
@@ -73,18 +84,20 @@ class TeamState:
         if reset_rerolls:
             self.reroll_used = False
         for player_id, player_state in self.player_states.items():
-            if player_state == PlayerState.USED:
-                self.player_states[player_id] = PlayerState.READY
-            elif player_state == PlayerState.DOWN_USED:
-                self.player_states[player_id] = PlayerState.DOWN_READY
+            self.player_states[player_id].moves = 0
+            if player_state.player_ready_state == PlayerReadyState.USED:
+                self.player_states[player_id].player_ready_state = PlayerReadyState.READY
+            elif player_state.player_ready_state == PlayerReadyState.DOWN_USED:
+                self.player_states[player_id].player_ready_state = PlayerReadyState.DOWN_READY
 
     def use_reroll(self):
         self.rerolls -= 1
         self.reroll_used = True
 
-    def injure_player(self, player_id, injury_effect):
-        print("injury_effect={}".format(injury_effect))
-        self.injuries[player_id] = injury_effect
+    def injure_player(self, player_id, casualty, casualty_effect):
+        print("casualty_effect={}".format(casualty_effect))
+        self.player_states[player_id].casualty = casualty
+        self.player_states[player_id].casualty_effect = casualty_effect
 
 
 class GameState:
@@ -137,8 +150,11 @@ class GameState:
     def get_player_state(self, player_id, home):
         return self.get_team_state(home).player_states[player_id]
 
-    def set_player_state(self, player_id, home, player_state):
-        self.get_team_state(home).player_states[player_id] = player_state
+    def get_player_ready_state(self, player_id, home):
+        return self.get_team_state(home).player_states[player_id].player_ready_state
+
+    def set_player_ready_state(self, player_id, home, player_ready_state):
+        self.get_team_state(home).player_states[player_id].player_ready_state = player_ready_state
 
     def get_team_state(self, home):
         return self.home_state if home else self.away_state
@@ -148,7 +164,7 @@ class GameState:
 
     def knock_out(self, player_id):
         home = self.game.get_home_by_player_id(player_id)
-        self.get_team_state(home).player_states[player_id] = PlayerState.KOD
+        self.get_team_state(home).player_states[player_id] = PlayerReadyState.KOD
         self.field.remove(player_id)
         self.get_dugout(home).kod.append(player_id)
 
@@ -292,7 +308,7 @@ class Field:
         return pos.x < 1 or pos.x >= len(self.board[0])-1 or pos.y < 1 or pos.y >= len(self.board)-1
 
     def has_tackle_zone(self, player, home):
-        if self.game.state.get_player_state(player.player_id, home) not in Rules.has_tackle_zone:
+        if self.game.state.get_player_ready_state(player.player_id, home) not in Rules.has_tackle_zone:
             return False
         if player.has_skill(Skill.TITCHY):
             return False
@@ -352,8 +368,8 @@ class Field:
                 continue
             team_home = self.game.get_home_by_player_id(player_id)
             if include_home and team_home or include_away and not team_home:
-                if not only_blockable or self.game.state.get_player_state(player_id, team_home) in Rules.blockable:
-                    if not only_foulable or self.game.state.get_player_state(player_id, team_home) in Rules.foulable:
+                if not only_blockable or self.game.state.get_player_ready_state(player_id, team_home) in Rules.blockable:
+                    if not only_foulable or self.game.state.get_player_ready_state(player_id, team_home) in Rules.foulable:
                         squares.append(square)
         return squares
 
@@ -407,7 +423,7 @@ class Field:
                     player_id = self.get_player_id_at(p)
                     if player_id is not None:
                         if self.game.get_home_by_player_id(player_id) == home:
-                            if self.game.state.get_player_state(player_id, home) not in Rules.assistable:
+                            if self.game.state.get_player_ready_state(player_id, home) not in Rules.assistable:
                                 continue
                             if (not ignore_guard and self.game.get_player(player_id).has_skill(Skill.GUARD)) or \
                                             self.get_tackle_zones(p, home=home) <= 1:  # TODO: Check if attacker has a tackle zone
@@ -481,7 +497,7 @@ class Field:
                     continue
                 if player_home != home:
                     continue
-                if self.game.state.get_player_state(player_at, player_home) not in Rules.catchable:
+                if self.game.state.get_player_ready_state(player_at, player_home) not in Rules.catchable:
                     continue
                 if self.game.get_player(player_at).has_skill(Skill.NO_HANDS):
                     continue

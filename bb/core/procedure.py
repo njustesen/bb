@@ -53,7 +53,7 @@ class Apothecary(Procedure):
                 # Player is KO
                 self.game.state.field.remove(self.player_id)
                 self.game.state.get_dugout(self.home).kod.append(self.player_id)
-                self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.KOD
+                self.game.state.set_player_ready_state(self.home, self.player_id, PlayerReadyState.KOD)
                 self.game.report(Outcome(OutcomeType.APOTHECARY_USED_KO, player_id=self.player_id, team_home=self.home))
 
             return True
@@ -80,24 +80,23 @@ class Apothecary(Procedure):
                 roll = self.roll_first if action.idx == 0 else self.roll_second
 
                 # Apply casualty
+                self.game.state.get_team_state(self.home).injure_player(self.player_id, casualty, effect)
                 if effect == CasualtyEffect.NONE:
-                    self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.BH
                     self.game.report(Outcome(OutcomeType.BADLY_HURT, player_id=self.player_id, team_home=self.home, rolls=[roll]))
                 elif effect in Casualty.miss_next_game:
-                    self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.MNG
                     self.game.report(Outcome(OutcomeType.MISS_NEXT_GAME, player_id=self.player_id, team_home=self.home, rolls=[roll]))
                 elif effect == CasualtyEffect.DEAD:
                     self.game.report(Outcome(OutcomeType.DEAD, player_id=self.player_id, team_home=self.home, rolls=[roll]))
-                    self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.DEAD
 
                 self.game.state.field.remove(self.player_id)
 
-                if effect != CasualtyEffect.NONE:
-                    self.game.state.get_team_state(self.home).injure_player(self.player_id, effect)
-                    self.game.state.get_dugout(self.home).casualties.append(self.player_id)
-                else:
+                if effect == CasualtyEffect.NONE:
                     # Apothecary puts badly hurt players in the reserves
                     self.game.state.get_dugout(self.home).reserves.append(self.player_id)
+                else:
+                    self.game.state.get_team_state(self.home).injure_player(self.player_id, casualty, effect)
+                    self.game.state.get_dugout(self.home).casualties.append(self.player_id)
+
 
         return True
 
@@ -455,15 +454,15 @@ class Casualty(Procedure):
             Apothecary(self.game, self.home, self.player_id, roll=self.roll, outcome=OutcomeType.CASUALTY, casualty=self.casualty, effect=self.effect, opp_player_id=self.opp_player_id)
         else:
             # Apply casualty
+            self.game.state.field.remove(self.player_id)
+            self.game.state.get_dugout(self.home).casualties.append(self.player_id)
+            self.game.state.get_team_state(self.home).injure_player(self.player_id, self.casualty, self.effect)
             if self.effect == CasualtyEffect.NONE:
-                self.game.state.casualty(self.player_id, self.home, PlayerState.BH, self.effect)
                 self.game.report(Outcome(OutcomeType.BADLY_HURT, player_id=self.player_id, team_home=self.home, rolls=[self.roll]))
             elif self.effect in Casualty.miss_next_game:
-                self.game.state.casualty(self.player_id, self.home, PlayerState.MNG, self.effect)
                 self.game.report(Outcome(OutcomeType.MISS_NEXT_GAME, player_id=self.player_id, team_home=self.home, rolls=[self.roll], n=str(self.effect).lower().replace("_", " ")))
             elif self.effect == CasualtyEffect.DEAD:
                 self.game.report(Outcome(OutcomeType.DEAD, player_id=self.player_id, team_home=self.home, rolls=[self.roll]))
-                self.game.state.casualty(self.player_id, self.home, PlayerState.DEAD, self.effect)
 
         return True
 
@@ -514,7 +513,7 @@ class Catch(Procedure):
 
             # Can player even catch ball?
             player = self.game.get_player(self.player_id)
-            if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_state(self.player_id, self.home) not in Rules.catchable:
+            if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_ready_state(self.player_id, self.home) not in Rules.catchable:
                 Bounce(self.game, self.home)
                 self.game.report(Outcome(OutcomeType.BALL_DROPPED, player_id=self.player_id))
                 return True
@@ -638,7 +637,7 @@ class Ejection(Procedure):
 
         self.game.state.field.remove(self.player_id)
         self.game.state.get_dugout(self.home).dungeon.append(self.player_id)
-        self.game.state.set_player_state(self.player_id, self.home, PlayerState.EJECTED)
+        self.game.state.player_ready_state(self.player_id, self.home, PlayerReadyState.EJECTED)
 
         return True
 
@@ -752,7 +751,7 @@ class Injury(Procedure):
         # Roll
         roll = DiceRoll([D6(), D6()], roll_type=RollType.INJURY_ROLL)
         result = roll.get_sum()
-        result = 12
+        result = 12 # TODO: REMOVE
         self.injury_rolled = True
 
         # Skill modifiers
@@ -782,9 +781,9 @@ class Injury(Procedure):
                 if self.in_crowd:
                     self.game.state.field.remove(self.player_id)
                     self.game.state.get_dugout(self.home).reserves.append(self.player_id)
-                    self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
+                    self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.STUNNED)
                 else:
-                    self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
+                    self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.STUNNED)
 
         # CASUALTY
         elif result + stunty + mighty_blow + dirty_player >= 10:
@@ -839,7 +838,7 @@ class Touchback(Procedure):
         return True
 
     def available_actions(self):
-        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home, state=PlayerState.READY))]
+        return [ActionChoice(ActionType.SELECT_PLAYER, team=self.home, player_ids=self.game.state.field.get_team_player_ids(self.home, state=PlayerReadyState.READY))]
 
 
 class LandKick(Procedure):
@@ -1140,10 +1139,10 @@ class PitchInvasionRoll(Procedure):
                 self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home))
                 KnockOut(self.game, self.home, self.player_id)
             else:
-                self.game.state.set_player_state(self.player_id, self.home, PlayerState.STUNNED)
-                self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerState.STUNNED.name))
+                self.game.state.player_ready_state(self.player_id, self.home, PlayerReadyState.STUNNED)
+                self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerReadyState.STUNNED.name))
         else:
-            self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerState.READY.name))
+            self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerReadyState.READY.name))
 
         return True
 
@@ -1226,7 +1225,7 @@ class KnockDown(Procedure):
     def step(self, action):
 
         # Knock down player
-        self.game.state.set_player_state(self.player_id, self.home, PlayerState.DOWN_USED)
+        self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.DOWN_USED)
         self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player_id=self.player_id, opp_player_id=self.opp_player_id))
 
         # Turnover
@@ -1269,7 +1268,7 @@ class KnockOut(Procedure):
             return True
         else:
             # Knock out player
-            self.game.state.get_team_state(self.home).player_states[self.player_id] = PlayerState.KOD
+            self.game.state.set_player_ready_state(self.home, self.player_id, PlayerReadyState.KOD)
             self.game.state.field.remove(self.player_id)
             self.game.state.get_dugout(self.home).kod.append(self.player_id)
             self.game.report(Outcome(OutcomeType.KNOCKED_OUT, rolls=[self.roll], player_id=self.player_id, team_home=self.home))
@@ -1835,13 +1834,13 @@ class StandUp(Procedure):
         if self.roll:
             roll = DiceRoll([D6()], target=4, roll_type=RollType.STAND_UP_ROLL)
             if roll.is_d6_success():
-                self.game.state.set_player_state(self.player_id, self.home, PlayerState.READY)
+                self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.READY)
                 self.game.report(Outcome(OutcomeType.PLAYER_STAND_UP_SUCCESS, rolls=[roll], player_id=self.player_id))
             else:
-                self.game.state.set_player_state(self.player_id, self.home, PlayerState.DOWN_USED)
+                self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.DOWN_USED)
                 self.game.report(Outcome(OutcomeType.PLAYER_STAND_UP_FAILUE, rolls=[roll], player_id=self.player_id))
         else:
-            self.game.state.set_player_state(self.player_id, self.home, PlayerState.READY)
+            self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.READY)
 
         return True
 
@@ -1876,10 +1875,11 @@ class EndPlayerTurn(Procedure):
         self.player_id = player_id
 
     def step(self, action):
-        if self.game.state.get_player_state(self.player_id, self.home) == PlayerState.READY:
-            self.game.state.set_player_state(self.player_id, self.home, PlayerState.USED)
-        elif self.game.state.get_player_state(self.player_id, self.home) == PlayerState.DOWN_READY:
-            self.game.state.set_player_state(self.player_id, self.home, PlayerState.DOWN_USED)
+        if self.game.state.get_player_ready_state(self.player_id, self.home) == PlayerReadyState.READY:
+            self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.USED)
+        elif self.game.state.get_player_ready_state(self.player_id, self.home) == PlayerReadyState.DOWN_READY:
+            self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.DOWN_USED)
+        self.game.state.get_player_state(self.player_id, self.home).moves = 0
         self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player_id=self.player_id))
         self.game.state.active_player_id = None
         return True
@@ -1898,7 +1898,6 @@ class PlayerAction(Procedure):
         self.player_from = self.game.get_player(player_id)
         self.player_action_type = player_action_type
         self.blitz_block = False
-        self.moves = 0
         self.turn = turn
         self.squares = []
 
@@ -1917,18 +1916,19 @@ class PlayerAction(Procedure):
         player_to = self.game.get_player(action.player_to_id) if action.player_to_id is not None else None
 
         player_state_from = self.game.state.get_player_state(self.player_id, self.home)
+        player_ready_state_from = self.game.state.get_player_ready_state(self.player_id, self.home)
 
         if action.action_type == ActionType.STAND_UP:
 
             StandUp(self.game, self.home, self.player_id, roll=self.player_from.get_ma() < 3)
-            self.moves += 3
+            player_state_from.moves += 3
             for i in range(3):
                 self.squares.append(self.pos_from)
 
         elif action.action_type == ActionType.MOVE:
 
             # Check GFI
-            gfi = self.moves + 1 > self.player_from.get_ma()
+            gfi = player_state_from.moves + 1 > self.player_from.get_ma()
 
             # Check dodge
             dodge = False
@@ -1945,7 +1945,7 @@ class PlayerAction(Procedure):
             Move(self.game, self.home, self.player_id, self.pos_from, action.pos_to, gfi, dodge)
             self.squares.append(action.pos_to)
 
-            self.moves += 1
+            player_state_from.moves += 1
 
             return False
 
@@ -1954,13 +1954,13 @@ class PlayerAction(Procedure):
             # Check GFI
             gfi = False
             if self.player_action_type == PlayerActionType.BLITZ:
-                move_needed = 3 if player_state_from == PlayerState.DOWN_READY else 1
-                gfi = self.moves + move_needed > self.player_from.get_ma()
+                move_needed = 3 if player_ready_state_from == PlayerReadyState.DOWN_READY else 1
+                gfi = player_state_from.moves + move_needed > self.player_from.get_ma()
                 # Use movement
-                self.moves += move_needed
+                player_state_from.moves += move_needed
                 for i in range(move_needed):
                     self.squares.append(self.pos_from)
-                self.game.state.set_player_state(self.player_from.player_id, self.home, PlayerState.READY)
+                self.game.state.set_player_ready_state(self.player_from.player_id, self.home, PlayerReadyState.READY)
 
             # Check frenzy
             '''
@@ -1969,12 +1969,12 @@ class PlayerAction(Procedure):
                 if self.player_action_type == ActionType.BLITZ:
                     move_needed = 1
                 gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
-                if self.moves + move_needed <= self.player_from.get_ma() + gfi_allowed:
-                    gfi_2 = self.moves + move_needed > self.player_from.get_ma()
+                if player_state_from.moves + move_needed <= self.player_from.get_ma() + gfi_allowed:
+                    gfi_2 = player_state_from.moves + move_needed > self.player_from.get_ma()
                     Block(self.game, self.home, self.player_from, player_to, action.pos_to, gfi=gfi)
                     gfi = gfi_2  # Switch gfi
                 # Use movement
-                self.moves += move_needed
+                player_state_from.moves += move_needed
             '''
 
             # End turn after block - if not a blitz action
@@ -2024,16 +2024,17 @@ class PlayerAction(Procedure):
             move_positions = []
             agi_rolls = []
             player_state_from = self.game.state.get_player_state(self.player_id, self.home)
-            move_needed = 1 if player_state_from == PlayerState.DOWN_READY else 1
-            gfi = self.moves + move_needed > self.player_from.get_ma()
+            player_ready_state_from = self.game.state.get_player_ready_state(self.player_id, self.home)
+            move_needed = 1 if player_ready_state_from == PlayerReadyState.DOWN_READY else 1
+            gfi = player_state_from.moves + move_needed > self.player_from.get_ma()
             sprints = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
-            if player_state_from is PlayerState.DOWN_READY:
+            if player_ready_state_from is PlayerReadyState.DOWN_READY:
                 if self.game.get_player(self.player_id).get_ma() < 3:
                     agi_rolls.append([4])
                 else:
                     agi_rolls.append([])
                 actions.append(ActionChoice(ActionType.STAND_UP, player_ids=[self.player_id], positions=[self.pos_from], team=self.home, agi_rolls=agi_rolls))
-            elif (not self.turn.quick_snap and self.moves + move_needed <= self.player_from.get_ma() + sprints) or (self.turn.quick_snap and self.moves == 0):
+            elif (not self.turn.quick_snap and player_state_from.moves + move_needed <= self.player_from.get_ma() + sprints) or (self.turn.quick_snap and player_state_from.moves == 0):
                 for square in self.game.state.field.get_adjacent_squares(self.pos_from, exclude_occupied=True):
                     ball = self.game.state.field.ball_position == square and not self.game.state.field.ball_in_air
                     move_positions.append(square)
@@ -2060,11 +2061,11 @@ class PlayerAction(Procedure):
             can_block = True
             gfi = False
             if self.player_action_type == PlayerActionType.BLITZ:
-                move_needed = 3 if self.game.state.get_player_state(self.player_id, self.home) == PlayerState.DOWN_READY else 1
+                move_needed = 3 if player_ready_state_from == PlayerReadyState.DOWN_READY else 1
                 gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
-                if self.moves + move_needed > self.player_from.get_ma() + gfi_allowed or move_needed > 1:
+                if player_state_from.moves + move_needed > self.player_from.get_ma() + gfi_allowed or move_needed > 1:
                     can_block = False
-                gfi = self.moves + move_needed > self.player_from.get_ma()
+                gfi = player_state_from.moves + move_needed > self.player_from.get_ma()
 
             # Find adjacent enemies to block
             if can_block:
@@ -2109,7 +2110,7 @@ class PlayerAction(Procedure):
                                                                             include_away=not self.home):
                 opp_player_id = self.game.state.field.get_player_id_at(square)
                 player_to = self.game.get_player(opp_player_id)
-                if self.game.state.get_player_state(player_to.player_id, self.home) in Rules.catchable and Skill.NO_HANDS not in player_to.get_skills():
+                if self.game.state.get_player_ready_state(player_to.player_id, self.home) in Rules.catchable and Skill.NO_HANDS not in player_to.get_skills():
                     hand_off_positions.append(square)
                     modifiers = Catch.catch_modifiers(self.game, self.home, self.player_from, square)
                     target = Catch.success[self.player_from.get_ag()]
@@ -2183,10 +2184,10 @@ class PreHalf(Procedure):
 
     def step(self, action):
         for player_id, state in self.game.state.get_team_state(self.home).player_states.items():
-            if state == PlayerState.KOD and player_id not in self.checked:
+            if state.player_ready_state == PlayerReadyState.KOD and player_id not in self.checked:
                 roll = DiceRoll([D6()], roll_type=RollType.KO_READY_ROLL)
                 if roll.get_sum() >= 4:
-                    self.game.state.get_team_state(self.home).player_states[player_id] = PlayerState.READY
+                    self.game.state.set_player_ready_state(self.home, player_id, PlayerReadyState.READY)
                     self.game.state.get_dugout(self.home).kod.remove(player_id)
                     self.game.state.get_dugout(self.home).reserves.append(player_id)
                     self.checked.append(player_id)
@@ -2445,7 +2446,7 @@ class ClearBoard(Procedure):
                 # If player not in reserves. move it to it
                 if self.game.state.field.get_player_position(player_id) is not None:
                     # Set to ready
-                    self.game.state.set_player_state(player_id, team, PlayerState.READY)
+                    self.game.state.set_player_ready_state(player_id, team, PlayerReadyState.READY)
                     # Remove from field
                     self.game.state.field.remove(player_id)
                     # Move to reserves
@@ -2454,7 +2455,7 @@ class ClearBoard(Procedure):
                     if self.game.state.weather == WeatherType.SWELTERING_HEAT:
                         roll = DiceRoll([D6()], roll_type=RollType.SWELTERING_HEAT_ROLL)
                         if roll.get_sum() == 1:
-                            self.game.state.set_player_state(player_id, team, PlayerState.HEATED)
+                            self.game.state.set_player_ready_state(player_id, team, PlayerReadyState.HEATED)
                             self.game.report(Outcome(OutcomeType.PLAYER_HEATED, player_id=action.player_from_id, rolls=[roll]))
                         self.game.report(Outcome(OutcomeType.PLAYER_NOT_HEATED, player_id=action.player_from_id, rolls=[roll]))
         return True
@@ -2645,8 +2646,8 @@ class TurnStunned(Procedure):
         players = []
         player_states = self.game.state.get_team_state(self.home).player_states
         for player_id in player_states.keys():
-            if player_states[player_id] == PlayerState.STUNNED:
-                self.game.state.get_team_state(self.home).player_states[player_id] = PlayerState.DOWN_USED
+            if player_states[player_id].player_ready_state == PlayerReadyState.STUNNED:
+                self.game.state.get_team_state.set_player_ready_state(self.home, player_id, PlayerReadyState.DOWN_USED)
                 players.append(player_id)
         self.game.report(Outcome(OutcomeType.STUNNED_TURNED))
         return True
@@ -2754,7 +2755,7 @@ class Turn(Procedure):
             if self.blitz:
                 if self.game.state.field.get_tackle_zones(pos, home=self.home) > 0:
                     continue
-            if player_state == PlayerState.READY or player_state == PlayerState.DOWN_READY:
+            if player_state.player_ready_state == PlayerReadyState.READY or player_state.player_ready_state == PlayerReadyState.DOWN_READY:
                 move_player_ids.append(player_id)
                 if self.blitz_available:
                     blitz_player_ids.append(player_id)
@@ -2764,7 +2765,7 @@ class Turn(Procedure):
                     handoff_player_ids.append(player_id)
                 if self.foul_available:
                     foul_player_ids.append(player_id)
-            if player_state == PlayerState.READY and not self.quick_snap and not self.blitz:
+            if player_state.player_ready_state == PlayerReadyState.READY and not self.quick_snap and not self.blitz:
                 block_player_ids.append(player_id)
 
         actions = []
@@ -2800,9 +2801,9 @@ class WeatherTable(Procedure):
             self.game.state.weather = WeatherType.VERY_SUNNY
             self.game.report(Outcome(OutcomeType.WEATHER_VERY_SUNNY, rolls=[roll]))
         if 4 <= roll.get_sum() <= 10:
-            self.game.state.weather = WeatherType.NICE
-            if self.kickoff:
+            if self.kickoff and self.game.state.weather == WeatherType.NICE:
                 self.game.state.gentle_gust = True
+            self.game.state.weather = WeatherType.NICE
             self.game.report(Outcome(OutcomeType.WEATHER_NICE, rolls=[roll]))
         if roll.get_sum() == 11:
             self.game.state.weather = WeatherType.POURING_RAIN
