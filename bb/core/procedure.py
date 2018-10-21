@@ -281,6 +281,8 @@ class Block(Procedure):
             for i in range(dice):
                 self.roll.dice.append(BBDie())
 
+            self.game.report(Outcome(OutcomeType.BLOCK_ROLL, player_id=self.player_from.player_id, opp_player_id=self.player_to.player_id, rolls=[self.roll]))
+
             return False
 
         elif self.waiting_wrestle_to and action.team_home != self.home:
@@ -637,7 +639,7 @@ class Ejection(Procedure):
 
         self.game.state.field.remove(self.player_id)
         self.game.state.get_dugout(self.home).dungeon.append(self.player_id)
-        self.game.state.player_ready_state(self.player_id, self.home, PlayerReadyState.EJECTED)
+        self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.EJECTED)
 
         return True
 
@@ -1139,7 +1141,7 @@ class PitchInvasionRoll(Procedure):
                 self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home))
                 KnockOut(self.game, self.home, self.player_id)
             else:
-                self.game.state.player_ready_state(self.player_id, self.home, PlayerReadyState.STUNNED)
+                self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.STUNNED)
                 self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerReadyState.STUNNED.name))
         else:
             self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerReadyState.READY.name))
@@ -2183,8 +2185,8 @@ class PreHalf(Procedure):
         self.checked = []
 
     def step(self, action):
-        for player_id, state in self.game.state.get_team_state(self.home).player_states.items():
-            if state.player_ready_state == PlayerReadyState.KOD and player_id not in self.checked:
+        for player_id, player_state in self.game.state.get_team_state(self.home).player_states.items():
+            if player_state.player_ready_state == PlayerReadyState.KOD and player_id not in self.checked:
                 roll = DiceRoll([D6()], roll_type=RollType.KO_READY_ROLL)
                 if roll.get_sum() >= 4:
                     self.game.state.set_player_ready_state(self.home, player_id, PlayerReadyState.READY)

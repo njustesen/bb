@@ -150,7 +150,10 @@ appServices.factory('GameLogService', function() {
             "PLAYER_NOT_READY": "<player> is still KO'd.",
             "FOLLOW_UP": "<player> follows up",
             "BALL_OUT_OF_BOUNDS": "<b>Out of bounds!</b>.",
-            "SKILL_USED": "<player> uses the <skill> skill.<b>"
+            "SKILL_USED": "<player> uses the <skill> skill.<b>",
+            "PLAYER_EJECTED": "<player> was <b>ejected!</b>",
+            "BLOCK_ROLL": "<player> blocks <opp_player>",
+            "REROLL_USED": "<team> uses a <b>reroll</b>."
         }
     };
 });

@@ -164,6 +164,7 @@ class OutcomeType(Enum):
     MISS_NEXT_GAME = 116
     DEAD = 117
     REROLL_USED = 118
+    BLOCK_ROLL = 119
 
 
 class PlayerActionType(Enum):

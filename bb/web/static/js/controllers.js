@@ -292,6 +292,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_block_positions = [];
             $scope.available_handoff_positions = [];
             $scope.available_pass_positions = [];
+            $scope.available_foul_positions = [];
             $scope.available_dodge_rolls = [];
             $scope.available_block_rolls = [];
             $scope.available_block_agi_rolls = [];
