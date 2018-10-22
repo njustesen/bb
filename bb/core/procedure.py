@@ -483,7 +483,6 @@ class Catch(Procedure):
         modifiers = -2 if interception else modifiers
         if interception and player.has_skill(Skill.LONG_LEGS):
             modifiers += 1
-        pos = game.state.field.get_player_position(player.player_id)
         tackle_zones = game.state.field.get_tackle_zones(pos, home=home)
         modifiers -= tackle_zones
         if game.state.weather == WeatherType.POURING_RAIN:
@@ -1561,7 +1560,6 @@ class Handoff(Procedure):
     def step(self, action):
         self.game.state.field.ball_position = self.pos_to
         TurnoverIfPossessionLost(self.game, self.home)
-        EndPlayerTurn(self.game, self.home, self.player_id)
         Catch(self.game, self.home, self.player_to_id, self.pos_to, handoff=True)
         self.game.report(Outcome(OutcomeType.COMPLETE_HANDOFF, player_id=self.player_id, opp_player_id=self.player_to_id))
         return True
@@ -1636,8 +1634,7 @@ class PassAction(Procedure):
                 self.game.report(Outcome(OutcomeType.ACCURATE_PASS, player_id=self.player_from.player_id, rolls=[roll]))
                 self.game.state.field.move_ball(self.pos_to)
                 TurnoverIfPossessionLost(self.game, self.home)
-                EndPlayerTurn(self.game, self.home, self.player_from.player_id)
-                Catch(self.game, self.home, self.player_from.player_id, self.pos_to, accurate=True)
+                Catch(self.game, self.home, self.player_to.player_id, self.pos_to, accurate=True)
                 return True
 
             elif result == 1 or mod_result <= 1:
@@ -1656,7 +1653,7 @@ class PassAction(Procedure):
                 return False
 
             # Check if reroll available
-            if self.game.state.can_use_reroll(self.home) and not self.pass_used:
+            if self.game.state.can_use_reroll(self.home) and not self.pass_used and not self.reroll_used:
                 self.waiting_for_reroll = True
                 return False
 
@@ -1666,11 +1663,12 @@ class PassAction(Procedure):
                 Bounce(self.game, self.home)
             else:
                 TurnoverIfPossessionLost(self.game, self.home)
+                self.game.state.field.move_ball(self.pos_to)
                 Scatter(self.game, self.home, is_pass=True)
 
             return True
 
-        # If catch used
+        # If pass skill is used
         if self.waiting_for_pass:
             if action.action_type == ActionType.USE_SKILL:
                 self.pass_used = True
@@ -1682,7 +1680,7 @@ class PassAction(Procedure):
                 return True
 
             TurnoverIfPossessionLost(self.game, self.home)
-            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
+            self.game.state.field.move_ball(self.pos_to)
             Scatter(self.game, self.home, is_pass=True)
             return True
 
@@ -1700,7 +1698,7 @@ class PassAction(Procedure):
                 return True
 
             TurnoverIfPossessionLost(self.game, self.home)
-            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
+            self.game.state.field.move_ball(self.pos_to)
             Scatter(self.game, self.home, is_pass=True)
             return True
 
@@ -1721,7 +1719,7 @@ class Pickup(Procedure):
     @staticmethod
     def pickup_modifiers(game, home, player, pos):
 
-        modifiers = 0
+        modifiers = 1
         tackle_zones = game.state.field.get_tackle_zones(pos, home=home)
 
         if not player.has_skill(Skill.BIG_HAND):
@@ -1997,11 +1995,11 @@ class PlayerAction(Procedure):
             EndPlayerTurn(self.game, self.home, self.player_from.player_id)
             Foul(self.game, self.home, self.player_from, player_to)
 
-            # A foul is a players last thing to do
             return True
 
         elif action.action_type == ActionType.HANDOFF:
 
+            EndPlayerTurn(self.game, self.home, self.player_id)
             catcher_id = self.game.state.field.get_player_id_at(action.pos_to)
             Handoff(self.game, self.home, self.player_id, action.pos_to, catcher_id)
 
@@ -2012,9 +2010,11 @@ class PlayerAction(Procedure):
             # Check distance
             pos_from = self.game.state.field.get_player_position(self.player_from.player_id)
             pass_distance = self.game.state.field.pass_distance(pos_from, action.pos_to)
+            EndPlayerTurn(self.game, self.home, self.player_from.player_id)
             PassAction(self.game, self.home, self.player_from, pos_from, player_to, action.pos_to, pass_distance)
-
             self.turn.pass_available = False
+
+            return True
 
     def available_actions(self):
         actions = []
@@ -2047,11 +2047,11 @@ class PlayerAction(Procedure):
                         if self.game.state.field.get_tackle_zones(self.pos_from, home=self.home) > 0:
                             modifiers = Dodge.dodge_modifiers(self.game, self.home, self.player_from, square)
                             target = Dodge.success[self.player_from.get_ag()]
-                            rolls.append(min(6, max(1, target - modifiers)))
+                            rolls.append(min(6, max(2, target - modifiers)))
                         if ball:
                             target = Pickup.success[self.player_from.get_ag()]
                             modifiers = Pickup.pickup_modifiers(self.game, self.home, self.player_from, square)
-                            rolls.append(min(6, max(1, target - modifiers)))
+                            rolls.append(min(6, max(2, target - modifiers)))
                     agi_rolls.append(rolls)
                 if len(move_positions) > 0:
                     actions.append(ActionChoice(ActionType.MOVE, player_ids=[self.player_id], team=self.home, positions=move_positions, agi_rolls=agi_rolls))
@@ -2115,8 +2115,8 @@ class PlayerAction(Procedure):
                 if self.game.state.get_player_ready_state(player_to.player_id, self.home) in Rules.catchable and Skill.NO_HANDS not in player_to.get_skills():
                     hand_off_positions.append(square)
                     modifiers = Catch.catch_modifiers(self.game, self.home, self.player_from, square)
-                    target = Catch.success[self.player_from.get_ag()]
-                    agi_rolls.append([min(6, max(1, target - modifiers))])
+                    target = Catch.success[self.player_to.get_ag()]
+                    agi_rolls.append([min(6, max(2, target - modifiers))])
 
             if len(hand_off_positions) > 0:
                 actions.append(ActionChoice(ActionType.HANDOFF, player_ids=[self.player_id], team=self.home,
@@ -2127,12 +2127,21 @@ class PlayerAction(Procedure):
             positions, distances = self.game.state.field.get_passes(self.player_from, self.pos_from)
             agi_rolls = []
             cache = {}
-            for distance in distances:
+            for i in range(len(distances)):
+                distance = distances[i]
+                position = positions[i]
                 if distance not in cache:
                     modifiers = PassAction.pass_modifiers(self.game, self.home, self.player_from, self.pos_from, distance)
                     target = PassAction.success[self.player_from.get_ag()]
-                    cache[distance] = min(6, max(1, target - modifiers))
-                agi_rolls.append([cache[distance]])
+                    cache[distance] = min(6, max(2, target - modifiers))
+                rolls = [cache[distance]]
+                player_to_id = self.game.state.field.get_player_id_at(position)
+                if player_to_id is not None and self.game.is_on_home_team(player_to_id) == self.home:
+                    player_to = self.game.get_player(player_to_id)
+                    catch_target = Catch.success[player_to.get_ag()]
+                    catch_modifiers = Catch.catch_modifiers(self.game, self.home, player_to, pos=position, accurate=True)
+                    rolls.append(min(6, max(2, catch_target - catch_modifiers)))
+                agi_rolls.append(rolls)
             if len(positions) > 0:
                 actions.append(ActionChoice(ActionType.PASS, player_ids=[self.player_id], team=self.home, positions=positions, agi_rolls=agi_rolls))
 

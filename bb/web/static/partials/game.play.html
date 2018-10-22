@@ -209,8 +209,8 @@
                         </svg>
                         -->
                         <div class="agi-rolls">
-                            <span class="agi agi-{{local_state.board[$parent.$parent.$index+1][$parent.$index+1].agi_rolls.length}}" ng-repeat="roll in local_state.board[$parent.$index+1][$index+1].agi_rolls">
-                                {{ roll }}+
+                            <span class="agi agi-{{local_state.board[$parent.$parent.$index+1][$parent.$index+1].agi_rolls.length}}" ng-repeat="roll in local_state.board[$parent.$index+1][$index+1].agi_rolls track by $index">
+                                {{ local_state.board[$parent.$parent.$index+1][$parent.$index+1].agi_rolls[$index] }}+
                             </span>
                         </div>
                         <div class="playericon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].player != null">
