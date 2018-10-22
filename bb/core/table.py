@@ -165,6 +165,7 @@ class OutcomeType(Enum):
     DEAD = 117
     REROLL_USED = 118
     BLOCK_ROLL = 119
+    INTERCEPTION_FAILED = 120
 
 
 class PlayerActionType(Enum):

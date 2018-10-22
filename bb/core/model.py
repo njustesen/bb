@@ -481,13 +481,19 @@ class Field:
         max_distance = pos_from.distance(pos_to)
         n = set()
         for square in s:
-            n.add(square)
-            for neighbor in self.get_adjacent_squares(square):
+            for neighbor in self.get_adjacent_squares(square) + [square]:
+
+                if neighbor in n:
+                    continue
 
                 # 4) Remove squares where distance to a is larger than dist(a,b)
                 if neighbor.distance(pos_from) > max_distance:
                     continue
                 if neighbor.distance(pos_to) > max_distance:
+                    continue
+                if neighbor.x > max(pos_from.x, pos_to.x) or neighbor.x < min(pos_from.x, pos_to.x):
+                    continue
+                if neighbor.y > max(pos_from.y, pos_to.y) or neighbor.y < min(pos_from.y, pos_to.y):
                     continue
 
                 # 5) Remove squares without standing opponents with hands
@@ -504,8 +510,10 @@ class Field:
 
                 n.add(neighbor)
 
-        n.remove(pos_from)
-        n.remove(pos_to)
+        if pos_from in n:
+            n.remove(pos_from)
+        if pos_to in n:
+            n.remove(pos_to)
 
         players = []
         for square in n:

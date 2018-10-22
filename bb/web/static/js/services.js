@@ -153,7 +153,8 @@ appServices.factory('GameLogService', function() {
             "SKILL_USED": "<player> uses the <skill> skill.<b>",
             "PLAYER_EJECTED": "<player> was <b>ejected!</b>",
             "BLOCK_ROLL": "<player> blocks <opp_player>",
-            "REROLL_USED": "<team> uses a <b>reroll</b>."
+            "REROLL_USED": "<team> uses a <b>reroll</b>.",
+            "INTERCEPTION_FAILED": "<player> failed to intercept the pass."
         }
     };
 });

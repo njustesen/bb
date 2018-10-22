@@ -299,6 +299,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_handoff_rolls = [];
             $scope.available_pass_rolls = [];
             $scope.available_players = [];
+            $scope.available_interception_players = [];
+            $scope.available_interception_rolls = [];
             $scope.main_action = null;
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
@@ -325,21 +327,27 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         }
                     }
                 }
-                // Add available players
-                if (action.player_ids.length > 0){
-                    if (!(action.action_type.startsWith("END_") || action.action_type.startsWith("START_"))) {
-                        $scope.main_action = action;
-                    }
-                    if ($scope.available_players.length !== 1){
-                        for (let p in action.player_ids){
-                            $scope.available_players.push(action.player_ids[p]);
+                if (action.action_type === "INTERCEPTION") {
+                    $scope.available_interception_players = action.player_ids;
+                    $scope.available_interception_rolls = action.agi_rolls;
+                    $scope.main_action = action;
+                } else {
+                    // Add available players
+                    if (action.player_ids.length > 0){
+                        if (!(action.action_type.startsWith("END_") || action.action_type.startsWith("START_"))) {
+                            $scope.main_action = action;
+                        }
+                        if ($scope.available_players.length !== 1){
+                            for (let p in action.player_ids){
+                                $scope.available_players.push(action.player_ids[p]);
+                            }
                         }
                     }
-                }
-                // Add player positions to available positions if none is selected
-                if ($scope.available_players.length > 1 && $scope.selectedPlayer() == null){
-                    for (let p in action.player_ids){
-                        $scope.available_select_positions.push($scope.local_state.player_positions[action.player_ids[p]]);
+                    // Add player positions to available positions if none is selected
+                    if ($scope.available_players.length > 1 && $scope.selectedPlayer() == null){
+                        for (let p in action.player_ids){
+                            $scope.available_select_positions.push($scope.local_state.player_positions[action.player_ids[p]]);
+                        }
                     }
                 }
             }
@@ -419,6 +427,17 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             // Skip other than pass options
             if (anyPass && $scope.passOptions){
                 return;
+            }
+
+            // Interception squares
+            for (let i in $scope.available_interception_players){
+                let player_id = $scope.available_interception_players[i];
+                let pos = $scope.local_state.player_positions[player_id];
+                pos.available = true;
+                pos.action_type = "INTERCEPTION";
+                if ($scope.available_interception_rolls.length > i){
+                    pos.agi_rolls = $scope.available_interception_rolls[i];
+                }
             }
 
             // Move squares
@@ -636,11 +655,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 return "success";
             } if (state == "STUNNED"){
                 return "warning";
-            } else if (state == "USED" || state == "DOWN USED" || state == "STUNNED" || state == "HEATED" || state == "BONE HEADED" || state == "HYPNOTIZED" || state == "REALLY STUPID" || state == "REALLY STUPID"){
+            } else if (state == "USED" || state == "DOWN USED" || state == "STUNNED" || state == "HEATED" || state == "BONE HEADED" || state == "HYPNOTIZED" || state == "REALLY STUPID" || state == "REALLY STUPID"){
                 return "secondary";
             } else if (state == "KOD"){
                 return "warning";
-            } else if (state == "BH" || state == "MNG" || state == "DEAD" || state == ""){
+            } else if (state == "BH" || state == "MNG" || state == "DEAD" || state == ""){
                 return "danger";
             }
             return "light";
@@ -680,6 +699,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
             // If position is available
             if ($scope.main_action != null && square.available){
+
+                // Hot-fix for interceptions
+                if ($scope.main_action.action_type === 'INTERCEPTION'){
+                    $scope.selected_square = square;
+                }
 
                 // If action does notrequires a selected player or a player is selected
                 if ($scope.main_action.player_ids.length == 0 || ($scope.selectedPlayer() != null)){
@@ -731,7 +755,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             } else {
                 // Clicked on a player - select it - unless only non-player actions
                 if ($scope.main_action == null || $scope.main_action.action_type != "PLACE_BALL"){
-                    if ($scope.available_players.length != 1){
+                    if ($scope.available_players.length !== 1){
                         $scope.resetSquares(true);
                         $scope.select(square);
                     }
@@ -841,7 +865,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.act = function act(action){
             console.log(action);
-            if (action.action_type === "END_TURN"){
+            if (action.action_type === "END_TURN" || action.action_type === "PASS"){
                 $scope.resetSquares(true);
             }
             $scope.refreshing = true;

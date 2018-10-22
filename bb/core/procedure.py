@@ -529,12 +529,17 @@ class Catch(Procedure):
             self.rolled = True
             if roll.is_d6_success():
                 if self.interception:
-                    self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id), rolls=[roll])
+                    self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id, rolls=[roll]))
+                    self.game.state.field.move_ball(self.pos)
                     Turnover(self.game, not self.home)
                 else:
                     self.game.report(Outcome(OutcomeType.CATCH, player_id=self.player_id, rolls=[roll]))
                 return True
             else:
+
+                if self.interception:
+                    self.game.report(Outcome(OutcomeType.INTERCEPTION_FAILED, player_id=self.player_id, rolls=[roll]))
+                    return True
 
                 self.game.report(Outcome(OutcomeType.CATCH_FAILED, player_id=self.player_id, rolls=[roll]))
 
@@ -813,17 +818,18 @@ class Interception(Procedure):
     def step(self, action):
 
         if action.action_type == ActionType.INTERCEPTION:
-
-            if action.player_from_id not in self.interceptors:
-                raise IllegalActionExcpetion("The selected player cannot intercept")
-
             pos = self.game.state.field.get_player_position(action.player_from_id)
             Catch(self.game, self.home, action.player_from_id, pos, interception=True)
 
         return True
 
     def available_actions(self):
-        return []
+        return [ActionChoice(ActionType.INTERCEPTION,
+                            team=self.home,
+                            #positions=[self.game.state.field.get_player_position(interceptor.player_id) for interceptor in self.interceptors],
+                            player_ids=[interceptor.player_id for interceptor in self.interceptors],
+                            agi_rolls=[[5] if interceptor.has_skill(Skill.LONG_LEGS) else [6] for interceptor in self.interceptors]),
+                ActionChoice(ActionType.SELECT_NONE, team=self.home)]
 
 
 class Touchback(Procedure):
@@ -1616,22 +1622,23 @@ class PassAction(Procedure):
 
             # Check for interception
             if not self.interception_tried:
-                interceptors = self.game.state.field.interceptors(self.pos_from, self.pos_to, self.home)
+                interceptors = self.game.state.field.interceptors(self.pos_from, self.pos_to, not self.home)
+                interceptors = [self.game.get_player(interceptor_id) for interceptor_id in interceptors]
                 if len(interceptors) > 0:
                     Interception(self.game, not self.home, interceptors)
                     self.interception_tried = True
                     return False
 
             # Roll
-            roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
-            roll.target = Catch.success[self.player_from.get_ag()]
-            roll.modifiers = PassAction.pass_modifiers(self.game, self.home, self.player_from, self.pos_from, self.pass_distance)
-            result = roll.get_sum()
-            mod_result = result + roll.modifiers
+            self.pass_roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
+            self.pass_roll.target = Catch.success[self.player_from.get_ag()]
+            self.pass_roll.modifiers = PassAction.pass_modifiers(self.game, self.home, self.player_from, self.pos_from, self.pass_distance)
+            result = self.pass_roll.get_sum()
+            mod_result = result + self.pass_roll.modifiers
 
-            if result == 6 or (result != 1 and mod_result >= roll.target):
+            if result == 6 or (result != 1 and mod_result >= self.pass_roll.target):
                 # Accurate pass
-                self.game.report(Outcome(OutcomeType.ACCURATE_PASS, player_id=self.player_from.player_id, rolls=[roll]))
+                self.game.report(Outcome(OutcomeType.ACCURATE_PASS, player_id=self.player_from.player_id, rolls=[self.pass_roll]))
                 self.game.state.field.move_ball(self.pos_to)
                 TurnoverIfPossessionLost(self.game, self.home)
                 Catch(self.game, self.home, self.player_to.player_id, self.pos_to, accurate=True)
@@ -1640,10 +1647,10 @@ class PassAction(Procedure):
             elif result == 1 or mod_result <= 1:
                 # Fumble
                 self.fumble = True
-                self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_from.player_id, pos=self.pos_from, rolls=[roll]))
+                self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_from.player_id, pos=self.pos_from, rolls=[self.pass_roll]))
             else:
                 # Inaccurate pass
-                self.game.report(Outcome(OutcomeType.INACCURATE_PASS, player_id=self.player_from.player_id, pos=self.pos_from, rolls=[roll]))
+                self.game.report(Outcome(OutcomeType.INACCURATE_PASS, player_id=self.player_from.player_id, pos=self.pos_from, rolls=[self.pass_roll]))
 
             # Check if player has pass
             if self.player_from.has_skill(Skill.PASS) and not self.pass_used:
