@@ -164,7 +164,7 @@
             </div>
             <div class="field {{ game.state.weather.toLowerCase().replace('_','') }}">
                 <div class="square-row" ng-repeat="row in local_state.board.slice(1, local_state.board.length-1)">
-                    <div class="square {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ local_state.board[$parent.$index+1][$index+1].available ? 'green' + local_state.board[$parent.$index+1][$index+1].agi_roll : '' }}"
+                    <div class="square {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ getAvailable(local_state.board[$parent.$index+1][$index+1]) ? 'green' + getAgiRolls(local_state.board[$parent.$index+1][$index+1])[0] : '' }}"
                          ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])"
                          ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])"
                          style="{{ getCursor(local_state.board[$parent.$index+1][$index+1]) }}">
@@ -209,8 +209,8 @@
                         </svg>
                         -->
                         <div class="agi-rolls">
-                            <span class="agi agi-{{local_state.board[$parent.$parent.$index+1][$parent.$index+1].agi_rolls.length}}" ng-repeat="roll in local_state.board[$parent.$index+1][$index+1].agi_rolls track by $index">
-                                {{ local_state.board[$parent.$parent.$index+1][$parent.$index+1].agi_rolls[$index] }}+
+                            <span class="agi agi-{{getAgiRolls(local_state.board[$parent.$parent.$index+1][$parent.$index+1]).length}}" ng-repeat="roll in getAgiRolls(local_state.board[$parent.$index+1][$index+1]) track by $index">
+                                {{ getAgiRolls(local_state.board[$parent.$parent.$index+1][$parent.$index+1])[$index] }}+
                             </span>
                         </div>
                         <div class="playericon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].player != null">

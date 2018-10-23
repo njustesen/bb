@@ -107,10 +107,26 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             player_positions: {}
         };
 
+        $scope.getAvailable = function getAvailable(square){
+            if (square.special_action_type === "PASS" && $scope.passOptions) {
+                return square.special_available;
+            } else {
+                return square.available;
+            }
+        };
+
+        $scope.getAgiRolls = function getAgiRolls(square){
+            if (square.special_action_type === "PASS" && $scope.passOptions) {
+                return square.special_agi_rolls;
+            } else {
+                return square.agi_rolls;
+            }
+        };
+
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey){
                 $scope.passOptions = !$scope.passOptions;
-                $scope.setAvailablePositions();
+                $scope.$apply();
             }
         });
 
@@ -301,6 +317,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_players = [];
             $scope.available_interception_players = [];
             $scope.available_interception_rolls = [];
+            $scope.available_special_pass_actions = [];
+            $scope.available_special_rolls = [];
             $scope.main_action = null;
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
@@ -399,34 +417,26 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
 
             // Pass squares
-            let anyPass = false;
             for (let i in $scope.available_pass_positions) {
                 let pos = $scope.available_pass_positions[i];
                 let player = $scope.local_state.board[pos.y][pos.x].player;
-                // If pass options are off, only show if square has team mate
-                if (!$scope.passOptions && player === null) {
-                    $scope.clearSquareAction($scope.local_state.board[pos.y][pos.x]);
-                    continue;
+                if (player !== null){
+                    let team = $scope.teamOfPlayer(player);
+                    let player_state = $scope.playerState(player);
+                    if ((team === $scope.game.home_team) === $scope.local_state.team_turn &&
+                            player_state !== "DOWN" && player_state !== "STUNNED" && player_state !== "DOWN_USED") {
+                        $scope.local_state.board[pos.y][pos.x].available = true;
+                        $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
+                        if ($scope.available_pass_rolls.length > i) {
+                            $scope.local_state.board[pos.y][pos.x].agi_rolls = $scope.available_pass_rolls[i];
+                        }
+                    }
                 }
-                if (!$scope.passOptions && player !== null && ($scope.teamOfPlayer(player) === $scope.game.home_team) !== $scope.local_state.team_turn) {
-                    $scope.clearSquareAction($scope.local_state.board[pos.y][pos.x]);
-                    continue;
+                $scope.local_state.board[pos.y][pos.x].special_available = true;
+                $scope.local_state.board[pos.y][pos.x].special_action_type = "PASS";
+                if ($scope.available_pass_rolls.length > i) {
+                    $scope.local_state.board[pos.y][pos.x].special_agi_rolls = $scope.available_pass_rolls[i];
                 }
-                if (!$scope.passOptions && player !== null && ($scope.playerState(player) === "DOWN" || $scope.playerState(player) === "STUNNED" || $scope.playerState(player) === "DOWN_USED")) {
-                    $scope.clearSquareAction($scope.local_state.board[pos.y][pos.x]);
-                    continue;
-                }
-                $scope.local_state.board[pos.y][pos.x].available = true;
-                $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
-                if ($scope.available_pass_rolls.length > i){
-                    $scope.local_state.board[pos.y][pos.x].agi_rolls = $scope.available_pass_rolls[i];
-                }
-                anyPass = true;
-            }
-
-            // Skip other than pass options
-            if (anyPass && $scope.passOptions){
-                return;
             }
 
             // Interception squares
