@@ -722,7 +722,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             if ($scope.main_action != null && $scope.getAvailable(square)){
 
                 // Hot-fix for interceptions
-                if ($scope.main_action.action_type === 'INTERCEPTION'){
+                if ($scope.main_action.action_type === 'INTERCEPTION' || $scope.main_action.action_type === "SELECT_PLAYER"){
                     $scope.selected_square = square;
                 }
 
