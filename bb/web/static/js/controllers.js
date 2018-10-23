@@ -123,6 +123,14 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         };
 
+        $scope.getActionType = function getActionType(square){
+            if (square.special_action_type === "PASS" && $scope.passOptions) {
+                return square.special_action_type;
+            } else {
+                return square.action_type;
+            }
+        };
+
         document.addEventListener('keydown', function(event) {
             if (event.ctrlKey){
                 $scope.passOptions = !$scope.passOptions;
@@ -284,8 +292,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 player_icon: player_icon,
                 selected: false,
                 available: false,
+                special_available: false,
                 action_type: undefined,
+                special_action_type: undefined,
                 agi_roll: 0,
+                special_agi_roll: 0,
                 roll: false,
                 block_roll: 0,
                 area: area,
@@ -696,7 +707,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 'pos_to': square.area === 'field' ? {'x': square.x, 'y': square.y} : null,
                 'team_home': null,
                 'idx': -1,
-                'action_type': square.action_type
+                'action_type': $scope.getActionType(square)
             };
         };
 
@@ -708,18 +719,18 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
 
             // If position is available
-            if ($scope.main_action != null && square.available){
+            if ($scope.main_action != null && $scope.getAvailable(square)){
 
                 // Hot-fix for interceptions
                 if ($scope.main_action.action_type === 'INTERCEPTION'){
                     $scope.selected_square = square;
                 }
 
-                // If action does notrequires a selected player or a player is selected
-                if ($scope.main_action.player_ids.length == 0 || ($scope.selectedPlayer() != null)){
+                // If action does not require a selected player or a player is selected
+                if ($scope.main_action.player_ids.length === 0 || ($scope.selectedPlayer() != null)){
 
-                    // If the user clicked on an available square and a player is selected or only one player available
-                    if (square.available && ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null)){
+                    // If player is selected or only one player available
+                    if ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null){
 
                         // Convert dugout squares to field (crowd) squares if push procedure
                         let crowd = $scope.game.stack[$scope.game.stack.length-1] === "Push" && square.area.startsWith("dugout");
@@ -758,13 +769,13 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
             if (square.player == null){
                 // Clicked on an empty square with no selected player
-                if ($scope.available_players.length != 1) {
+                if ($scope.available_players.length !== 1) {
                     $scope.resetSquares(true);
                 }
                 $scope.setAvailablePositions();
             } else {
                 // Clicked on a player - select it - unless only non-player actions
-                if ($scope.main_action == null || $scope.main_action.action_type != "PLACE_BALL"){
+                if ($scope.main_action == null || $scope.main_action.action_type !== "PLACE_BALL"){
                     if ($scope.available_players.length !== 1){
                         $scope.resetSquares(true);
                         $scope.select(square);

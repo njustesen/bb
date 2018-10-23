@@ -1641,7 +1641,11 @@ class PassAction(Procedure):
                 self.game.report(Outcome(OutcomeType.ACCURATE_PASS, player_id=self.player_from.player_id, rolls=[self.pass_roll]))
                 self.game.state.field.move_ball(self.pos_to)
                 TurnoverIfPossessionLost(self.game, self.home)
-                Catch(self.game, self.home, self.player_to.player_id, self.pos_to, accurate=True)
+                if self.player_to is not None:
+                    Catch(self.game, self.home, self.player_to.player_id, self.pos_to, accurate=True)
+                else:
+                    self.game.state.field.move(self.pos_to)
+                    Bounce(self.game, self.home)
                 return True
 
             elif result == 1 or mod_result <= 1:

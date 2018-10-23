@@ -447,16 +447,14 @@ class Field:
         return squares, distances
 
     def pass_distance(self, pos_from, pos_to):
-        distance = pos_from.distance(pos_to, flight=True)
-        if distance <= 3.5:
-            return PassDistance.QUICK_PASS
-        if distance <= 6.5:
-            return PassDistance.SHORT_PASS
-        if distance <= 10.5:
-            return PassDistance.LONG_PASS
-        if distance <= 13.5:
-            return PassDistance.LONG_BOMB
-        return PassDistance.HAIL_MARY
+        distance_x = abs(pos_from.x - pos_to.x)
+        distance_y = abs(pos_from.y - pos_to.y)
+        if distance_y >= len(Rules.pass_matrix) or distance_x >= len(Rules.pass_matrix[0]):
+            return PassDistance.HAIL_MARY
+        distance = Rules.pass_matrix[distance_y][distance_x]
+        if distance == 5:
+            return PassDistance.HAIL_MARY
+        return PassDistance(distance)
 
     def interceptors(self, pos_from, pos_to, home):
         """
