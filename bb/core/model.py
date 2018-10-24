@@ -615,7 +615,7 @@ class Arena:
         """
         :param pos:
         :param team: True if home team and False if away team.
-        :return: Whether pos is within team's touchdown zone (such that they would score)
+        :return: Whether pos is within team's touchdown zone (where they score)
         """
         if team:
             return self.board[pos.y][pos.x] == Tile.AWAY_TOUCHDOWN

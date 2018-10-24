@@ -145,9 +145,9 @@ appServices.factory('GameLogService', function() {
             'PUSHED': "<player> was pushed.",
             'ACCURATE_PASS': "<player> threw an <b>accurate</b> pass.",
             'INACCURATE_PASS': "<player> threw an <b>inaccurate</b> pass.",
-            'FUMBLE': "<b>Fumble!</b>",
+            'FUMBLE': "<player> <b>fumbled</b> the ball</b>",
             'CATCH_FAILED': "<player> failed to catch the ball.",
-            "CATCH": " <player> catched the ball.",
+            "CATCH": " <player> <b>catched</b> the ball.",
             'BALL_SCATTER': "The ball scattered.",
             "BALL_BOUNCED": "The ball bounced",
             "GENTLE_GUST_OUT_OF_BOUNDS": "A gentle gust makes the ball scatter out of bounds.",
@@ -162,7 +162,10 @@ appServices.factory('GameLogService', function() {
             "PLAYER_EJECTED": "<player> was <b>ejected!</b>",
             "BLOCK_ROLL": "<player> blocks <opp_player>",
             "REROLL_USED": "<team> uses a <b>reroll</b>.",
-            "INTERCEPTION_FAILED": "<player> failed to intercept the pass."
+            "INTERCEPTION_FAILED": "<player> failed to intercept the pass.",
+            "THROW_IN_OUT_OF_BOUNDS": "The ball was thrown out of bounds again.",
+            "THROW_IN": "The ball was thrown back in by the fans."
+
         }
     };
 });

@@ -164,6 +164,8 @@ class OutcomeType(Enum):
     TURN_ADDED = 121
     TURN_SKIPPED = 122
     BALL_BOUNCED = 123
+    THROW_IN = 124
+    THROW_IN_OUT_OF_BOUNDS = 125
 
 
 class PlayerActionType(Enum):

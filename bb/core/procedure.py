@@ -405,6 +405,9 @@ class Bounce(Procedure):
         else:
             # Out of bounds
             if self.game.state.field.is_ball_out():
+                # Move ball back
+                self.game.state.field.ball_position.x -= x
+                self.game.state.field.ball_position.y -= y
                 ThrowIn(self.game, self.home, self.game.state.field.ball_position)
                 self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
                                          team_home=self.home, rolls=[roll_scatter]))
@@ -531,9 +534,14 @@ class Catch(Procedure):
                 if self.interception:
                     self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id, rolls=[roll]))
                     self.game.state.field.move_ball(self.pos)
-                    Turnover(self.game, not self.home)
+                    if self.game.arena.is_touchdown(self.pos, self.home):
+                        Touchdown(self.game, self.home, self.player_id)
+                    else:
+                        Turnover(self.game, not self.home)
                 else:
                     self.game.report(Outcome(OutcomeType.CATCH, player_id=self.player_id, rolls=[roll]))
+                    if self.game.arena.is_touchdown(self.pos, self.home):
+                        Touchdown(self.game, self.home, self.player_id)
                 return True
             else:
 
@@ -1662,9 +1670,10 @@ class PassAction(Procedure):
             # Check if player has pass
             if self.player_from.has_skill(Skill.PASS) and not self.pass_used:
                 self.pass_used = True
-                self.waiting_for_pass = True
+                self.pass_roll = None
                 self.game.report(Outcome(OutcomeType.SKILL_USED, player_id=self.player_from.player_id, skill=Skill.PASS))
-                return False
+                self.fumble = False
+                return self.step(None)
 
             # Check if reroll available
             if self.game.state.can_use_reroll(self.home) and not self.pass_used and not self.reroll_used:
@@ -1680,23 +1689,6 @@ class PassAction(Procedure):
                 self.game.state.field.move_ball(self.pos_to)
                 Scatter(self.game, self.home, is_pass=True)
 
-            return True
-
-        # If pass skill is used
-        if self.waiting_for_pass:
-            if action.action_type == ActionType.USE_SKILL:
-                self.pass_used = True
-                self.pass_roll = None
-                self.fumble = False
-                return self.step(None)
-            elif self.fumble:
-                Turnover(self.game, self.home)
-                Bounce(self.game, self.home)
-                return True
-
-            TurnoverIfPossessionLost(self.game, self.home)
-            self.game.state.field.move_ball(self.pos_to)
-            Scatter(self.game, self.home, is_pass=True)
             return True
 
         # If re-roll used
@@ -1786,6 +1778,8 @@ class Pickup(Procedure):
             self.rolled = True
             if roll.is_d6_success():
                 self.game.report(Outcome(OutcomeType.SUCCESSFUL_PICKUP, player_id=self.player_id, rolls=[roll]))
+                if self.game.arena.is_touchdown(self.pos, self.home):
+                    Touchdown(self.game, self.home, self.player_id)
                 return True
             else:
                 self.game.report(
@@ -2582,55 +2576,56 @@ class ThrowIn(Procedure):
     def step(self, action):
 
         # Roll
-        roll_scatter = DiceRoll([D3()], roll_type=RollType.SCATTER_ROLL)
+        roll_direction = DiceRoll([D3()], roll_type=RollType.SCATTER_ROLL)
         roll_distance = DiceRoll([D6(), D6()], roll_type=RollType.DISTANCE_ROLL)
 
         # Scatter
         x = 0
         y = 0
-        if self.pos.x < 0:  # Above
-            y = -1
-        elif self.pos.x > len(self.game.arena.board[0]):  # Below
-            y = 1
-        elif self.pos.y < 0:  # Right
-            x = 1
-        elif self.pos.y < len(self.game.arena.board):  # Left
-            x = -1
 
-        if roll_scatter.get_sum() == 1:
-            if x == 0:
-                x = -1
-            elif y == 0:
-                y = 1
-        if roll_scatter.get_sum() == 3:
-            if x == 0:
-                x = 1
-            elif y == 0:
-                y = -1
+        if self.pos.y == 1 and self.pos.x == 1:  # Top left corner
+            y = 0 if roll_direction.get_sum() == 1 else 1
+            x = 0 if roll_direction.get_sum() == 3 else 1
+        elif self.pos.y == 1 and self.pos.x == len(self.game.arena.board[0])-2:  # Top right corner
+            y = 0 if roll_direction.get_sum() == 3 else 1
+            x = 0 if roll_direction.get_sum() == 1 else -1
+        elif self.pos.y == len(self.game.arena.board)-2 and self.pos.x == len(self.game.arena.board[0])-2:  # Bottom right corner
+            y = 0 if roll_direction.get_sum() == 1 else -1
+            x = 0 if roll_direction.get_sum() == 3 else -1
+        elif self.pos.y == len(self.game.arena.board)-2 and self.pos.x == 1:  # Bottom left corner
+            y = 0 if roll_direction.get_sum() == 3 else -1
+            x = 0 if roll_direction.get_sum() == 1 else 1
+        elif self.pos.y == 1:  # Above
+            y = 1
+            x = -1 if roll_direction.get_sum() == 3 else 1
+        elif self.pos.y == len(self.game.arena.board)-2:  # Below
+            y = -1
+            x = -1 if roll_direction.get_sum() == 1 else 1
+        elif self.pos.x == 1:  # Right
+            x = 1
+            y = -1 if roll_direction.get_sum() == 3 else 1
+        elif self.pos.x == len(self.game.arena.board[0])-2:  # Left
+            x = -1
+            y = -1 if roll_direction.get_sum() == 1 else 1
 
         for i in range(roll_distance.get_sum()):
             self.game.state.field.ball_position.x += x
             self.game.state.field.ball_position.y += y
             if self.game.state.field.is_ball_out():
                 # Move ball back
-                #self.game.state.field.ball_position.x -= x
-                #self.game.state.field.ball_position.y -= y
+                self.game.state.field.ball_position.x -= x
+                self.game.state.field.ball_position.y -= y
                 ThrowIn(self.game, self.home, self.game.state.field.ball_position)
-                self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
-                                         team_home=self.home, rolls=[roll_scatter, roll_distance]))
+                self.game.report(Outcome(OutcomeType.THROW_IN_OUT_OF_BOUNDS, pos=self.game.state.field.ball_position,
+                                         team_home=self.home, rolls=[roll_direction, roll_distance]))
                 return True
+
+        self.game.report(Outcome(OutcomeType.THROW_IN, pos=self.game.state.field.ball_position, team_home=self.home, rolls=[roll_direction, roll_distance]))
 
         # On player -> Catch
         player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
         if player_id is not None:
             Catch(self.game, self.game.get_home_by_player_id(player_id), player_id, self.game.state.field.ball_position)
-            self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.game.state.field.ball_position,
-                                     player_id=player_id, rolls=[roll_scatter]))
-
-        # On ground
-        else:
-            self.game.report(Outcome(OutcomeType.BALL_ON_GROUND, pos=self.game.state.field.ball_position,
-                                     team_home=self.home, rolls=[roll_scatter, roll_distance]))
 
         return True
 
