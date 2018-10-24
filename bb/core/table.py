@@ -163,6 +163,7 @@ class OutcomeType(Enum):
     INTERCEPTION_FAILED = 120
     TURN_ADDED = 121
     TURN_SKIPPED = 122
+    BALL_BOUNCED = 123
 
 
 class PlayerActionType(Enum):

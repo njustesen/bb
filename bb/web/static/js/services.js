@@ -149,6 +149,7 @@ appServices.factory('GameLogService', function() {
             'CATCH_FAILED': "<player> failed to catch the ball.",
             "CATCH": " <player> catched the ball.",
             'BALL_SCATTER': "The ball scattered.",
+            "BALL_BOUNCED": "The ball bounced",
             "GENTLE_GUST_OUT_OF_BOUNDS": "A gentle gust makes the ball scatter out of bounds.",
             "GENTLE_GUST_OPP_FIELD": "A gentle gust makes the ball scatter into the opponents half.",
             "GENTLE_GUST_IN_BOUNDS": "A gentle gust makes the ball scatter an additional square.",

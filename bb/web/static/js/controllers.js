@@ -228,7 +228,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 return "cursor: url(static/img/icons/actions/block.gif), auto";
             } else if (square.available && square.action_type === "FOUL"){
                 return "cursor: url(static/img/icons/actions/foul.gif), auto";
-            } else if (square.available && square.action_type === "PASS"){
+            } else if (square.available && (square.action_type === "PASS" || square.action_type === "PASS")){
                 return "cursor: url(static/img/icons/actions/pass.gif), auto";
             }
             return "";
