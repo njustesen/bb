@@ -954,7 +954,8 @@ class GetTheRef(Procedure):
     def step(self, action):
         self.game.state.home_state.bribes += 1
         self.game.state.away_state.bribes += 1
-        self.game.report(Outcome(OutcomeType.GET_THE_REF))
+        self.game.report(Outcome(OutcomeType.EXTRA_BRIBE, team_home=True))
+        self.game.report(Outcome(OutcomeType.EXTRA_BRIBE, team_home=False))
         return True
 
     def available_actions(self):
@@ -990,7 +991,10 @@ class Riot(Procedure):
 
         self.game.state.get_team_state(self.home).turn += self.effect
         self.game.state.get_team_state(not self.home).turn += self.effect
-        self.game.report(Outcome(OutcomeType.RIOT, n=self.effect, rolls=[] if roll is None else [roll]))
+        if self.effect == -1:
+            self.game.report(Outcome(OutcomeType.TURN_ADDED, rolls=[] if roll is None else [roll]))
+        if self.effect == 1:
+            self.game.report(Outcome(OutcomeType.TURN_SKIPPED, rolls=[] if roll is None else [roll]))
         return True
 
     def available_actions(self):
@@ -1046,10 +1050,10 @@ class CheeringFans(Procedure):
 
         if rh >= ra:
             self.game.state.home_state.rerolls += 1
-            self.game.report(Outcome(OutcomeType.CHEERING_FANS, team_home=True, rolls=[roll_home, roll_away]))
+            self.game.report(Outcome(OutcomeType.EXTRA_REROLL, team_home=True, rolls=[roll_home, roll_away]))
         if ra >= rh:
             self.game.state.away_state.rerolls += 1
-            self.game.report(Outcome(OutcomeType.CHEERING_FANS, team_home=False, rolls=[roll_home, roll_away]))
+            self.game.report(Outcome(OutcomeType.EXTRA_REROLL, team_home=False, rolls=[roll_home, roll_away]))
 
         return True
 
@@ -1078,10 +1082,10 @@ class BrilliantCoaching(Procedure):
 
         if rh >= ra:
             self.game.state.home_state.rerolls += 1
-            self.game.report(Outcome(OutcomeType.BRILLIANT_COACHING, team_home=True, rolls=[roll_home, roll_away]))
+            self.game.report(Outcome(OutcomeType.EXTRA_REROLL, team_home=True, rolls=[roll_home, roll_away]))
         if ra >= rh:
             self.game.state.away_state.rerolls += 1
-            self.game.report(Outcome(OutcomeType.BRILLIANT_COACHING, team_home=False, rolls=[roll_home, roll_away]))
+            self.game.report(Outcome(OutcomeType.EXTRA_REROLL, team_home=False, rolls=[roll_home, roll_away]))
 
         return True
 
@@ -1143,13 +1147,13 @@ class PitchInvasionRoll(Procedure):
 
         if result >= 6:
             if self.game.get_player(self.player_id).has_skill(Skill.BALL_AND_CHAIN):
-                self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home))
-                KnockOut(self.game, self.home, self.player_id)
+                self.game.report(Outcome(OutcomeType.KNOCKED_OUT, rolls=[roll], player_id=self.player_id, team_home=self.home))
+                KnockOut(self.game, self.home, self.player_id, roll=roll)
             else:
                 self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.STUNNED)
-                self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerReadyState.STUNNED.name))
+                self.game.report(Outcome(OutcomeType.STUNNED, rolls=[roll], player_id=self.player_id, team_home=self.home))
         else:
-            self.game.report(Outcome(OutcomeType.PITCH_INVASION_ROLL, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerReadyState.READY.name))
+            self.game.report(Outcome(OutcomeType.PLAYER_READY, rolls=[roll], player_id=self.player_id, team_home=self.home, n=PlayerReadyState.READY.name))
 
         return True
 
@@ -1294,10 +1298,10 @@ class Move(Procedure):
         self.player_id = player_id
         self.from_pos = from_pos
         self.to_pos = to_pos
-        if gfi:
-            GFI(game, home, player_id, from_pos, to_pos)
         if dodge:
             Dodge(game, home, player_id, from_pos, to_pos)
+        if gfi:
+            GFI(game, home, player_id, from_pos, to_pos)
 
     def step(self, action):
 
@@ -1567,7 +1571,7 @@ class Handoff(Procedure):
         self.game.state.field.ball_position = self.pos_to
         TurnoverIfPossessionLost(self.game, self.home)
         Catch(self.game, self.home, self.player_to_id, self.pos_to, handoff=True)
-        self.game.report(Outcome(OutcomeType.COMPLETE_HANDOFF, player_id=self.player_id, opp_player_id=self.player_to_id))
+        self.game.report(Outcome(OutcomeType.HANDOFF, player_id=self.player_id, opp_player_id=self.player_to_id))
         return True
 
     def available_actions(self):

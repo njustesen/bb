@@ -193,6 +193,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     let player = $scope.getPlayer(report.player_id);
                     let team = $scope.teamOfPlayer(player);
                     line = line.replace("<player>", "<span class='label label-" + (team.team_id === $scope.game.home_team.team_id ? ("danger'>" + player.nr + ". " + player.name) : ("primary'>" + player.nr + ". " + player.name)) + "</span> " );
+                    line = line.replace("<players>", "<span class='label label-" + (team.team_id === $scope.game.home_team.team_id ? ("danger'>" + player.nr + ". " + player.name) : ("primary'>" + player.nr + ". " + player.name + "'s")) + "</span> " );
                 }
                 return line;
             }
