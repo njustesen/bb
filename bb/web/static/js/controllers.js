@@ -87,6 +87,7 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
 appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location', '$sce', 'GameService', 'IconService', 'GameLogService',
     function GamePlayCtrl($scope, $routeParams, $location, $sce, GameService, IconService, GameLogService) {
         $scope.game = {};
+        $scope.reportsLimit = 20;
         $scope.saved = false;
         $scope.loading = true;
         $scope.refreshing = false;
@@ -885,12 +886,17 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return pretty.charAt(0).toUpperCase() + pretty.slice(1);
         };
 
+        $scope.showAllReports = function showAllReports(){
+            $scope.reportsLimit=10000;
+        };
+
         $scope.act = function act(action){
             console.log(action);
             if (action.action_type === "END_TURN" || action.action_type === "PASS"){
                 $scope.resetSquares(true);
             }
             $scope.refreshing = true;
+            $scope.reportsLimit = 20;
             GameService.act($scope.game.game_id, action).success(function(data) {
                 $scope.game = data;
                 console.log(data);

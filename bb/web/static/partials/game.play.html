@@ -354,7 +354,7 @@
                 </span>
             </div>
             <div id="gamelog" class="gamelog">
-                <div ng-repeat="report in game.reports | reverse" ng-if="showReport(report)" class="report">
+                <div ng-repeat="report in game.reports | reverse | limitTo:reportsLimit" ng-if="showReport(report)" class="report">
                     <div ng-repeat="roll in report.rolls | reverse" class="roll">
                         <span ng-repeat="die in roll.dice" class="die {{die.die_type == 'BB' ? die.die_type+'-'+die.result.toLowerCase() : die.die_type+'-'+die.result }}">
 
@@ -367,6 +367,7 @@
                         <span ng-bind-html="reportBlock(report)"></span>
                     </div>
                 </div>
+                <div class="text-center"><button ng-if="reportsLimit <= 20" class="btn btn-default text-center" ng-click="showAllReports()">Show all</button></div>
             </div>
         </div>
 
