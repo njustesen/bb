@@ -144,6 +144,8 @@
     <div class="gamecontent">
 
         <div class="square-row">
+            <div class="hint text-center" ng-if="passHint && !passOptions">Press Ctrl to show all pass actions.</div>
+            <div class="hint text-center" ng-if="passHint && passOptions">Press Ctrl to show move actions.</div>
             <div class="square {{ local_state.board[0][$index-1].selected ? 'selected' : '' }} {{ local_state.board[0][$index-1].available_position ? 'green' : '' }}" ng-repeat="n in [] | range:local_state.board[0].length + 2" ng-click="square(local_state.board[0][$index-1])"></div>
         </div>
 

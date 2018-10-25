@@ -99,6 +99,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.modalVisible = false;
         $scope.modelError = false;
         $scope.passOptions = false;
+        $scope.passHint = false;
         $scope.local_state = {
             ball_position: null,
             ball_in_air: null,
@@ -332,6 +333,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.available_interception_rolls = [];
             $scope.available_special_pass_actions = [];
             $scope.available_special_rolls = [];
+            $scope.passHint = false;
             $scope.main_action = null;
             for (let idx in $scope.game.available_actions){
                 let action = $scope.game.available_actions[idx];
@@ -346,6 +348,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         } else if (action.action_type === "PASS"){
                             $scope.available_pass_positions = action.positions;
                             $scope.available_pass_rolls = action.agi_rolls;
+                            $scope.passHint = true;
                         } else if (action.action_type === "HANDOFF"){
                             $scope.available_handoff_positions = action.positions;
                         } else if (action.action_type === "FOUL"){
