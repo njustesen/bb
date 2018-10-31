@@ -100,6 +100,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.modelError = false;
         $scope.passOptions = false;
         $scope.passHint = false;
+        $scope.gridClass = 'none';
         $scope.local_state = {
             ball_position: null,
             ball_in_air: null,

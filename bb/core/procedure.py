@@ -53,7 +53,7 @@ class Apothecary(Procedure):
                 # Player is KO
                 self.game.state.field.remove(self.player_id)
                 self.game.state.get_dugout(self.home).kod.append(self.player_id)
-                self.game.state.set_player_ready_state(self.home, self.player_id, PlayerReadyState.KOD)
+                self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.KOD)
                 self.game.report(Outcome(OutcomeType.APOTHECARY_USED_KO, player_id=self.player_id, team_home=self.home))
 
             return True
@@ -365,12 +365,15 @@ class Block(Procedure):
 
 class Bounce(Procedure):
 
-    def __init__(self, game, home, kick=False):
+    def __init__(self, game, kick=False):
         super().__init__(game)
-        self.home = home  # With turn / kicking team
+        self.home = self.game.state.team_turn  # With turn / kicking team
         self.kick = kick
 
     def step(self, action):
+
+        # Loose control
+        self.game.state.field.ball_in_control = False
 
         # Roll
         roll_scatter = DiceRoll([D8()], roll_type=RollType.BOUNCE_ROLL)
@@ -465,7 +468,7 @@ class Casualty(Procedure):
             if self.effect == CasualtyEffect.NONE:
                 self.game.report(Outcome(OutcomeType.BADLY_HURT, player_id=self.player_id, team_home=self.home, rolls=[self.roll]))
             elif self.effect in Casualty.miss_next_game:
-                self.game.report(Outcome(OutcomeType.MISS_NEXT_GAME, player_id=self.player_id, team_home=self.home, rolls=[self.roll], n=str(self.effect).lower().replace("_", " ")))
+                self.game.report(Outcome(OutcomeType.MISS_NEXT_GAME, player_id=self.player_id, team_home=self.home, rolls=[self.roll], n=self.effect.name))
             elif self.effect == CasualtyEffect.DEAD:
                 self.game.report(Outcome(OutcomeType.DEAD, player_id=self.player_id, team_home=self.home, rolls=[self.roll]))
 
@@ -518,7 +521,7 @@ class Catch(Procedure):
             # Can player even catch ball?
             player = self.game.get_player(self.player_id)
             if player.has_skill(Skill.NO_HANDS) or self.game.state.get_player_ready_state(self.player_id, self.home) not in Rules.catchable:
-                Bounce(self.game, self.home)
+                Bounce(self.game)
                 self.game.report(Outcome(OutcomeType.BALL_DROPPED, player_id=self.player_id))
                 return True
 
@@ -533,13 +536,14 @@ class Catch(Procedure):
             if roll.is_d6_success():
                 if self.interception:
                     self.game.report(Outcome(OutcomeType.INTERCEPTION, player_id=self.player_id, rolls=[roll]))
-                    self.game.state.field.move_ball(self.pos)
+                    self.game.state.field.move_ball(self.pos, control=True)
                     if self.game.arena.is_touchdown(self.pos, self.home):
                         Touchdown(self.game, self.home, self.player_id)
                     else:
                         Turnover(self.game, not self.home)
                 else:
                     self.game.report(Outcome(OutcomeType.CATCH, player_id=self.player_id, rolls=[roll]))
+                    self.game.state.field.ball_in_control = True
                     if self.game.arena.is_touchdown(self.pos, self.home):
                         Touchdown(self.game, self.home, self.player_id)
                 return True
@@ -563,7 +567,7 @@ class Catch(Procedure):
                     self.waiting_for_reroll = True
                     return False
 
-                Bounce(self.game, self.home)
+                Bounce(self.game)
                 return True
 
         # If catch used
@@ -581,7 +585,7 @@ class Catch(Procedure):
                 self.rolled = False
                 return self.step(None)
             else:
-                Bounce(self.game, self.home)
+                Bounce(self.game)
 
         return True
 
@@ -731,6 +735,9 @@ class Half(Procedure):
     def step(self, action):
         if self.half == 1:
             self.game.report(Outcome(OutcomeType.END_OF_FIRST_HALF))
+            self.game.state.half = 2
+            self.game.state.home_state.turn = 0
+            self.game.state.away_state.turn = 0
         elif self.half == 2:
             self.game.report(Outcome(OutcomeType.END_OF_SECOND_HALF))
         return True
@@ -765,7 +772,6 @@ class Injury(Procedure):
         # Roll
         roll = DiceRoll([D6(), D6()], roll_type=RollType.INJURY_ROLL)
         result = roll.get_sum()
-        result = 12 # TODO: REMOVE
         self.injury_rolled = True
 
         # Skill modifiers
@@ -848,7 +854,7 @@ class Touchback(Procedure):
 
     def step(self, action):
         pos = self.game.state.field.get_player_position(action.player_from_id)
-        self.game.state.field.move_ball(pos)
+        self.game.state.field.move_ball(pos, control=True)
         self.game.report(Outcome(OutcomeType.TOUCHBACK_BALL_PLACED, player_id=action.player_from_id, pos=pos))
         return True
 
@@ -878,7 +884,7 @@ class LandKick(Procedure):
             self.game.state.field.ball_in_air = False
             player_id = self.game.state.field.get_player_id_at(self.game.state.field.ball_position)
             if player_id is None:
-                Bounce(self.game, home=self.home, kick=True)
+                Bounce(self.game, kick=True)
                 self.game.report(Outcome(OutcomeType.BALL_HIT_GROUND, pos=self.game.state.field.ball_position,
                                          team_home=self.home))
             else:
@@ -1001,16 +1007,26 @@ class Riot(Procedure):
         self.game.state.get_team_state(not self.home).turn += self.effect
         if self.effect == -1:
             self.game.report(Outcome(OutcomeType.TURN_ADDED, rolls=[] if roll is None else [roll]))
+            for idx in reversed(range(self.game.stack.size())):
+                if isinstance(self.game.stack.items[idx], Turn):
+                    home = self.game.stack.items[idx].home
+                    self.game.stack.items.insert(idx, Turn(self, home=home, half=self.game.state.half, turn=max(0, self.game.state.get_team_state(self.home).turn - 1)))
+                    self.game.stack.items.insert(idx, Turn(self, home=not home, half=self.game.state.half, turn=max(0, self.game.state.get_team_state(not self.home).turn - 1)))
+                    break
         if self.effect == 1:
             self.game.report(Outcome(OutcomeType.TURN_SKIPPED, rolls=[] if roll is None else [roll]))
+            for idx in range(self.game.stack.size()):
+                if isinstance(self.game.stack.items[idx], Turn):
+                    self.game.stack.items.pop(idx)
+                    self.game.stack.items.pop(idx)
+                    break
         return True
 
     def available_actions(self):
         return []
 
 
-class HighKick\
-            (Procedure):
+class HighKick(Procedure):
     """
     High Kick: The ball is kicked very high, allowing a player on the receiving team time to move into the
     perfect position to catch it. Any one player on the receiving team who is not in an opposing player's
@@ -1254,7 +1270,7 @@ class KnockDown(Procedure):
         # Check fumble
         pos = self.game.state.field.get_player_position(self.player_id)
         if self.game.state.field.is_ball_at(pos):
-            Bounce(self.game, self.home)
+            Bounce(self.game)
             self.game.report(Outcome(OutcomeType.FUMBLE, player_id=self.player_id, opp_player_id=self.opp_player_id))
 
         # If armor roll should be made. Injury is also nested in armor.
@@ -1287,7 +1303,7 @@ class KnockOut(Procedure):
             return True
         else:
             # Knock out player
-            self.game.state.set_player_ready_state(self.home, self.player_id, PlayerReadyState.KOD)
+            self.game.state.set_player_ready_state(self.player_id, self.home, PlayerReadyState.KOD)
             self.game.state.field.remove(self.player_id)
             self.game.state.get_dugout(self.home).kod.append(self.player_id)
             self.game.report(Outcome(OutcomeType.KNOCKED_OUT, rolls=[self.roll], player_id=self.player_id, team_home=self.home))
@@ -1313,25 +1329,21 @@ class Move(Procedure):
 
     def step(self, action):
 
-        # TODO: Check if in bounds
-
-        on_ball_before = self.game.state.field.has_ball(self.player_id)
         self.game.state.field.move(self.player_id, self.to_pos)
-        on_ball_after = self.game.state.field.has_ball(self.player_id)
 
         # Check if player moved onto the ball
-        if on_ball_before != on_ball_after:
+        if not self.game.state.field.has_ball(self.player_id) and self.game.state.field.is_ball_at(self.to_pos):
 
             # Attempt to pick up the ball - unless no hands
             player = self.game.get_player(self.player_id)
             if player.has_skill(Skill.NO_HANDS):
-                Bounce(self.game, self.home)
+                Bounce(self.game)
                 return True
             else:
                 Pickup(self.game, self.home, self.player_id, self.to_pos, cause_turnover=True)
                 return True
 
-        elif on_ball_before and self.game.arena.is_touchdown(self.to_pos, self.home):
+        elif self.game.state.field.has_ball(self.player_id) and self.game.arena.is_touchdown(self.to_pos, self.home):
 
             # Touchdown if player had the ball with him/her
             Touchdown(self.game, self.home, self.player_id)
@@ -1656,7 +1668,7 @@ class PassAction(Procedure):
                 if self.player_to is not None:
                     Catch(self.game, self.home, self.player_to.player_id, self.pos_to, accurate=True)
                 else:
-                    Bounce(self.game, self.home)
+                    Bounce(self.game)
                 return True
 
             elif result == 1 or mod_result <= 1:
@@ -1683,7 +1695,7 @@ class PassAction(Procedure):
             # Effect
             if self.fumble:
                 Turnover(self.game, self.home)
-                Bounce(self.game, self.home)
+                Bounce(self.game)
             else:
                 TurnoverIfPossessionLost(self.game, self.home)
                 self.game.state.field.move_ball(self.pos_to)
@@ -1702,7 +1714,7 @@ class PassAction(Procedure):
                 return self.step(None)
             elif self.fumble:
                 Turnover(self.game, self.home)
-                Bounce(self.game, self.home)
+                Bounce(self.game)
                 return True
 
             TurnoverIfPossessionLost(self.game, self.home)
@@ -1770,7 +1782,7 @@ class Pickup(Procedure):
 
             # Can player even handle the ball?
             if player.has_skill(Skill.NO_HANDS):
-                Bounce(self.game, self.home)
+                Bounce(self.game)
                 self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id))
                 return True
 
@@ -1778,6 +1790,7 @@ class Pickup(Procedure):
             self.rolled = True
             if roll.is_d6_success():
                 self.game.report(Outcome(OutcomeType.SUCCESSFUL_PICKUP, player_id=self.player_id, rolls=[roll]))
+                self.game.state.field.ball_in_control = True
                 if self.game.arena.is_touchdown(self.pos, self.home):
                     Touchdown(self.game, self.home, self.player_id)
                 return True
@@ -1801,7 +1814,7 @@ class Pickup(Procedure):
                 if self.cause_turnover:
                     Turnover(self.game, self.home)
 
-                Bounce(self.game, self.home)
+                Bounce(self.game)
                 self.game.report(Outcome(OutcomeType.FAILED_PICKUP, player_id=self.player_id, rolls=[roll]))
 
                 return True
@@ -1823,7 +1836,7 @@ class Pickup(Procedure):
                 # Turnover?
                 if self.cause_turnover:
                     Turnover(self.game, self.home)
-                Bounce(self.game, self.home)
+                Bounce(self.game)
 
         return True
 
@@ -2148,7 +2161,7 @@ class PlayerAction(Procedure):
                     cache[distance] = min(6, max(2, target - modifiers))
                 rolls = [cache[distance]]
                 player_to_id = self.game.state.field.get_player_id_at(position)
-                if player_to_id is not None and self.game.is_on_home_team(player_to_id) == self.home:
+                if player_to_id is not None and self.game.is_on_home_team(player_to_id) == self.home and self.game.state.get_player_ready_state() in Rules.catchable:
                     player_to = self.game.get_player(player_to_id)
                     catch_target = Catch.success[player_to.get_ag()]
                     catch_modifiers = Catch.catch_modifiers(self.game, self.home, player_to, pos=position, accurate=True)
@@ -2178,6 +2191,19 @@ class StartGame(Procedure):
         return [ActionChoice(ActionType.START_GAME, team=None)]
 
 
+class EndGame(Procedure):
+
+    def __init__(self, game):
+        super().__init__(game)
+
+    def step(self, action):
+        self.game.state.team_turn = None
+        self.game.game_over = True
+
+    def available_actions(self):
+        return []
+
+
 class Pregame(Procedure):
 
     def __init__(self, game):
@@ -2189,10 +2215,14 @@ class Pregame(Procedure):
         WeatherTable(self.game)
         Fans(self.game)
         StartGame(self.game)
-        self.done = True
 
     def step(self, action):
-        return False
+        Half(self.game, 2)
+        Half(self.game, 1)
+        self.game.state.half = 1
+        self.game.state.home_state.turn = 0
+        self.game.state.away_state.turn = 0
+        return True
 
     def available_actions(self):
         return []
@@ -2210,7 +2240,7 @@ class PreHalf(Procedure):
             if player_state.player_ready_state == PlayerReadyState.KOD and player_id not in self.checked:
                 roll = DiceRoll([D6()], roll_type=RollType.KO_READY_ROLL)
                 if roll.get_sum() >= 4:
-                    self.game.state.set_player_ready_state(self.home, player_id, PlayerReadyState.READY)
+                    self.game.state.set_player_ready_state(player_id, self.home,  PlayerReadyState.READY)
                     self.game.state.get_dugout(self.home).kod.remove(player_id)
                     self.game.state.get_dugout(self.home).reserves.append(player_id)
                     self.checked.append(player_id)
@@ -2279,10 +2309,19 @@ class Push(Procedure):
             # Move pushed player
             self.game.state.field.move(self.player_to.player_id, self.push_to)
 
+            # Ball
+            if self.game.state.field.has_ball(self.player_to.player_id):
+                if self.game.arena.is_touchdown(self.push_to, self.home):
+                    Touchdown(self.game, self.home, self.player_to.player_id)
+            elif self.game.state.field.is_ball_at(self.push_to, in_air=False):
+                Bounce(self.game)
+
             # Knock down
             if self.knock_down or self.crowd:
-                KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id), self.player_to.player_id, in_crowd=self.crowd, armor_roll=not self.crowd)
+                KnockDown(self.game, self.game.get_home_by_player_id(self.player_to.player_id),
+                          self.player_to.player_id, in_crowd=self.crowd, armor_roll=not self.crowd)
 
+            # Chain push
             if not self.chain:
                 FollowUp(self.game, self.home, self.player_from, self.follow_to)
 
@@ -2394,7 +2433,7 @@ class Scatter(Procedure):
                 self.game.state.field.ball_position.x += x
                 self.game.state.field.ball_position.y += y
 
-                if self.kick:
+                if self.kick and i == 0:
                     self.game.report(Outcome(OutcomeType.BALL_SCATTER, rolls=rolls))
 
                 # Check out of bounds
@@ -2454,7 +2493,7 @@ class Scatter(Procedure):
                 self.game.report(Outcome(OutcomeType.KICK_IN_BOUNDS, pos=self.game.state.field.ball_position, team_home=self.home, rolls=[roll_scatter, roll_distance]))
         else:
             # Bounce ball
-            Bounce(self.game, self.home)
+            Bounce(self.game)
 
         return True
 
@@ -2642,6 +2681,7 @@ class Turnover(Procedure):
     def step(self, action):
         self.game.report(Outcome(OutcomeType.TURNOVER, team_home=self.home))
         self.game.state.active_player_id = None
+        EndTurn(self.game, self.home)
         return True
 
     def available_actions(self):
@@ -2659,6 +2699,15 @@ class Touchdown(Procedure):
     def step(self, action):
         self.game.report(Outcome(OutcomeType.TOUCHDOWN, team_home=self.home, player_id=self.player_id))
         self.game.state.get_team_state(self.home).score += 1
+
+        # Scoring in opponents turn
+        if self.home != self.game.state.team_turn:
+            if self.game.state.get_team_state(self.home).turn < 8:
+                EndTurn(self.game, self.home, kickoff=True)
+            EndTurn(self.game, not self.home, kickoff=False)
+        else:
+            EndTurn(self.game, self.home, kickoff=self.game.state.get_team_state(not self.home).turn < 8)
+
         return True
 
     def available_actions(self):
@@ -2676,7 +2725,7 @@ class TurnStunned(Procedure):
         player_states = self.game.state.get_team_state(self.home).player_states
         for player_id in player_states.keys():
             if player_states[player_id].player_ready_state == PlayerReadyState.STUNNED:
-                self.game.state.get_team_state.set_player_ready_state(self.home, player_id, PlayerReadyState.DOWN_USED)
+                self.game.state.set_player_ready_state(player_id, self.home, PlayerReadyState.DOWN_USED)
                 players.append(player_id)
         self.game.report(Outcome(OutcomeType.STUNNED_TURNED))
         return True
@@ -2699,6 +2748,35 @@ class ResetTurn(Procedure):
         return []
 
 
+class EndTurn(Procedure):
+
+    def __init__(self, game, home, kickoff=False):
+        super().__init__(game)
+        self.home = home
+        self.kickoff = kickoff
+
+    def step(self, action):
+
+        # Remove all procs in the current turn - including the current turn proc.
+        x = 0
+        for i in reversed(range(self.game.stack.size())):
+            x += 1
+            if isinstance(self.game.stack.items[i], Turn):
+                break
+        for i in range(x):
+            self.game.stack.pop()
+
+        # Add kickoff procedure - if there are more turns left
+        if self.kickoff and not (self.game.state.get_team_state(not self.home).turn == 8 and self.game.state.half == 2):
+            KickOff(self.game, self.home)
+            Setup(self.game, not self.home)
+            Setup(self.game, self.home)
+            ClearBoard(self.game)
+
+    def available_actions(self):
+        return []
+
+
 class Turn(Procedure):
 
     def __init__(self, game, home, half, turn, blitz=False, quick_snap=False):
@@ -2707,6 +2785,7 @@ class Turn(Procedure):
         self.half = half
         self.turn = turn
         self.blitz = blitz
+        self.started = False
         self.quick_snap = quick_snap
         self.blitz_available = not quick_snap
         self.pass_available = not quick_snap
@@ -2724,6 +2803,14 @@ class Turn(Procedure):
         self.game.report(Outcome(outcome_type, player_id=player_id))
 
     def step(self, action):
+
+        # Update state
+        if not self.started:
+            self.started = True
+            self.game.state.team_turn = self.home
+            if not self.blitz and not self.quick_snap:
+                self.game.report(Outcome(OutcomeType.TURN_START, team_home=self.home, n=self.game.state.home_state.turn))
+                self.game.state.get_team_state(self.home).turn = self.turn
 
         # Handle End Turn action
         if action.action_type == ActionType.END_TURN:
@@ -2823,7 +2910,6 @@ class WeatherTable(Procedure):
 
     def step(self, action):
         roll = DiceRoll([D6(), D6()], roll_type=RollType.WEATHER_ROLL)
-        roll.sum = 12
         if roll.get_sum() == 2:
             self.game.state.weather = WeatherType.SWELTERING_HEAT
             self.game.report(Outcome(OutcomeType.WEATHER_SWELTERING_HEAT, rolls=[roll]))

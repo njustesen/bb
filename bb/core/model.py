@@ -169,7 +169,7 @@ class GameState:
         self.get_dugout(home).kod.append(player_id)
 
     def casualty(self, player_id, home, player_state, effect):
-        self.set_player_state(player_id, home, player_state)
+        self.set_player_ready_state(player_id, home, player_state)
         self.field.remove(player_id)
         self.get_dugout(home).casualties.append(player_id)
         self.game.state.get_team_state(home).injure_player(player_id, effect)
@@ -188,6 +188,7 @@ class Field:
         self.player_positions = {}
         self.ball_position = None
         self.ball_in_air = False
+        self.ball_in_control = False
         self.game = game
         self.board = []
         self.positions = []
@@ -207,7 +208,8 @@ class Field:
         return {
             'ball_position': ball,
             'ball_in_air': self.ball_in_air,
-            'board': self.board
+            'board': self.board,
+            'ball_in_control': self.ball_in_control
         }
 
     def put(self, player_id, pos):
@@ -246,7 +248,7 @@ class Field:
         self.board[pos_from.y][pos_from.x] = player_to_id
 
     def has_ball(self, player_id):
-        if not self.ball_in_air:
+        if self.ball_in_control:
             return self.ball_position is not None and self.ball_position == self.get_player_position(player_id)
 
     def get_player_id_at(self, pos):
@@ -295,11 +297,12 @@ class Field:
         return secrets.choice(self.get_team_player_ids(home))
 
     def is_ball_at(self, pos, in_air=False):
-        return self.ball_position == pos and not self.ball_in_air
+        return self.ball_position == pos and in_air == self.ball_in_air
 
-    def move_ball(self, pos, in_air=False):
+    def move_ball(self, pos, in_air=False, control=True):
         self.ball_position = pos
         self.ball_in_air = in_air
+        self.ball_in_control = control
 
     def is_ball_out(self):
         return self.is_out_of_bounds(self.ball_position)

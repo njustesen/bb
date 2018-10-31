@@ -10,16 +10,12 @@ class Game:
         self.home = home
         self.away = away
         self.arena = arena
-        self.state = state
         self.stack = Stack()
         self.reports = []
         self.config = config
         self.game_over = False
         self.available_actions = []
-        self.last_turn = None
-
-        if self.state is None:
-            self.state = GameState(self)
+        self.state = state if state is not None else GameState(self)
 
     def _squares_moved(self):
         for proc in self.stack.items:
@@ -51,9 +47,10 @@ class Game:
         }
 
     def init(self):
+        EndGame(self)
         Pregame(self)
         self.set_available_actions()
-        self.step(None)
+        # self.step(None)
 
     def _action_allowed(self, action):
         print(action.to_simple())
@@ -79,22 +76,6 @@ class Game:
         :param action: Action from agent. Can be None if no action is required.
         :return: True if game requires action or game is over, False if not
         """
-
-        # If touchdown, end turn and add kickoff
-        if isinstance(self.stack.peek(), Touchdown):
-            self._touchdown(self.stack.peek())
-
-        # If turnover, end turn
-        if isinstance(self.stack.peek(), Turnover):
-            self.stack.peek().step(None)
-            self._end_turn()
-
-        # If riot -> remove one turn
-        if isinstance(self.stack.peek(), Riot):
-            if self.stack.peek().effect == 1:
-                self._add_turn()
-            elif self.stack.peek().effect == -1:
-                self._remove_turn()
 
         # Get proc
         proc = self.stack.peek()
@@ -124,62 +105,25 @@ class Game:
         proc.done = proc.step(action)
         print("Done={}".format(proc.done))
 
-        ''' Enable if cloning happens
+
+        # Enable if cloning happens
         for player_id, pos in self.state.field.player_positions.items():
-            assert self.state.field.board[pos.y][pos.x] == player_id
+            if self.state.field.board[pos.y][pos.x] != player_id:
+                raise Exception(pos.to_simple() + ": " + player_id )
 
         for y in range(len(self.state.field.board)):
             for x in range(len(self.state.field.board[0])):
                 assert self.state.field.board[y][x] is None or (self.state.field.player_positions[self.state.field.board[y][x]].x == x and self.state.field.player_positions[self.state.field.board[y][x]].y == y)
-        '''
 
-        # Remove done procs
+        # Remove all finished procs
         if proc.done:
-
-            # Clear done procs
             while not self.stack.is_empty() and self.stack.peek().done:
-
                 print("--Proc={}".format(self.stack.peek()))
-
-                # If Half is done
-                if isinstance(proc, Half):
-                    if proc.half == 1:
-                        self.state.half = self.stack.peek().half + 1
-                        self.state.home_state.turn = 0
-                        self.state.away_state.turn = 0
-                    self.stack.pop()
-
-                # If pre-game is over
-                elif isinstance(self.stack.peek(), Pregame):
-                    self.stack.pop()
-                    Half(self, 2)
-                    Half(self, 1)
-                    self.state.half = 1
-                    self.state.home_state.turn = 0
-                    self.state.away_state.turn = 0
-                elif isinstance(self.stack.peek(), Half):
-                    self.stack.pop()
-                    self.state.half += 1
-                else:
-                    self.stack.pop()
+                self.stack.pop()
 
             # Is game over
             if self.stack.is_empty():
-                self.state.team_turn = None
-                self.game_over = True
                 return False
-
-            # If new turn on stack - set turn and half counters
-            if isinstance(self.stack.peek(), Turn) and self.stack.peek() != self.last_turn:
-                self.last_turn = self.stack.peek()
-                self.state.team_turn = self.stack.peek().home
-                if not self.stack.peek().blitz and not self.stack.peek().quick_snap:
-                    if self.state.team_turn:
-                        self.state.home_state.turn += 1
-                        self.report(Outcome(OutcomeType.TURN_START, team_home=True, n=self.state.home_state.turn))
-                    elif not self.state.team_turn:
-                        self.state.away_state.turn += 1
-                        self.report(Outcome(OutcomeType.TURN_START, team_home=False, n=self.state.away_state.turn))
 
         print("-Proc={}".format(self.stack.peek()))
 
@@ -189,7 +133,7 @@ class Game:
             # We can continue without user input
             return False
 
-        # If player can't do more than end turn
+        # End player turn if only action available
         if len(self.available_actions) == 1 and self.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
             self.step(Action(ActionType.END_PLAYER_TURN, player_from_id=self.available_actions[0].player_ids[0]))
             # We can continue without user input
@@ -200,50 +144,12 @@ class Game:
 
     def set_available_actions(self):
         self.available_actions = self.stack.peek().available_actions()
+        assert(self.available_actions is not None)
 
     def report(self, outcome):
-        #print(outcome.outcome_type.name)
+        print(outcome.outcome_type.name)
         #print(json.dumps(outcome.to_simple()))
         self.reports.append(outcome)
-
-    def _remove_turn(self):
-        for idx in range(self.stack.size()):
-            if isinstance(self.stack.items[idx], Turn):
-                self.stack.items.remove(idx)
-                self.stack.items.remove(idx)
-                break
-
-    def _add_turn(self):
-        for idx in reversed(range(self.stack.size())):
-            if isinstance(self.stack.items[idx], Turn):
-                home = self.stack.items[idx].home
-                self.stack.items.insert(idx, Turn(self, home=home))
-                self.stack.items.insert(idx, Turn(self, home=not home))
-                break
-
-    def _end_turn(self):
-        """
-        Removes all procs in the current turn - including the current turn proc.
-        """
-        x = 0
-        for i in reversed(range(self.stack.size())):
-            x += 1
-            if isinstance(self.stack.items[i], Turn):
-                break
-        for i in range(x):
-            self.stack.pop()
-
-    def _touchdown(self, proc):
-        """
-        Removes all procs in the current turn - including the current turn proc, and then creates procs to
-        prepare for kickoff.
-        """
-        proc.step(None)
-        self._end_turn()
-        KickOff(self, proc.home)
-        Setup(self, not proc.home)
-        Setup(self, proc.home)
-        ClearBoard(self)
 
     def get_team(self, home):
         return self.home if home else self.away

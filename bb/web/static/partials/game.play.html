@@ -10,6 +10,12 @@
                 <li>
                     <a class="nav-link" href="#"><span class="glyphicon glyphicon-list"></span> Games</a>
                 </li>
+                <li>
+                    <a class="nav-link" ng-click="gridClass = 'full-grid'"><span class="glyphicon glyphicon-list"></span> Grid</a>
+                </li>
+                <li>
+                    <a class="nav-link" ng-click="gridClass = 'dot-grid'"><span class="glyphicon glyphicon-list"></span> Dots</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -166,7 +172,7 @@
             </div>
             <div class="field {{ game.state.weather.toLowerCase().replace('_','') }}">
                 <div class="square-row" ng-repeat="row in local_state.board.slice(1, local_state.board.length-1)">
-                    <div class="square {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ getAvailable(local_state.board[$parent.$index+1][$index+1]) ? 'green' + getAgiRolls(local_state.board[$parent.$index+1][$index+1])[0] : '' }}"
+                    <div class="square {{ gridClass }} {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ getAvailable(local_state.board[$parent.$index+1][$index+1]) ? 'green' + getAgiRolls(local_state.board[$parent.$index+1][$index+1])[0] : '' }}"
                          ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])"
                          ng-mouseover="squareHover(local_state.board[$parent.$index+1][$index+1])"
                          style="{{ getCursor(local_state.board[$parent.$index+1][$index+1]) }}">
