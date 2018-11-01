@@ -300,7 +300,7 @@ class Field:
         return self.ball_position == pos and in_air == self.ball_in_air
 
     def move_ball(self, pos, in_air=False, control=True):
-        self.ball_position = pos
+        self.ball_position = Square(pos.x, pos.y)
         self.ball_in_air = in_air
         self.ball_in_control = control
 

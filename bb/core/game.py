@@ -159,6 +159,10 @@ class Game:
             return self.home.get_player_by_id(player_id)
         return self.away.get_player_by_id(player_id)
 
+    def get_player_at(self, pos):
+        player_id = self.state.field.get_player_id_at(pos)
+        return self.get_player(player_id) if player_id is not None else None
+
     def get_home_by_player_id(self, player_id):
         if self.home.has_player_by_id(player_id):
             return True
