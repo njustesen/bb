@@ -287,7 +287,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 }
                 player_icon = player != null ? $scope.playerIcon(player) : null;
             }
-            let ball = $scope.game.state.field.ball_position != null ? ($scope.game.state.field.ball_position.x === x && $scope.game.state.field.ball_position.y === y) : null;
+            let ball = $scope.game.state.pitch.ball_position != null ? ($scope.game.state.pitch.ball_position.x === x && $scope.game.state.pitch.ball_position.y === y) : null;
             return {
                 x: x,
                 y: y,
@@ -390,7 +390,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             for (let i in $scope.available_select_positions){
                 let pos = $scope.available_select_positions[i];
                 // Reserves positions
-                if (pos == null && $scope.selected_square != null && $scope.selected_square.area === 'field'){
+                if (pos == null && $scope.selected_square != null && $scope.selected_square.area === 'pitch'){
                     if ($scope.main_action.team === true){
                         for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.home_dugout[y].length; x++){
@@ -410,7 +410,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                             }
                         }
                     }
-                    // Field positions
+                    // Pitch positions
                 } else if (pos != null) {
                     $scope.local_state.board[pos.y][pos.x].available = true;
                     if ($scope.main_action !== null) {
@@ -514,7 +514,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             if (tile === "CROWD"){
                 return "crowd";
             }
-            return "field";
+            return "pitch";
         };
 
         $scope.setLocalState = function setLocalState(){
@@ -522,12 +522,12 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.local_state.ball_in_air = $scope.game.state.ball_in_air;
             $scope.local_state.ball_position = $scope.game.state.ball_position;
             $scope.local_state.team_turn = $scope.game.state.team_turn;
-            for (let y = 0; y < $scope.game.state.field.board.length; y++){
+            for (let y = 0; y < $scope.game.state.pitch.board.length; y++){
                 if ($scope.local_state.board.length <= y){
                     $scope.local_state.board.push([]);
                 }
-                for (let x = 0; x < $scope.game.state.field.board[y].length; x++){
-                    let player_id = $scope.game.state.field.board[y][x];
+                for (let x = 0; x < $scope.game.state.pitch.board[y].length; x++){
+                    let player_id = $scope.game.state.pitch.board[y][x];
                     let square = $scope.newSquare(player_id, x, y, $scope.getTile(x, y), '', undefined);
                     if (player_id != null){
                         $scope.local_state.player_positions[player_id] = square;
@@ -607,7 +607,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.select = function select(square){
             $scope.selected_square = square;
-            if (square.area == 'field'){
+            if (square.area == 'pitch'){
                 $scope.local_state.board[square.y][square.x].selected = true;
             } else if (square.area == 'dugout-home'){
                 $scope.local_state.home_dugout[square.y][square.x].selected = true;
@@ -709,8 +709,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return {
                 'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
                 'player_to_id': square.player == null ? null : square.player.player_id,
-                'pos_from': $scope.selected_square != null && $scope.selected_square.area === 'field' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
-                'pos_to': square.area === 'field' ? {'x': square.x, 'y': square.y} : null,
+                'pos_from': $scope.selected_square != null && $scope.selected_square.area === 'pitch' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
+                'pos_to': square.area === 'pitch' ? {'x': square.x, 'y': square.y} : null,
                 'team_home': null,
                 'idx': -1,
                 'action_type': $scope.getActionType(square)
@@ -738,11 +738,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     // If player is selected or only one player available
                     if ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null){
 
-                        // Convert dugout squares to field (crowd) squares if push procedure
+                        // Convert dugout squares to pitch (crowd) squares if push procedure
                         let crowd = $scope.game.stack[$scope.game.stack.length-1] === "Push" && square.area.startsWith("dugout");
                         let crowd_square = {
                             y: square.y+1,
-                            area: 'field'
+                            area: 'pitch'
                         };
                         if (crowd){
                             if (square.area === "dugout-home"){

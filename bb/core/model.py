@@ -13,7 +13,7 @@ class Configuration:
         self.arena = None
         self.ruleset = None
         self.roster_size = 16
-        self.on_field = 11
+        self.on_pitch = 11
         self.scrimmage_max = 3
         self.wings_max = 2
         self.turns = 8
@@ -106,7 +106,7 @@ class GameState:
         self.game = game
         self.half = 1
         self.kicking_team = None
-        self.field = Field(game)
+        self.pitch = Pitch(game)
         self.home_dugout = Dugout()
         self.away_dugout = Dugout()
         self.home_state = TeamState(game.home)
@@ -121,7 +121,7 @@ class GameState:
         return {
             'half': self.half,
             'kicking_team': self.kicking_team,
-            'field': self.field.to_simple(),
+            'pitch': self.pitch.to_simple(),
             'home_dugout': self.home_dugout.to_simple(),
             'away_dugout': self.away_dugout.to_simple(),
             'home_state': self.home_state.to_simple(),
@@ -165,12 +165,12 @@ class GameState:
     def knock_out(self, player_id):
         home = self.game.get_home_by_player_id(player_id)
         self.get_team_state(home).player_states[player_id] = PlayerReadyState.KOD
-        self.field.remove(player_id)
+        self.pitch.remove(player_id)
         self.get_dugout(home).kod.append(player_id)
 
     def casualty(self, player_id, home, player_state, effect):
         self.set_player_ready_state(player_id, home, player_state)
-        self.field.remove(player_id)
+        self.pitch.remove(player_id)
         self.get_dugout(home).casualties.append(player_id)
         self.game.state.get_team_state(home).injure_player(player_id, effect)
 
@@ -182,7 +182,7 @@ class GameState:
         self.get_team_state(home).rerolls -= 1
 
 
-class Field:
+class Pitch:
 
     def __init__(self, game):
         self.player_positions = {}
@@ -233,8 +233,8 @@ class Field:
 
     def swap(self, pos_from, pos_to):
         """
-        :param pos_from: A position on the field
-        :param pos_to: A position on the field
+        :param pos_from: A position on the pitch
+        :param pos_to: A position on the pitch
         :return:
         """
         player_from_id = self.board[pos_from.y][pos_from.x]
@@ -273,23 +273,23 @@ class Field:
             return False
         return True
 
-    def is_setup_legal_scrimmage(self, home):
+    def is_setup_legal_scrimmage(self, home, min_players=3):
         if home:
-            return self.is_setup_legal(home, tile=Tile.HOME_SCRIMMAGE, min_players=3)
-        return self.is_setup_legal(home, tile=Tile.AWAY_SCRIMMAGE, min_players=3)
+            return self.is_setup_legal(home, tile=Tile.HOME_SCRIMMAGE, min_players=min_players)
+        return self.is_setup_legal(home, tile=Tile.AWAY_SCRIMMAGE, min_players=min_players)
 
-    def is_setup_legal_wings(self, home):
+    def is_setup_legal_wings(self, home, min_players=0, max_players=2):
         if home:
-            return self.is_setup_legal(home, tile=Tile.HOME_WING_LEFT, max_players=2, min_players=0) and \
-                   self.is_setup_legal(home, tile=Tile.HOME_WING_RIGHT, max_players=2, min_players=0)
-        return self.is_setup_legal(home, tile=Tile.AWAY_WING_LEFT, max_players=2, min_players=0) and \
-               self.is_setup_legal(home, tile=Tile.AWAY_WING_RIGHT, max_players=2, min_players=0)
+            return self.is_setup_legal(home, tile=Tile.HOME_WING_LEFT, max_players=max_players, min_players=min_players) and \
+                   self.is_setup_legal(home, tile=Tile.HOME_WING_RIGHT, max_players=max_players, min_players=min_players)
+        return self.is_setup_legal(home, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \
+               self.is_setup_legal(home, tile=Tile.AWAY_WING_RIGHT, max_players=max_players, min_players=min_players)
 
-    def get_team_player_ids(self, home, state=None, only_field=False):
+    def get_team_player_ids(self, home, state=None, only_pitch=False):
         player_ids = []
         for player_id in self.game.get_team(home).players_by_id.keys():
             if state is None or self.game.state.get_player_ready_state(player_id, home) == state:
-                if not only_field or player_id in self.player_positions.keys():
+                if not only_pitch or player_id in self.player_positions.keys():
                     player_ids.append(player_id)
         return player_ids
 
@@ -299,7 +299,7 @@ class Field:
     def is_ball_at(self, pos, in_air=False):
         return self.ball_position == pos and in_air == self.ball_in_air
 
-    def move_ball(self, pos, in_air=False, control=True):
+    def move_ball_to(self, pos, in_air=False, control=True):
         self.ball_position = Square(pos.x, pos.y)
         self.ball_in_air = in_air
         self.ball_in_control = control
@@ -318,7 +318,7 @@ class Field:
         return True
 
     def get_push_squares(self, pos_from, pos_to):
-        squares_to = self.game.state.field.get_adjacent_squares(pos_to, include_out=True)
+        squares_to = self.game.state.pitch.get_adjacent_squares(pos_to, include_out=True)
         squares_empty = []
         squares_out = []
         squares = []
@@ -335,9 +335,9 @@ class Field:
                     include = True
             print("Include: ", include)
             if include:
-                if self.game.state.field.get_player_id_at(square) is None:
+                if self.game.state.pitch.get_player_id_at(square) is None:
                     squares_empty.append(square)
-                if self.game.state.field.is_out_of_bounds(square):
+                if self.game.state.pitch.is_out_of_bounds(square):
                     squares_out.append(square)
                 squares.append(square)
         if len(squares_empty) > 0:
@@ -392,7 +392,7 @@ class Field:
         diving_tackle_ids = []
         shadowing_ids = []
         tentacles_ids = []
-        own_player_id = self.game.state.field.get_player_id_at(pos)
+        own_player_id = self.game.state.pitch.get_player_id_at(pos)
         own_home = self.game.get_home_by_player_id(own_player_id)
         for square in self.get_adjacent_player_squares(pos, include_home=not own_home, include_away=own_home):
             player_id = self.get_player_id_at(square)
@@ -440,7 +440,7 @@ class Field:
             else [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS, PassDistance.LONG_PASS, PassDistance.LONG_BOMB]
         if self.game.state.weather == WeatherType.BLIZZARD:
             distances_allowed = [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS]
-        for pos in self.game.state.field.positions:
+        for pos in self.game.state.pitch.positions:
             if self.is_out_of_bounds(pos) or pos_from == pos:
                 continue
             distance = self.pass_distance(pos_from, pos)

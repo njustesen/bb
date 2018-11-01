@@ -170,7 +170,7 @@
                     </div>
                 </div>
             </div>
-            <div class="field {{ game.state.weather.toLowerCase().replace('_','') }}">
+            <div class="pitch {{ game.state.weather.toLowerCase().replace('_','') }}">
                 <div class="square-row" ng-repeat="row in local_state.board.slice(1, local_state.board.length-1)">
                     <div class="square {{ gridClass }} {{ local_state.board[$parent.$index+1][$index+1].selected ? 'selected' : '' }} {{ getAvailable(local_state.board[$parent.$index+1][$index+1]) ? 'green' + getAgiRolls(local_state.board[$parent.$index+1][$index+1])[0] : '' }}"
                          ng-repeat="n in [] | range:row.length-2" ng-click="square(local_state.board[$parent.$index+1][$index+1])"
