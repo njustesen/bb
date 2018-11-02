@@ -13,10 +13,11 @@ class Configuration:
         self.arena = None
         self.ruleset = None
         self.roster_size = 16
-        self.on_pitch = 11
+        self.pitch_max = 11
+        self.pitch_min = 3
         self.scrimmage_max = 3
-        self.wings_max = 2
-        self.turns = 8
+        self.wing_max = 2
+        self.rounds = 8
         self.kick_off_table = True
         self.fast_mode = False
 
@@ -75,14 +76,8 @@ class TeamState:
             'reroll_used': self.reroll_used
         }
 
-    def reset_half(self):
+    def reset_turn(self):
         self.reroll_used = False
-        self.rerolls = self.rerolls_start
-        self.turn = 0
-
-    def reset_turn(self, reset_rerolls=True):
-        if reset_rerolls:
-            self.reroll_used = False
         for player_id, player_state in self.player_states.items():
             self.player_states[player_id].moves = 0
             if player_state.player_ready_state == PlayerReadyState.USED:
@@ -107,13 +102,13 @@ class GameState:
         self.half = 1
         self.kicking_team = None
         self.pitch = Pitch(game)
-        self.home_dugout = Dugout()
-        self.away_dugout = Dugout()
-        self.home_state = TeamState(game.home)
-        self.away_state = TeamState(game.away)
+        self.dugouts = {team.team_id: Dugout(team) for team in game.teams}
+        self.team_states = {team.team_id: TeamState(team) for team in game.teams}
         self.weather = WeatherType.NICE
         self.gentle_gust = False
         self.team_turn = None
+        self.turn_order = []
+        self.round = 0
         self.spectators = 0
         self.active_player_id = None
 
@@ -122,64 +117,16 @@ class GameState:
             'half': self.half,
             'kicking_team': self.kicking_team,
             'pitch': self.pitch.to_simple(),
-            'home_dugout': self.home_dugout.to_simple(),
-            'away_dugout': self.away_dugout.to_simple(),
-            'home_state': self.home_state.to_simple(),
-            'away_state': self.away_state.to_simple(),
+            'dugout': {team_id: dugout.to_simple() for team_id, dugout in self.dugouts.items()},
+            'team_states': {team_id: team_state.to_simple() for team_id, team_state in self.team_states.items()},
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
             'team_turn': self.team_turn,
+            'round': self.round,
+            'turn_order': self.turn_order,
             'spectators': self.spectators,
             'active_player_id': self.active_player_id
         }
-
-    def reset_turn(self, home):
-        self.team_turn = None
-        self.get_team_state(home).reset_turn(reset_rerolls=True)
-        self.get_team_state(not home).reset_turn(reset_rerolls=False)
-
-    def reset_kickoff(self):
-        self.team_turn = None
-        self.home_state.reset_turn()
-        self.away_state.reset_turn()
-
-    def reset_half(self, home):
-        self.team_turn = None
-        self.get_team_state(home).reset_half()
-
-    def get_player_state(self, player_id, home):
-        return self.get_team_state(home).player_states[player_id]
-
-    def get_player_ready_state(self, player_id, home):
-        return self.get_team_state(home).player_states[player_id].player_ready_state
-
-    def set_player_ready_state(self, player_id, home, player_ready_state):
-        self.get_team_state(home).player_states[player_id].player_ready_state = player_ready_state
-
-    def get_team_state(self, home):
-        return self.home_state if home else self.away_state
-
-    def get_dugout(self, home):
-        return self.home_dugout if home else self.away_dugout
-
-    def knock_out(self, player_id):
-        home = self.game.get_home_by_player_id(player_id)
-        self.get_team_state(home).player_states[player_id] = PlayerReadyState.KOD
-        self.pitch.remove(player_id)
-        self.get_dugout(home).kod.append(player_id)
-
-    def casualty(self, player_id, home, player_state, effect):
-        self.set_player_ready_state(player_id, home, player_state)
-        self.pitch.remove(player_id)
-        self.get_dugout(home).casualties.append(player_id)
-        self.game.state.get_team_state(home).injure_player(player_id, effect)
-
-    def can_use_reroll(self, home):
-        return not self.get_team_state(home).reroll_used and self.get_team_state(home).rerolls > 0 and self.team_turn == home
-
-    def use_reroll(self, home):
-        self.get_team_state(home).reroll_used = True
-        self.get_team_state(home).rerolls -= 1
 
 
 class Pitch:
@@ -259,42 +206,42 @@ class Pitch:
             return self.player_positions[player_id]
         return None
 
-    def is_setup_legal(self, home, tile=None, max_players=11, min_players=3):
+    def is_setup_legal(self, team, tile=None, max_players=11, min_players=3):
         cnt = 0
         for y in range(len(self.board)):
             for x in range(len(self.board[y])):
-                if not self.game.arena.is_team_side(Square(x, y), home):
+                if not self.game.arena.is_team_side(Square(x, y), team):
                     continue
                 if tile is None or self.game.arena.board[y][x] == tile:
                     player_id = self.board[y][x]
-                    if self.game.get_team(home).has_player_by_id(player_id):
+                    if self.game.get_team(team).has_player_by_id(player_id):
                         cnt += 1
         if cnt > max_players or cnt < min_players:
             return False
         return True
 
-    def is_setup_legal_scrimmage(self, home, min_players=3):
-        if home:
-            return self.is_setup_legal(home, tile=Tile.HOME_SCRIMMAGE, min_players=min_players)
-        return self.is_setup_legal(home, tile=Tile.AWAY_SCRIMMAGE, min_players=min_players)
+    def is_setup_legal_scrimmage(self, team, min_players=3):
+        if team:
+            return self.is_setup_legal(team, tile=Tile.HOME_SCRIMMAGE, min_players=min_players)
+        return self.is_setup_legal(team, tile=Tile.AWAY_SCRIMMAGE, min_players=min_players)
 
-    def is_setup_legal_wings(self, home, min_players=0, max_players=2):
-        if home:
-            return self.is_setup_legal(home, tile=Tile.HOME_WING_LEFT, max_players=max_players, min_players=min_players) and \
-                   self.is_setup_legal(home, tile=Tile.HOME_WING_RIGHT, max_players=max_players, min_players=min_players)
-        return self.is_setup_legal(home, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \
-               self.is_setup_legal(home, tile=Tile.AWAY_WING_RIGHT, max_players=max_players, min_players=min_players)
+    def is_setup_legal_wings(self, team, min_players=0, max_players=2):
+        if team:
+            return self.is_setup_legal(team, tile=Tile.HOME_WING_LEFT, max_players=max_players, min_players=min_players) and \
+                   self.is_setup_legal(team, tile=Tile.HOME_WING_RIGHT, max_players=max_players, min_players=min_players)
+        return self.is_setup_legal(team, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \
+               self.is_setup_legal(team, tile=Tile.AWAY_WING_RIGHT, max_players=max_players, min_players=min_players)
 
-    def get_team_player_ids(self, home, state=None, only_pitch=False):
+    def get_team_player_ids(self, team, state=None, only_pitch=False):
         player_ids = []
-        for player_id in self.game.get_team(home).players_by_id.keys():
-            if state is None or self.game.state.get_player_ready_state(player_id, home) == state:
+        for player_id in self.game.get_team(team).players_by_id.keys():
+            if state is None or self.game.state.get_player_ready_state(player_id, team) == state:
                 if not only_pitch or player_id in self.player_positions.keys():
                     player_ids.append(player_id)
         return player_ids
 
-    def get_random_player(self, home):
-        return secrets.choice(self.get_team_player_ids(home))
+    def get_random_player(self, team):
+        return secrets.choice(self.get_team_player_ids(team))
 
     def is_ball_at(self, pos, in_air=False):
         return self.ball_position == pos and in_air == self.ball_in_air
@@ -310,8 +257,8 @@ class Pitch:
     def is_out_of_bounds(self, pos):
         return pos.x < 1 or pos.x >= len(self.board[0])-1 or pos.y < 1 or pos.y >= len(self.board)-1
 
-    def has_tackle_zone(self, player, home):
-        if self.game.state.get_player_ready_state(player.player_id, home) not in Rules.has_tackle_zone:
+    def has_tackle_zone(self, player, team):
+        if self.game.state.get_player_ready_state(player.player_id, team) not in Rules.has_tackle_zone:
             return False
         if player.has_skill(Skill.TITCHY):
             return False
@@ -363,25 +310,28 @@ class Pitch:
                     squares.append(sq)
         return squares
 
-    def get_adjacent_player_squares(self, pos, include_home=True, include_away=True, manhattan=False, only_blockable=False, only_foulable=False):
+    def get_adjacent_player_squares(self, pos, team, include_own=True, include_opp=True, manhattan=False, only_blockable=False, only_foulable=False):
         squares = []
         for square in self.get_adjacent_squares(pos, manhattan=manhattan):
             player_id = self.get_player_id_at(square)
             if player_id is None:
                 continue
-            team_home = self.game.get_home_by_player_id(player_id)
-            if include_home and team_home or include_away and not team_home:
-                if not only_blockable or self.game.state.get_player_ready_state(player_id, team_home) in Rules.blockable:
-                    if not only_foulable or self.game.state.get_player_ready_state(player_id, team_home) in Rules.foulable:
+            player_team = self.game.get_team_by_player_id(player_id)
+            if include_own and player_team == team or include_opp and not player_team == team:
+                if not only_blockable or self.game.get_player_ready_state(player_id, team) in Rules.blockable:
+                    if not only_foulable or self.game.get_player_ready_state(player_id, team) in Rules.foulable:
                         squares.append(square)
         return squares
 
-    def get_tackle_zones(self, pos, home):
+    def get_tackle_zones(self, pos):
         tackle_zones = 0
-        for square in self.get_adjacent_player_squares(pos, include_home=not home, include_away=home):
+        own_player_id = self.game.state.pitch.get_player_id_at(pos)
+        own_team = self.game.get_team_by_player_id(own_player_id)
+        for square in self.get_adjacent_player_squares(pos, own_team, include_own=False, include_opp=True):
             player_id = self.get_player_id_at(square)
             player = self.game.get_player(player_id)
-            if player_id is not None and self.has_tackle_zone(player, not home):
+            team = self.game.get_team_by_player(player)
+            if player_id is not None and self.has_tackle_zone(player, team):
                 tackle_zones += 1
         return tackle_zones
 
@@ -393,12 +343,12 @@ class Pitch:
         shadowing_ids = []
         tentacles_ids = []
         own_player_id = self.game.state.pitch.get_player_id_at(pos)
-        own_home = self.game.get_home_by_player_id(own_player_id)
-        for square in self.get_adjacent_player_squares(pos, include_home=not own_home, include_away=own_home):
+        own_team = self.game.get_team_by_player_id(own_player_id)
+        for square in self.get_adjacent_player_squares(pos, own_team, include_own=False, include_opp=True):
             player_id = self.get_player_id_at(square)
             player = self.game.get_player(player_id)
-            home = self.game.get_home_by_player_id(player_id) if player_id is not None else None
-            if player_id is not None and self.has_tackle_zone(player, home):
+            team = self.game.get_team_by_player_id(player_id) if player_id is not None else None
+            if player_id is not None and self.has_tackle_zone(player, team):
                 tackle_zones += 1
             if player_id is None and player.has_skill(Skill.TACKLE):
                 tackle_ids.append(player_id)
@@ -413,7 +363,7 @@ class Pitch:
 
         return tackle_zones, tackle_ids, prehensile_tail_ids, diving_tackle_ids, shadowing_ids, tentacles_ids
 
-    def assists(self, home, player_from, player_to, ignore_guard=False):
+    def assists(self, team, player_from, player_to, ignore_guard=False):
         pos_from = self.get_player_position(player_from.player_id)
         pos_to = self.get_player_position(player_to.player_id)
         assists = []
@@ -425,18 +375,22 @@ class Pitch:
                 if not self.is_out_of_bounds(p) and pos_from != p:
                     player_id = self.get_player_id_at(p)
                     if player_id is not None:
-                        if self.game.get_home_by_player_id(player_id) == home:
-                            if self.game.state.get_player_ready_state(player_id, home) not in Rules.assistable:
+                        if self.game.get_team_by_player_id(player_id) == team:
+                            if self.game.get_player_ready_state(player_id, team) not in Rules.assistable:
                                 continue
                             if (not ignore_guard and self.game.get_player(player_id).has_skill(Skill.GUARD)) or \
-                                            self.get_tackle_zones(p, home=home) <= 1:  # TODO: Check if attacker has a tackle zone
+                                            self.get_tackle_zones(p) <= 1:  # TODO: Check if attacker has a tackle zone
                                 assists.append(player_id)
         return assists
 
-    def get_passes(self, player_from, pos_from):
+    def get_passes(self, player, pos_from):
         squares = []
         distances = []
-        distances_allowed = [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS, PassDistance.LONG_PASS, PassDistance.LONG_BOMB, PassDistance.HAIL_MARY] if Skill.HAIL_MARY_PASS in player_from.get_skills() \
+        distances_allowed = [PassDistance.QUICK_PASS,
+                             PassDistance.SHORT_PASS,
+                             PassDistance.LONG_PASS,
+                             PassDistance.LONG_BOMB,
+                             PassDistance.HAIL_MARY] if Skill.HAIL_MARY_PASS in player.get_skills() \
             else [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS, PassDistance.LONG_PASS, PassDistance.LONG_BOMB]
         if self.game.state.weather == WeatherType.BLIZZARD:
             distances_allowed = [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS]
@@ -455,11 +409,9 @@ class Pitch:
         if distance_y >= len(Rules.pass_matrix) or distance_x >= len(Rules.pass_matrix[0]):
             return PassDistance.HAIL_MARY
         distance = Rules.pass_matrix[distance_y][distance_x]
-        if distance == 5:
-            return PassDistance.HAIL_MARY
         return PassDistance(distance)
 
-    def interceptors(self, pos_from, pos_to, home):
+    def interceptors(self, pos_from, pos_to, team):
         """
         1) Find line x from a to b
         2) Find squares s where x intersects
@@ -499,12 +451,12 @@ class Pitch:
 
                 # 5) Remove squares without standing opponents with hands
                 player_at = self.get_player_id_at(neighbor)
-                player_home = self.game.get_home_by_player_id(player_at)
+                player_team = self.game.get_team_by_player_id(player_at)
                 if player_at is None:
                     continue
-                if player_home != home:
+                if player_team != team:
                     continue
-                if self.game.state.get_player_ready_state(player_at, player_home) not in Rules.catchable:
+                if self.game.state.get_player_ready_state(player_at, player_team) not in Rules.catchable:
                     continue
                 if self.game.get_player(player_at).has_skill(Skill.NO_HANDS):
                     continue
@@ -525,10 +477,10 @@ class Pitch:
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=[], player_ids=[], indexes=[], rolls=[], block_rolls=[], dice=[], disabled=False, agi_rolls=[]):
+    def __init__(self, action_type, team, positions=[], players=[], indexes=[], rolls=[], block_rolls=[], dice=[], disabled=False, agi_rolls=[]):
         self.action_type = action_type
         self.positions = positions
-        self.player_ids = player_ids
+        self.players = players
         self.team = team
         self.indexes = indexes
         self.rolls = rolls
@@ -541,8 +493,8 @@ class ActionChoice:
         return {
             'action_type': self.action_type.name,
             'positions': [position.to_simple() if position is not None else None for position in self.positions],
-            'player_ids': self.player_ids,
-            'team': self.team,
+            'player_ids': [player.player_id for player in self.players],
+            'team_id': self.team.team_id if self.team is not None else None,
             'indexes': self.indexes,
             "rolls": self.rolls,
             "block_rolls": self.block_rolls,
@@ -555,14 +507,14 @@ class ActionChoice:
 class Action:
 
     def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0,
-                 team_home=True):
+                 team_team=True):
         self.action_type = action_type
         self.pos_from = pos_from
         self.pos_to = pos_to
         self.player_from_id = player_from_id
         self.player_to_id = player_to_id
         self.idx = idx
-        self.home = team_home
+        self.team = team_team
 
     def to_simple(self):
         return {
@@ -571,14 +523,14 @@ class Action:
         }
 
 
-class Arena:
+class TwoPlayerArena:
 
-    home_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT, Tile.HOME_SCRIMMAGE]
+    team_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT, Tile.HOME_SCRIMMAGE]
     away_tiles = [Tile.AWAY, Tile.AWAY_TOUCHDOWN, Tile.AWAY_WING_LEFT, Tile.AWAY_WING_RIGHT, Tile.AWAY_SCRIMMAGE]
     scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
     wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
-    home_td_tiles = [Tile.HOME_TOUCHDOWN]
+    team_td_tiles = [Tile.HOME_TOUCHDOWN]
 
     def __init__(self, board):
         self.board = board
@@ -598,37 +550,37 @@ class Arena:
         }
         return self.json
 
-    def is_team_side(self, pos, home):
-        if home:
-            return self.board[pos.y][pos.x] in Arena.home_tiles
-        return self.board[pos.y][pos.x] in Arena.away_tiles
+    def is_team_side(self, pos, home_team):
+        if home_team:
+            return self.board[pos.y][pos.x] in TwoPlayerArena.team_tiles
+        return self.board[pos.y][pos.x] in TwoPlayerArena.away_tiles
 
-    def get_team_side(self, home):
+    def get_team_side(self, home_team):
         tiles = []
         for y in range(len(self.board)):
             for x in range(len(self.board[y])):
-                if self.board[y][x] in (Arena.home_tiles if home else Arena.away_tiles):
+                if self.board[y][x] in (TwoPlayerArena.team_tiles if home_team else TwoPlayerArena.away_tiles):
                     tiles.append(Square(x, y))
         return tiles
 
     def is_scrimmage(self, pos):
-        return self.board[pos.y][pos.x] in Arena.scrimmage_tiles
+        return self.board[pos.y][pos.x] in TwoPlayerArena.scrimmage_tiles
 
-    def is_touchdown(self, pos, team):
+    def is_touchdown(self, pos, home_team):
         """
         :param pos:
-        :param team: True if home team and False if away team.
+        :param team: True if team team and False if away team.
         :return: Whether pos is within team's touchdown zone (where they score)
         """
-        if team:
+        if home_team:
             return self.board[pos.y][pos.x] == Tile.AWAY_TOUCHDOWN
 
         return self.board[pos.y][pos.x] == Tile.HOME_TOUCHDOWN
 
     def is_wing(self, pos, right):
         if right:
-            return self.board[pos.y][pos.x] in Arena.wing_right_tiles
-        return self.board[pos.y][pos.x] in Arena.wing_left_tiles
+            return self.board[pos.y][pos.x] in TwoPlayerArena.wing_right_tiles
+        return self.board[pos.y][pos.x] in TwoPlayerArena.wing_left_tiles
 
 
 class Die:
@@ -664,6 +616,7 @@ class DiceRoll:
             'target': self.target,
             'modifiers': self.modifiers,
             'modified_target': self.modified_target(),
+            'result': self.get_result(),
             'roll_type': self.roll_type.name
         }
 
@@ -683,6 +636,9 @@ class DiceRoll:
 
     def get_sum(self):
         return self.sum
+
+    def get_result(self):
+        return self.sum + self.modifiers
 
     def is_d6_success(self):
         if self.sum == 1:
@@ -768,7 +724,8 @@ class BBDie(Die):
 
 class Dugout:
 
-    def __init__(self):
+    def __init__(self, team):
+        self.team = team
         self.reserves = []
         self.kod = []
         self.casualties = []
@@ -776,10 +733,11 @@ class Dugout:
 
     def to_simple(self):
         return {
-            'reserves': self.reserves,
-            'kod': self.kod,
-            'casualties': self.casualties,
-            'dungeon': self.dungeon
+            'team_id': self.team.team_id,
+            'reserves': [player.player_id for player in self.reserves],
+            'kod': [player.player_id for player in self.kod],
+            'casualties': [player.player_id for player in self.casualties],
+            'dungeon': [player.player_id for player in self.dungeon]
         }
 
 
@@ -971,13 +929,13 @@ class Team:
 
 class Outcome:
 
-    def __init__(self, outcome_type, pos=None, player_id=None, opp_player_id=None, rolls=[], team_home=None, n=0, skill=None):
+    def __init__(self, outcome_type, pos=None, player=None, opp_player=None, rolls=[], team=None, n=0, skill=None):
         self.outcome_type = outcome_type
         self.pos = pos
-        self.player_id = player_id
-        self.opp_player_id = opp_player_id
+        self.player = player
+        self.opp_player = opp_player
         self.rolls = rolls
-        self.team_home = team_home
+        self.team = team
         self.n = n
         self.skill = skill
 
@@ -988,10 +946,10 @@ class Outcome:
         return {
             'outcome_type': self.outcome_type.name,
             'pos': self.pos.to_simple() if self.pos is not None else None,
-            'player_id': self.player_id,
-            'opp_player_id': self.opp_player_id,
+            'player': self.player.player_id if self.player is not None else None,
+            'opp_player': self.opp_player.player_id if self.opp_player is not None else None,
             'rolls': rolls,
-            'team_home': self.team_home if self.team_home is not None else None,
+            'team_id': self.team.team_id if self.team is not None else None,
             'n': self.n if self.n is not None else None,
             'skill': self.skill.name if self.skill is not None else None
         }

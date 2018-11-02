@@ -166,6 +166,10 @@ class OutcomeType(Enum):
     BALL_BOUNCED = 123
     THROW_IN = 124
     THROW_IN_OUT_OF_BOUNDS = 125
+    TEAM_SPECTATORS = 126
+    CHEERING_FANS_ROLL = 127
+    BRILLIANT_COACHING_ROLL = 128
+    THROW_A_ROCK_ROLL = 129
 
 
 class PlayerActionType(Enum):
@@ -417,7 +421,7 @@ class Rules:
         PassDistance.SHORT_PASS: 0,
         PassDistance.LONG_PASS: -1,
         PassDistance.LONG_BOMB: -2,
-        PassDistance.HAIL_MARY: 0  # Not used
+        PassDistance.HAIL_MARY: 0  # Not used??
     }
 
     casualty_effect = {

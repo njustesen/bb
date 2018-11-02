@@ -26,7 +26,7 @@ class TestLoaders(unittest.TestCase):
         assert len(team.players) == 12
 
     def test_arena(self):
-        name = 'bb_pitch.txt'
+        name = 'ff_pitch.txt'
         arena = load.get_arena(name)
         assert arena is not None
         assert len(arena.board) == 15 + 2

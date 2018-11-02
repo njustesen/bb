@@ -1,12 +1,13 @@
 {
-    "name": "Blood Bowl: Human vs Human",
-    "arena": "bb_pitch.txt",
+    "name": "Fantasy Football",
+    "arena": "ff_pitch.txt",
     "ruleset": "LRB5-Experimental.xml",
     "dungeon": false,
     "roster_size": 16,
-    "on_field": 11,
+    "pitch_max": 11,
+    "pitch_min": 11,
     "scrimmage_min": 3,
-    "wings_max": 2,
+    "wing_max": 2,
     "turns": 8,
     "kick_off_table": true,
     "fast_mode": false

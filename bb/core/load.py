@@ -166,7 +166,7 @@ def get_arena(name):
             row.append(arena_char_map[c])
         board.append(np.array(row))
     file.close()
-    return Arena(np.array(board))
+    return TwoPlayerArena(np.array(board))
 
 
 def get_config(name):
@@ -181,10 +181,11 @@ def get_config(name):
     config.ruleset = data['ruleset']
     config.dungeon = data['dungeon']
     config.roster_size = data['roster_size']
-    config.on_field = data['on_field']
+    config.pitch_max = data['pitch_max']
+    config.pitch_min = data['pitch_min']
     config.scrimmage_min = data['scrimmage_min']
-    config.wings_max = data['wings_max']
-    config.turns = data['turns']
+    config.wing_max = data['wing_max']
+    config.rounds = data['turns']
     config.kick_off_table = data['kick_off_table']
     config.fast_mode = data['fast_mode']
     return config

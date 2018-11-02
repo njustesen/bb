@@ -4,18 +4,17 @@ from bb.core.game import *
 from bb.core.load import *
 
 # Create a game host
-ruleset = get_rule_set("LRB5-Experimental.xml")
-host = Host(ruleset)
+host = Host()
 
 
-def new_game(home_team_id, away_team_id, config_name="bb.json"):
+def new_game(home_team_id, away_team_id, config_name="ff.json"):
     config = get_config(config_name)
     arena = get_arena(config.arena)
     ruleset = get_rule_set(config.ruleset)
     home = get_team_by_id(home_team_id, ruleset)
     away = get_team_by_id(away_team_id, ruleset)
     game_id = str(uuid.uuid1())
-    game = Game(game_id, home, away, arena, config)
+    game = Game(game_id, home, away, arena, config, ruleset)
     game.init()
     host.add_game(game)
     print("Game created with id ", game.game_id)
