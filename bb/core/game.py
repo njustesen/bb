@@ -165,6 +165,9 @@ class Game:
     def set_half(self, half):
         self.state.half = half
 
+    def get_current_team(self):
+        return self.state.current_team
+
     def add_or_skip_turn(self, turns):
         '''
 
@@ -306,7 +309,7 @@ class Game:
 
     def can_use_reroll(self, team):
         return not self.state.team_state[team.team_id].reroll_used and self.state.team_state[
-            team.team_id].rerolls > 0 and self.state.team_turn == team
+            team.team_id].rerolls > 0 and self.state.current_team == team
 
     def add_score(self, team):
         self.state.get_team_state(team).score += 1
@@ -323,19 +326,11 @@ class Game:
         return self.get_opp_team(self.get_kicking_team(half))
 
     def get_ball_position(self):
-        return self.state.pitch.ball_position
+        return self.state.pitch.get_ball_position()
 
     def has_ball(self, player):
-        return self.state.pitch.has_ball(player.player_id)
-
-    def is_ball_in_air(self):
-        return self.state.pitch.ball_in_air
-
-    def set_ball_in_air(self, in_air):
-        self.state.state.pitch.ball_in_air = in_air
-
-    def set_ball_control(self, control):
-        self.state.pitch.ball_in_control = control
+        ball = self.state.pitch.get_ball_at(self.get_player_position(player))
+        return ball.position if ball is not None else None
 
     def get_player_state(self, player, team):
         return self.state.get_player_state(player.player_id, team)
@@ -346,24 +341,11 @@ class Game:
     def set_player_ready_state(self, player, team, player_ready_state):
         self.state.set_player_ready_state(player.player_id, team, player_ready_state)
 
-    def move_ball(self, x, y):
-        self.state.pitch.ball_position.x += x
-        self.state.pitch.ball_position.y += y
-
-    def move_ball_to(self, pos, in_air=False, control=True):
-        self.state.pitch.move_ball_to(pos, in_air=in_air, control=control)
-
     def is_touchdown(self, team):
         for player in self.teams[team.team_id].players:
             if self.arena.is_touchdown(self.get_player_position(player), team):
                 return True
         return False
-
-    def is_ball_under_control(self):
-        return self.state.pitch.ball_in_control
-
-    def is_ball_out(self):
-        return self.state.pitch.is_ball_out()
 
     def is_out_of_bounds(self, pos):
         return self.state.pitch.is_out_of_bounds(pos)
@@ -459,11 +441,11 @@ class Game:
         return self.state.pitch.get_push_squares(pos_from, pos_to)
 
     def reset_turn(self, team):
-        self.state.team_turn = None
+        self.state.current_team = None
         self.state.team_state[team.team_id].reset_turn()
 
     def reset_kickoff(self):
-        self.state.team_turn = None
+        self.state.current_team = None
         for team_id, team_state in self.state.team_states.items():
             team_state.reset_turn()
 

@@ -100,15 +100,15 @@ class GameState:
     def __init__(self, game):
         self.game = game
         self.half = 1
+        self.round = 0
         self.kicking_team = None
+        self.current_team = None
         self.pitch = Pitch(game)
         self.dugouts = {team.team_id: Dugout(team) for team in game.teams}
         self.team_states = {team.team_id: TeamState(team) for team in game.teams}
         self.weather = WeatherType.NICE
         self.gentle_gust = False
-        self.team_turn = None
         self.turn_order = []
-        self.round = 0
         self.spectators = 0
         self.active_player_id = None
 
@@ -121,7 +121,7 @@ class GameState:
             'team_states': {team_id: team_state.to_simple() for team_id, team_state in self.team_states.items()},
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
-            'team_turn': self.team_turn,
+            'current_team': self.current_team,
             'round': self.round,
             'turn_order': self.turn_order,
             'spectators': self.spectators,
@@ -129,14 +129,34 @@ class GameState:
         }
 
 
+class Ball:
+
+    def __init__(self, position, on_ground=True, carried=False):
+        self.position = position
+        self.on_ground = on_ground
+        self.carried = carried
+
+    def move_to(self, pos):
+        if self.position is None:
+            self.position = Square(self.position.x, self.position.y)
+        else:
+            self.position.x = pos.x
+            self.position.y = pos.y
+
+    def to_simple(self):
+        return {
+            'position': self.position.to_simple(),
+            'on_ground': self.on_ground,
+            'carried': self.carried
+        }
+
+
 class Pitch:
 
     def __init__(self, game):
         self.player_positions = {}
-        self.ball_position = None
-        self.ball_in_air = False
-        self.ball_in_control = False
         self.game = game
+        self.balls = []
         self.board = []
         self.positions = []
         for y in range(len(game.arena.board)):
@@ -149,14 +169,9 @@ class Pitch:
             self.board.append(row)
 
     def to_simple(self):
-        ball = None
-        if self.ball_position is not None:
-            ball = self.ball_position.to_simple()
         return {
-            'ball_position': ball,
-            'ball_in_air': self.ball_in_air,
             'board': self.board,
-            'ball_in_control': self.ball_in_control
+            'balls': [ball.to_simple() for ball in self.balls]
         }
 
     def put(self, player_id, pos):
@@ -169,11 +184,11 @@ class Pitch:
         self.board[pos.y][pos.x] = None
 
     def move(self, player_id, pos_to):
+        assert (self.board[pos_to.y][pos_to.x] is None)
         pos_from = self.player_positions[player_id]
-        if self.has_ball(player_id):
-            self.ball_position = Square(pos_to.x, pos_to.y)
-        if self.board[pos_to.y][pos_to.x] is not None:
-            raise Exception("Player cannot be moved on top of another player")
+        for ball in self.balls:
+            if ball.position == pos_from and ball.is_carried:
+                ball.position = Square(pos_to.x, pos_to.y)
         self.board[pos_from.y][pos_from.x] = None
         self.board[pos_to.y][pos_to.x] = player_id
         self.player_positions[player_id] = Square(pos_to.x, pos_to.y)
@@ -193,10 +208,6 @@ class Pitch:
             self.player_positions[player_to_id] = Square(pos_from.x, pos_from.y)
         self.board[pos_to.y][pos_to.x] = player_from_id
         self.board[pos_from.y][pos_from.x] = player_to_id
-
-    def has_ball(self, player_id):
-        if self.ball_in_control:
-            return self.ball_position is not None and self.ball_position == self.get_player_position(player_id)
 
     def get_player_id_at(self, pos):
         return self.board[pos.y][pos.x]
@@ -243,16 +254,41 @@ class Pitch:
     def get_random_player(self, team):
         return secrets.choice(self.get_team_player_ids(team))
 
-    def is_ball_at(self, pos, in_air=False):
-        return self.ball_position == pos and in_air == self.ball_in_air
+    def get_balls_at(self, pos, in_air=False):
+        balls = []
+        for ball in self.balls:
+            if ball.position == pos and (ball.on_ground or in_air):
+                balls.append(ball)
+        return balls
 
-    def move_ball_to(self, pos, in_air=False, control=True):
-        self.ball_position = Square(pos.x, pos.y)
-        self.ball_in_air = in_air
-        self.ball_in_control = control
+    def get_ball_at(self, pos, in_air=False):
+        '''
+        Assume there is only one ball on the square
+        :param pos:
+        :param in_air:
+        :return: Ball or None
+        '''
+        for ball in self.balls:
+            if ball.position == pos and (ball.on_ground or in_air):
+                return ball
+        return None
 
-    def is_ball_out(self):
-        return self.is_out_of_bounds(self.ball_position)
+    def get_ball_positions(self):
+        return [ball.position for ball in self.balls]
+
+    def get_ball_position(self):
+        '''
+        Assume there is only one ball on the square
+        :param pos:
+        :param in_air:
+        :return: Ball or None
+        '''
+        for ball in self.balls:
+            return ball.position
+        return None
+
+    def is_ball_out(self, ball):
+        return self.is_out_of_bounds(ball.position)
 
     def is_out_of_bounds(self, pos):
         return pos.x < 1 or pos.x >= len(self.board[0])-1 or pos.y < 1 or pos.y >= len(self.board)-1

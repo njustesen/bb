@@ -3,16 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/host.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/host.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/load.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/load.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/table.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/arenas/bb_pitch.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/arenas/ff_pitch.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/config/bb.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config/ff.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_loaders.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_loaders.py" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -41,23 +34,32 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="2877" column="74" lean-forward="true" selection-start-line="2877" selection-start-column="74" selection-end-line="2877" selection-end-column="74" />
-              <folding>
-                <element signature="e#1#28#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="750">
+              <caret line="2461" column="30" lean-forward="true" selection-start-line="2461" selection-start-column="30" selection-end-line="2461" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="game.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="262" column="36" selection-start-line="262" selection-start-column="36" selection-end-line="262" selection-end-column="36" />
+            <state relative-caret-position="166">
+              <caret line="376" column="37" lean-forward="true" selection-start-line="376" selection-start-column="37" selection-end-line="376" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bb/core/model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="584">
+              <caret line="339" column="28" lean-forward="true" selection-start-line="339" selection-start-column="28" selection-end-line="339" selection-end-column="28" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -84,19 +86,7 @@
         <entry file="file://$PROJECT_DIR$/data/config/ff.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="135">
-              <caret line="9" column="9" lean-forward="true" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/core/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="185" column="11" lean-forward="true" selection-start-line="185" selection-start-column="11" selection-end-line="185" selection-end-column="11" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+              <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -104,7 +94,7 @@
       <file leaf-file-name="table.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/table.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
+            <state relative-caret-position="2565">
               <caret line="171" column="27" selection-start-line="171" selection-start-column="27" selection-end-line="171" selection-end-column="27" />
             </state>
           </provider>
@@ -149,27 +139,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>idx</find>
-      <find>next</find>
-      <find>team</find>
-      <find>get_team_state</find>
-      <find>apothecary_available</find>
-      <find>get_team_by_player</find>
-      <find>is_team_side</find>
-      <find>is_home_team</find>
-      <find>is_touchdown</find>
-      <find>Outcome</find>
-      <find>home</find>
-      <find>Outcome/</find>
-      <find>Outcome(</find>
-      <find>GameState</find>
-      <find>players_on</find>
-      <find>kicking_team</find>
-      <find>Intercept</find>
-      <find>on_pitch</find>
-      <find>Kickoff</find>
-      <find>PitchInvasionRoll(</find>
-      <find>Armor</find>
       <find>DiceRoll</find>
       <find>KickoffTabl</find>
       <find>pitch_to</find>
@@ -177,8 +146,29 @@
       <find>get_player_position</find>
       <find>Dugout</find>
       <find>swap</find>
-      <find>reserves_to_pitch</find>
       <find>turn_order</find>
+      <find>reserves_to_pitch</find>
+      <find>Pitch</find>
+      <find>get_balls</find>
+      <find>move_ball_to</find>
+      <find>ball</find>
+      <find>Ball:</find>
+      <find>HighKick(</find>
+      <find>KickoffTable(</find>
+      <find>self.team =</find>
+      <find>Touchback(</find>
+      <find>get_opp_team</find>
+      <find>Move(</find>
+      <find>get_team_</find>
+      <find>turn_</find>
+      <find>_turn</find>
+      <find>self.team</find>
+      <find>Interception</find>
+      <find>self.game.move_ball_to(</find>
+      <find>PlayerAction</find>
+      <find>GameState</find>
+      <find>get_curr</find>
+      <find>PlayerAction(</find>
     </findStrings>
     <replaceStrings>
       <replace>Pitch</replace>
@@ -186,6 +176,7 @@
       <replace>team</replace>
       <replace>team=self.team</replace>
       <replace>player=self.player</replace>
+      <replace>self.ball.position</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -242,9 +233,9 @@
         <option value="$PROJECT_DIR$/bb/core/host.py" />
         <option value="$PROJECT_DIR$/bb/core/api.py" />
         <option value="$PROJECT_DIR$/bb/core/table.py" />
-        <option value="$PROJECT_DIR$/bb/core/model.py" />
         <option value="$PROJECT_DIR$/bb/core/game.py" />
         <option value="$PROJECT_DIR$/bb/core/procedure.py" />
+        <option value="$PROJECT_DIR$/bb/core/model.py" />
       </list>
     </option>
   </component>
@@ -263,6 +254,7 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-16" />
     <option name="y" value="23" />
     <option name="width" value="1680" />
     <option name="height" value="1027" />
@@ -272,7 +264,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -324,6 +315,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -542,24 +534,23 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="1027" extended-state="6" />
+    <frame x="-3" y="23" width="1680" height="1027" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="10" weight="0.22903226" />
       <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.5005952" side_tool="true" weight="0.32948583" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.45698926" />
       <window_info anchor="bottom" id="Version Control" order="2" weight="0.21212122" />
       <window_info anchor="bottom" id="Python Console" order="1" weight="0.32814023" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.45698926" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32876712" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49842602" visible="true" weight="0.15079366" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.49784946" visible="true" weight="0.15262516" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
-      <window_info anchor="bottom" id="Find" order="5" weight="0.32795697" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.24970344" />
-      <window_info id="Favorites" order="0" sideWeight="0.501574" side_tool="true" weight="0.16073547" />
       <window_info anchor="bottom" id="Debug" order="7" weight="0.40215054" />
+      <window_info active="true" id="Favorites" order="0" sideWeight="0.50215054" side_tool="true" visible="true" weight="0.15262516" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -567,30 +558,31 @@
       <window_info anchor="bottom" id="Inspection Results" order="12" weight="0.32948583" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="5" weight="0.32795697" />
     </layout>
     <layout-to-restore>
+      <window_info anchor="bottom" id="Find" order="5" weight="0.32867885" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
+      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.28703704" />
+      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
+      <window_info id="Favorites" order="0" sideWeight="0.5007236" side_tool="true" weight="0.18819444" />
       <window_info content_ui="combo" id="Project" order="1" sideWeight="0.4992764" visible="true" weight="0.16073547" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="10" weight="0.22986037" />
-      <window_info anchor="bottom" id="Version Control" order="2" weight="0.03113325" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.28703704" />
       <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.32948583" />
-      <window_info anchor="bottom" id="Python Console" order="1" weight="0.32829374" />
-      <window_info anchor="bottom" id="Message" order="4" />
+      <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
       <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.3567681" />
-      <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="3" />
       <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.5005952" side_tool="true" weight="0.32948583" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="2" weight="0.03113325" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="bottom" id="Find" order="5" weight="0.32867885" />
-      <window_info id="Favorites" order="0" sideWeight="0.5007236" side_tool="true" weight="0.18819444" />
+      <window_info anchor="bottom" id="Message" order="4" />
+      <window_info anchor="right" id="Database" order="4" />
+      <window_info anchor="bottom" id="Python Console" order="1" weight="0.32829374" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -631,7 +623,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/model.py</url>
-          <line>545</line>
+          <line>581</line>
           <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
@@ -651,7 +643,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/procedure.py</url>
-          <line>405</line>
+          <line>404</line>
           <option name="timeStamp" value="391" />
         </line-breakpoint>
       </breakpoints>
@@ -1046,7 +1038,7 @@
     <entry file="file://$PROJECT_DIR$/data/config/ff.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
-          <caret line="9" column="9" lean-forward="true" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -1061,9 +1053,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="211">
           <caret line="50" column="18" selection-start-line="50" selection-start-column="18" selection-end-line="50" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1076,35 +1065,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/table.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
+        <state relative-caret-position="2565">
           <caret line="171" column="27" selection-start-line="171" selection-start-column="27" selection-end-line="171" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="185" column="11" lean-forward="true" selection-start-line="185" selection-start-column="11" selection-end-line="185" selection-end-column="11" />
+        <state relative-caret-position="584">
+          <caret line="339" column="28" lean-forward="true" selection-start-line="339" selection-start-column="28" selection-end-line="339" selection-end-column="28" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="262" column="36" selection-start-line="262" selection-start-column="36" selection-end-line="262" selection-end-column="36" />
+        <state relative-caret-position="750">
+          <caret line="2461" column="30" lean-forward="true" selection-start-line="2461" selection-start-column="30" selection-end-line="2461" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="2877" column="74" lean-forward="true" selection-start-line="2877" selection-start-column="74" selection-end-line="2877" selection-end-column="74" />
-          <folding>
-            <element signature="e#1#28#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="166">
+          <caret line="376" column="37" lean-forward="true" selection-start-line="376" selection-start-column="37" selection-end-line="376" selection-end-column="37" />
         </state>
       </provider>
     </entry>
