@@ -1,5 +1,3 @@
-import numpy as np
-import secrets
 import random
 from math import sqrt
 from bb.core.util import *
@@ -25,7 +23,7 @@ class Configuration:
 class PlayerState:
 
     def __init__(self):
-        self.player_ready_state = PlayerReadyState.READY
+        self.ready = PlayerReadyState.READY
         self.spp_earned = 0
         self.moves = 0
         self.casualty_effect = None
@@ -33,7 +31,7 @@ class PlayerState:
 
     def to_simple(self):
         return {
-            'player_ready_state': self.player_ready_state.name,
+            'player_ready_state': self.ready.name,
             'spp_earned': self.spp_earned,
             'moves': self.moves,
             'casualty_type': self.casualty_type.name if self.casualty_type is not None else None,
@@ -49,7 +47,6 @@ class TeamState:
         self.apothecary_available = team.apothecary
         self.wizard_available = False
         self.masterchef = False
-        self.player_states = {player.player_id: PlayerState() for player in team.players}
         self.score = 0
         self.turn = 0
         self.rerolls_start = team.rerolls
@@ -65,7 +62,6 @@ class TeamState:
             'babes': self.babes,
             'apothecary_available': self.apothecary_available,
             'masterchef': self.masterchef,
-            'player_states': {player_id: player_state.to_simple() for player_id, player_state in self.player_states.items()},
             'score': self.score,
             'turn': self.turn,
             'rerolls_start': self.rerolls_start,
@@ -78,39 +74,29 @@ class TeamState:
 
     def reset_turn(self):
         self.reroll_used = False
-        for player_id, player_state in self.player_states.items():
-            self.player_states[player_id].moves = 0
-            if player_state.player_ready_state == PlayerReadyState.USED:
-                self.player_states[player_id].player_ready_state = PlayerReadyState.READY
-            elif player_state.player_ready_state == PlayerReadyState.DOWN_USED:
-                self.player_states[player_id].player_ready_state = PlayerReadyState.DOWN_READY
 
     def use_reroll(self):
         self.rerolls -= 1
         self.reroll_used = True
-
-    def injure_player(self, player_id, casualty, casualty_effect):
-        print("casualty_effect={}".format(casualty_effect))
-        self.player_states[player_id].casualty = casualty
-        self.player_states[player_id].casualty_effect = casualty_effect
 
 
 class GameState:
 
     def __init__(self, game):
         self.game = game
+        self.stack = Stack()
+        self.reports = []
         self.half = 1
         self.round = 0
         self.kicking_team = None
         self.current_team = None
         self.pitch = Pitch(game)
         self.dugouts = {team.team_id: Dugout(team) for team in game.teams}
-        self.team_states = {team.team_id: TeamState(team) for team in game.teams}
         self.weather = WeatherType.NICE
         self.gentle_gust = False
         self.turn_order = []
         self.spectators = 0
-        self.active_player_id = None
+        self.active_player = None
 
     def to_simple(self):
         return {
@@ -118,14 +104,13 @@ class GameState:
             'kicking_team': self.kicking_team,
             'pitch': self.pitch.to_simple(),
             'dugout': {team_id: dugout.to_simple() for team_id, dugout in self.dugouts.items()},
-            'team_states': {team_id: team_state.to_simple() for team_id, team_state in self.team_states.items()},
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
             'current_team': self.current_team,
             'round': self.round,
             'turn_order': self.turn_order,
             'spectators': self.spectators,
-            'active_player_id': self.active_player_id
+            'active_player_id': self.active_player.player_id
         }
 
 
@@ -158,15 +143,10 @@ class Pitch:
         self.game = game
         self.balls = []
         self.board = []
-        self.positions = []
         for y in range(len(game.arena.board)):
+            self.board.append([])
             for x in range(len(game.arena.board[y])):
-                self.positions.append(Square(x, y))
-        for y in range(len(game.arena.board)):
-            row = []
-            for x in range(len(game.arena.board[y])):
-                row.append(None)
-            self.board.append(row)
+                self.board[y].append(None)
 
     def to_simple(self):
         return {
@@ -174,48 +154,33 @@ class Pitch:
             'balls': [ball.to_simple() for ball in self.balls]
         }
 
-    def put(self, player_id, pos):
-        self.player_positions[player_id] = pos
-        self.board[pos.y][pos.x] = player_id
+    def put(self, piece, pos):
+        piece.position = pos
+        self.board[pos.y][pos.x] = piece
 
-    def remove(self, player_id):
-        pos = self.player_positions[player_id]
-        del self.player_positions[player_id]
-        self.board[pos.y][pos.x] = None
+    def remove(self, piece):
+        assert piece.position is not None
+        self.board[piece.position.y][piece.position.x] = None
+        piece.position = None
 
-    def move(self, player_id, pos_to):
-        assert (self.board[pos_to.y][pos_to.x] is None)
-        pos_from = self.player_positions[player_id]
+    def move(self, piece, pos_to):
+        assert piece.position is not None
+        assert self.board[pos_to.y][pos_to.x] is None
         for ball in self.balls:
-            if ball.position == pos_from and ball.is_carried:
-                ball.position = Square(pos_to.x, pos_to.y)
-        self.board[pos_from.y][pos_from.x] = None
-        self.board[pos_to.y][pos_to.x] = player_id
-        self.player_positions[player_id] = Square(pos_to.x, pos_to.y)
+            if ball.position == piece.position and ball.is_carried:
+                ball.move_to(pos_to)
+        self.remove(piece)
+        self.put(piece, pos_to)
 
-    def swap(self, pos_from, pos_to):
-        """
-        :param pos_from: A position on the pitch
-        :param pos_to: A position on the pitch
-        :return:
-        """
-        player_from_id = self.board[pos_from.y][pos_from.x]
-        if player_from_id in self.player_positions:
-            self.player_positions[player_from_id] = Square(pos_to.x, pos_to.y)
-
-        player_to_id = self.board[pos_to.y][pos_to.x]
-        if player_to_id is not None:
-            self.player_positions[player_to_id] = Square(pos_from.x, pos_from.y)
-        self.board[pos_to.y][pos_to.x] = player_from_id
-        self.board[pos_from.y][pos_from.x] = player_to_id
-
-    def get_player_id_at(self, pos):
-        return self.board[pos.y][pos.x]
-
-    def get_player_position(self, player_id):
-        if player_id in self.player_positions:
-            return self.player_positions[player_id]
-        return None
+    def swap(self, piece_a, piece_b):
+        assert piece_a.position is not None
+        assert piece_b.position is not None
+        pos_a = Square(piece_a.position.x, piece_a.position.y)
+        pos_b = Square(piece_b.position.x, piece_b.position.y)
+        piece_a.position = pos_b
+        piece_b.position = pos_a
+        self.board[pos_a.y][pos_a.x] = piece_b
+        self.board[pos_b.y][pos_b.x] = piece_a
 
     def is_setup_legal(self, team, tile=None, max_players=11, min_players=3):
         cnt = 0
@@ -224,8 +189,8 @@ class Pitch:
                 if not self.game.arena.is_team_side(Square(x, y), team):
                     continue
                 if tile is None or self.game.arena.board[y][x] == tile:
-                    player_id = self.board[y][x]
-                    if self.game.get_team(team).has_player_by_id(player_id):
+                    piece = self.board[y][x]
+                    if piece is Player and piece.team == team:
                         cnt += 1
         if cnt > max_players or cnt < min_players:
             return False
@@ -243,17 +208,6 @@ class Pitch:
         return self.is_setup_legal(team, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \
                self.is_setup_legal(team, tile=Tile.AWAY_WING_RIGHT, max_players=max_players, min_players=min_players)
 
-    def get_team_player_ids(self, team, state=None, only_pitch=False):
-        player_ids = []
-        for player_id in self.game.get_team(team).players_by_id.keys():
-            if state is None or self.game.state.get_player_ready_state(player_id, team) == state:
-                if not only_pitch or player_id in self.player_positions.keys():
-                    player_ids.append(player_id)
-        return player_ids
-
-    def get_random_player(self, team):
-        return secrets.choice(self.get_team_player_ids(team))
-
     def get_balls_at(self, pos, in_air=False):
         balls = []
         for ball in self.balls:
@@ -262,12 +216,12 @@ class Pitch:
         return balls
 
     def get_ball_at(self, pos, in_air=False):
-        '''
-        Assume there is only one ball on the square
+        """
+        Assumes there is only one ball on the square
         :param pos:
         :param in_air:
         :return: Ball or None
-        '''
+        """
         for ball in self.balls:
             if ball.position == pos and (ball.on_ground or in_air):
                 return ball
@@ -277,28 +231,19 @@ class Pitch:
         return [ball.position for ball in self.balls]
 
     def get_ball_position(self):
-        '''
-        Assume there is only one ball on the square
-        :param pos:
-        :param in_air:
+        """
+        Assumes there is only one ball on the square
         :return: Ball or None
-        '''
+        """
         for ball in self.balls:
             return ball.position
         return None
 
-    def is_ball_out(self, ball):
-        return self.is_out_of_bounds(ball.position)
-
     def is_out_of_bounds(self, pos):
         return pos.x < 1 or pos.x >= len(self.board[0])-1 or pos.y < 1 or pos.y >= len(self.board)-1
 
-    def has_tackle_zone(self, player, team):
-        if self.game.state.get_player_ready_state(player.player_id, team) not in Rules.has_tackle_zone:
-            return False
-        if player.has_skill(Skill.TITCHY):
-            return False
-        return True
+    def get_player_at(self, pos):
+        return self.board[pos.y][pos.x]
 
     def get_push_squares(self, pos_from, pos_to):
         squares_to = self.game.state.pitch.get_adjacent_squares(pos_to, include_out=True)
@@ -318,9 +263,9 @@ class Pitch:
                     include = True
             print("Include: ", include)
             if include:
-                if self.game.state.pitch.get_player_id_at(square) is None:
+                if self.get_player_at(square) is None:
                     squares_empty.append(square)
-                if self.game.state.pitch.is_out_of_bounds(square):
+                if self.is_out_of_bounds(square):
                     squares_out.append(square)
                 squares.append(square)
         if len(squares_empty) > 0:
@@ -338,7 +283,7 @@ class Pitch:
                 sq = Square(pos.x+xx, pos.y+yy)
                 if not include_out and self.is_out_of_bounds(sq):
                     continue
-                if exclude_occupied and self.get_player_id_at(sq) is not None:
+                if exclude_occupied and self.get_player_at(sq) is not None:
                     continue
                 if not manhattan:
                     squares.append(sq)
@@ -346,80 +291,70 @@ class Pitch:
                     squares.append(sq)
         return squares
 
-    def get_adjacent_player_squares(self, pos, team, include_own=True, include_opp=True, manhattan=False, only_blockable=False, only_foulable=False):
+    def adjacent_player_squares(self, player, include_own=True, include_opp=True, manhattan=False, only_blockable=False, only_foulable=False):
         squares = []
-        for square in self.get_adjacent_squares(pos, manhattan=manhattan):
-            player_id = self.get_player_id_at(square)
-            if player_id is None:
+        for square in self.get_adjacent_squares(player.position, manhattan=manhattan):
+            player_at = self.get_player_at(square)
+            if player_at is None:
                 continue
-            player_team = self.game.get_team_by_player_id(player_id)
-            if include_own and player_team == team or include_opp and not player_team == team:
-                if not only_blockable or self.game.get_player_ready_state(player_id, team) in Rules.blockable:
-                    if not only_foulable or self.game.get_player_ready_state(player_id, team) in Rules.foulable:
+            if include_own and player_at.team == player.team or include_opp and not player_at.team == player.team:
+                if not only_blockable or player_at.ready in Rules.blockable:
+                    if not only_foulable or player_at.ready in Rules.foulable:
                         squares.append(square)
         return squares
 
-    def get_tackle_zones(self, pos):
+    def num_tackle_zones_in(self, player):
         tackle_zones = 0
-        own_player_id = self.game.state.pitch.get_player_id_at(pos)
-        own_team = self.game.get_team_by_player_id(own_player_id)
-        for square in self.get_adjacent_player_squares(pos, own_team, include_own=False, include_opp=True):
-            player_id = self.get_player_id_at(square)
-            player = self.game.get_player(player_id)
-            team = self.game.get_team_by_player(player)
-            if player_id is not None and self.has_tackle_zone(player, team):
+        for square in self.adjacent_player_squares(player, include_own=False, include_opp=True):
+            player = self.get_player_at(square)
+            if player is not None and player.has_tackle_zone():
                 tackle_zones += 1
         return tackle_zones
 
-    def get_tackle_zones_detailed(self, pos):
+    def tackle_zones_detailed(self, player):
         tackle_zones = 0
-        tackle_ids = []
-        prehensile_tail_ids = []
-        diving_tackle_ids = []
-        shadowing_ids = []
-        tentacles_ids = []
-        own_player_id = self.game.state.pitch.get_player_id_at(pos)
-        own_team = self.game.get_team_by_player_id(own_player_id)
-        for square in self.get_adjacent_player_squares(pos, own_team, include_own=False, include_opp=True):
-            player_id = self.get_player_id_at(square)
-            player = self.game.get_player(player_id)
-            team = self.game.get_team_by_player_id(player_id) if player_id is not None else None
-            if player_id is not None and self.has_tackle_zone(player, team):
+        tacklers = []
+        prehensile_tailers = []
+        diving_tacklers = []
+        shadowers = []
+        tentaclers = []
+        for square in self.adjacent_player_squares(player.position, include_own=False, include_opp=True):
+            player_at = self.get_player_at(square)
+            if player_at is not None and player_at.has_tackle_zone():
                 tackle_zones += 1
-            if player_id is None and player.has_skill(Skill.TACKLE):
-                tackle_ids.append(player_id)
-            if player_id is None and player.has_skill(Skill.PREHENSILE_TAIL):
-                prehensile_tail_ids.append(player_id)
-            if player_id is None and player.has_skill(Skill.DIVING_TACKLE):
-                diving_tackle_ids.append(player_id)
-            if player_id is None and player.has_skill(Skill.SHADOWING):
-                shadowing_ids.append(player_id)
-            if player_id is None and player.has_skill(Skill.TENTACLES):
-                tentacles_ids.append(player_id)
+            if player_at is None and player_at.has_skill(Skill.TACKLE):
+                tacklers.append(player_at)
+            if player_at is None and player_at.has_skill(Skill.PREHENSILE_TAIL):
+                prehensile_tailers.append(player_at)
+            if player_at is None and player_at.has_skill(Skill.DIVING_TACKLE):
+                diving_tacklers.append(player_at)
+            if player_at is None and player_at.has_skill(Skill.SHADOWING):
+                shadowers.append(player_at)
+            if player_at is None and player_at.has_skill(Skill.TENTACLES):
+                tentaclers.append(player_at)
 
-        return tackle_zones, tackle_ids, prehensile_tail_ids, diving_tackle_ids, shadowing_ids, tentacles_ids
+        return tackle_zones, tacklers, prehensile_tailers, diving_tacklers, shadowers, tentaclers
 
-    def assists(self, team, player_from, player_to, ignore_guard=False):
-        pos_from = self.get_player_position(player_from.player_id)
-        pos_to = self.get_player_position(player_to.player_id)
+    def assists(self, player, opp_player, ignore_guard=False):
         assists = []
         for yy in range(-1, 2, 1):
             for xx in range(-1, 2, 1):
                 if yy == 0 and xx == 0:
                     continue
-                p = Square(pos_to.x+xx, pos_to.y+yy)
-                if not self.is_out_of_bounds(p) and pos_from != p:
-                    player_id = self.get_player_id_at(p)
-                    if player_id is not None:
-                        if self.game.get_team_by_player_id(player_id) == team:
-                            if self.game.get_player_ready_state(player_id, team) not in Rules.assistable:
+                p = Square(opp_player.position.x+xx, opp_player.position.y+yy)
+                if not self.is_out_of_bounds(p) and player.position != p:
+                    player_at = self.get_player_at(p)
+                    if player_at is not None:
+                        if player_at.team == player.team:
+                            if player_at.state.ready not in Rules.assistable:
                                 continue
-                            if (not ignore_guard and self.game.get_player(player_id).has_skill(Skill.GUARD)) or \
-                                            self.get_tackle_zones(p) <= 1:  # TODO: Check if attacker has a tackle zone
-                                assists.append(player_id)
+                            if (not ignore_guard and player_at.has_skill(Skill.GUARD)) or \
+                                            self.num_tackle_zones_in(player_at) <= 1:
+                                # TODO: Check if attacker has a tackle zone
+                                assists.append(player_at)
         return assists
 
-    def get_passes(self, player, pos_from):
+    def passes(self, player, pos_from):
         squares = []
         distances = []
         distances_allowed = [PassDistance.QUICK_PASS,
@@ -439,15 +374,15 @@ class Pitch:
                 distances.append(distance)
         return squares, distances
 
-    def pass_distance(self, pos_from, pos_to):
-        distance_x = abs(pos_from.x - pos_to.x)
-        distance_y = abs(pos_from.y - pos_to.y)
+    def pass_distance(self, passer, pos):
+        distance_x = abs(passer.position.x - pos.x)
+        distance_y = abs(passer.position.y - pos.y)
         if distance_y >= len(Rules.pass_matrix) or distance_x >= len(Rules.pass_matrix[0]):
             return PassDistance.HAIL_MARY
         distance = Rules.pass_matrix[distance_y][distance_x]
         return PassDistance(distance)
 
-    def interceptors(self, pos_from, pos_to, team):
+    def interceptors(self, passer, pos):
         """
         1) Find line x from a to b
         2) Find squares s where x intersects
@@ -458,7 +393,7 @@ class Pitch:
         """
 
         # 1) Find line x from a to b
-        x = get_line((pos_from.x, pos_from.y), (pos_to.x, pos_to.y))
+        x = get_line((passer.position.x, passer.position.y), (pos.x, pos.y))
 
         # 2) Find squares s where x intersects
         s = []
@@ -467,7 +402,7 @@ class Pitch:
 
         # 3) Include manhattan neighbors s into n
         # 4) Remove squares where distance to a is larger than dist(a,b)
-        max_distance = pos_from.distance(pos_to)
+        max_distance = passer.position.distance(pos)
         n = set()
         for square in s:
             for neighbor in self.get_adjacent_squares(square) + [square]:
@@ -476,44 +411,43 @@ class Pitch:
                     continue
 
                 # 4) Remove squares where distance to a is larger than dist(a,b)
-                if neighbor.distance(pos_from) > max_distance:
+                if neighbor.distance(passer.position) > max_distance:
                     continue
-                if neighbor.distance(pos_to) > max_distance:
+                if neighbor.distance(pos) > max_distance:
                     continue
-                if neighbor.x > max(pos_from.x, pos_to.x) or neighbor.x < min(pos_from.x, pos_to.x):
+                if neighbor.x > max(passer.position.x, pos.x) or neighbor.x < min(passer.position.x, pos.x):
                     continue
-                if neighbor.y > max(pos_from.y, pos_to.y) or neighbor.y < min(pos_from.y, pos_to.y):
+                if neighbor.y > max(passer.position.y, pos.y) or neighbor.y < min(passer.position.y, pos.y):
                     continue
 
                 # 5) Remove squares without standing opponents with hands
-                player_at = self.get_player_id_at(neighbor)
-                player_team = self.game.get_team_by_player_id(player_at)
+                player_at = self.get_player_at(neighbor)
                 if player_at is None:
                     continue
-                if player_team != team:
+                if player_at.team != passer.team:
                     continue
-                if self.game.state.get_player_ready_state(player_at, player_team) not in Rules.catchable:
+                if self.game.state.get_player_ready_state(player_at, player_at.team) not in Rules.catchable:
                     continue
                 if self.game.get_player(player_at).has_skill(Skill.NO_HANDS):
                     continue
 
                 n.add(neighbor)
 
-        if pos_from in n:
-            n.remove(pos_from)
-        if pos_to in n:
-            n.remove(pos_to)
+        if passer.position in n:
+            n.remove(pos)
+        if pos in n:
+            n.remove(pos)
 
         players = []
         for square in n:
-            players.append(self.get_player_id_at(square))
+            players.append(self.get_player_at(square))
 
         return players
 
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=[], players=[], indexes=[], rolls=[], block_rolls=[], dice=[], disabled=False, agi_rolls=[]):
+    def __init__(self, action_type, team, positions=None, players=None, indexes=None, rolls=None, block_rolls=None, dice=None, agi_rolls=None, disabled=False):
         self.action_type = action_type
         self.positions = positions
         self.players = players
@@ -561,14 +495,15 @@ class Action:
 
 class TwoPlayerArena:
 
-    team_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT, Tile.HOME_SCRIMMAGE]
+    home_tiles = [Tile.HOME, Tile.HOME_TOUCHDOWN, Tile.HOME_WING_LEFT, Tile.HOME_WING_RIGHT, Tile.HOME_SCRIMMAGE]
     away_tiles = [Tile.AWAY, Tile.AWAY_TOUCHDOWN, Tile.AWAY_WING_LEFT, Tile.AWAY_WING_RIGHT, Tile.AWAY_SCRIMMAGE]
     scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
     wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
     team_td_tiles = [Tile.HOME_TOUCHDOWN]
 
-    def __init__(self, board):
+    def __init__(self, game, board):
+        self.game = game
         self.board = board
         self.json = None
 
@@ -577,7 +512,7 @@ class TwoPlayerArena:
             return self.json
 
         board = []
-        for row in self.board:
+        for _ in self.board:
             board.append([])
             for tile in self.board[0]:
                 board[-1].append(str(tile))
@@ -586,32 +521,32 @@ class TwoPlayerArena:
         }
         return self.json
 
-    def is_team_side(self, pos, home_team):
-        if home_team:
-            return self.board[pos.y][pos.x] in TwoPlayerArena.team_tiles
+    def is_team_side(self, pos, team):
+        if team == self.game.home_team:
+            return self.board[pos.y][pos.x] in TwoPlayerArena.home_tiles
         return self.board[pos.y][pos.x] in TwoPlayerArena.away_tiles
 
-    def get_team_side(self, home_team):
+    def get_team_side(self, team):
         tiles = []
         for y in range(len(self.board)):
             for x in range(len(self.board[y])):
-                if self.board[y][x] in (TwoPlayerArena.team_tiles if home_team else TwoPlayerArena.away_tiles):
+                if self.board[y][x] in (TwoPlayerArena.home_tiles if team == self.game.home_team else TwoPlayerArena.away_tiles):
                     tiles.append(Square(x, y))
         return tiles
 
     def is_scrimmage(self, pos):
         return self.board[pos.y][pos.x] in TwoPlayerArena.scrimmage_tiles
 
-    def is_touchdown(self, pos, home_team):
+    def is_touchdown(self, player):
         """
         :param pos:
         :param team: True if team team and False if away team.
         :return: Whether pos is within team's touchdown zone (where they score)
         """
-        if home_team:
-            return self.board[pos.y][pos.x] == Tile.AWAY_TOUCHDOWN
+        if player.team == self.game.home_team:
+            return self.board[player.position.y][player.position.x] == Tile.AWAY_TOUCHDOWN
 
-        return self.board[pos.y][pos.x] == Tile.HOME_TOUCHDOWN
+        return self.board[player.position.y][player.position.x] == Tile.HOME_TOUCHDOWN
 
     def is_wing(self, pos, right):
         if right:
@@ -779,7 +714,8 @@ class Dugout:
 
 class Position:
 
-    def __init__(self, name, races, ma, st, ag, av, skills, cost, feeder, n_skill_sets=[], d_skill_sets=[], star_player=False):
+    def __init__(self, name, races, ma, st, ag, av, skills, cost, feeder, n_skill_sets=[], d_skill_sets=[],
+                 star_player=False):
         self.name = name
         self.races = races
         self.ma = ma
@@ -794,15 +730,24 @@ class Position:
         self.star_player = star_player
 
 
-class Player:
+class Piece:
 
-    def __init__(self, player_id, position, name, nr, extra_skills=[], extra_ma=0, extra_st=0, extra_ag=0, extra_av=0, niggling=0, mng=False, spp=0):
-        self.player_id = player_id
+    def __init__(self, position=None):
         self.position = position
+
+
+class Player(Piece):
+
+    def __init__(self, player_id, role, name, nr, team, extra_skills=[], extra_ma=0, extra_st=0, extra_ag=0, extra_av=0,
+                 niggling=0, mng=False, spp=0, position=None):
+        super().__init__(position)
+        self.player_id = player_id
+        self.role = role
         self.name = name
         self.nr = nr
+        self.team = team
         self.extra_skills = extra_skills
-        self.skills = self.extra_skills + self.position.skills
+        self.skills = self.extra_skills + self.role.skills
         self.extra_ma = extra_ma
         self.extra_st = extra_st
         self.extra_ag = extra_ag
@@ -810,24 +755,32 @@ class Player:
         self.niggling = niggling
         self.mng = mng
         self.spp = spp
+        self.state = PlayerState()
 
     def get_ag(self):
-        return self.position.ag + self.extra_ag
+        return self.role.ag + self.extra_ag
 
     def get_st(self):
-        return self.position.st + self.extra_st
+        return self.role.st + self.extra_st
 
     def get_ma(self):
-        return self.position.ma + self.extra_ma
+        return self.role.ma + self.extra_ma
 
     def get_av(self):
-        return self.position.av + self.extra_av
+        return self.role.av + self.extra_av
 
     def has_skill(self, skill):
         return skill in self.skills
 
     def get_skills(self):
         return self.skills
+
+    def has_tackle_zone(self,):
+        if self.state.ready not in Rules.has_tackle_zone:
+            return False
+        if self.has_skill(Skill.TITCHY):
+            return False
+        return True
 
     def to_simple(self):
         skills = []
@@ -836,16 +789,18 @@ class Player:
         return {
             'player_id': self.player_id,
             'name': self.name,
-            'position_name': self.position.name,
+            'role': self.role.name,
             'nr': self.nr,
-            'skills': skills,
+            'skills': self.skills,
             'ma': self.get_ma(),
             'st': self.get_st(),
             'ag': self.get_ag(),
             'av': self.get_av(),
             'niggling': self.niggling,
             'mng': self.mng,
-            'spp': self.spp
+            'spp': self.spp,
+            'state': self.state.to_simple(),
+            'position': self.position
         }
 
 
@@ -919,12 +874,7 @@ class Team:
         self.fan_factor = fan_factor
         self.ass_coaches = ass_coaches
         self.cheerleaders = cheerleaders
-
-        self.players_by_id = {}
-        for player in self.players:
-            self.players_by_id[player.player_id] = player
-
-        self.player_ids = [player.player_id for player in self.players]
+        self.state = TeamState(self)
 
     def to_simple(self):
         players = []
@@ -946,21 +896,6 @@ class Team:
             'players': players,
             'players_by_id': players_by_id
         }
-
-    def init(self):
-        self.players_by_id = {}
-        for player in self.players:
-            self.players_by_id[player.player_id] = player
-        self.player_ids = [player.player_id for player in self.players]
-
-    def get_player_by_id(self, player_id):
-        return self.players_by_id[player_id]
-
-    def has_player_by_id(self, player_id):
-        return player_id in self.players_by_id
-
-    def get_player_ids(self):
-        return self.player_ids
 
 
 class Outcome:
