@@ -4,6 +4,7 @@ from bb.core import api
 from bb.core.model import Action, Square
 from bb.core.table import ActionType
 from bb.web.backend.users import *
+from bb.core.load import *
 import json
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ $ export FLASK_DEBUG=1
 $ flask run
 '''
 
-user_store = UserStore()
+ruleset = get_rule_set('LRB5-Experimental.xml')
 
 
 @app.route('/', methods=['GET'])
@@ -26,6 +27,7 @@ def create():
     data = json.loads(request.data)
     game = api.new_game(data['game']['home_team_id'], data['game']['away_team_id'])
     return json.dumps(game.to_simple())
+
 
 @app.route('/game/save', methods=['POST'])
 def save():
@@ -47,6 +49,7 @@ def get_games():
     return json.dumps(game_list)
 '''
 
+
 @app.route('/games/', methods=['GET'])
 def get_all_games():
     games = api.get_games()
@@ -57,6 +60,7 @@ def get_all_games():
         'games': game_list,
         'saved_games': saved_game_list
     })
+
 
 @app.route('/teams/', methods=['GET'])
 def get_all_teams():
@@ -76,8 +80,9 @@ def step(game_id):
     player_from_id = action['player_from_id'] if 'player_from_id' in action else None
     player_to_id = action['player_to_id'] if 'player_to_id' in action else None
     idx = action['idx'] if 'idx' in action else -1
-    team_home = action['team_home'] if 'team_home' in action else None
-    action = Action(action_type, pos_from=pos_from, pos_to=pos_to, player_from_id=player_from_id, player_to_id=player_to_id, idx=idx, team_home=team_home)
+    team_id = action['team_id'] if 'team_id' in action else None
+    coach_id = action['coach_id'] if 'coach_id' in action else None
+    action = Action(action_type, pos_from=pos_from, pos_to=pos_to, player_from_id=player_from_id, player_to_id=player_to_id, idx=idx, team_id=team_id)
     game = api.step(game_id, action)
     return json.dumps(game.to_simple())
 

@@ -88,7 +88,10 @@ class GameState:
         self.reports = []
         self.half = 1
         self.round = 0
-        self.kicking_team = None
+        self.kicking_first_half = None
+        self.receiving_first_half = None
+        self.kicking_this_drive = None
+        self.receiving_this_drive = None
         self.current_team = None
         self.pitch = Pitch(game)
         self.dugouts = {team.team_id: Dugout(team) for team in game.teams}
@@ -98,10 +101,20 @@ class GameState:
         self.spectators = 0
         self.active_player = None
 
+    def get_dugout(self, team):
+        return self.dugouts[team.team_id]
+
     def to_simple(self):
         return {
             'half': self.half,
-            'kicking_team': self.kicking_team,
+            'kicking_first_half': self.kicking_first_half.team_id if
+            self.kicking_first_half.team_id is None else None,
+            'receiving_first_half': self.receiving_first_half.team_id if
+            self.receiving_first_half.team_id is None else None,
+            'kicking_this_drive': self.kicking_this_drive.team_id if
+            self.kicking_this_drive.team_id is None else None,
+            'receiving_first_half': self.receiving_this_drive.team_id if
+            self.receiving_this_drive.team_id is None else None,
             'pitch': self.pitch.to_simple(),
             'dugout': {team_id: dugout.to_simple() for team_id, dugout in self.dugouts.items()},
             'weather': self.weather.name,
@@ -121,12 +134,11 @@ class Ball:
         self.on_ground = on_ground
         self.carried = carried
 
+    def move(self, x, y):
+        self.position = Square(self.position.x + x, self.position.y + y)
+
     def move_to(self, pos):
-        if self.position is None:
-            self.position = Square(self.position.x, self.position.y)
-        else:
-            self.position.x = pos.x
-            self.position.y = pos.y
+        self.position = Square(pos.x, pos.y)
 
     def to_simple(self):
         return {
@@ -291,9 +303,9 @@ class Pitch:
                     squares.append(sq)
         return squares
 
-    def adjacent_player_squares(self, player, include_own=True, include_opp=True, manhattan=False, only_blockable=False, only_foulable=False):
+    def adjacent_player_squares_at(self, player, position, include_own=True, include_opp=True, manhattan=False, only_blockable=False, only_foulable=False):
         squares = []
-        for square in self.get_adjacent_squares(player.position, manhattan=manhattan):
+        for square in self.get_adjacent_squares(position, manhattan=manhattan):
             player_at = self.get_player_at(square)
             if player_at is None:
                 continue
@@ -302,6 +314,17 @@ class Pitch:
                     if not only_foulable or player_at.ready in Rules.foulable:
                         squares.append(square)
         return squares
+
+    def adjacent_player_squares(self, player, include_own=True, include_opp=True, manhattan=False, only_blockable=False, only_foulable=False):
+        return self.adjacent_player_squares_at(player, player.position, include_own, include_opp, manhattan, only_blockable, only_foulable)
+
+    def num_tackle_zones_at(self, player, position):
+        tackle_zones = 0
+        for square in self.adjacent_player_squares_at(player, position, include_own=False, include_opp=True):
+            player = self.get_player_at(square)
+            if player is not None and player.has_tackle_zone():
+                tackle_zones += 1
+        return tackle_zones
 
     def num_tackle_zones_in(self, player):
         tackle_zones = 0
@@ -477,14 +500,14 @@ class ActionChoice:
 class Action:
 
     def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0,
-                 team_team=True):
+                 team_id=None):
         self.action_type = action_type
         self.pos_from = pos_from
         self.pos_to = pos_to
         self.player_from_id = player_from_id
         self.player_to_id = player_to_id
         self.idx = idx
-        self.team = team_team
+        self.team_id = team_id
 
     def to_simple(self):
         return {
@@ -538,14 +561,8 @@ class TwoPlayerArena:
         return self.board[pos.y][pos.x] in TwoPlayerArena.scrimmage_tiles
 
     def is_touchdown(self, player):
-        """
-        :param pos:
-        :param team: True if team team and False if away team.
-        :return: Whether pos is within team's touchdown zone (where they score)
-        """
         if player.team == self.game.home_team:
             return self.board[player.position.y][player.position.x] == Tile.AWAY_TOUCHDOWN
-
         return self.board[player.position.y][player.position.x] == Tile.HOME_TOUCHDOWN
 
     def is_wing(self, pos, right):

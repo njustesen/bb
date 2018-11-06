@@ -14,7 +14,7 @@ def new_game(home_team_id, away_team_id, config_name="ff.json"):
     home = get_team_by_id(home_team_id, ruleset)
     away = get_team_by_id(away_team_id, ruleset)
     game_id = str(uuid.uuid1())
-    game = Game(game_id, home, away, arena, config, ruleset)
+    game = Game(game_id, [home, away], arena, config, ruleset, home_team=home)
     game.init()
     host.add_game(game)
     print("Game created with id ", game.game_id)
@@ -67,8 +67,8 @@ def get_saved_games():
     return host.get_saved_games()
 
 
-def get_teams():
-    return get_all_teams(host.ruleset)
+def get_teams(ruleset):
+    return get_all_teams(ruleset)
 
 
 # Initialize with one game

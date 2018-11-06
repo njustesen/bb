@@ -10,10 +10,12 @@ class Game:
         self.teams = {teams.team_id: team for team in teams}
         self.home_team = teams[0] if home_team is None else home_team
         self.team_by_player_id = {}
+        self.player_by_id = {}
         # Dictionary with team for players
         for team in teams:
             for player in team.players:
                 self.team_by_player_id[player.player_id] = team
+                self.player_by_id[player.player_id] = player
         # Setup oppenent teams - in two player matches this is just the other team
         self.opp_teams = {}
         for i in range(len(teams)):
@@ -114,7 +116,6 @@ class Game:
         proc.done = proc.step(action)
         print("Done={}".format(proc.done))
 
-
         # Enable if cloning happens
         for player_id, pos in self.state.pitch.player_positions.items():
             if self.state.pitch.board[pos.y][pos.x] != player_id:
@@ -160,8 +161,8 @@ class Game:
         #print(json.dumps(outcome.to_simple()))
         self.state.reports.append(outcome)
 
-    def set_half(self, half):
-        self.state.half = half
+    def remove_balls(self):
+        self.state.pitch.balls.clear()
 
     def get_current_team(self):
         return self.state.current_team
@@ -179,11 +180,11 @@ class Game:
         return self.state.turn_order[idx+1]
 
     def add_or_skip_turn(self, turns):
-        '''
+        """
 
         :param turns must be 1 or -1:
         :return:
-        '''
+        """
 
         for team_id, team_state in self.state.team_states.items():
             team_state.turn += turns
@@ -197,69 +198,12 @@ class Game:
     def get_spectators(self):
         return self.state.spectators
 
-    def add_bribe(self, team):
-        self.state.team_states[team.team_id].bribes += 1
-
-    def use_bribe(self, team):
-        self.state.team_states[team.team_id].bribes -= 1
-
-    def get_bribes(self, team):
-        return self.state.team_states[team.team_id].bribes
-
-    def set_bribes(self, team, bribes):
-        self.state.team_states[team.team_id].bribes = bribes
-
-    def get_cheerleaders(self, team):
-        return self.state.team_states[team.team_id].cheerleaders
-
-    def set_cheerleaders(self, team, cheerleaders):
-        self.state.team_states[team.team_id].cheerleaders = cheerleaders
-
-    def add_cheerleader(self, team):
-        self.state.team_states[team.team_id].cheerleaders += 1
-
-    def get_babes(self, team):
-        return self.state.team_states[team.team_id].babes
-
-    def set_babes(self, team, babes):
-        self.state.team_states[team.team_id].babes = babes
-
-    def add_babe(self, team):
-        self.state.team_states[team.team_id].babes += 1
-
-    def get_ass_coaches(self, team):
-        return self.state.team_states[team.team_id].ass_coaches
-
-    def add_ass_coaches(self, team):
-        self.state.team_states[team.team_id].ass_coaches += 1
-
-    def set_ass_coaches(self, team, ass_coaches):
-        self.state.team_states[team.team_id].ass_coaches = ass_coaches
-
-    def has_masterchef(self, team):
-        return self.state.team_states[team.team_id].masterchef
-
-    def set_masterchef(self, team, masterchef):
-        self.state.team_states[team.team_id].masterchef = masterchef
-
-    def has_wizard_available(self, team):
-        return self.state.team_states[team.team_id].wizard_available
-
-    def set_wizard_available(self, team, wizard):
-        self.state.team_states[team.team_id].wizard_available = wizard
-
-    def has_apothecary_available(self, team):
-        return self.state.team_states[team.team_id].apothecary_available
-
-    def set_apothecary_available(self, team, apothecary):
-        self.state.team_states[team.team_id].apothecary_available = apothecary
-
     def get_player(self, player_id):
-        return self.team_by_player_id[player_id].players_by_id[player_id]
+        return self.player_by_id[player_id]
 
     def get_player_at(self, pos):
         player_id = self.state.pitch.get_player_id_at(pos)
-        return self.get_player(player_id) if player_id is not None else None
+        return self.player_by_id[player_id] if player_id is not None else None
 
     def set_turn_order(self, team):
         self.state.turn_order = []
@@ -281,47 +225,30 @@ class Game:
     def get_opp_team(self, team):
         return self.opp_teams[team.team_id]
 
-    def use_reroll(self, team):
-        self.state.team_state[team.team_id].use_reroll()
+    def get_reserves(self, team):
+        return self.state.get_dugout(team).reserves
 
-    def add_reroll(self, team):
-        self.state.team_state[team.team_id].rerolls += 1
+    def get_kods(self, team):
+        return self.state.get_dugout(team).kod
 
-    def get_rerolls_left(self, team):
-        return self.state.team_state[team.team_id].rerolls
+    def get_casualties(self, team):
+        return self.state.get_dugout(team).casualties
 
-    def get_fame(self, team):
-        return self.state.team_state[team.team_id].fame
-
-    def set_fame(self, team, fame):
-        self.state.team_state[team.team_id].fame = fame
-
-    def set_rerolls(self, team, rerolls):
-        self.state.team_state[team.team_id].rerolls = rerolls
-
-    def set_team_turn(self, team, turn):
-        self.state.team_state[team.team_id].turn = turn
-
-    def get_team_turn(self, team):
-        return self.state.team_state[team.team_id].turn
+    def get_dungeon(self, team):
+        return self.state.get_dugout(team).dungeon
 
     def can_use_reroll(self, team):
-        return not self.state.team_state[team.team_id].reroll_used and self.state.team_state[
-            team.team_id].rerolls > 0 and self.state.current_team == team
-
-    def add_score(self, team):
-        self.state.get_team_state(team).score += 1
+        return not team.state.reroll_used and team.state.rerolls > 0 and self.state.current_team == team
 
     def get_kicking_team(self, half=None):
         if half is None:
-            half = self.state.half
-        return self.state.kicking_team if half == 1 else not self.state.kicking_team
-
-    def set_kicking_team(self, team):
-        self.state.kicking_team = team
+            return self.state.kicking_this_drive
+        return self.state.kicking_first_half if half == 1 else not self.state.receiving_first_half
 
     def get_receiving_team(self, half=None):
-        return self.get_opp_team(self.get_kicking_team(half))
+        if half is None:
+            return self.state.receiving_team_this_drive
+        return self.state.receiving_team_first_half if half == 1 else not self.state.kicking_first_half
 
     def get_ball_position(self):
         return self.state.pitch.get_ball_position()
@@ -330,47 +257,40 @@ class Game:
         ball = self.state.pitch.get_ball_at(player.position)
         return ball.position if ball is not None else None
 
+    def get_ball_at(self, pos):
+        return self.state.pitch.get_ball_at(pos)
+
     def is_touchdown(self, player):
         return self.arena.is_touchdown(player)
 
     def is_out_of_bounds(self, pos):
         return self.state.pitch.is_out_of_bounds(pos)
 
-    def get_reserves(self, team):
-        return self.state.get_dugout(team).reserves
+    def get_players_on_pitch(self, team, ready=None):
+        return [player for player in team.players
+                if player.position is not None and (ready is None or ready == player.state.ready)]
 
-    def get_kod(self, team):
-        return self.state.get_dugout(team).kod
+    def pitch_to_reserves(self, player):
+        self.state.pitch.remove(player)
+        self.get_reserves(player.team).append(player)
+        player.state.ready = PlayerReadyState.READY
 
-    def get_casualties(self, team):
-        return self.state.get_dugout(team).casualties
-
-    def get_dungeon(self, team):
-        return self.state.get_dugout(team).casualties
-
-    def get_players_on_pitch(self, team, state=None):
-        return [self.get_player(player_id) for player_id in self.state.pitch.get_team_player_ids(team, state=state, only_pitch=True)]
-
-    def pitch_to_reserves(self, player, team):
-        self.state.pitch.remove(player.player_id)
-        self.get_reserves(team).append(player.player_id)
-
-    def reserves_to_pitch(self, player, team, pos):
-        self.state.get_dugout(team).reserves.remove(player)
+    def reserves_to_pitch(self, player, pos):
+        self.get_reserves(player.team).remove(player)
         player_at = self.get_player_at(pos)
         if player_at is not None:
-            self.pitch_to_reserves(player_at, team)
+            self.pitch_to_reserves(player_at)
         self.state.pitch.put(player, pos)
 
-    def pitch_to_kod(self, player, team):
+    def pitch_to_kod(self, player):
         self.state.pitch.remove(player)
-        self.get_kod(team).kod.append(player)
+        self.get_kods(player.team).append(player)
         player.state.ready = PlayerReadyState.KOD
 
-    def kod_to_reserves(self, player, team):
+    def kod_to_reserves(self, player):
         player.ready = PlayerReadyState.READY
-        self.get_kod(team).remove(player)
-        self.get_reserves(team).append(player)
+        self.get_kods(player.team).remove(player)
+        self.get_reserves(player.team).append(player)
 
     def pitch_to_casualties(self, player, casualty, effect, apothecary=False):
         self.state.pitch.remove(player)
@@ -393,12 +313,6 @@ class Game:
     def swap(self, pos_a, pos_b):
         self.state.pitch.swap(pos_a, pos_b)
 
-    def get_weather(self):
-        return self.state.weather
-
-    def set_weather(self, weather):
-        self.state.weather = weather
-
     def assists(self, player, opp_player, ignore_guard=False):
         return self.state.pitch.assists(player, opp_player, ignore_guard=ignore_guard)
 
@@ -419,6 +333,9 @@ class Game:
 
     def num_tackle_zones_in(self, player):
         return self.state.pitch.num_tackle_zones_in(player)
+
+    def num_tackle_zones_at(self, player, position):
+        return self.state.pitch.num_tackle_zones_at(player, position)
 
     def tackle_zones_in_detailed(self, player):
         return self.state.pitch.tackle_zones_detailed(player)
