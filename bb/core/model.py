@@ -107,23 +107,19 @@ class GameState:
     def to_simple(self):
         return {
             'half': self.half,
-            'kicking_first_half': self.kicking_first_half.team_id if
-            self.kicking_first_half.team_id is None else None,
-            'receiving_first_half': self.receiving_first_half.team_id if
-            self.receiving_first_half.team_id is None else None,
-            'kicking_this_drive': self.kicking_this_drive.team_id if
-            self.kicking_this_drive.team_id is None else None,
-            'receiving_first_half': self.receiving_this_drive.team_id if
-            self.receiving_this_drive.team_id is None else None,
+            'kicking_first_half': self.kicking_first_half.team_id if self.kicking_first_half is not None else None,
+            'receiving_first_half': self.receiving_first_half.team_id if self.receiving_first_half is not None else None,
+            'kicking_this_drive': self.kicking_this_drive.team_id if self.kicking_this_drive is not None else None,
+            'receiving_this_drive': self.receiving_this_drive.team_id if self.receiving_this_drive is not None else None,
             'pitch': self.pitch.to_simple(),
-            'dugout': {team_id: dugout.to_simple() for team_id, dugout in self.dugouts.items()},
+            'home_dugout': self.dugouts[self.game.home_team.team_id].to_simple(),
+            'away_dugout': self.dugouts[self.game.away_team.team_id].to_simple(),
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
-            'current_team': self.current_team,
+            'current_team': self.current_team.team_id if self.current_team is not None else None,
             'round': self.round,
-            'turn_order': self.turn_order,
             'spectators': self.spectators,
-            'active_player_id': self.active_player.player_id
+            'active_player_id': self.active_player.player_id if self.active_player is not None else None
         }
 
 
@@ -151,7 +147,6 @@ class Ball:
 class Pitch:
 
     def __init__(self, game):
-        self.player_positions = {}
         self.game = game
         self.balls = []
         self.board = []
@@ -161,8 +156,14 @@ class Pitch:
                 self.board[y].append(None)
 
     def to_simple(self):
+        board = []
+        for y in range(len(self.board)):
+            row = []
+            for x in range(len(self.board[0])):
+                row.append(self.board[y][x].player_id if self.board[y][x] is not None else None)
+            board.append(row)
         return {
-            'board': self.board,
+            'board': board,
             'balls': [ball.to_simple() for ball in self.balls]
         }
 
@@ -472,15 +473,15 @@ class ActionChoice:
 
     def __init__(self, action_type, team, positions=None, players=None, indexes=None, rolls=None, block_rolls=None, dice=None, agi_rolls=None, disabled=False):
         self.action_type = action_type
-        self.positions = positions
-        self.players = players
+        self.positions = [] if positions is None else positions
+        self.players = [] if players is None else players
         self.team = team
-        self.indexes = indexes
-        self.rolls = rolls
-        self.block_rolls = block_rolls
-        self.dice = dice
+        self.indexes = [] if indexes is None else indexes
+        self.rolls = [] if rolls is None else rolls
+        self.block_rolls = [] if block_rolls is None else block_rolls
+        self.dice = [] if dice is None else dice
         self.disabled = disabled
-        self.agi_rolls = agi_rolls
+        self.agi_rolls = [] if agi_rolls is None else agi_rolls
 
     def to_simple(self):
         return {
@@ -525,8 +526,7 @@ class TwoPlayerArena:
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
     team_td_tiles = [Tile.HOME_TOUCHDOWN]
 
-    def __init__(self, game, board):
-        self.game = game
+    def __init__(self, board):
         self.board = board
         self.json = None
 
@@ -538,37 +538,11 @@ class TwoPlayerArena:
         for _ in self.board:
             board.append([])
             for tile in self.board[0]:
-                board[-1].append(str(tile))
+                board[-1].append(tile.name if tile is not None else None)
         self.json = {
             'board': board
         }
         return self.json
-
-    def is_team_side(self, pos, team):
-        if team == self.game.home_team:
-            return self.board[pos.y][pos.x] in TwoPlayerArena.home_tiles
-        return self.board[pos.y][pos.x] in TwoPlayerArena.away_tiles
-
-    def get_team_side(self, team):
-        tiles = []
-        for y in range(len(self.board)):
-            for x in range(len(self.board[y])):
-                if self.board[y][x] in (TwoPlayerArena.home_tiles if team == self.game.home_team else TwoPlayerArena.away_tiles):
-                    tiles.append(Square(x, y))
-        return tiles
-
-    def is_scrimmage(self, pos):
-        return self.board[pos.y][pos.x] in TwoPlayerArena.scrimmage_tiles
-
-    def is_touchdown(self, player):
-        if player.team == self.game.home_team:
-            return self.board[player.position.y][player.position.x] == Tile.AWAY_TOUCHDOWN
-        return self.board[player.position.y][player.position.x] == Tile.HOME_TOUCHDOWN
-
-    def is_wing(self, pos, right):
-        if right:
-            return self.board[pos.y][pos.x] in TwoPlayerArena.wing_right_tiles
-        return self.board[pos.y][pos.x] in TwoPlayerArena.wing_left_tiles
 
 
 class Die:
@@ -807,8 +781,9 @@ class Player(Piece):
             'player_id': self.player_id,
             'name': self.name,
             'role': self.role.name,
+            'team_id': self.team.team_id,
             'nr': self.nr,
-            'skills': self.skills,
+            'skills': [skill.name for skill in self.skills],
             'ma': self.get_ma(),
             'st': self.get_st(),
             'ag': self.get_ag(),
@@ -817,7 +792,7 @@ class Player(Piece):
             'mng': self.mng,
             'spp': self.spp,
             'state': self.state.to_simple(),
-            'position': self.position
+            'position': self.position.to_simple() if self.position is not None else None
         }
 
 
@@ -910,8 +885,9 @@ class Team:
             'ass_coaches': self.ass_coaches,
             'cheerleaders': self.cheerleaders,
             'fan_factor': self.fan_factor,
-            'players': players,
-            'players_by_id': players_by_id
+            'player_ids': [player.player_id for player in self.players],
+            'players_by_id': players_by_id,
+            'state': self.state.to_simple()
         }
 
 

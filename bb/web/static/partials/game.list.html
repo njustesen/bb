@@ -18,11 +18,11 @@
             </thead>
             <tbody>
                 <tr ng-repeat="game in games" ng-click='openGame(game.game_id)'>
-                    <td class="text-center">{{game.home_team.name}}</td>
-                    <td class="text-center">{{game.state.home_state.score}}</td>
-                    <td class="text-center">-</td>
-                    <td class="text-center">{{game.state.away_state.score}}</td>
                     <td class="text-center">{{game.away_team.name}}</td>
+                    <td class="text-center">{{game.away_team.state.score}}</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">{{game.home_team.state.score}}</td>
+                    <td class="text-center">{{game.home_team.name}}</td>
                     <td class="text-right">
                         <a href="#/game/play/{{game.game_id}}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-play"></span> Play</a>
                         <!--<button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>-->
@@ -60,11 +60,11 @@
             <tbody>
                 <tr ng-repeat="save in savedGames" ng-click='openGame(game.game_id)'>
                     <td class="text-left">{{save.name}}</td>
-                    <td class="text-center">{{save.game.home_team.name}}</td>
-                    <td class="text-center">{{save.game.state.home_state.score}}</td>
-                    <td class="text-center">-</td>
-                    <td class="text-center">{{save.game.state.away_state.score}}</td>
                     <td class="text-center">{{save.game.away_team.name}}</td>
+                    <td class="text-center">{{save.game.away_team.state.score}}</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">{{save.game.home_team.state.score}}</td>
+                    <td class="text-center">{{save.game.home_team.name}}</td>
                     <td class="text-right">
                         <a href="#" ng-click="loadGame(save.name)" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-play"></span> Play</a>
                         <!--<button class="btn btn-danger btn-xs" ng-click="deleteGame(game.game_id)"><span class="glyphicon glyphicon-trash"></span> Concede</button>-->

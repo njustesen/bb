@@ -68,22 +68,22 @@
             <div>
                 <div class="emblem col-xs-4 text-right">
                     <div class="gamelabel">
-                        Home
+                        Away
                     </div>
                     <div>
-                        {{game.home_team.name}}
+                        {{game.away_team.name}}
                     </div>
                     <div class="rerolls">
-                        <div ng-repeat="n in [] | range:8" title="{{ 7-$index < game.state.home_state.rerolls ? 'Reroll' : (7-$index < game.state.home_state.rerolls_start ? 'Reroll used' : '') }}" class="reroll home {{ 7-$index < game.state.home_state.rerolls ? 'notused' : (7-$index < game.state.home_state.rerolls_start ? 'used' : 'none') }}"> </div>
+                        <div ng-repeat="n in [] | range:8" title="{{ 7-$index < game.away_team.state.rerolls ? 'Reroll' : (7-$index < game.away_team.state.rerolls_start ? 'Reroll used' : '') }}" class="reroll away {{ 7-$index < game.away_team.state.rerolls ? 'notused' : (7-$index < game.away_team.state.rerolls_start ? 'used' : 'none') }}"> </div>
                     </div>
                 </div>
                 <div class="col-xs-1 logo-home text-center">
-                    <img src="static/img/teamlogos/{{game.home_team.race.toLowerCase()}}.gif" height="64" width="64" />
+                    <img src="static/img/teamlogos/{{game.away_team.race.toLowerCase()}}.gif" height="64" width="64" />
                 </div>
                 <div class="col-xs-2 no-padding">
                     <div class="text-center">
                         <div class="gamelabel">Score</div>
-                        <div>{{game.state.home_state.score}} - {{game.state.away_state.score}}</div>
+                        <div>{{game.away_team.state.score}} - {{game.home_team.state.score}}</div>
                     </div>
                     <div class="text-center" style="margin-top: -5px;">
                         <div class="team-icons">
@@ -93,7 +93,7 @@
                 </div>
                 <div class="col-xs-1 logo-away text-center">
                     <div>
-                        <img src="static/img/teamlogos/{{game.away_team.race.toLowerCase()}}.gif" height="64" width="64" />
+                        <img src="static/img/teamlogos/{{game.home_team.race.toLowerCase()}}.gif" height="64" width="64" />
                     </div>
                 </div>
                 <div class="emblem col-xs-4 text-left">
@@ -101,10 +101,10 @@
                         Away
                     </div>
                     <div>
-                        {{game.away_team.name}}
+                        {{game.home_team.name}}
                     </div>
                     <div class="rerolls">
-                        <div ng-repeat="n in [] | range:8" title="{{ $index < game.state.away_state.rerolls ? 'Reroll' : ($index < game.state.away_state.rerolls_start ? 'Reroll used' : '') }}" class="reroll away {{ $index < game.state.away_state.rerolls ? 'notused' : ($index < game.state.away_state.rerolls_start ? 'used' : 'none') }}"> </div>
+                        <div ng-repeat="n in [] | range:8" title="{{ $index < game.home_team.state.rerolls ? 'Reroll' : ($index < game.home_team.state.rerolls_start ? 'Reroll used' : '') }}" class="reroll home {{ $index < game.home_team.state.rerolls ? 'notused' : ($index < game.home_team.state.rerolls_start ? 'used' : 'none') }}"> </div>
                     </div>
                 </div>
             </div>
@@ -112,35 +112,35 @@
         <div class="row scoreboard-content">
             <div class="col-xs-4">
                 <div class="team-icons text-right">
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/apothecary_38x38.png" ng-if="game.state.home_state.wizard_available" class="available" title="Wizard" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/wizard_38x38.png" ng-if="game.state.home_state.apothecary_available" class="available" title="Apothecary" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bribe_38x38.png" ng-repeat="n in [] | range:game.state.home_state.bribes" class="available" title="Bribe" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bloodweiser_babe_38x38.png" ng-repeat="n in [] | range:game.state.home_state.babes" class="available" title="Bloodweiser babe" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/master_chef_38x38.png" ng-if="game.state.home_state.masterchef" class="available" title="Master chef" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/apothecary_38x38.png" ng-if="game.away_team.state.wizard_available" class="available" title="Wizard" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/wizard_38x38.png" ng-if="game.away_team.state.apothecary_available" class="available" title="Apothecary" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bribe_38x38.png" ng-repeat="n in [] | range:game.away_team.state.bribes" class="available" title="Bribe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bloodweiser_babe_38x38.png" ng-repeat="n in [] | range:game.away_team.state.babes" class="available" title="Bloodweiser babe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/master_chef_38x38.png" ng-if="game.away_team.state.masterchef" class="available" title="Master chef" width="20px" height="20px" /></span>
                 </div>
             </div>
-            <div class="col-xs-1 text-center {{ game.state.team_turn == true ? 'bold' : '' }} {{ currentProc(true) == 'Quick Snap!' ? 'small-text' : '' }}">
-                <div class="proclabel" ng-if="game.state.home_state.turn != null">{{ currentProc(true) }}</div>
+            <div class="col-xs-1 text-center {{ is_team_turn(game.away_team) ? 'bold' : '' }} {{ currentProc(game.away_team) == 'Quick Snap!' ? 'small-text' : '' }}">
+                <div class="proclabel" ng-if="game.away_team.state.turn != null">{{ currentProc(game.away_team) }}</div>
             </div>
             <div class="col-xs-2 text-center">
                 <div class="proclabel">{{ currentProc(null) }}</div>
             </div>
-            <div class="col-xs-1 text-center {{ game.state.team_turn == false ? 'bold' : '' }} {{ currentProc(false) == 'Quick Snap!' ? 'small-text' : '' }}">
-                <div class="proclabel" ng-if="game.state.away_state.turn != null">{{ currentProc(false) }}</div>
+            <div class="col-xs-1 text-center {{ is_team_turn(game.home_team) == false ? 'bold' : '' }} {{ currentProc(game.home_team) == 'Quick Snap!' ? 'small-text' : '' }}">
+                <div class="proclabel" ng-if="game.home_team.state.turn != null">{{ currentProc(false) }}</div>
             </div>
             <div class="col-xs-4">
                 <div class="team-icons">
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/apothecary_38x38.png" ng-if="game.state.away_state.wizard_available" class="available" title="Wizard" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/wizard_38x38.png" ng-if="game.state.away_state.apothecary_available" class="available" title="Apothecary" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bribe_38x38.png" ng-repeat="n in [] | range:game.state.away_state.bribes" class="available" title="Bribe" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bloodweiser_babe_38x38.png" ng-repeat="n in [] | range:game.state.away_state.babes" class="available" title="Bloodweiser babe" width="20px" height="20px" /></span>
-                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/master_chef_38x38.png" ng-if="game.state.away_state.masterchef" class="available" title="Master chef" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/apothecary_38x38.png" ng-if="game.home_team.state.wizard_available" class="available" title="Wizard" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/wizard_38x38.png" ng-if="game.home_team.state.apothecary_available" class="available" title="Apothecary" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bribe_38x38.png" ng-repeat="n in [] | range:game.home_team.state.bribes" class="available" title="Bribe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/bloodweiser_babe_38x38.png" ng-repeat="n in [] | range:game.home_team.state.babes" class="available" title="Bloodweiser babe" width="20px" height="20px" /></span>
+                    <span class="team-icon"><img src="static/img/icons/sidebar/resources/master_chef_38x38.png" ng-if="game.home_team.state.masterchef" class="available" title="Master chef" width="20px" height="20px" /></span>
                 </div>
             </div>
         </div>
         <div class="">
-            <div class="col-sm-6 turnmarker {{ game.state.team_turn == true ? 'turnmarker-home-turn' : 'turnmarker-home' }}"></div>
-            <div class="col-sm-6 turnmarker {{ game.state.team_turn == false ? 'turnmarker-away-turn' : 'turnmarker-away' }}"></div>
+            <div class="col-sm-6 turnmarker {{ is_team_turn(game.home_team) ? 'turnmarker-home-turn' : 'turnmarker-home' }}"></div>
+            <div class="col-sm-6 turnmarker {{ is_team_turn(game.away_team) ? 'turnmarker-away-turn' : 'turnmarker-away' }}"></div>
         </div>
     </div>
 </div>
@@ -347,11 +347,11 @@
             </div>
             <div class="action-bar text-center">
                 <span ng-repeat="action in game.available_actions">
-                    <button ng-if="showActionAsButton(action)" type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}}" ng-click="pickActionType(action)" ng-disabled="refreshing || action.disabled">
+                    <button ng-if="showActionAsButton(action)" type="button" class="btn btn-sm {{action.team_id == null ? 'btn-default' : (action.team_id == game.home_team ? 'btn-danger' : 'btn-primary')}}" ng-click="pickActionType(action)" ng-disabled="refreshing || action.disabled">
                         {{ prettify(action.action_type) }}
                     </button>
                     <span ng-repeat="die in action.dice">
-                        <button type="button" class="btn btn-sm {{action.team == null ? 'btn-default' : (action.team ? 'btn-danger' : 'btn-primary')}} die" ng-click="pickDice($index)" ng-disabled="refreshing || action.disabled">
+                        <button type="button" class="btn btn-sm {{action.team_id == null ? 'btn-default' : (action.team_id == game.home_team ? 'btn-danger' : 'btn-primary')}} die" ng-click="pickDice($index)" ng-disabled="refreshing || action.disabled">
                             <img src="static/img/dice/attacker_down.png" ng-show="die.result=='ATTACKER_DOWN'" />
                             <img src="static/img/dice/both_down.png" ng-show="die.result=='BOTH_DOWN'" />
                             <img src="static/img/dice/push.png" ng-show="die.result=='PUSH'" />

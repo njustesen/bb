@@ -111,4 +111,4 @@ if __name__ == '__main__':
     app.jinja_options = jinja_options
 
     app.config['TEMPLATES_AUTO_RELOAD']=True
-    app.run(debug=True,use_reloader=True)
+    app.run(debug=True, use_reloader=True)

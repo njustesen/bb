@@ -68,11 +68,11 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
 
         $scope.save = function save(game, shouldPublish) {
             //var content = $('#textareaContent').val();
-            game = {}
-            game.home_team_id = $scope.home_team_id
-            game.away_team_id = $scope.away_team_id
-            game.home_player = $scope.home_player
-            game.away_player = $scope.away_player
+            game = {};
+            game.home_team_id = $scope.home_team_id;
+            game.away_team_id = $scope.away_team_id;
+            game.home_player = $scope.home_player;
+            game.away_player = $scope.away_player;
 
             GameService.create(game).success(function(data) {
                 $location.path("/");
@@ -140,6 +140,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 $scope.$apply();
             }
         });
+
+        $scope.is_current_team = function is_current_team(team){
+            return team !== null && $scope.game.home_team.team_id === team.team_id;
+        };
 
         $scope.saveGame = function saveGame(name){
             $scope.modelError = false;
@@ -215,12 +219,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.playerIcon = function playerIcon(player){
             let team = $scope.teamOfPlayer(player);
-            let icon_base = IconService.playerIcons[team.race][player.position_name];
+            let icon_base = IconService.playerIcons[team.race][player.role];
             let icon_num = "1";
-            let team_letter = team.team_id == $scope.game.home_team.team_id ? "" : "b";
+            let team_letter = player.team_id === $scope.game.home_team.team_id ? "" : "b";
             let angle = player.player_id === $scope.game.state.active_player_id ? "an" : "";
-            let icon_name = icon_base + icon_num + team_letter + angle + ".gif";
-            return icon_name;
+            return icon_base + icon_num + team_letter + angle + ".gif";
         };
 
         $scope.getCursor = function getCursor(square){
@@ -278,13 +281,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             let player_icon = null;
             if (player_id != null){
                 player = $scope.playersById[player_id];
-                let team = $scope.teamOfPlayer(player);
-                player_state = null;
-                if (team.team_id === $scope.game.home_team.team_id){
-                    player_state = $scope.game.state.home_state.player_states[player_id];
-                } else {
-                    player_state = $scope.game.state.away_state.player_states[player_id];
-                }
                 player_icon = player != null ? $scope.playerIcon(player) : null;
             }
             let ball = $scope.game.state.pitch.ball_position != null ? ($scope.game.state.pitch.ball_position.x === x && $scope.game.state.pitch.ball_position.y === y) : null;
@@ -440,7 +436,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 if (player !== null){
                     let team = $scope.teamOfPlayer(player);
                     let player_state = $scope.playerState(player);
-                    if ((team === $scope.game.home_team) === $scope.local_state.team_turn &&
+                    if ((team === $scope.game.home_team) === $scope.local_state.current_team &&
                             player_state !== "DOWN" && player_state !== "STUNNED" && player_state !== "DOWN_USED") {
                         $scope.local_state.board[pos.y][pos.x].available = true;
                         $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
@@ -521,7 +517,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.local_state.player_positions = {};
             $scope.local_state.ball_in_air = $scope.game.state.ball_in_air;
             $scope.local_state.ball_position = $scope.game.state.ball_position;
-            $scope.local_state.team_turn = $scope.game.state.team_turn;
+            $scope.local_state.current_team = $scope.game.state.current_team;
             for (let y = 0; y < $scope.game.state.pitch.board.length; y++){
                 if ($scope.local_state.board.length <= y){
                     $scope.local_state.board.push([]);
@@ -654,23 +650,23 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.playerState = function playerReadyState(player){
             let state = undefined;
             if ($scope.teamOfPlayer(player) === $scope.game.home_team){
-                return $scope.game.state.home_state.player_states[player.player_id];
+                return $scope.game.home_team.state.player_states[player.player_id];
             } else {
-                return $scope.game.state.away_state.player_states[player.player_id];
+                return $scope.game.away_team.state.player_states[player.player_id];
             }
         };
 
         $scope.playerReadyState = function playerReadyState(player){
             let state = undefined;
             if ($scope.teamOfPlayer(player) === $scope.game.home_team){
-                state = $scope.game.state.home_state.player_states[player.player_id].player_ready_state;
+                state = $scope.game.home_team.state.player_states[player.player_id].player_ready_state;
                 if (state === "MNG"){
-                    state = $scope.game.state.home_state.injures[player.player_id];
+                    state = $scope.game.home_team.state.injures[player.player_id];
                 }
             } else {
-                state = $scope.game.state.away_state.player_states[player.player_id].player_ready_state;
+                state = $scope.game.away_team.state.player_states[player.player_id].player_ready_state;
                 if (state === "MNG"){
-                    state = $scope.game.state.away_state.injures[player.player_id];
+                    state = $scope.game.away_team.state.injures[player.player_id];
                 }
             }
             return state.replace("_READY", "").replace("_", " ");
@@ -739,7 +735,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     if ($scope.available_players.length <= 1 || $scope.selectedPlayer() != null){
 
                         // Convert dugout squares to pitch (crowd) squares if push procedure
-                        let crowd = $scope.game.stack[$scope.game.stack.length-1] === "Push" && square.area.startsWith("dugout");
+                        let crowd = $scope.game.state.stack[$scope.game.state.stack.length-1] === "Push" && square.area.startsWith("dugout");
                         let crowd_square = {
                             y: square.y+1,
                             area: 'pitch'
@@ -803,45 +799,45 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.currentProc = function currentProc(team){
             if ($scope.loading){
                 return "";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Pregame" && team == null){
+            } else if ($scope.game.state.stack[$scope.game.state.stack.length-1] === "Pregame" && team == null){
                 return "Pre-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "WeatherTable" && team == null){
+            } else if ($scope.game.state.stack[$scope.game.state.stack.length-1] === "WeatherTable" && team == null){
                 return "Pre-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "CoinToss" && team == null){
+            } else if ($scope.game.state.stack[$scope.game.state.stack.length-1] === "CoinToss" && team == null){
                 return "Coin Toss";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "PostGame" && team == null){
+            } else if ($scope.game.state.stack[$scope.game.state.stack.length-1] === "PostGame" && team == null){
                 return "Post-Game";
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "QuickSnap"){
-                if (team != null && team == $scope.game.state.team_turn){
+            } else if ($scope.game.state.stack[$scope.game.state.stack.length-1] === "QuickSnap"){
+                if (team != null && team === $scope.game.state.current_team){
                     return "Quick Snap!";
                 } else if (team == null){
-                    if ($scope.game.state.half == 1 && team == null){
+                    if ($scope.game.state.half === 1 && team == null){
                         return "1st half";
-                    } else if ($scope.game.state.half == 2 && team == null){
+                    } else if ($scope.game.state.half === 2 && team == null){
                         return "2nd half";
                     }
                 }
-            } else if ($scope.game.stack[$scope.game.stack.length-1] == "Blitz"){
-                if (team != null && team == $scope.game.state.team_turn){
+            } else if ($scope.game.state.stack[$scope.game.state.stack.length-1] === "Blitz"){
+                if (team != null && team === $scope.game.state.current_team){
                     return "Blitz!";
                 } else if (team == null){
-                    if ($scope.game.state.half == 1 && team == null){
+                    if ($scope.game.state.half === 1 && team == null){
                         return "1st half";
-                    } else if ($scope.game.state.half == 2 && team == null){
+                    } else if ($scope.game.state.half === 2 && team == null){
                         return "2nd half";
                     }
                 }
             } else if ($scope.game.game_over && team == null){
                 return "Game is Over";
-            } else if ($scope.game.state.half == 1 && team == null){
+            } else if ($scope.game.state.half === 1 && team == null){
                 return "1st half";
-            } else if ($scope.game.state.half == 2 && team == null){
+            } else if ($scope.game.state.half === 2 && team == null){
                 return "2nd half";
             }
             if (team != null && team){
-                return $scope.game.state.home_state.turn + " / 8";
+                return $scope.game.home_team.state.turn + " / 8";
             } else if (team != null && !team){
-                return $scope.game.state.away_state.turn + " / 8";
+                return $scope.game.away_team.state.turn + " / 8";
             }
             return "";
         };
@@ -866,9 +862,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let player = $scope.hover_player;
                 if (player != null && team.team_id === $scope.teamOfPlayer(player).team_id){
                     if (team.team_id === $scope.game.home_team.team_id){
-                        return $scope.game.state.home_state.player_states[player.player_id];
+                        return $scope.game.home_team.state.player_states[player.player_id];
                     } else {
-                        return $scope.game.state.away_state.player_states[player.player_id];
+                        return $scope.game.away_team.state.player_states[player.player_id];
                     }
                 }
             }
@@ -876,9 +872,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let player = $scope.selected_square.player;
                 if (team.team_id === $scope.teamOfPlayer($scope.selected_square.player).team_id){
                     if (team.team_id === $scope.game.home_team.team_id){
-                        return $scope.game.state.home_state.player_states[player.player_id];
+                        return $scope.game.home_team.state.player_states[player.player_id];
                     } else {
-                        return $scope.game.state.away_state.player_states[player.player_id];
+                        return $scope.game.away_team.state.player_states[player.player_id];
                     }
                 }
             }

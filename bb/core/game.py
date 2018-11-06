@@ -5,10 +5,13 @@ import pickle
 
 class Game:
 
-    def __init__(self, game_id, teams, arena, config, ruleset, home_team=None, state=None):
+    def __init__(self, game_id, teams, arena, config, ruleset, state=None):
         self.game_id = game_id
-        self.teams = {teams.team_id: team for team in teams}
-        self.home_team = teams[0] if home_team is None else home_team
+        assert len(teams) == 2
+        self.teams = teams
+        self.team_by_id = {team.team_id: team for team in teams}
+        self.home_team = teams[0]
+        self.away_team = teams[1]
         self.team_by_player_id = {}
         self.player_by_id = {}
         # Dictionary with team for players
@@ -16,11 +19,6 @@ class Game:
             for player in team.players:
                 self.team_by_player_id[player.player_id] = team
                 self.player_by_id[player.player_id] = player
-        # Setup oppenent teams - in two player matches this is just the other team
-        self.opp_teams = {}
-        for i in range(len(teams)):
-            x = 0 if i+1 >= len(teams) else i+1
-            self.opp_teams[teams[i].team_id] = teams[x]
         self.arena = arena
         self.config = config
         self.ruleset = ruleset
@@ -46,7 +44,8 @@ class Game:
             reports.append(report.to_simple())
         return {
             'game_id': self.game_id,
-            'teams': [team.to_simple() for team in self.teams],
+            'home_team': self.home_team.to_simple(),
+            'away_team': self.away_team.to_simple(),
             'state': self.state.to_simple(),
             'game_over': self.game_over,
             'stack': self.procs(),
@@ -69,7 +68,7 @@ class Game:
             return True
         for action_choice in self.available_actions:
             if action.action_type == action_choice.action_type:
-                if len(action_choice.player_ids) > 0 and action.player_from_id is not None and action.player_from_id not in action_choice.player_ids:
+                if len(action_choice.players) > 0 and action.player_from_id is not None and self.get_player(action.player_from_id) not in action_choice.players:
                     print("Illegal player_id")
                     return False
                 if len(action_choice.positions) > 0 and action.pos_to is not None and action.pos_to not in action_choice.positions:
@@ -117,13 +116,14 @@ class Game:
         print("Done={}".format(proc.done))
 
         # Enable if cloning happens
-        for player_id, pos in self.state.pitch.player_positions.items():
-            if self.state.pitch.board[pos.y][pos.x] != player_id:
-                raise Exception(pos.to_simple() + ": " + player_id )
-
         for y in range(len(self.state.pitch.board)):
-            for x in range(len(self.state.pitch.board[0])):
-                assert self.state.pitch.board[y][x] is None or (self.state.pitch.player_positions[self.state.pitch.board[y][x]].x == x and self.state.pitch.player_positions[self.state.pitch.board[y][x]].y == y)
+            for x in range(len(self.state.pitch.board)):
+                assert self.state.pitch.board[y][x] is None or \
+                    (self.state.pitch.board[y][x].position.x == x and self.state.pitch.board[y][x].position.y == y)
+
+        for team in self.teams:
+            for player in team.players:
+                assert player.position is None or self.state.pitch.board[player.position.y][player.position.x] == player
 
         # Remove all finished procs
         if proc.done:
@@ -161,6 +161,32 @@ class Game:
         #print(json.dumps(outcome.to_simple()))
         self.state.reports.append(outcome)
 
+    def is_team_side(self, pos, team):
+        if team == self.home_team:
+            return self.state.arena.board[pos.y][pos.x] in TwoPlayerArena.home_tiles
+        return self.arena[pos.y][pos.x] in TwoPlayerArena.away_tiles
+
+    def get_team_side(self, team):
+        tiles = []
+        for y in range(len(self.arena.board)):
+            for x in range(len(self.arena.board[y])):
+                if self.arena.board[y][x] in (TwoPlayerArena.home_tiles if team == self.home_team else TwoPlayerArena.away_tiles):
+                    tiles.append(Square(x, y))
+        return tiles
+
+    def is_scrimmage(self, pos):
+        return self.arena.board[pos.y][pos.x] in TwoPlayerArena.scrimmage_tiles
+
+    def is_touchdown(self, player):
+        if player.team == self.arena.game.home_team:
+            return self.arena.board[player.position.y][player.position.x] == Tile.AWAY_TOUCHDOWN
+        return self.arena.board[player.position.y][player.position.x] == Tile.HOME_TOUCHDOWN
+
+    def is_wing(self, pos, right):
+        if right:
+            return self.arena.board[pos.y][pos.x] in TwoPlayerArena.wing_right_tiles
+        return self.arena.board[pos.y][pos.x] in TwoPlayerArena.wing_left_tiles
+
     def remove_balls(self):
         self.state.pitch.balls.clear()
 
@@ -192,23 +218,16 @@ class Game:
     def is_team_side(self, pos, team):
         return self.arena.is_team_side(pos, team == self.home_team)
 
-    def set_spectators(self, spectators):
-        self.state.spectators = spectators
-
-    def get_spectators(self):
-        return self.state.spectators
-
     def get_player(self, player_id):
         return self.player_by_id[player_id]
 
     def get_player_at(self, pos):
-        player_id = self.state.pitch.get_player_id_at(pos)
-        return self.player_by_id[player_id] if player_id is not None else None
+        return self.state.pitch.board[pos.y][pos.x]
 
     def set_turn_order(self, team):
         self.state.turn_order = []
         added = False
-        for team_id, t in self.teams.items():
+        for team_id, t in self.team_by_id.items():
             if added:
                 self.state.turn_order.insert(0, t)
             else:
@@ -223,7 +242,7 @@ class Game:
         return team == self.home_team
 
     def get_opp_team(self, team):
-        return self.opp_teams[team.team_id]
+        return self.home_team if self.away_team == team else self.away_team
 
     def get_reserves(self, team):
         return self.state.get_dugout(team).reserves
@@ -247,8 +266,8 @@ class Game:
 
     def get_receiving_team(self, half=None):
         if half is None:
-            return self.state.receiving_team_this_drive
-        return self.state.receiving_team_first_half if half == 1 else not self.state.kicking_first_half
+            return self.state.receiving_this_drive
+        return self.state.receiving_first_half if half == 1 else not self.state.kicking_first_half
 
     def get_ball_position(self):
         return self.state.pitch.get_ball_position()
@@ -350,7 +369,7 @@ class Game:
     def reset_kickoff(self):
         self.state.current_team = None
         for team in self.teams:
-            team.reset_turn()
+            team.state.reset_turn()
 
     def procs(self):
         procs = []
