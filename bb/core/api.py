@@ -7,14 +7,14 @@ from bb.core.load import *
 host = Host()
 
 
-def new_game(home_team_id, away_team_id, config_name="ff.json"):
+def new_game(away_team_id, home_team_id, config_name="ff.json"):
     config = get_config(config_name)
     arena = get_arena(config.arena)
     ruleset = get_rule_set(config.ruleset)
     home = get_team_by_id(home_team_id, ruleset)
     away = get_team_by_id(away_team_id, ruleset)
     game_id = str(uuid.uuid1())
-    game = Game(game_id, [home, away], arena, config, ruleset)
+    game = Game(game_id, [away, home], arena, config, ruleset)
     game.init()
     host.add_game(game)
     print("Game created with id ", game.game_id)
@@ -72,4 +72,4 @@ def get_teams(ruleset):
 
 
 # Initialize with one game
-new_game("a1", "b2")
+new_game("b2", "a1")

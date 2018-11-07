@@ -10,16 +10,16 @@ import pkg_resources
 
 arena_char_map = {
     'C': Tile.CROWD,
-    'H': Tile.HOME,
-    'a': Tile.AWAY,
-    'S': Tile.HOME_SCRIMMAGE,
-    's': Tile.AWAY_SCRIMMAGE,
-    'L': Tile.HOME_WING_LEFT,
-    'R': Tile.HOME_WING_RIGHT,
-    'l': Tile.AWAY_WING_LEFT,
-    'r': Tile.AWAY_WING_RIGHT,
-    'E': Tile.HOME_TOUCHDOWN,
-    'e': Tile.AWAY_TOUCHDOWN
+    'A': Tile.AWAY,
+    'h': Tile.HOME,
+    'S': Tile.AWAY_SCRIMMAGE,
+    's': Tile.HOME_SCRIMMAGE,
+    'L': Tile.AWAY_WING_LEFT,
+    'R': Tile.AWAY_WING_RIGHT,
+    'l': Tile.HOME_WING_LEFT,
+    'r': Tile.HOME_WING_RIGHT,
+    'E': Tile.AWAY_TOUCHDOWN,
+    'e': Tile.HOME_TOUCHDOWN
 }
 
 

@@ -68,10 +68,10 @@ class Game:
             return True
         for action_choice in self.available_actions:
             if action.action_type == action_choice.action_type:
-                if len(action_choice.players) > 0 and action.player_from_id is not None and self.get_player(action.player_from_id) not in action_choice.players:
+                if len(action_choice.players) > 0 and self.get_player(action.player_from_id) not in action_choice.players:
                     print("Illegal player_id")
                     return False
-                if len(action_choice.positions) > 0 and action.pos_to is not None and action.pos_to not in action_choice.positions:
+                if len(action_choice.positions) > 0 and action.pos_to not in action_choice.positions:
                     print("Illegal position")
                     return False
                 if len(action_choice.indexes) > 0 and action.idx is not None and action.idx >= 0 and action.idx not in action_choice.indexes:
@@ -145,7 +145,7 @@ class Game:
 
         # End player turn if only action available
         if len(self.available_actions) == 1 and self.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
-            self.step(Action(ActionType.END_PLAYER_TURN, player_from_id=self.available_actions[0].player_ids[0]))
+            self.step(Action(ActionType.END_PLAYER_TURN, player_from_id=self.available_actions[0].players[0].player_id))
             # We can continue without user input
             return False
 
@@ -163,8 +163,8 @@ class Game:
 
     def is_team_side(self, pos, team):
         if team == self.home_team:
-            return self.state.arena.board[pos.y][pos.x] in TwoPlayerArena.home_tiles
-        return self.arena[pos.y][pos.x] in TwoPlayerArena.away_tiles
+            return self.arena.board[pos.y][pos.x] in TwoPlayerArena.home_tiles
+        return self.arena.board[pos.y][pos.x] in TwoPlayerArena.away_tiles
 
     def get_team_side(self, team):
         tiles = []
@@ -206,17 +206,9 @@ class Game:
         return self.state.turn_order[idx+1]
 
     def add_or_skip_turn(self, turns):
-        """
-
-        :param turns must be 1 or -1:
-        :return:
-        """
-
-        for team_id, team_state in self.state.team_states.items():
-            team_state.turn += turns
-
-    def is_team_side(self, pos, team):
-        return self.arena.is_team_side(pos, team == self.home_team)
+        for team in self.teams:
+            team.state.turn += turns
+            assert team.state.turn >= 0
 
     def get_player(self, player_id):
         return self.player_by_id[player_id]
@@ -224,16 +216,14 @@ class Game:
     def get_player_at(self, pos):
         return self.state.pitch.board[pos.y][pos.x]
 
-    def set_turn_order(self, team):
-        self.state.turn_order = []
-        added = False
-        for team_id, t in self.team_by_id.items():
-            if added:
-                self.state.turn_order.insert(0, t)
+    def set_turn_order(self, first_team):
+        self.state.turn_order.clear()
+        idx = self.teams.index(first_team)
+        for i in range(len(self.teams)):
+            if i < idx:
+                self.state.turn_order.append(self.teams[i])
             else:
-                self.state.turn_order.append(t)
-            if team_id == team.team_id:
-                added = True
+                self.state.turn_order.insert(0, self.teams[i])
 
     def get_turn_order(self):
         return self.state.turn_order
@@ -274,13 +264,13 @@ class Game:
 
     def has_ball(self, player):
         ball = self.state.pitch.get_ball_at(player.position)
-        return ball.position if ball is not None else None
+        return True if ball is not None and ball.is_carried else False
 
     def get_ball_at(self, pos):
         return self.state.pitch.get_ball_at(pos)
 
     def is_touchdown(self, player):
-        return self.arena.is_touchdown(player)
+        return self.arena.in_endzone(player.position, player.team == self.home_team)
 
     def is_out_of_bounds(self, pos):
         return self.state.pitch.is_out_of_bounds(pos)
@@ -341,8 +331,8 @@ class Game:
     def pass_distance(self, passer, pos):
         return self.state.pitch.pass_distance(passer, pos)
 
-    def passes(self, player, pos):
-        return self.state.pitch.passes(player, pos)
+    def passes(self, passer):
+        return self.state.pitch.passes(passer)
 
     def adjacent_squares(self, pos, manhattan=False, include_out=False, exclude_occupied=False):
         return self.state.pitch.get_adjacent_squares(pos, manhattan=manhattan, include_out=include_out, exclude_occupied=exclude_occupied)
@@ -361,10 +351,6 @@ class Game:
 
     def push_squares(self, pos_from, pos_to):
         return self.state.pitch.get_push_squares(pos_from, pos_to)
-
-    def reset_turn(self, team):
-        self.state.current_team = None
-        team.reset_turn()
 
     def reset_kickoff(self):
         self.state.current_team = None

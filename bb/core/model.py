@@ -31,7 +31,7 @@ class PlayerState:
 
     def to_simple(self):
         return {
-            'player_ready_state': self.ready.name,
+            'ready': self.ready.name,
             'spp_earned': self.spp_earned,
             'moves': self.moves,
             'casualty_type': self.casualty_type.name if self.casualty_type is not None else None,
@@ -125,10 +125,10 @@ class GameState:
 
 class Ball:
 
-    def __init__(self, position, on_ground=True, carried=False):
+    def __init__(self, position, on_ground=True, is_carried=False):
         self.position = position
         self.on_ground = on_ground
-        self.carried = carried
+        self.is_carried = is_carried
 
     def move(self, x, y):
         self.position = Square(self.position.x + x, self.position.y + y)
@@ -138,9 +138,9 @@ class Ball:
 
     def to_simple(self):
         return {
-            'position': self.position.to_simple(),
+            'position': self.position.to_simple() if self.position is not None else None,
             'on_ground': self.on_ground,
-            'carried': self.carried
+            'is_carried': self.is_carried
         }
 
 
@@ -199,23 +199,23 @@ class Pitch:
         cnt = 0
         for y in range(len(self.board)):
             for x in range(len(self.board[y])):
-                if not self.game.arena.is_team_side(Square(x, y), team):
+                if not self.game.is_team_side(Square(x, y), team):
                     continue
                 if tile is None or self.game.arena.board[y][x] == tile:
                     piece = self.board[y][x]
-                    if piece is Player and piece.team == team:
+                    if isinstance(piece, Player) and piece.team == team:
                         cnt += 1
         if cnt > max_players or cnt < min_players:
             return False
         return True
 
     def is_setup_legal_scrimmage(self, team, min_players=3):
-        if team:
+        if team == self.game.home_team:
             return self.is_setup_legal(team, tile=Tile.HOME_SCRIMMAGE, min_players=min_players)
         return self.is_setup_legal(team, tile=Tile.AWAY_SCRIMMAGE, min_players=min_players)
 
     def is_setup_legal_wings(self, team, min_players=0, max_players=2):
-        if team:
+        if team == self.game.home_team:
             return self.is_setup_legal(team, tile=Tile.HOME_WING_LEFT, max_players=max_players, min_players=min_players) and \
                    self.is_setup_legal(team, tile=Tile.HOME_WING_RIGHT, max_players=max_players, min_players=min_players)
         return self.is_setup_legal(team, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \
@@ -311,8 +311,8 @@ class Pitch:
             if player_at is None:
                 continue
             if include_own and player_at.team == player.team or include_opp and not player_at.team == player.team:
-                if not only_blockable or player_at.ready in Rules.blockable:
-                    if not only_foulable or player_at.ready in Rules.foulable:
+                if not only_blockable or player_at.state.ready in Rules.blockable:
+                    if not only_foulable or player_at.state.ready in Rules.foulable:
                         squares.append(square)
         return squares
 
@@ -378,24 +378,26 @@ class Pitch:
                                 assists.append(player_at)
         return assists
 
-    def passes(self, player, pos_from):
+    def passes(self, passer):
         squares = []
         distances = []
         distances_allowed = [PassDistance.QUICK_PASS,
                              PassDistance.SHORT_PASS,
                              PassDistance.LONG_PASS,
                              PassDistance.LONG_BOMB,
-                             PassDistance.HAIL_MARY] if Skill.HAIL_MARY_PASS in player.get_skills() \
+                             PassDistance.HAIL_MARY] if Skill.HAIL_MARY_PASS in passer.get_skills() \
             else [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS, PassDistance.LONG_PASS, PassDistance.LONG_BOMB]
         if self.game.state.weather == WeatherType.BLIZZARD:
             distances_allowed = [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS]
-        for pos in self.game.state.pitch.positions:
-            if self.is_out_of_bounds(pos) or pos_from == pos:
-                continue
-            distance = self.pass_distance(pos_from, pos)
-            if distance in distances_allowed:
-                squares.append(pos)
-                distances.append(distance)
+        for y in range(len(self.game.state.pitch.board)):
+            for x in range(len(self.game.state.pitch.board[y])):
+                pos = Square(x, y)
+                if self.is_out_of_bounds(pos) or passer.position == pos:
+                    continue
+                distance = self.pass_distance(passer.position, pos)
+                if distance in distances_allowed:
+                    squares.append(pos)
+                    distances.append(distance)
         return squares, distances
 
     def pass_distance(self, passer, pos):
@@ -487,12 +489,12 @@ class ActionChoice:
         return {
             'action_type': self.action_type.name,
             'positions': [position.to_simple() if position is not None else None for position in self.positions],
-            'player_ids': [player.player_id for player in self.players],
             'team_id': self.team.team_id if self.team is not None else None,
             'indexes': self.indexes,
             "rolls": self.rolls,
             "block_rolls": self.block_rolls,
             "agi_rolls": self.agi_rolls,
+            'player_ids': [player.player_id for player in self.players],
             "dice": [die.to_simple() for die in self.dice],
             "disabled": self.disabled
         }
@@ -530,15 +532,22 @@ class TwoPlayerArena:
         self.board = board
         self.json = None
 
+    def in_endzone(self, pos, home):
+        if home:
+            return self.board[pos.y][pos.x] == Tile.HOME_TOUCHDOWN
+        else:
+            return self.board[pos.y][pos.x] == Tile.AWAY_TOUCHDOWN
+
     def to_simple(self):
         if self.json is not None:
             return self.json
 
         board = []
-        for _ in self.board:
-            board.append([])
-            for tile in self.board[0]:
-                board[-1].append(tile.name if tile is not None else None)
+        for r in self.board:
+            row = []
+            for tile in r:
+                row.append(tile.name if tile is not None else None)
+            board.append(row)
         self.json = {
             'board': board
         }
@@ -885,7 +894,6 @@ class Team:
             'ass_coaches': self.ass_coaches,
             'cheerleaders': self.cheerleaders,
             'fan_factor': self.fan_factor,
-            'player_ids': [player.player_id for player in self.players],
             'players_by_id': players_by_id,
             'state': self.state.to_simple()
         }
@@ -910,7 +918,7 @@ class Outcome:
         return {
             'outcome_type': self.outcome_type.name,
             'pos': self.pos.to_simple() if self.pos is not None else None,
-            'player': self.player.player_id if self.player is not None else None,
+            'player_id': self.player.player_id if self.player is not None else None,
             'opp_player': self.opp_player.player_id if self.opp_player is not None else None,
             'rolls': rolls,
             'team_id': self.team.team_id if self.team is not None else None,
