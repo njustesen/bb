@@ -48,7 +48,6 @@ appServices.factory('GameLogService', function() {
             'GAME_STARTED': "<b>Game started.</b>",
             'SPECTATORS': "<n> spectators showed up to watch the game.",
             'FAME': "<team> has <b>+<n> FAME</b> (Fan Advantage ModifiEr).",
-            'NO_FAME': "Each team has <b>0 FAME</b> (Fan Advantage ModifiEr).",
             'HEADS_WON': "<b>Heads!</b> <away_team> won the coin toss.",
             'HEADS_LOSS': "<b>Heads!</b> <home_team> won the coin toss.",
             'TAILS_WON': "<b>Tails!</b> <away_team> won the coin toss.",
@@ -68,7 +67,7 @@ appServices.factory('GameLogService', function() {
             'ILLEGAL_SETUP_NUM': '<b>Illegal Setup:</b> You must pitch between 3 and 11 players.',
             'ILLEGAL_SETUP_SCRIMMAGE': '<b>Illegal Setup:</b> Min. 3 players on the line of scrimmage!',
             'ILLEGAL_SETUP_WINGS': '<b>Illegal Setup:</b> Max. 2 players on each wing!',
-            'BALL_PLACED': 'Ball is ready to be kicked.',
+            'BALL_PLACED': '<team> <b>Kicks</b> the ball',
             'TOUCHBACK_BALL_PLACED': "<player> will start with the ball.",
             //'KICKOFF_GET_THE_REF': "<b>Get the Ref:</b> The fans exact gruesome revenge on the referee for some of the dubious decisions he has made, either during this match or in the past. His replacement is so intimidated that he can be more easily persuaded to look the other way. Each team receives 1 additional Bribe to use during this game. A Bribe allows you to attempt to ignore one call by the referee for a player who has committed a foul to be sent off, or a player armed with a secret weapon to be banned from the match. Roll a D6: on a roll of 2-6 the bribe is effective (preventing a turnover if the player was ejected for fouling), but on a roll of 1 the bribe is wasted and the call still stands! Each bribe may be used once per match.",
             //'KICKOFF_RIOT': "<b>Riot:</b> The trash talk between two opposing players explodes and rapidly degenerates, involving the rest of the players. If the receiving team’s turn marker is on turn 7 for the half, both teams move their turn marker back one space as the referee resets the clock back to before the fight started. If the receiving team has not yet taken a turn this half the referee lets the clock run on during the fight and both teams’ turn markers are moved forward one space. Otherwise roll a D6. On a 1-3, both teams’ turn markers are moved forward one space. On a 4-6, both team’s turn markers are moved back one space.",
@@ -164,7 +163,11 @@ appServices.factory('GameLogService', function() {
             "REROLL_USED": "<team> uses a <b>reroll</b>.",
             "INTERCEPTION_FAILED": "<player> failed to intercept the pass.",
             "THROW_IN_OUT_OF_BOUNDS": "The ball was thrown out of bounds again.",
-            "THROW_IN": "The ball was thrown back in by the fans."
+            "THROW_IN": "The ball was thrown back in by the fans.",
+            "BLITZ_START": "<team> makes a <b>blitz</b>.",
+            "QUICK_SNAP": "<team> makes a <b>quick snap</b>.",
+            "TEAM_SPECTATORS": "<team> has <b><n> fans</b> cheering for them."
+
 
         }
     };

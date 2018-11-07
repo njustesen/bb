@@ -116,7 +116,7 @@ class GameState:
             'away_dugout': self.dugouts[self.game.away_team.team_id].to_simple(),
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
-            'current_team': self.current_team.team_id if self.current_team is not None else None,
+            'current_team_id': self.current_team.team_id if self.current_team is not None else None,
             'round': self.round,
             'spectators': self.spectators,
             'active_player_id': self.active_player.player_id if self.active_player is not None else None
@@ -394,7 +394,7 @@ class Pitch:
                 pos = Square(x, y)
                 if self.is_out_of_bounds(pos) or passer.position == pos:
                     continue
-                distance = self.pass_distance(passer.position, pos)
+                distance = self.pass_distance(passer, pos)
                 if distance in distances_allowed:
                     squares.append(pos)
                     distances.append(distance)
@@ -450,11 +450,11 @@ class Pitch:
                 player_at = self.get_player_at(neighbor)
                 if player_at is None:
                     continue
-                if player_at.team != passer.team:
+                if player_at.team == passer.team:
                     continue
-                if self.game.state.get_player_ready_state(player_at, player_at.team) not in Rules.catchable:
+                if player_at.state.ready not in Rules.catchable:
                     continue
-                if self.game.get_player(player_at).has_skill(Skill.NO_HANDS):
+                if player_at.has_skill(Skill.NO_HANDS):
                     continue
 
                 n.add(neighbor)

@@ -252,12 +252,12 @@ class Game:
     def get_kicking_team(self, half=None):
         if half is None:
             return self.state.kicking_this_drive
-        return self.state.kicking_first_half if half == 1 else not self.state.receiving_first_half
+        return self.state.kicking_first_half if half == 1 else self.state.receiving_first_half
 
     def get_receiving_team(self, half=None):
         if half is None:
             return self.state.receiving_this_drive
-        return self.state.receiving_first_half if half == 1 else not self.state.kicking_first_half
+        return self.state.receiving_first_half if half == 1 else self.state.kicking_first_half
 
     def get_ball_position(self):
         return self.state.pitch.get_ball_position()
@@ -319,8 +319,8 @@ class Game:
     def move_player(self, player, pos):
         self.state.pitch.move(player, pos)
 
-    def swap(self, pos_a, pos_b):
-        self.state.pitch.swap(pos_a, pos_b)
+    def swap(self, piece_a, piece_b):
+        self.state.pitch.swap(piece_a, piece_b)
 
     def assists(self, player, opp_player, ignore_guard=False):
         return self.state.pitch.assists(player, opp_player, ignore_guard=ignore_guard)

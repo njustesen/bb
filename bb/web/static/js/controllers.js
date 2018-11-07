@@ -140,10 +140,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
         });
 
-        $scope.is_current_team = function is_current_team(team){
-            return team !== null && $scope.game.home_team.team_id === team.team_id;
-        };
-
         $scope.saveGame = function saveGame(name){
             $scope.modelError = false;
             // Get state
@@ -438,7 +434,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let player = $scope.local_state.board[pos.y][pos.x].player;
                 if (player !== null){
                     let team = $scope.teamOfPlayer(player);
-                    if ((team === $scope.game.home_team) === $scope.local_state.current_team &&
+                    if (team.team_id === $scope.local_state.current_team_id &&
                             player.state.ready !== "DOWN" && player.state.ready !== "STUNNED" && player.state.ready !== "DOWN_USED") {
                         $scope.local_state.board[pos.y][pos.x].available = true;
                         $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
@@ -458,10 +454,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             for (let i in $scope.available_interception_players){
                 let player_id = $scope.available_interception_players[i];
                 let pos = $scope.local_state.player_positions[player_id];
-                pos.available = true;
-                pos.action_type = "INTERCEPTION";
+                $scope.local_state.board[pos.y][pos.x].available = true;
+                $scope.local_state.board[pos.y][pos.x].action_type = "INTERCEPTION";
                 if ($scope.available_interception_rolls.length > i){
-                    pos.agi_rolls = $scope.available_interception_rolls[i];
+                    $scope.local_state.board[pos.y][pos.x].agi_rolls = $scope.available_interception_rolls[i];
                 }
             }
 
@@ -518,7 +514,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.setLocalState = function setLocalState(){
             $scope.local_state.player_positions = {};
             $scope.local_state.balls = $scope.game.state.pitch.balls;
-            $scope.local_state.current_team = $scope.game.state.current_team;
+            $scope.local_state.current_team_id = $scope.game.state.current_team_id;
             for (let y = 0; y < $scope.game.state.pitch.board.length; y++){
                 if ($scope.local_state.board.length <= y){
                     $scope.local_state.board.push([]);
@@ -781,7 +777,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             } else if ($scope.game.stack[$scope.game.stack.length-1] === "PostGame" && team == null){
                 return "Post-Game";
             } else if ($scope.game.stack[$scope.game.stack.length-1] === "QuickSnap"){
-                if (team != null && team === $scope.game.state.current_team){
+                if (team != null && team.team_id === $scope.game.state.current_team_id){
                     return "Quick Snap!";
                 } else if (team == null){
                     if ($scope.game.state.half === 1 && team == null){
@@ -791,7 +787,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                     }
                 }
             } else if ($scope.game.stack[$scope.game.stack.length-1] === "Blitz"){
-                if (team != null && team === $scope.game.state.current_team){
+                if (team != null && team.team_id === $scope.game.state.current_team_id){
                     return "Blitz!";
                 } else if (team == null){
                     if ($scope.game.state.half === 1 && team == null){

@@ -134,7 +134,6 @@ class OutcomeType(Enum):
     BALL_SCATTER = 91
     SPECTATORS = 92
     FAME = 93
-    NO_FAME = 94
     KICK_OPP_HALF = 95
     GENTLE_GUST_OUT_OF_BOUNDS = 96
     GENTLE_GUST_IN_BOUNDS = 97
@@ -170,6 +169,8 @@ class OutcomeType(Enum):
     CHEERING_FANS_ROLL = 127
     BRILLIANT_COACHING_ROLL = 128
     THROW_A_ROCK_ROLL = 129
+    QUICK_SNAP_START = 130
+    BLITZ_START = 131
 
 
 class PlayerActionType(Enum):
@@ -404,7 +405,7 @@ class Rules:
         [1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4],
         [1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5],
         [1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5],
-        [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 5, 5],
+        [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5],
         [2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5],
         [2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5],
         [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5],
