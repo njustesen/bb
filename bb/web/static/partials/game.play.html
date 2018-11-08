@@ -152,7 +152,7 @@
         <div class="square-row">
             <div class="hint text-center" ng-if="passHint && !passOptions">Press Ctrl to show all pass actions.</div>
             <div class="hint text-center" ng-if="passHint && passOptions">Press Ctrl to show move actions.</div>
-            <div class="square {{ local_state.board[0][$index-1].selected ? 'selected' : '' }} {{ local_state.board[0][$index-1].available_position ? 'green' : '' }}" ng-repeat="n in [] | range:local_state.board[0].length + 2" ng-click="square(local_state.board[0][$index-1])"></div>
+            <div class="square {{ local_state.board[0][$index-1].available_position ? 'green' : 'disabled' }}" ng-repeat="n in [] | range:local_state.board[0].length + 2" ng-click="square(local_state.board[0][$index-1])"></div>
         </div>
 
         <div class="gameboard">
@@ -264,7 +264,7 @@
         </div>
 
         <div class="square-row">
-            <div class="square {{ local_state.board[local_state.board.length-1][$index-1].selected ? 'selected' : '' }} {{ local_state.board[local_state.board.length-1][$index-1].available ? 'green' : '' }}" ng-repeat="n in [] | range:local_state.board[local_state.board.length-1].length + 2" ng-click="square(local_state.board[local_state.board.length-1][$index-1])"></div>
+            <div class="square {{ local_state.board[local_state.board.length-1][$index-1].available ? 'green' : 'disabled' }}" ng-repeat="n in [] | range:local_state.board[local_state.board.length-1].length + 2" ng-click="square(local_state.board[local_state.board.length-1][$index-1])"></div>
         </div>
 
         <div class="game-info">

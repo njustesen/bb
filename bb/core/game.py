@@ -332,7 +332,7 @@ class Game:
         return self.state.pitch.pass_distance(passer, pos)
 
     def passes(self, passer):
-        return self.state.pitch.passes(passer)
+        return self.state.pitch.passes(passer, self.state.weather)
 
     def adjacent_squares(self, pos, manhattan=False, include_out=False, exclude_occupied=False):
         return self.state.pitch.get_adjacent_squares(pos, manhattan=manhattan, include_out=include_out, exclude_occupied=exclude_occupied)
@@ -357,6 +357,32 @@ class Game:
         for team in self.teams:
             team.state.reset_turn()
 
+    def is_setup_legal(self, team, tile=None, max_players=11, min_players=3):
+        cnt = 0
+        for y in range(len(self.state.pitch.board)):
+            for x in range(len(self.state.pitch.board[y])):
+                if not self.is_team_side(Square(x, y), team):
+                    continue
+                if tile is None or self.arena.board[y][x] == tile:
+                    piece = self.state.pitch.board[y][x]
+                    if isinstance(piece, Player) and piece.team == team:
+                        cnt += 1
+        if cnt > max_players or cnt < min_players:
+            return False
+        return True
+
+    def is_setup_legal_scrimmage(self, team, min_players=3):
+        if team == self.game.home_team:
+            return self.is_setup_legal(team, tile=Tile.HOME_SCRIMMAGE, min_players=min_players)
+        return self.is_setup_legal(team, tile=Tile.AWAY_SCRIMMAGE, min_players=min_players)
+
+    def is_setup_legal_wings(self, team, min_players=0, max_players=2):
+        if team == self.game.home_team:
+            return self.is_setup_legal(team, tile=Tile.HOME_WING_LEFT, max_players=max_players, min_players=min_players) and \
+                   self.is_setup_legal(team, tile=Tile.HOME_WING_RIGHT, max_players=max_players, min_players=min_players)
+        return self.is_setup_legal(team, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \
+               self.is_setup_legal(team, tile=Tile.AWAY_WING_RIGHT, max_players=max_players, min_players=min_players)
+
     def procs(self):
         procs = []
         for proc in self.state.stack.items:
@@ -368,3 +394,12 @@ class Game:
                 procs.append(proc.__class__.__name__)
         return procs
 
+    def remove_recursive_refs(self):
+        for team in self.teams:
+            for player in team.players:
+                player.team = None
+
+    def add_recursive_refs(self):
+        for team in self.teams:
+            for player in team.players:
+                player.team = team

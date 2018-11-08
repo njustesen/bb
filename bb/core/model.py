@@ -83,7 +83,8 @@ class TeamState:
 class GameState:
 
     def __init__(self, game):
-        self.game = game
+        self.home_team_id = game.home_team.team_id
+        self.away_team_id = game.away_team.team_id
         self.stack = Stack()
         self.reports = []
         self.half = 1
@@ -112,8 +113,8 @@ class GameState:
             'kicking_this_drive': self.kicking_this_drive.team_id if self.kicking_this_drive is not None else None,
             'receiving_this_drive': self.receiving_this_drive.team_id if self.receiving_this_drive is not None else None,
             'pitch': self.pitch.to_simple(),
-            'home_dugout': self.dugouts[self.game.home_team.team_id].to_simple(),
-            'away_dugout': self.dugouts[self.game.away_team.team_id].to_simple(),
+            'home_dugout': self.dugouts[self.home_team_id].to_simple(),
+            'away_dugout': self.dugouts[self.away_team_id].to_simple(),
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
             'current_team_id': self.current_team.team_id if self.current_team is not None else None,
@@ -147,7 +148,6 @@ class Ball:
 class Pitch:
 
     def __init__(self, game):
-        self.game = game
         self.balls = []
         self.board = []
         for y in range(len(game.arena.board)):
@@ -195,32 +195,6 @@ class Pitch:
         self.board[pos_a.y][pos_a.x] = piece_b
         self.board[pos_b.y][pos_b.x] = piece_a
 
-    def is_setup_legal(self, team, tile=None, max_players=11, min_players=3):
-        cnt = 0
-        for y in range(len(self.board)):
-            for x in range(len(self.board[y])):
-                if not self.game.is_team_side(Square(x, y), team):
-                    continue
-                if tile is None or self.game.arena.board[y][x] == tile:
-                    piece = self.board[y][x]
-                    if isinstance(piece, Player) and piece.team == team:
-                        cnt += 1
-        if cnt > max_players or cnt < min_players:
-            return False
-        return True
-
-    def is_setup_legal_scrimmage(self, team, min_players=3):
-        if team == self.game.home_team:
-            return self.is_setup_legal(team, tile=Tile.HOME_SCRIMMAGE, min_players=min_players)
-        return self.is_setup_legal(team, tile=Tile.AWAY_SCRIMMAGE, min_players=min_players)
-
-    def is_setup_legal_wings(self, team, min_players=0, max_players=2):
-        if team == self.game.home_team:
-            return self.is_setup_legal(team, tile=Tile.HOME_WING_LEFT, max_players=max_players, min_players=min_players) and \
-                   self.is_setup_legal(team, tile=Tile.HOME_WING_RIGHT, max_players=max_players, min_players=min_players)
-        return self.is_setup_legal(team, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \
-               self.is_setup_legal(team, tile=Tile.AWAY_WING_RIGHT, max_players=max_players, min_players=min_players)
-
     def get_balls_at(self, pos, in_air=False):
         balls = []
         for ball in self.balls:
@@ -259,7 +233,7 @@ class Pitch:
         return self.board[pos.y][pos.x]
 
     def get_push_squares(self, pos_from, pos_to):
-        squares_to = self.game.state.pitch.get_adjacent_squares(pos_to, include_out=True)
+        squares_to = self.get_adjacent_squares(pos_to, include_out=True)
         squares_empty = []
         squares_out = []
         squares = []
@@ -378,7 +352,7 @@ class Pitch:
                                 assists.append(player_at)
         return assists
 
-    def passes(self, passer):
+    def passes(self, passer, weather):
         squares = []
         distances = []
         distances_allowed = [PassDistance.QUICK_PASS,
@@ -387,10 +361,10 @@ class Pitch:
                              PassDistance.LONG_BOMB,
                              PassDistance.HAIL_MARY] if Skill.HAIL_MARY_PASS in passer.get_skills() \
             else [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS, PassDistance.LONG_PASS, PassDistance.LONG_BOMB]
-        if self.game.state.weather == WeatherType.BLIZZARD:
+        if weather == WeatherType.BLIZZARD:
             distances_allowed = [PassDistance.QUICK_PASS, PassDistance.SHORT_PASS]
-        for y in range(len(self.game.state.pitch.board)):
-            for x in range(len(self.game.state.pitch.board[y])):
+        for y in range(len(self.board)):
+            for x in range(len(self.board[y])):
                 pos = Square(x, y)
                 if self.is_out_of_bounds(pos) or passer.position == pos:
                     continue
@@ -712,7 +686,7 @@ class Dugout:
         }
 
 
-class Position:
+class Role:
 
     def __init__(self, name, races, ma, st, ag, av, skills, cost, feeder, n_skill_sets=[], d_skill_sets=[],
                  star_player=False):
@@ -852,9 +826,9 @@ class Coach:
 
 class Race:
 
-    def __init__(self, name, positions, reroll_cost, apothecary, stakes):
+    def __init__(self, name, roles, reroll_cost, apothecary, stakes):
         self.name = name
-        self.positions = positions
+        self.roles = roles
         self.reroll_cost = reroll_cost
         self.apothecary = apothecary
         self.stakes = stakes
@@ -862,13 +836,13 @@ class Race:
 
 class Team:
 
-    def __init__(self, team_id, name, race, coach, players=[], treasury=0, apothecary=False, rerolls=0, ass_coaches=0,
+    def __init__(self, team_id, name, race, coach, players=None, treasury=0, apothecary=False, rerolls=0, ass_coaches=0,
                  cheerleaders=0, fan_factor=0):
         self.team_id = team_id
         self.name = name
         self.coach = coach
         self.race = race
-        self.players = players
+        self.players = players if players is not None else []
         self.treasury = treasury
         self.apothecary = apothecary
         self.rerolls = rerolls
@@ -950,11 +924,11 @@ class RuleSet:
         self.se_interval = se_interval
         self.se_pace = se_pace
 
-    def get_position(self, position, race):
+    def get_role(self, role, race):
         for r in self.races:
             if r.name == race:
-                for p in r.positions:
-                    if p.name == position:
+                for p in r.roles:
+                    if p.name == role:
                         return p
-                raise Exception("Position not found in race: " + race + " -> " + position)
+                raise Exception("Role not found in race: " + race + " -> " + role)
         raise Exception("Race not found: " + race)

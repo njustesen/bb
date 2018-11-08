@@ -14,8 +14,6 @@ $ export FLASK_DEBUG=1
 $ flask run
 '''
 
-ruleset = get_rule_set('LRB5-Experimental.xml')
-
 
 @app.route('/', methods=['GET'])
 def home():
@@ -73,17 +71,21 @@ def get_all_teams():
 
 @app.route('/games/<game_id>/act', methods=['POST'])
 def step(game_id):
-    action = json.loads(request.data)['action']
-    action_type = parse_enum(ActionType, action['action_type'])
-    pos_from = Square(action['pos_from']['x'], action['pos_from']['y']) if 'pos_from' in action and action['pos_from'] is not None else None
-    pos_to = Square(action['pos_to']['x'], action['pos_to']['y']) if 'pos_to' in action and action['pos_to'] is not None else None
-    player_from_id = action['player_from_id'] if 'player_from_id' in action else None
-    player_to_id = action['player_to_id'] if 'player_to_id' in action else None
-    idx = action['idx'] if 'idx' in action else -1
-    team_id = action['team_id'] if 'team_id' in action else None
-    coach_id = action['coach_id'] if 'coach_id' in action else None
-    action = Action(action_type, pos_from=pos_from, pos_to=pos_to, player_from_id=player_from_id, player_to_id=player_to_id, idx=idx, team_id=team_id)
-    game = api.step(game_id, action)
+    try:
+        action = json.loads(request.data)['action']
+        action_type = parse_enum(ActionType, action['action_type'])
+        pos_from = Square(action['pos_from']['x'], action['pos_from']['y']) if 'pos_from' in action and action['pos_from'] is not None else None
+        pos_to = Square(action['pos_to']['x'], action['pos_to']['y']) if 'pos_to' in action and action['pos_to'] is not None else None
+        player_from_id = action['player_from_id'] if 'player_from_id' in action else None
+        player_to_id = action['player_to_id'] if 'player_to_id' in action else None
+        idx = action['idx'] if 'idx' in action else -1
+        team_id = action['team_id'] if 'team_id' in action else None
+        coach_id = action['coach_id'] if 'coach_id' in action else None
+        action = Action(action_type, pos_from=pos_from, pos_to=pos_to, player_from_id=player_from_id, player_to_id=player_to_id, idx=idx, team_id=team_id)
+        game = api.step(game_id, action)
+    except Exception as e:
+        print(e)
+        game = api.get_game(game_id)
     return json.dumps(game.to_simple())
 
 

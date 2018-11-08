@@ -182,7 +182,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let line = GameLogService.log_texts[report.outcome_type] + "\n";
                 line = line.replace("<home_team>", "<span class='label label-primary'>" + $scope.game.home_team.name + "</span> ");
                 line = line.replace("<away_team>", "<span class='label label-danger'>" + $scope.game.away_team.name + "</span> ");
-                line = line.replace("<team>", "<span class='label label-" + (report.team_home ? ("primary'>" + $scope.game.home_team.name) : ("danger'>" + $scope.game.away_team.name)) + "</span> " );
+                line = line.replace("<team>", "<span class='label label-" + (report.team_id === $scope.game.home_team.team_id  ? ("primary'>" + $scope.game.home_team.name) : ("danger'>" + $scope.game.away_team.name)) + "</span> " );
                 if (report.skill !== null){
                     line = line.replace("<skill>", '<span class="label label-success skill">' + $scope.title(report.skill) + '</span>');
                 }
@@ -675,7 +675,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
                 'player_to_id': square.player == null ? null : square.player.player_id,
                 'pos_from': $scope.selected_square != null && $scope.selected_square.area === 'pitch' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
-                'pos_to': square.area === 'pitch' ? {'x': square.x, 'y': square.y} : null,
+                'pos_to': square.area === 'pitch' || square.area === 'crowd' ? {'x': square.x, 'y': square.y} : null,
                 'team_home': null,
                 'idx': -1,
                 'action_type': $scope.getActionType(square)
@@ -710,9 +710,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                             area: 'pitch'
                         };
                         if (crowd){
-                            if (square.area === "dugout-home"){
+                            if (square.area === "dugout-away"){
                                 crowd_square.x = 0;
-                            } else if (square.area === "dugout-away"){
+                            } else if (square.area === "dugout-home"){
                                 crowd_square.x = $scope.local_state.board[0].length-1;
                             }
                         }

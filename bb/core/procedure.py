@@ -596,14 +596,14 @@ class CoinToss(Procedure):
                 self.game.report(Outcome(OutcomeType.HEADS_WON))
             else:
                 self.away_won_toss = False
-                self.game.report(Outcome(OutcomeType.HEADS_LOSS))
+                self.game.report(Outcome(OutcomeType.TAILS_LOSS))
         elif action.action_type == ActionType.TAILS:
             if random.random() >= 0.5:
                 self.away_won_toss = True
                 self.game.report(Outcome(OutcomeType.TAILS_WON))
             else:
                 self.away_won_toss = False
-                self.game.report(Outcome(OutcomeType.TAILS_LOSS))
+                self.game.report(Outcome(OutcomeType.HEADS_LOSS))
 
         self.aa = [ActionChoice(ActionType.KICK,
                                 team=self.game.away_team if self.away_won_toss else self.game.home_team),
@@ -2384,7 +2384,7 @@ class Scatter(Procedure):
                 # Move ball on square
                 self.ball.move(x, y)
 
-                if self.kick and i == 0:
+                if self.kick and i == 0 and not self.gentle_gust:
                     self.game.report(Outcome(OutcomeType.BALL_SCATTER, rolls=rolls))
 
                 # Check out of bounds
@@ -2517,15 +2517,15 @@ class Setup(Procedure):
             return True
 
         if action.action_type == ActionType.END_SETUP:
-            if not self.game.state.pitch.is_setup_legal(self.team, max_players=self.game.config.pitch_max,
+            if not self.game.is_setup_legal(self.team, max_players=self.game.config.pitch_max,
                                                         min_players=self.game.config.pitch_min):
                 self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team=self.team))
                 return False
-            elif not self.game.state.pitch.is_setup_legal_scrimmage(self.team,
+            elif not self.game.is_setup_legal_scrimmage(self.team,
                                                                     min_players=self.game.config.scrimmage_max):
                 self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_SCRIMMAGE, team=self.team))
                 return False
-            elif not self.game.state.pitch.is_setup_legal_wings(self.team, max_players=self.game.config.wing_max):
+            elif not self.game.is_setup_legal_wings(self.team, max_players=self.game.config.wing_max):
                 self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_WINGS, team=self.team))
                 return False
             self.game.report(Outcome(OutcomeType.SETUP_DONE, team=self.team))

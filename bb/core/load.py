@@ -52,58 +52,55 @@ def get_rule_set(name):
     ruleset = RuleSet(path.split("/")[-1].split(".")[0])
 
     print("Parsing races")
-
     for r in obj.rules.rosters.roster:
         print("-- Parsing " + str(r.name.cdata))
         race = Race(r.name.cdata, [], (int)(r.rerollValue.cdata), (bool)(r.apothecary.cdata), (bool)(r.stakes.cdata))
         for p in r.positions.position:
-            position = Position(p.title.cdata, [race.name], (int)(p.ma.cdata), (int)(p.st.cdata), (int)(p.ag.cdata), (int)(p.av.cdata), [], p.cost.cdata, parse_sc(p.normal.cdata), parse_sc(p.double.cdata))
+            position = Role(p.title.cdata, [race.name], (int)(p.ma.cdata), (int)(p.st.cdata), (int)(p.ag.cdata), (int)(p.av.cdata), [], (int)(p.cost.cdata), parse_sc(p.normal.cdata), parse_sc(p.double.cdata))
             if len(p.skills) > 0:
                 for skill_name in p.skills.skill:
                     position.skills.append(parse_enum(Skill, skill_name.cdata))
-            race.positions.append(position)
+            race.roles.append(position)
         ruleset.races.append(race)
 
     print("Parsing star players")
-
     for star in obj.rules.stars.star:
         print("-- Parsing " + str(star.name.cdata))
-        position = Position(star.name.cdata, [], (int)(star.ma.cdata), (int)(star.st.cdata), (int)(star.ag.cdata), (int)(star.av.cdata), [], star.cost.cdata, star.feeder, [], [], star_player=True)
+        role = Role(star.name.cdata, [], (int)(star.ma.cdata), (int)(star.st.cdata), (int)(star.ag.cdata), (int)(star.av.cdata), [], (int)(star.cost.cdata), (bool)(star.feeder.cdata), [], [], star_player=True)
         if len(star.skills) == 0:
             continue
         for skill_name in star.skills.skill:
-            position.skills.append(parse_enum(Skill, skill_name.cdata))
+            role.skills.append(parse_enum(Skill, skill_name.cdata))
         for race_name in star.races.race:
-            position.races.append(race_name)
-        ruleset.star_players.append(position)
+            role.races.append(race_name.cdata)
+        ruleset.star_players.append(role)
 
     print("Parsing inducements")
-    inducements = []
     for i in obj.rules.inducements.inducement:
         print("-- Parsing " + str(i["name"]))
         reduced = 0 if not "reduced" in i else i["reduced"]
-        inducement = Inducement(i["name"], i.cdata, i["max"], reduced=reduced)
+        inducement = Inducement(i["name"], (int)(i.cdata), (int)(i["max"]), reduced=reduced)
         ruleset.inducements.append(inducement)
 
     print("Parsing SPP actions")
     for a in obj.rules.spp.action:
         print("-- Parsing " + str(a["name"]))
-        ruleset.spp_actions[a["name"]] = a.cdata
+        ruleset.spp_actions[a["name"]] = (int)(a.cdata)
 
     print("Parsing SPP levels")
     for l in obj.rules.spp.level:
         print("-- Parsing " + str(l["name"]))
-        ruleset.spp_actions[l["name"]] = l.cdata
+        ruleset.spp_levels[l["name"]] = (int)(l.cdata)
 
     print("Parsing improvements")
     for imp in obj.rules.improvements.improvement:
         print("-- Parsing " + str(imp["name"]))
-        ruleset.improvements[imp["name"]] = imp.cdata
+        ruleset.improvements[imp["name"]] = (int)(imp.cdata)
 
     print("Parsing spiralling expenses")
-    ruleset.se_start = obj.rules.spirallingExpenses.start.cdata
-    ruleset.se_interval = obj.rules.spirallingExpenses.interval.cdata
-    ruleset.se_pace = obj.rules.spirallingExpenses.pace.cdata
+    ruleset.se_start = (int)(obj.rules.spirallingExpenses.start.cdata)
+    ruleset.se_interval = (int)(obj.rules.spirallingExpenses.interval.cdata)
+    ruleset.se_pace = (int)(obj.rules.spirallingExpenses.pace.cdata)
 
     print("Done loading rules")
 
@@ -138,7 +135,7 @@ def get_team(name, ruleset):
     coach = Coach(data['coach']['id'], data['coach']['name'])
     team = Team(data['id'], data['name'], data['race'], players=[], coach=coach, treasury=data['treasury'], apothecary=data['apothecary'], rerolls=data['rerolls'], ass_coaches=data['ass_coaches'], cheerleaders=data['cheerleaders'], fan_factor=data['fan_factor'])
     for p in data['players']:
-        role = ruleset.get_position(p['position'], team.race)
+        role = ruleset.get_role(p['position'], team.race)
         player = Player(player_id=p['id'], role=role, name=p['name'], nr=p['nr'], niggling=p['niggling'], extra_ma=p['extra_ma'], extra_st=p['extra_st'], extra_ag=p['extra_ag'], extra_av=p['extra_av'], mng=p['mng'], spp=p['spp'], team=team)
         for s in p['extra_skills']:
             player.extra_skills.append(parse_enum(Skill, s))
