@@ -178,7 +178,7 @@ class Game:
         return self.arena.board[pos.y][pos.x] in TwoPlayerArena.scrimmage_tiles
 
     def is_touchdown(self, player):
-        if player.team == self.arena.game.home_team:
+        if player.team == self.home_team:
             return self.arena.board[player.position.y][player.position.x] == Tile.AWAY_TOUCHDOWN
         return self.arena.board[player.position.y][player.position.x] == Tile.HOME_TOUCHDOWN
 
@@ -190,9 +190,6 @@ class Game:
     def remove_balls(self):
         self.state.pitch.balls.clear()
 
-    def get_current_team(self):
-        return self.state.current_team
-
     def is_last_turn(self):
         return self.get_next_team().state.turn == self.config.rounds and self.state.half == 2
 
@@ -200,7 +197,7 @@ class Game:
         return self.state.round == self.config.rounds
 
     def get_next_team(self):
-        idx = self.state.turn_order.index(self.get_current_team())
+        idx = self.state.turn_order.index(self.state.current_team)
         if idx+1 == len(self.state.turn_order):
             return self.state.turn_order[0]
         return self.state.turn_order[idx+1]
@@ -270,7 +267,7 @@ class Game:
         return self.state.pitch.get_ball_at(pos)
 
     def is_touchdown(self, player):
-        return self.arena.in_endzone(player.position, player.team == self.home_team)
+        return self.arena.in_opp_endzone(player.position, player.team == self.home_team)
 
     def is_out_of_bounds(self, pos):
         return self.state.pitch.is_out_of_bounds(pos)
@@ -297,7 +294,7 @@ class Game:
         player.state.ready = PlayerReadyState.KOD
 
     def kod_to_reserves(self, player):
-        player.ready = PlayerReadyState.READY
+        player.state.ready = PlayerReadyState.READY
         self.get_kods(player.team).remove(player)
         self.get_reserves(player.team).append(player)
 
@@ -352,11 +349,6 @@ class Game:
     def push_squares(self, pos_from, pos_to):
         return self.state.pitch.get_push_squares(pos_from, pos_to)
 
-    def reset_kickoff(self):
-        self.state.current_team = None
-        for team in self.teams:
-            team.state.reset_turn()
-
     def is_setup_legal(self, team, tile=None, max_players=11, min_players=3):
         cnt = 0
         for y in range(len(self.state.pitch.board)):
@@ -372,12 +364,12 @@ class Game:
         return True
 
     def is_setup_legal_scrimmage(self, team, min_players=3):
-        if team == self.game.home_team:
+        if team == self.home_team:
             return self.is_setup_legal(team, tile=Tile.HOME_SCRIMMAGE, min_players=min_players)
         return self.is_setup_legal(team, tile=Tile.AWAY_SCRIMMAGE, min_players=min_players)
 
     def is_setup_legal_wings(self, team, min_players=0, max_players=2):
-        if team == self.game.home_team:
+        if team == self.home_team:
             return self.is_setup_legal(team, tile=Tile.HOME_WING_LEFT, max_players=max_players, min_players=min_players) and \
                    self.is_setup_legal(team, tile=Tile.HOME_WING_RIGHT, max_players=max_players, min_players=min_players)
         return self.is_setup_legal(team, tile=Tile.AWAY_WING_LEFT, max_players=max_players, min_players=min_players) and \

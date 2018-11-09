@@ -696,16 +696,16 @@ class Half(Procedure):
 
         # If second half
         if self.half > 1:
-            PreHalf(self.game, self.game.get_kicking_team(self.half))
-            PreHalf(self.game, self.game.get_receiving_team(self.half))
+            PreKickOff(self.game, self.game.get_kicking_team(self.half))
+            PreKickOff(self.game, self.game.get_receiving_team(self.half))
 
     def step(self, action):
 
         # Kickoff
         if not self.kicked_off:
             self.game.state.half = self.half
-            self.game.state.kicking_team_this_drive = self.game.get_kicking_team(self.half)
-            self.game.state.receiving_team_this_drive = self.game.get_receiving_team(self.half)
+            self.game.state.kicking_this_drive = self.game.get_kicking_team(self.half)
+            self.game.state.receiving_this_drive = self.game.get_receiving_team(self.half)
             self.kicked_off = True
             self.game.set_turn_order(self.game.get_receiving_team(self.half))
             Kickoff(self.game)
@@ -828,9 +828,9 @@ class Interception(Procedure):
         agi_rolls = []
         for interceptor in self.interceptors:
             modifier = Catch.catch_modifiers(self.game, interceptor, interception=True)
-            agi_rolls.append(max(2, min(6, Catch.success[interceptor.get_ag()] + modifier)))
+            agi_rolls.append([max(2, min(6, Catch.success[interceptor.get_ag()] - modifier))])
         return [ActionChoice(ActionType.INTERCEPTION, team=self.team, players=self.interceptors,
-                             agi_rolls=[agi_rolls]),
+                             agi_rolls=agi_rolls),
                 ActionChoice(ActionType.SELECT_NONE, team=self.team)]
 
 
@@ -844,6 +844,7 @@ class Touchback(Procedure):
         player = self.game.get_player(action.player_from_id)
         self.ball.move_to(player.position)
         self.ball.is_carried = True
+        self.ball.on_ground = True
         self.game.report(Outcome(OutcomeType.TOUCHBACK_BALL_PLACED, player=player, pos=player.position))
         return True
 
@@ -934,7 +935,7 @@ class Kickoff(Procedure):
     def __init__(self, game):
         super().__init__(game)
         self.game.state.gentle_gust = False
-        self.game.reset_kickoff()
+        #self.game.reset_kickoff()
         ball = Ball(None, on_ground=False)
         LandKick(game, ball)
         KickoffTable(game, ball)
@@ -1540,7 +1541,7 @@ class TurnoverIfPossessionLost(Procedure):
         player_at = self.game.get_player_at(self.ball.position)
         if player_at is None:
             Turnover(self.game)
-        elif player_at.team != self.game.get_current_team():
+        elif player_at.team != self.game.state.current_team:
             Turnover(self.game)
         return True
 
@@ -1624,6 +1625,8 @@ class PassAction(Procedure):
                     Interception(self.game, interceptors[0].team, self.ball, interceptors)
                     self.interception_tried = True
                     return False
+
+            self.ball.move_to(self.passer.position)
 
             # Roll
             self.pass_roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
@@ -1840,8 +1843,7 @@ class PlaceBall(Procedure):
     def __init__(self, game, ball):
         super().__init__(game)
         self.ball = ball
-        self.aa = [ActionChoice(ActionType.PLACE_BALL, team=self.game.get_kicking_team(),
-                                positions=self.game.get_team_side(self.game.get_receiving_team()))]
+        self.aa = None
 
     def step(self, action):
         self.game.state.pitch.balls.append(self.ball)
@@ -1851,6 +1853,9 @@ class PlaceBall(Procedure):
         return True
 
     def available_actions(self):
+        if self.aa is None:
+            self.aa = [ActionChoice(ActionType.PLACE_BALL, team=self.game.get_kicking_team(),
+                                    positions=self.game.get_team_side(self.game.get_receiving_team()))]
         return self.aa
 
 
@@ -2189,7 +2194,7 @@ class Pregame(Procedure):
         return []
 
 
-class PreHalf(Procedure):
+class PreKickOff(Procedure):
 
     def __init__(self, game, team):
         super().__init__(game)
@@ -2208,7 +2213,6 @@ class PreHalf(Procedure):
                 self.checked.append(player)
                 self.game.report(Outcome(OutcomeType.PLAYER_NOT_READY, player=player, rolls=[roll]))
                 return False
-        self.game.reset_kickoff()
         return True
 
     def available_actions(self):
@@ -2643,17 +2647,9 @@ class Touchdown(Procedure):
     def step(self, action):
         self.game.report(Outcome(OutcomeType.TOUCHDOWN, team=self.player.team, player=self.player))
         self.player.team.state.score += 1
-
-        # Scoring in opponents turn
-        if self.player.team != self.game.state.current_team:
-            if self.player.team.state.turn < 8:
-                EndTurn(self.game, kickoff=True)
-            EndTurn(self.game, kickoff=False)
-        else:
-            # Prepare for next kickoff
-            self.game.state.kicking_team_this_drive = self.player.team
-            self.game.state.receiving_team_this_drive = self.game.get_opp_team(self.player.team)
-            EndTurn(self.game, kickoff=self.player.team.state.turn < 8)
+        self.game.state.kicking_this_drive = self.player.team
+        self.game.state.receiving_this_drive = self.game.get_opp_team(self.player.team)
+        EndTurn(self.game, kickoff=True)
 
         return True
 
@@ -2714,29 +2710,37 @@ class EndTurn(Procedure):
         # Reset turn
         self.game.state.current_team.state.reset_turn()
         for player in self.game.state.current_team.players:
+            player.state.moves = 0
             if player.state.ready == PlayerReadyState.USED:
                 player.state.ready = PlayerReadyState.READY
             elif player.state.ready == PlayerReadyState.DOWN_USED:
                 player.state.ready = PlayerReadyState.DOWN_READY
-        self.game.state.current_team = None
 
         # Add kickoff procedure - if there are more turns left
-        if self.kickoff and not self.game.is_last_turn():
+        if self.kickoff and self.game.get_opp_team(self.game.state.current_team).state.turn < self.game.config.rounds:
             Kickoff(self.game)
+
             # Setup in turn order from after scoring team
             before = []
             after = []
             added = False
             for t in self.game.get_turn_order():
-                if added:
+                if not added:
                     after.append(t)
                 else:
                     before.append(t)
-                if t == self.game.get_current_team():
+                if t == self.game.state.current_team:
                     added = True
             for team in reversed(after+before):
                 Setup(self.game, team)
+
+            for team in self.game.teams:
+                PreKickOff(self.game, team)
+
             ClearBoard(self.game)
+
+
+        self.game.state.current_team = None
 
     def available_actions(self):
         return []

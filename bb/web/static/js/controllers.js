@@ -435,7 +435,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 if (player !== null){
                     let team = $scope.teamOfPlayer(player);
                     if (team.team_id === $scope.local_state.current_team_id &&
-                            player.state.ready !== "DOWN" && player.state.ready !== "STUNNED" && player.state.ready !== "DOWN_USED") {
+                            player.state.ready !== "DOWN_READY" && player.state.ready !== "STUNNED" && player.state.ready !== "DOWN_USED") {
                         $scope.local_state.board[pos.y][pos.x].available = true;
                         $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
                         if ($scope.available_pass_rolls.length > i) {

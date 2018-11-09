@@ -506,11 +506,11 @@ class TwoPlayerArena:
         self.board = board
         self.json = None
 
-    def in_endzone(self, pos, home):
+    def in_opp_endzone(self, pos, home):
         if home:
-            return self.board[pos.y][pos.x] == Tile.HOME_TOUCHDOWN
-        else:
             return self.board[pos.y][pos.x] == Tile.AWAY_TOUCHDOWN
+        else:
+            return self.board[pos.y][pos.x] == Tile.HOME_TOUCHDOWN
 
     def to_simple(self):
         if self.json is not None:
