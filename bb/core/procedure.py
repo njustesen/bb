@@ -1903,6 +1903,8 @@ class PlayerAction(Procedure):
             for i in range(3):
                 self.squares.append(self.player.position)
 
+            return False
+
         elif action.action_type == ActionType.MOVE:
 
             # Check GFI

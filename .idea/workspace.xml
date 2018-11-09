@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/host.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/host.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/load.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/load.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/js/services.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/services.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/less/style.less" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/less/style.less" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,11 +34,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="procedure.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="2263" selection-start-line="2263" selection-end-line="2263" />
+            <state relative-caret-position="359">
+              <caret line="1905" column="24" selection-start-line="1905" selection-start-column="24" selection-end-line="1905" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -125,7 +115,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="307">
@@ -162,8 +152,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find />
-      <find>TOUCHBACK</find>
       <find>kicking_first_half</find>
       <find>Half(</find>
       <find>&gt;away_team&gt;</find>
@@ -192,6 +180,8 @@
       <find>ruleset</find>
       <find>Push</find>
       <find>ruleset_name</find>
+      <find>crowd</find>
+      <find>StandUp</find>
     </findStrings>
     <replaceStrings>
       <replace>Pitch</replace>
@@ -201,7 +191,7 @@
       <replace>player=self.player</replace>
       <replace>self.ball.position</replace>
       <replace>player.team</replace>
-      <replace />
+      <replace>self.game.state.weather =</replace>
       <replace>game.away_team.state</replace>
       <replace>$scope.getPlayer(player_id).state</replace>
       <replace>role</replace>
@@ -261,7 +251,6 @@
         <option value="$PROJECT_DIR$/data/arenas/ff_pitch.txt" />
         <option value="$PROJECT_DIR$/bb/core/table.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
-        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
         <option value="$PROJECT_DIR$/bb/core/game.py" />
         <option value="$PROJECT_DIR$/bb/core/model.py" />
         <option value="$PROJECT_DIR$/bb/core/load.py" />
@@ -270,6 +259,7 @@
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
         <option value="$PROJECT_DIR$/bb/web/server.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
+        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
       </list>
     </option>
   </component>
@@ -288,7 +278,7 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="y" value="413" />
     <option name="width" value="1680" />
     <option name="height" value="1027" />
   </component>
@@ -582,13 +572,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1680" height="1027" extended-state="6" />
+    <frame x="0" y="413" width="1680" height="1027" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="10" weight="0.22903226" />
       <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.5005952" side_tool="true" weight="0.32948583" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.20537634" />
+      <window_info active="true" anchor="bottom" id="Run" order="6" sideWeight="0.49940476" visible="true" weight="0.20537634" />
       <window_info anchor="bottom" id="Version Control" order="2" weight="0.2516129" />
       <window_info anchor="bottom" id="Python Console" order="1" weight="0.32814023" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32876712" />
@@ -598,7 +588,7 @@
       <window_info anchor="bottom" id="Find" order="5" weight="0.3268817" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.24970344" />
-      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.36989248" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.36989248" />
       <window_info id="Favorites" order="0" sideWeight="0.23890784" side_tool="true" weight="0.18803419" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
@@ -681,12 +671,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/procedure.py</url>
-          <line>2306</line>
+          <line>2308</line>
           <option name="timeStamp" value="463" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/procedure.py</url>
-          <line>2303</line>
+          <line>2305</line>
           <option name="timeStamp" value="464" />
         </line-breakpoint>
       </breakpoints>
@@ -735,7 +725,7 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string />
+        <expression-string>piece is Player</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -765,7 +755,7 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string />
+        <expression-string>self.game.get_ball_position() == self.to_pos</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -1015,13 +1005,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="2263" selection-start-line="2263" selection-end-line="2263" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/server.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="366">
@@ -1036,6 +1019,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="307">
           <caret line="714" column="67" selection-start-line="714" selection-start-column="67" selection-end-line="714" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="359">
+          <caret line="1905" column="24" selection-start-line="1905" selection-start-column="24" selection-end-line="1905" selection-end-column="24" />
         </state>
       </provider>
     </entry>
