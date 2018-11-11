@@ -392,15 +392,14 @@ class Bounce(Procedure):
                 # Move ball back
                 self.ball.move(-x, -y)
                 ThrowIn(self.game, self.ball)
-                self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS, rolls=[roll_scatter]))
+                self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS))
                 return True
 
         # On player -> Catch
         player_at = self.game.get_player_at(self.ball.position)
         if player_at is not None:
             Catch(self.game, player_at, self.ball)
-            self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.ball.position,
-                                     player=player_at, rolls=[roll_scatter]))
+            self.game.report(Outcome(OutcomeType.BALL_HIT_PLAYER, pos=self.ball.position, player=player_at))
             return True
 
         self.game.report(Outcome(OutcomeType.BALL_ON_GROUND, pos=self.ball.position))
@@ -934,15 +933,15 @@ class Kickoff(Procedure):
 
     def __init__(self, game):
         super().__init__(game)
-        self.game.state.gentle_gust = False
-        #self.game.reset_kickoff()
-        ball = Ball(None, on_ground=False)
-        LandKick(game, ball)
-        KickoffTable(game, ball)
-        Scatter(game, ball, kick=True)
-        PlaceBall(game, ball)
 
     def step(self, action):
+        self.game.state.gentle_gust = False
+        # self.game.reset_kickoff()
+        ball = Ball(None, on_ground=False)
+        LandKick(self.game, ball)
+        KickoffTable(self.game, ball)
+        Scatter(self.game, ball, kick=True)
+        PlaceBall(self.game, ball)
         return True
 
     def available_actions(self):
@@ -1181,8 +1180,6 @@ class KickoffTable(Procedure):
         roll = DiceRoll([D6(), D6()], roll_type=RollType.KICKOFF_ROLL)
         roll.result = roll.get_sum()
 
-        self.rolled = True
-
         if roll.result == 2:  # Get the ref!
             GetTheRef(self.game)
             self.game.report(Outcome(OutcomeType.KICKOFF_GET_THE_REF, rolls=[roll]))
@@ -1243,7 +1240,11 @@ class KnockDown(Procedure):
     def step(self, action):
 
         # Knock down player
-        self.player.state.ready = PlayerReadyState.DOWN_USED
+        if self.player.team == self.game.state.current_team:
+            self.player.state.ready = PlayerReadyState.DOWN_USED
+        else:
+            self.player.state.ready = PlayerReadyState.DOWN_READY
+
         self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player=self.player, opp_player=self.inflictor))
 
         # Turnover
@@ -2670,20 +2671,6 @@ class TurnStunned(Procedure):
                 player.state.ready = PlayerReadyState.DOWN_USED
                 players.append(player)
         self.game.report(Outcome(OutcomeType.STUNNED_TURNED))
-        return True
-
-    def available_actions(self):
-        return []
-
-
-class ResetTurn(Procedure):
-
-    def __init__(self, game, team):
-        super().__init__(game)
-        self.team = team
-
-    def step(self, action):
-        self.game.reset_turn(self.team)
         return True
 
     def available_actions(self):

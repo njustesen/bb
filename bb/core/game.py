@@ -87,6 +87,15 @@ class Game:
         :return: True if game requires action or game is over, False if not
         """
 
+        # Clear done procs
+        while not self.state.stack.is_empty() and self.state.stack.peek().done:
+            print("--Proc={}".format(self.state.stack.peek()))
+            self.state.stack.pop()
+
+        # Is game over
+        if self.state.stack.is_empty():
+            return False
+
         # Get proc
         proc = self.state.stack.peek()
 
@@ -126,14 +135,13 @@ class Game:
                 assert player.position is None or self.state.pitch.board[player.position.y][player.position.x] == player
 
         # Remove all finished procs
-        if proc.done:
-            while not self.state.stack.is_empty() and self.state.stack.peek().done:
-                print("--Proc={}".format(self.state.stack.peek()))
-                self.state.stack.pop()
+        while not self.state.stack.is_empty() and self.state.stack.peek().done:
+            print("--Proc={}".format(self.state.stack.peek()))
+            self.state.stack.pop()
 
-            # Is game over
-            if self.state.stack.is_empty():
-                return False
+        # Is game over
+        if self.state.stack.is_empty():
+            return False
 
         print("-Proc={}".format(self.state.stack.peek()))
 
