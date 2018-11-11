@@ -1182,6 +1182,8 @@ class KickoffTable(Procedure):
         roll = DiceRoll([D6(), D6()], roll_type=RollType.KICKOFF_ROLL)
         roll.result = roll.get_sum()
 
+        roll.result = 10
+
         if roll.result == 2:  # Get the ref!
             GetTheRef(self.game)
             self.game.report(Outcome(OutcomeType.KICKOFF_GET_THE_REF, rolls=[roll]))

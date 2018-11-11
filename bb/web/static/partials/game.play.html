@@ -74,7 +74,7 @@
                         {{game.away_team.name}}
                     </div>
                     <div class="rerolls">
-                        <div ng-repeat="n in [] | range:8" title="{{ 7-$index < game.away_team.state.rerolls ? 'Reroll' : (7-$index < game.away_team.state.rerolls_start ? 'Reroll used' : '') }}" class="reroll away {{ 7-$index < game.away_team.state.rerolls ? 'notused' : (7-$index < game.away_team.state.rerolls_start ? 'used' : 'none') }}"> </div>
+                        <div ng-repeat="n in [] | range:8" title="{{ 7-$index < game.away_team.state.rerolls ? 'Reroll' : (7-$index < game.away_team.state.rerolls_start ? 'Reroll used' : '') }}" class="reroll away {{ 7-$index < game.away_team.state.rerolls ? 'notused' : (7-$index < game.away_team.state.rerolls_start ? 'used' : 'none') }} {{ (7-$index == game.away_team.state.rerolls-1 && game.can_away_team_use_reroll ? 'available' : '') }} "> </div>
                     </div>
                 </div>
                 <div class="col-xs-1 logo-home text-center">
@@ -104,7 +104,7 @@
                         {{game.home_team.name}}
                     </div>
                     <div class="rerolls">
-                        <div ng-repeat="n in [] | range:8" title="{{ $index < game.home_team.state.rerolls ? 'Reroll' : ($index < game.home_team.state.rerolls_start ? 'Reroll used' : '') }}" class="reroll home {{ $index < game.home_team.state.rerolls ? 'notused' : ($index < game.home_team.state.rerolls_start ? 'used' : 'none') }}"> </div>
+                        <div ng-repeat="n in [] | range:8" title="{{ $index < game.home_team.state.rerolls ? 'Reroll' : ($index < game.home_team.state.rerolls_start ? 'Reroll used' : '') }}" class="reroll home {{ $index < game.home_team.state.rerolls ? 'notused' : ($index < game.home_team.state.rerolls_start ? 'used' : 'none') }} {{ ($index == game.home_team.state.rerolls-1 && game.can_home_team_use_reroll ? 'available' : '') }}"> </div>
                     </div>
                 </div>
             </div>

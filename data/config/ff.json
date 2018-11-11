@@ -5,7 +5,7 @@
     "dungeon": false,
     "roster_size": 16,
     "pitch_max": 11,
-    "pitch_min": 11,
+    "pitch_min": 3,
     "scrimmage_min": 3,
     "wing_max": 2,
     "turns": 8,

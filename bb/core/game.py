@@ -53,7 +53,9 @@ class Game:
             'reports': reports,
             'squares_moved': self._squares_moved(),
             'arena': self.arena.to_simple(),
-            'ruleset': self.ruleset.name
+            'ruleset': self.ruleset.name,
+            'can_home_team_use_reroll': self.can_use_reroll(self.home_team),
+            'can_away_team_use_reroll': self.can_use_reroll(self.away_team)
         }
 
     def init(self):
@@ -272,8 +274,19 @@ class Game:
     def get_dungeon(self, team):
         return self.state.get_dugout(team).dungeon
 
+    def current_turn(self):
+        for i in reversed(range(self.state.stack.size())):
+            proc = self.state.stack.items[i]
+            if isinstance(proc, Turn):
+                return proc
+        return None
+
     def can_use_reroll(self, team):
-        return not team.state.reroll_used and team.state.rerolls > 0 and self.state.current_team == team
+        if not team.state.reroll_used and team.state.rerolls > 0 and self.state.current_team == team:
+            current_turn = self.current_turn()
+            if current_turn is not None and isinstance(current_turn, Turn):
+                return not current_turn.blitz and not current_turn.quick_snap
+        return False
 
     def get_kicking_team(self, half=None):
         if half is None:

@@ -388,7 +388,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let pos = $scope.available_select_positions[i];
                 // Reserves positions
                 if (pos == null && $scope.selected_square != null && $scope.selected_square.area === 'pitch'){
-                    if ($scope.main_action.team === true){
+                    if ($scope.main_action.team_id === $scope.game.home_team.team_id){
                         for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.home_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.home_dugout[y][x].player == null){
@@ -397,7 +397,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                                 }
                             }
                         }
-                    } else if ($scope.main_action.team === false){
+                    } else if ($scope.main_action.team_id === $scope.game.away_team.team_id){
                         for (let y = 0; y < $scope.local_state.away_dugout.length; y++){
                             for (let x = 0; x < $scope.local_state.away_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.away_dugout[y][x].player == null){
