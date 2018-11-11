@@ -183,6 +183,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 line = line.replace("<home_team>", "<span class='label label-primary'>" + $scope.game.home_team.name + "</span> ");
                 line = line.replace("<away_team>", "<span class='label label-danger'>" + $scope.game.away_team.name + "</span> ");
                 line = line.replace("<team>", "<span class='label label-" + (report.team_id === $scope.game.home_team.team_id  ? ("primary'>" + $scope.game.home_team.name) : ("danger'>" + $scope.game.away_team.name)) + "</span> " );
+                line = line.replace("<score-sorted>", Math.max($scope.game.home_team.state.score, $scope.game.away_team.state.score) + " - " + Math.min($scope.game.home_team.state.score, $scope.game.away_team.state.score) );
+
                 if (report.skill !== null){
                     line = line.replace("<skill>", '<span class="label label-success skill">' + $scope.title(report.skill) + '</span>');
                 }
@@ -415,10 +417,12 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 // Crowd in dugouts - available during pushes
                 if (pos != null){
                     if (pos.x === 0 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
-                        $scope.local_state.home_dugout[pos.y-1][1].available = true;
+                        $scope.local_state.away_dugout[pos.y-1][1].available = true;
+                        $scope.local_state.away_dugout[pos.y-1][1].action_type = $scope.main_action.action_type;
                     }
                     if (pos.x === $scope.local_state.board[0].length - 1 && pos.y > 0 && pos.y < $scope.local_state.board.length - 1){
-                        $scope.local_state.away_dugout[pos.y-1][0].available = true;
+                        $scope.local_state.home_dugout[pos.y-1][0].available = true;
+                        $scope.local_state.home_dugout[pos.y-1][0].action_type = $scope.main_action.action_type;
                     }
                 }
             }
@@ -589,9 +593,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.checkForReload =  function checkForReload(time){
-            if ($scope.available_positions.length == 0){
+            if ($scope.available_positions.length === 0 && !$scope.game.game_over){
                 setTimeout(function(){
-                    if (!$scope.loading && !$scope.refreshing && $scope.game.available_actions.length == 0){
+                    if (!$scope.loading && !$scope.refreshing && $scope.game.available_actions.length === 0){
                         $scope.act($scope.newAction('CONTINUE'));
                     }
                 }, time);
@@ -617,7 +621,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             for (let y = 0; y < $scope.local_state.board.length; y++){
                 for (let x = 0; x < $scope.local_state.board[y].length; x++){
                     $scope.local_state.board[y][x].selected = false;
-                    $scope.local_state.board[y][x].available_position = false;
+                    $scope.local_state.board[y][x].available = false;
                     $scope.local_state.board[y][x].roll = false;
                     $scope.local_state.board[y][x].block_roll = 0;
                     $scope.local_state.board[y][x].agi_rolls = [];
@@ -626,13 +630,13 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             for (let y = 0; y < $scope.local_state.home_dugout.length; y++){
                 for (let x = 0; x < $scope.local_state.home_dugout[y].length; x++){
                     $scope.local_state.home_dugout[y][x].selected = false;
-                    $scope.local_state.home_dugout[y][x].available_position = false;
+                    $scope.local_state.home_dugout[y][x].available = false;
                 }
             }
             for (let y = 0; y < $scope.local_state.away_dugout.length; y++){
                 for (let x = 0; x < $scope.local_state.away_dugout[y].length; x++){
                     $scope.local_state.away_dugout[y][x].selected = false;
-                    $scope.local_state.away_dugout[y][x].available_position = false;
+                    $scope.local_state.away_dugout[y][x].available = false;
                 }
             }
         };
@@ -707,7 +711,8 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                         let crowd = $scope.game.stack[$scope.game.stack.length-1] === "Push" && square.area.startsWith("dugout");
                         let crowd_square = {
                             y: square.y+1,
-                            area: 'pitch'
+                            area: 'pitch',
+                            action_type: square.action_type
                         };
                         if (crowd){
                             if (square.area === "dugout-away"){

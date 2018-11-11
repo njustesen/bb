@@ -221,14 +221,35 @@ class Game:
     def get_player_at(self, pos):
         return self.state.pitch.board[pos.y][pos.x]
 
-    def set_turn_order(self, first_team):
-        self.state.turn_order.clear()
-        idx = self.teams.index(first_team)
-        for i in range(len(self.teams)):
-            if i < idx:
-                self.state.turn_order.append(self.teams[i])
+    def set_turn_order_from(self, first_team):
+        before = []
+        after = []
+        added = False
+        if len(self.state.turn_order) == 0:
+            self.state.turn_order = [team for team in self.teams]
+        for team in self.get_turn_order():
+            if team == first_team:
+                added = True
+            if not added:
+                before.append(team)
             else:
-                self.state.turn_order.insert(0, self.teams[i])
+                after.append(team)
+        self.state.turn_order = after + before
+
+    def set_turn_order_after(self, last_team):
+        before = []
+        after = []
+        added = False
+        if len(self.state.turn_order) == 0:
+            self.state.turn_order = [team for team in self.teams]
+        for team in self.get_turn_order():
+            if not added:
+                before.append(team)
+            else:
+                after.append(team)
+            if team == last_team:
+                added = True
+        self.state.turn_order = after + before
 
     def get_turn_order(self):
         return self.state.turn_order
@@ -370,6 +391,13 @@ class Game:
         if cnt > max_players or cnt < min_players:
             return False
         return True
+
+    def get_winner(self):
+        if self.home_team.state.score > self.away_team.state.score:
+            return self.home_team
+        elif self.home_team.state.score < self.away_team.state.score:
+            return self.away_team
+        return None
 
     def is_setup_legal_scrimmage(self, team, min_players=3):
         if team == self.home_team:

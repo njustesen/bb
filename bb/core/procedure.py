@@ -389,9 +389,7 @@ class Bounce(Procedure):
         else:
             # Out of bounds
             if self.game.is_out_of_bounds(self.ball.position):
-                # Move ball back
-                self.ball.move(-x, -y)
-                ThrowIn(self.game, self.ball)
+                ThrowIn(self.game, self.ball, Square(self.ball.position.x - x, self.ball.position.y - y))
                 self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS))
                 return True
 
@@ -692,21 +690,25 @@ class Half(Procedure):
         super().__init__(game)
         self.half = half
         self.kicked_off = False
-
-        # If second half
-        if self.half > 1:
-            PreKickOff(self.game, self.game.get_kicking_team(self.half))
-            PreKickOff(self.game, self.game.get_receiving_team(self.half))
+        self.prepared = False
 
     def step(self, action):
+
+        # If second half
+        if not self.prepared and self.half > 1:
+            PreKickOff(self.game, self.game.get_kicking_team(self.half))
+            PreKickOff(self.game, self.game.get_receiving_team(self.half))
+            self.prepared = True
+            return False
 
         # Kickoff
         if not self.kicked_off:
             self.game.state.half = self.half
+            self.game.state.round = 0
             self.game.state.kicking_this_drive = self.game.get_kicking_team(self.half)
             self.game.state.receiving_this_drive = self.game.get_receiving_team(self.half)
             self.kicked_off = True
-            self.game.set_turn_order(self.game.get_receiving_team(self.half))
+            self.game.set_turn_order_from(self.game.get_receiving_team(self.half))
             Kickoff(self.game)
             Setup(self.game, team=self.game.get_receiving_team(self.half))
             Setup(self.game, team=self.game.get_kicking_team(self.half))
@@ -1251,10 +1253,11 @@ class KnockDown(Procedure):
         if self.turnover:
             Turnover(self.game)
 
-        # Check fumble
+        # Check fumble - does not handle throw-in
         ball = self.game.get_ball_at(self.player.position)
         if ball is not None:
-            Bounce(self.game, ball)
+            if not self.game.is_out_of_bounds(self.player.position):
+                Bounce(self.game, ball)
             self.game.report(Outcome(OutcomeType.FUMBLE, player=self.player, opp_player=self.inflictor))
 
         # If armor roll should be made. Injury is also nested in armor.
@@ -2166,6 +2169,12 @@ class EndGame(Procedure):
     def step(self, action):
         self.game.state.team_turn = None
         self.game.game_over = True
+        winner = self.game.get_winner()
+        if winner is not None:
+            self.game.report(Outcome(OutcomeType.END_OF_GAME_WINNER, team=winner))
+        else:
+            self.game.report(Outcome(OutcomeType.END_OF_GAME_DRAW))
+        return True
 
     def available_actions(self):
         return []
@@ -2274,6 +2283,9 @@ class Push(Procedure):
             if self.game.has_ball(self.player):
                 if self.game.is_touchdown(self.player):
                     Touchdown(self.game, self.player)
+                elif self.game.is_out_of_bounds(self.player.position):
+                    ball = self.game.get_ball_at(self.player.position)
+                    ThrowIn(self.game, ball, pos=self.follow_to)
             elif self.game.get_ball_at(self.push_to) is not None:
                 Bounce(self.game, self.game.get_ball_at(self.push_to))
 
@@ -2418,9 +2430,7 @@ class Scatter(Procedure):
                 else:
                     # Throw in
                     if self.game.is_out_of_bounds(self.ball.position):
-                        # Move ball back
-                        self.game.move_ball(-x, -y)
-                        ThrowIn(self.game, self.ball.position)
+                        ThrowIn(self.game, self.ball.position, Square(self.ball.position.x-x, self.ball.position.y-y))
                         self.game.report(Outcome(OutcomeType.BALL_SCATTER, rolls=rolls))
                         self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS,
                                                  pos=self.ball.position))
@@ -2512,8 +2522,9 @@ class Setup(Procedure):
 
         # TODO: Remove this
         if action.action_type == ActionType.AUTO:
-            for i in range(min(11, len(self.game.get_reserves(self.team)))):
-                player = self.game.get_reserves(self.team)[0]
+            available_players = [player for player in self.game.get_reserves(self.team) if player.state.ready != PlayerReadyState.HEATED]
+            for i in range(min(11, len(available_players))):
+                player = available_players[i]
                 y = 3
                 x = 13 if self.team == self.game.away_team else 14
                 self.step(Action(ActionType.PLACE_PLAYER, player_from_id=player.player_id, pos_from=None,
@@ -2562,11 +2573,16 @@ class Setup(Procedure):
 
 class ThrowIn(Procedure):
 
-    def __init__(self, game, ball):
+    def __init__(self, game, ball, pos):
         super().__init__(game)
         self.ball = ball
+        self.pos = pos
 
     def step(self, action):
+
+        # Move ball to throw-in position
+        self.ball.move_to(self.pos)
+        self.ball.carried = False
 
         # Roll
         roll_direction = DiceRoll([D3()], roll_type=RollType.SCATTER_ROLL)
@@ -2604,8 +2620,7 @@ class ThrowIn(Procedure):
         for i in range(roll_distance.get_sum()):
             self.ball.move(x, y)
             if self.game.is_out_of_bounds(self.ball.position):
-                self.ball.move(-x, -y)
-                ThrowIn(self.game, self.ball)
+                ThrowIn(self.game, self.ball, Square(self.ball.position.x - x, self.ball.position.y - y))
                 self.game.report(Outcome(OutcomeType.THROW_IN_OUT_OF_BOUNDS, pos=self.ball.position,
                                          rolls=[roll_direction, roll_distance]))
                 return True
@@ -2616,6 +2631,8 @@ class ThrowIn(Procedure):
         player = self.game.get_player_at(self.ball.position)
         if player is not None:
             Catch(self.game, player, self.ball)
+        else:
+            Bounce(self.game, self.ball)
 
         return True
 
@@ -2708,24 +2725,15 @@ class EndTurn(Procedure):
             Kickoff(self.game)
 
             # Setup in turn order from after scoring team
-            before = []
-            after = []
-            added = False
-            for t in self.game.get_turn_order():
-                if not added:
-                    after.append(t)
-                else:
-                    before.append(t)
-                if t == self.game.state.current_team:
-                    added = True
-            for team in reversed(after+before):
-                Setup(self.game, team)
+            #self.game.set_turn_order_after(self.game.state.current_team)
+
+            Setup(self.game, self.game.state.receiving_this_drive)
+            Setup(self.game, self.game.state.kicking_this_drive)
 
             for team in self.game.teams:
                 PreKickOff(self.game, team)
 
             ClearBoard(self.game)
-
 
         self.game.state.current_team = None
 

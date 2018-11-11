@@ -33,8 +33,8 @@ def step(game_id, action):
         action = None
 
     # If game is over
-    if game.game_over:
-        host.end_game(game_id)
+    #if game.game_over:
+    #    host.end_game(game_id)
 
     return game
 

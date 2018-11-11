@@ -152,18 +152,18 @@
         <div class="square-row">
             <div class="hint text-center" ng-if="passHint && !passOptions">Press Ctrl to show all pass actions.</div>
             <div class="hint text-center" ng-if="passHint && passOptions">Press Ctrl to show move actions.</div>
-            <div class="square {{ local_state.board[0][$index-1].available_position ? 'green' : 'disabled' }}" ng-repeat="n in [] | range:local_state.board[0].length + 2" ng-click="square(local_state.board[0][$index-1])"></div>
+            <div class="square {{ local_state.board[0][$index-1].available ? 'green' : 'disabled' }}" ng-repeat="n in [] | range:local_state.board[0].length + 2" ng-click="square(local_state.board[0][$index-1])"></div>
         </div>
 
         <div class="gameboard">
             <div class="dugout away">
                 <div class="square-row" ng-repeat="n in [] | range:15">
-                    <div class="square away {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }} {{ local_state.away_dugout[$index][0].selected ? 'selected' : '' }} {{ local_state.away_dugout[$index][0].available_position ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][0])" ng-mouseover="squareHover(local_state.away_dugout[$index][0])">
+                    <div class="square away {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }} {{ local_state.away_dugout[$index][0].selected ? 'selected' : '' }} {{ local_state.away_dugout[$index][0].available ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][0])" ng-mouseover="squareHover(local_state.away_dugout[$index][0])">
                         <div class="playericon align-middle text-center" ng-if="local_state.away_dugout[$index][0].player != null">
                             <img src="static/img/iconssmall/{{ local_state.away_dugout[$index][0].player_icon }}" />
                         </div>
                     </div>
-                    <div class="square away {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }} {{ local_state.away_dugout[$index][1].selected ? 'selected' : ''}} {{ local_state.away_dugout[$index][1].available_position ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][1])" ng-mouseover="squareHover(local_state.away_dugout[$index][1])">
+                    <div class="square away {{ $index < 8 ? '' : ($index < 12 ? 'kod' : 'casualties' ) }} {{ local_state.away_dugout[$index][1].selected ? 'selected' : ''}} {{ local_state.away_dugout[$index][1].available ? 'green' : '' }}" ng-click="square(local_state.away_dugout[$index][1])" ng-mouseover="squareHover(local_state.away_dugout[$index][1])">
                         <div class="playericon align-middle text-center" ng-if="local_state.away_dugout[$index][1].player != null">
                             <img src="static/img/iconssmall/{{ local_state.away_dugout[$index][1].player_icon }}" />
                         </div>
@@ -320,10 +320,9 @@
                         <div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">MA</div>
-                                <div class="value label blue" ng-if="playerInFocus(game.home_team).state.moves == 0">{{playerInFocus(game.home_team).ma - playerStateInFocus(game.home_team).moves}}</div>
-                                <div class="value label label-warning" ng-if="playerInFocus(game.home_team).state.moves != 0 && playerStateInFocus(game.home_team).moves < playerInFocus(game.home_team).ma">{{playerInFocus(game.home_team).ma - playerInFocus(game.home_team).state.moves}}</div>
-                                <div class="value label label-danger" ng-if="playerInFocus(game.home_team).state.moves == playerInFocus(game.home_team).ma">{{playerInFocus(game.home_team).ma - playerInFocus(game.home_team).state.moves}}</div>
-                                <div class="value label label-danger" ng-if="playerInFocus(game.home_team).state.moves > playerInFocus(game.home_team).ma">+{{playerInFocus(game.home_team).state.moves - playerInFocus(game.home_team).ma}}</div>
+                                <div class="value label label-success blue" ng-if="playerInFocus(game.home_team).state.moves < playerInFocus(game.home_team).ma">{{playerInFocus(game.home_team).ma - playerInFocus(game.home_team).state.moves}}</div>
+                                <div class="value label label-danger blue" ng-if="playerInFocus(game.home_team).state.moves == playerInFocus(game.home_team).ma">{{playerInFocus(game.home_team).ma - playerInFocus(game.home_team).state.moves}}</div>
+                                <div class="value label label-danger blue" ng-if="playerInFocus(game.home_team).state.moves > playerInFocus(game.home_team).ma">+{{playerInFocus(game.home_team).state.moves - playerInFocus(game.home_team).ma}}</div>
                             </div>
                             <div class="attribute text-center">
                                 <div class="gamelabel">ST</div>
