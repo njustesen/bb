@@ -2156,7 +2156,7 @@ class StartGame(Procedure):
         return True
 
     def available_actions(self):
-        return [ActionChoice(ActionType.START_GAME, team=None)]
+        return [ActionChoice(ActionType.START_GAME, team=self.game.state.away_team)]
 
 
 class EndGame(Procedure):

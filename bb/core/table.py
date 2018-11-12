@@ -171,6 +171,10 @@ class OutcomeType(Enum):
     THROW_A_ROCK_ROLL = 129
     QUICK_SNAP_START = 130
     BLITZ_START = 131
+    END_OF_GAME_WINNER = 132
+    END_OF_GAME_DRAW = 133
+    PLAYER_HEATED = 134
+    PLAYER_NOT_HEATED = 135
 
 
 class PlayerActionType(Enum):

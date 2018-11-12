@@ -28,7 +28,7 @@
       "mng": false
     },
     {
-      "id" : "a2",
+      "id" : "b2",
       "nr" : 2,
       "name": "Painspear, Krug",
       "position": "Blitzer",
@@ -42,7 +42,7 @@
       "mng": false
     },
     {
-      "id" : "a3",
+      "id" : "b3",
       "nr" : 3,
       "name": "Rackspite, Ugly",
       "position": "Blitzer",
@@ -56,7 +56,7 @@
       "mng": false
     },
     {
-      "id" : "a4",
+      "id" : "b4",
       "nr" : 4,
       "name": "Vilechuck, Osgar",
       "position": "Blitzer",
@@ -70,7 +70,7 @@
       "mng": false
     },
     {
-      "id" : "a5",
+      "id" : "b5",
       "nr" : 5,
       "name": "Da Rock",
       "position": "Black Orc Blocker",
@@ -84,7 +84,7 @@
       "mng": false
     },
     {
-      "id" : "a6",
+      "id" : "b6",
       "nr" : 6,
       "name": "Blazetown, Igor",
       "position": "Black Orc Blocker",
@@ -98,7 +98,7 @@
       "mng": false
     },
     {
-      "id" : "a7",
+      "id" : "b7",
       "nr" : 7,
       "name": "Demoncutter, Hak",
       "position": "Black Orc Blocker",
@@ -112,7 +112,7 @@
       "mng": false
     },
     {
-      "id" : "a8",
+      "id" : "b8",
       "nr" : 8,
       "name": "Elfspliiter, Trok",
       "position": "Black Orc Blocker",
@@ -126,7 +126,7 @@
       "mng": false
     },
     {
-      "id" : "a9",
+      "id" : "b9",
       "nr" : 9,
       "name": "Halftoad, Gurk",
       "position": "Thrower",
@@ -140,7 +140,7 @@
       "mng": false
     },
     {
-      "id" : "a10",
+      "id" : "b10",
       "nr" : 10,
       "name": "Izzi the Frog",
       "position": "Lineman",
@@ -154,7 +154,7 @@
       "mng": false
     },
     {
-      "id" : "a11",
+      "id" : "b11",
       "nr" : 11,
       "name": "Kneebender, Urgrain",
       "position": "Lineman",
@@ -168,7 +168,7 @@
       "mng": false
     },
     {
-      "id" : "a12",
+      "id" : "b12",
       "nr" : 12,
       "name": "Ogrehack, Eruk",
       "position": "Lineman",

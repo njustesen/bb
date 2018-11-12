@@ -7,14 +7,15 @@ from bb.core.load import *
 host = Host()
 
 
-def new_game(away_team_id, home_team_id, config_name="ff.json"):
+def new_game(away_team_id, home_team_id, away_agent=None, home_agent=None, config_name="ff.json"):
+    assert away_agent is not None
+    assert home_agent is not None
     config = get_config(config_name)
-    arena = get_arena(config.arena)
     ruleset = get_rule_set(config.ruleset)
     home = get_team_by_id(home_team_id, ruleset)
     away = get_team_by_id(away_team_id, ruleset)
     game_id = str(uuid.uuid1())
-    game = Game(game_id, away, home, arena, config, ruleset)
+    game = Game(game_id, home, away, home_agent, away_agent, config)
     game.init()
     host.add_game(game)
     print("Game created with id ", game.game_id)
@@ -24,17 +25,7 @@ def new_game(away_team_id, home_team_id, config_name="ff.json"):
 def step(game_id, action):
 
     game = host.get_game(game_id)
-
-    # Run until user input is required
-    while True:
-        done = game.step(action)
-        if done or not game.config.fast_mode:
-            break
-        action = None
-
-    # If game is over
-    #if game.game_over:
-    #    host.end_game(game_id)
+    game.step(action)
 
     return game
 
@@ -72,4 +63,8 @@ def get_teams(ruleset):
 
 
 # Initialize with one game
-new_game("orc-team-1", "human-team-1")
+# TODO: Remove this
+new_game(home_team_id="orc-team-1",
+         away_team_id="human-team-1",
+         home_agent=Agent("Player 1", human=True),
+         away_agent=Agent("Player 2", human=True))

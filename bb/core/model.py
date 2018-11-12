@@ -53,7 +53,7 @@ class Agent:
     def act(self, game):
         raise NotImplementedError("This method must be overridden by non-human subclasses")
 
-    def end_game(self):
+    def end_game(self, game):
         raise NotImplementedError("This method must be overridden by non-human subclasses")
 
 
@@ -201,7 +201,7 @@ class Pitch:
         }
 
     def put(self, piece, pos):
-        piece.position = pos
+        piece.position = Square(pos.x, pos.y)
         self.board[pos.y][pos.x] = piece
 
     def remove(self, piece):
@@ -270,10 +270,10 @@ class Pitch:
         squares_empty = []
         squares_out = []
         squares = []
-        print("From:", pos_from)
+        #print("From:", pos_from)
         for square in squares_to:
-            print("Checking: ", square)
-            print("Distance: ", pos_from.distance(square, manhattan=False))
+            #print("Checking: ", square)
+            #print("Distance: ", pos_from.distance(square, manhattan=False))
             include = False
             if pos_from.x == pos_to.x or pos_from.y == pos_to.y:
                 if pos_from.distance(square, manhattan=False) >= 2:
@@ -281,7 +281,7 @@ class Pitch:
             else:
                 if pos_from.distance(square, manhattan=True) >= 3:
                     include = True
-            print("Include: ", include)
+            #print("Include: ", include)
             if include:
                 if self.get_player_at(square) is None:
                     squares_empty.append(square)
@@ -518,7 +518,8 @@ class Action:
     def to_simple(self):
         return {
             'action_type': self.action_type.name,
-            'position': self.pos.to_simple() if self.pos is not None else None
+            'position': self.pos.to_simple() if self.pos is not None else None,
+            'player_id': self.player.player_id if self.player is not None else None
         }
 
 
@@ -807,6 +808,9 @@ class Player(Piece):
             'position': self.position.to_simple() if self.position is not None else None
         }
 
+    def __eq__(self, other):
+        return isinstance(other, Player) and other.player_id == self.player_id
+
 
 class Square:
 
@@ -826,7 +830,7 @@ class Square:
         return self.x == other.x and self.y == other.y
 
     def __hash__(self):
-        return self.x * 1000 + self.y
+        return self.x * 7 + self.y * 13
 
     def distance(self, other, manhattan=False, flight=False):
         if manhattan:
@@ -900,6 +904,9 @@ class Team:
             'players_by_id': players_by_id,
             'state': self.state.to_simple()
         }
+
+    def __eq__(self, other):
+        return isinstance(other, Team) and other.team_id == self.team_id
 
 
 class Outcome:

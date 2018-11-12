@@ -1,15 +1,18 @@
 from bb.core.procedure import *
-import json
-import pickle
+from bb.core.load import *
+from copy import deepcopy, copy
 
 
 class Game:
 
-    def __init__(self, game_id, home_team, away_team, arena, config, ruleset, state=None):
+    def __init__(self, game_id, home_team, away_team, home_agent, away_agent, config, state=None):
         self.game_id = game_id
-        self.arena = arena
+        self.home_agent = home_agent
+        self.away_agent = away_agent
+        self.actor = None
+        self.arena = get_arena(config.arena)
         self.config = config
-        self.ruleset = ruleset
+        self.ruleset = get_rule_set(config.ruleset)
         self.state = state if state is not None else GameState(self, home_team, away_team)
 
     def _squares_moved(self):
@@ -36,28 +39,75 @@ class Game:
     def init(self):
         EndGame(self)
         Pregame(self)
+        if not self.away_agent.human:
+            #game_copy_away = deepcopy(self)
+            game_copy_away = self
+            self.away_agent.new_game(game_copy_away, game_copy_away.state.away_team)
+        if not self.home_agent.human:
+            #game_copy_home = deepcopy(self)
+            game_copy_home = self
+            self.home_agent.new_game(game_copy_home, game_copy_home.state.home_team)
         self.set_available_actions()
-        # self.step(None)
 
     def _is_action_allowed(self, action):
-        print(action.to_simple())
+        #print(action.to_simple())
         if action is None:
             return True
         for action_choice in self.state.available_actions:
             if action.action_type == action_choice.action_type:
+                if type(action.action_type) != ActionType:
+                    print("Illegal action type")
+                    return False
+                if action.player is not None and not isinstance(action.player, Player):
+                    print("Illegal player")
+                    return False
+                if action.pos is not None and not isinstance(action.pos, Square):
+                    print("Illegal position")
+                    return False
+                if action.idx is not None and not isinstance(action.idx, int):
+                    print("Illegal index")
+                    return False
                 if len(action_choice.players) > 0 and action.player not in action_choice.players:
-                    print("Illegal player_id")
+                    print("Illegal player")
                     return False
                 if len(action_choice.positions) > 0 and action.pos not in action_choice.positions:
                     print("Illegal position")
                     return False
-                if len(action_choice.indexes) > 0 and action.idx is not None and action.idx >= 0 and action.idx not in action_choice.indexes:
+                if len(action_choice.indexes) > 0 and action.idx not in action_choice.indexes:
                     print("Illegal index")
                     return False
                 break
         return True
 
+    def run(self):
+
+        while True:
+            if self.state.game_over:
+                #self.home_agent.end_game(deepcopy(self))
+                #self.away_agent.end_game(deepcopy(self))
+                self.home_agent.end_game(self)
+                self.away_agent.end_game(self)
+                return
+            elif self.actor.human:
+                return
+            else:
+                #action = self.actor.act(deepcopy(self))
+                action = self.actor.act(self)
+                self.step(action)
+
     def step(self, action):
+
+        # Ensure player points to player object
+        action.player = self.get_player(action.player.player_id) if action.player is not None else None
+
+        # Update game
+        while True:
+            done = self._one_step(action)
+            if done or not self.config.fast_mode:
+                break
+            action = None
+
+    def _one_step(self, action):
         """
         Executes one step in the game. If in Fast Mode, it executes several steps until action is required.
         :param action: Action from agent. Can be None if no action is required.
@@ -66,7 +116,7 @@ class Game:
 
         # Clear done procs
         while not self.state.stack.is_empty() and self.state.stack.peek().done:
-            print("--Proc={}".format(self.state.stack.peek()))
+            #print("--Proc={}".format(self.state.stack.peek()))
             self.state.stack.pop()
 
         # Is game over
@@ -96,10 +146,10 @@ class Game:
                     return True
 
         # Run proc
-        print("Proc={}".format(proc))
-        print("Action={}".format(action.action_type if action is not None else ""))
+        #print("Proc={}".format(proc))
+        #print("Action={}".format(action.action_type if action is not None else ""))
         proc.done = proc.step(action)
-        print("Done={}".format(proc.done))
+        #print("Done={}".format(proc.done))
 
         # Enable if cloning happens
         for y in range(len(self.state.pitch.board)):
@@ -109,18 +159,19 @@ class Game:
 
         for team in self.state.teams:
             for player in team.players:
-                assert player.position is None or self.state.pitch.board[player.position.y][player.position.x] == player
+                if not (player.position is None or self.state.pitch.board[player.position.y][player.position.x] == player):
+                    raise Exception("Player position violation")
 
         # Remove all finished procs
         while not self.state.stack.is_empty() and self.state.stack.peek().done:
-            print("--Proc={}".format(self.state.stack.peek()))
+            #print("--Proc={}".format(self.state.stack.peek()))
             self.state.stack.pop()
 
         # Is game over
         if self.state.stack.is_empty():
             return False
 
-        print("-Proc={}".format(self.state.stack.peek()))
+        #print("-Proc={}".format(self.state.stack.peek()))
 
         # Update available actions
         self.set_available_actions()
@@ -140,9 +191,15 @@ class Game:
     def set_available_actions(self):
         self.state.available_actions = self.state.stack.peek().available_actions()
         assert(self.state.available_actions is not None)
+        self.actor = None
+        if len(self.state.available_actions) > 0:
+            if self.state.available_actions[0].team == self.state.home_team:
+                self.actor = self.home_agent
+            elif self.state.available_actions[0].team == self.state.away_team:
+                self.actor = self.away_agent
 
     def report(self, outcome):
-        print(outcome.outcome_type.name)
+        #print(outcome.outcome_type.name)
         #print(json.dumps(outcome.to_simple()))
         self.state.reports.append(outcome)
 
