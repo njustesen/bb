@@ -1,9 +1,9 @@
 {
-  "id": "a1",
-  "name": "Gouged Eye",
+  "id": "orc-team-1",
+  "name": "Orc Team 1",
   "race": "Orc",
   "coach" : {
-    "id": 2,
+    "id": 1,
     "name": "Bob"
   },
   "treasury": 0,

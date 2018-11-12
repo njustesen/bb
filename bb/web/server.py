@@ -79,9 +79,8 @@ def step(game_id):
         player_from_id = action['player_from_id'] if 'player_from_id' in action else None
         player_to_id = action['player_to_id'] if 'player_to_id' in action else None
         idx = action['idx'] if 'idx' in action else -1
-        team_id = action['team_id'] if 'team_id' in action else None
         coach_id = action['coach_id'] if 'coach_id' in action else None
-        action = Action(action_type, pos_from=pos_from, pos_to=pos_to, player_from_id=player_from_id, player_to_id=player_to_id, idx=idx, team_id=team_id)
+        action = Action(action_type, pos_from=pos_from, pos_to=pos_to, player_from_id=player_from_id, player_to_id=player_to_id, idx=idx)
         game = api.step(game_id, action)
     except Exception as e:
         print(e)

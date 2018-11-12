@@ -1,4 +1,5 @@
 import random
+import uuid
 from math import sqrt
 from bb.core.util import *
 from bb.core.table import *
@@ -37,6 +38,23 @@ class PlayerState:
             'casualty_type': self.casualty_type.name if self.casualty_type is not None else None,
             'casualty_effect': self.casualty_effect.name if self.casualty_effect is not None else None
         }
+
+
+class Agent:
+
+    def __init__(self, name, human=False):
+        self.agent_id = str(uuid.uuid1())
+        self.name = name
+        self.human = human
+
+    def new_game(self, game, team):
+        raise NotImplementedError("This method must be overridden by non-human subclasses")
+
+    def act(self, game):
+        raise NotImplementedError("This method must be overridden by non-human subclasses")
+
+    def end_game(self):
+        raise NotImplementedError("This method must be overridden by non-human subclasses")
 
 
 class TeamState:
@@ -82,9 +100,7 @@ class TeamState:
 
 class GameState:
 
-    def __init__(self, game):
-        self.home_team_id = game.home_team.team_id
-        self.away_team_id = game.away_team.team_id
+    def __init__(self, game, home_team, away_team):
         self.stack = Stack()
         self.reports = []
         self.half = 1
@@ -94,13 +110,25 @@ class GameState:
         self.kicking_this_drive = None
         self.receiving_this_drive = None
         self.current_team = None
+        self.teams = [home_team, away_team]
+        self.home_team = home_team
+        self.away_team = away_team
+        self.team_by_id = {team.team_id: team for team in self.teams}
+        self.player_by_id = {}
+        self.team_by_player_id = {}
+        for team in self.teams:
+            for player in team.players:
+                self.team_by_player_id[player.player_id] = team
+                self.player_by_id[player.player_id] = player
         self.pitch = Pitch(game)
-        self.dugouts = {team.team_id: Dugout(team) for team in game.teams}
+        self.dugouts = {team.team_id: Dugout(team) for team in self.teams}
         self.weather = WeatherType.NICE
         self.gentle_gust = False
         self.turn_order = []
         self.spectators = 0
         self.active_player = None
+        self.game_over = False
+        self.available_actions = []
 
     def get_dugout(self, team):
         return self.dugouts[team.team_id]
@@ -113,10 +141,15 @@ class GameState:
             'kicking_this_drive': self.kicking_this_drive.team_id if self.kicking_this_drive is not None else None,
             'receiving_this_drive': self.receiving_this_drive.team_id if self.receiving_this_drive is not None else None,
             'pitch': self.pitch.to_simple(),
-            'home_dugout': self.dugouts[self.home_team_id].to_simple(),
-            'away_dugout': self.dugouts[self.away_team_id].to_simple(),
+            'home_dugout': self.dugouts[self.home_team.team_id].to_simple(),
+            'away_dugout': self.dugouts[self.away_team.team_id].to_simple(),
+            'home_team': self.home_team.to_simple(),
+            'away_team': self.away_team.to_simple(),
+            'game_over': self.game_over,
             'weather': self.weather.name,
             'gentle_gust': self.gentle_gust,
+            'available_actions': [action.to_simple() for action in self.available_actions],
+            'reports': [report.to_simple() for report in self.reports],
             'current_team_id': self.current_team.team_id if self.current_team is not None else None,
             'round': self.round,
             'spectators': self.spectators,
@@ -476,15 +509,13 @@ class ActionChoice:
 
 class Action:
 
-    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0,
-                 team_id=None):
+    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0):
         self.action_type = action_type
         self.pos_from = pos_from
         self.pos_to = pos_to
         self.player_from_id = player_from_id
         self.player_to_id = player_to_id
         self.idx = idx
-        self.team_id = team_id
 
     def to_simple(self):
         return {

@@ -269,7 +269,7 @@ class Block(Procedure):
 
             return False
 
-        elif self.waiting_wrestle_defender and action.team_id != self.defender.team.team_id:
+        elif self.waiting_wrestle_defender:
 
             self.wrestle = action.action_type == ActionType.USE_WRESTLE
             self.waiting_wrestle_defender = False
@@ -575,8 +575,8 @@ class CoinToss(Procedure):
     def __init__(self, game):
         super().__init__(game)
         self.away_won_toss = None
-        self.aa = [ActionChoice(ActionType.HEADS, team=self.game.away_team),
-                   ActionChoice(ActionType.TAILS, team=self.game.away_team)]
+        self.aa = [ActionChoice(ActionType.HEADS, team=self.game.state.away_team),
+                   ActionChoice(ActionType.TAILS, team=self.game.state.away_team)]
 
     def step(self, action):
         if self.away_won_toss is None:
@@ -603,24 +603,24 @@ class CoinToss(Procedure):
                 self.game.report(Outcome(OutcomeType.HEADS_LOSS))
 
         self.aa = [ActionChoice(ActionType.KICK,
-                                team=self.game.away_team if self.away_won_toss else self.game.home_team),
+                                team=self.game.state.away_team if self.away_won_toss else self.game.state.home_team),
                    ActionChoice(ActionType.RECEIVE,
-                                team=self.game.away_team if self.away_won_toss else self.game.home_team)]
+                                team=self.game.state.away_team if self.away_won_toss else self.game.state.home_team)]
 
     def _pick(self, action):
         kicking = None
         receiving = None
         if action.action_type == ActionType.KICK:
-            kicking = self.game.away_team if self.away_won_toss else self.game.home_team
-            receiving = self.game.away_team if not self.away_won_toss else self.game.home_team
+            kicking = self.game.state.away_team if self.away_won_toss else self.game.state.home_team
+            receiving = self.game.state.away_team if not self.away_won_toss else self.game.state.home_team
         elif action.action_type == ActionType.RECEIVE:
-            kicking = self.game.away_team if not self.away_won_toss else self.game.home_team
-            receiving = self.game.away_team if self.away_won_toss else self.game.home_team
+            kicking = self.game.state.away_team if not self.away_won_toss else self.game.state.home_team
+            receiving = self.game.state.away_team if self.away_won_toss else self.game.state.home_team
         self.game.state.kicking_first_half = kicking
         self.game.state.kicking_this_drive = kicking
         self.game.state.receiving_first_half = receiving
         self.game.state.receiving_this_drive = receiving
-        if receiving == self.game.home_team:
+        if receiving == self.game.state.home_team:
             self.game.report(Outcome(OutcomeType.HOME_RECEIVE, team=receiving))
         else:
             self.game.report(Outcome(OutcomeType.AWAY_RECEIVE, team=receiving))
@@ -675,7 +675,7 @@ class ResetHalf(Procedure):
         super().__init__(game)
 
     def step(self, action):
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             team.state.rerolls = team.rerolls
             team.state.turn = 0
         return True
@@ -901,7 +901,7 @@ class Fans(Procedure):
         # Fans
         rolls = []
         spectators = []
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             roll = DiceRoll([D6(), D6()], roll_type=RollType.FANS_ROLL)
             rolls.append(roll)
             fans = (roll.get_sum() + team.fan_factor) * 1000
@@ -913,8 +913,8 @@ class Fans(Procedure):
         # FAME
         max_fans = int(np.max(spectators))
         min_fans = int(np.min(spectators))
-        for i in range(len(self.game.teams)):
-            team = self.game.teams[i]
+        for i in range(len(self.game.state.teams)):
+            team = self.game.state.teams[i]
             team_fans = spectators[i]
             fame = 0
             if team_fans == max_fans:
@@ -958,7 +958,7 @@ class GetTheRef(Procedure):
         super().__init__(game)
 
     def step(self, action):
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             team.state.bribes += 1
             self.game.report(Outcome(OutcomeType.EXTRA_BRIBE, team=team))
         return True
@@ -1049,7 +1049,7 @@ class CheeringFans(Procedure):
     def step(self, action):
         rolls = []
         cheers = []
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             roll = DiceRoll([D3()], roll_type=RollType.CHEERING_FANS_ROLL)
             rolls.append(roll)
             roll.modifiers = team.state.fame + team.cheerleaders
@@ -1057,8 +1057,8 @@ class CheeringFans(Procedure):
             self.game.report(Outcome(OutcomeType.CHEERING_FANS_ROLL, team=team, rolls=[roll]))
 
         max_cheers = np.max(cheers)
-        for i in range(len(self.game.teams)):
-            team = self.game.teams[i]
+        for i in range(len(self.game.state.teams)):
+            team = self.game.state.teams[i]
             if max_cheers == cheers[i]:
                 team.state.rerolls += 1
                 self.game.report(Outcome(OutcomeType.EXTRA_REROLL, team=team))
@@ -1082,7 +1082,7 @@ class BrilliantCoaching(Procedure):
 
         rolls = []
         brilliant_coaches = []
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             roll = DiceRoll([D3()], roll_type=RollType.BRILLIANT_COACHING_ROLL)
             rolls.append(roll)
             roll.modifiers = team.state.fame + team.ass_coaches
@@ -1090,8 +1090,8 @@ class BrilliantCoaching(Procedure):
             self.game.report(Outcome(OutcomeType.BRILLIANT_COACHING_ROLL, team=team, rolls=[roll]))
 
         max_cheers = np.max(brilliant_coaches)
-        for i in range(len(self.game.teams)):
-            team = self.game.teams[i]
+        for i in range(len(self.game.state.teams)):
+            team = self.game.state.teams[i]
             if max_cheers == brilliant_coaches[i]:
                 team.state.rerolls += 1
                 self.game.report(Outcome(OutcomeType.EXTRA_REROLL, team=team))
@@ -1117,7 +1117,7 @@ class ThrowARock(Procedure):
 
         rolls = []
         rocks = []
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             roll = DiceRoll([D3()], roll_type=RollType.THROW_A_ROCK_ROLL)
             rolls.append(roll)
             roll.modifiers = team.state.fame
@@ -1125,8 +1125,8 @@ class ThrowARock(Procedure):
             self.game.report(Outcome(OutcomeType.THROW_A_ROCK_ROLL, team=team, rolls=[roll]))
 
         max_cheers = np.max(rocks)
-        for i in range(len(self.game.teams)):
-            team = self.game.teams[i]
+        for i in range(len(self.game.state.teams)):
+            team = self.game.state.teams[i]
             if max_cheers >= rocks[i]:
                 player = np.random.choice(self.game.get_players_on_pitch(team))
                 KnockDown(self.game, player, armor_roll=False)
@@ -1182,8 +1182,6 @@ class KickoffTable(Procedure):
         roll = DiceRoll([D6(), D6()], roll_type=RollType.KICKOFF_ROLL)
         roll.result = roll.get_sum()
 
-        roll.result = 10
-
         if roll.result == 2:  # Get the ref!
             GetTheRef(self.game)
             self.game.report(Outcome(OutcomeType.KICKOFF_GET_THE_REF, rolls=[roll]))
@@ -1216,7 +1214,7 @@ class KickoffTable(Procedure):
             ThrowARock(self.game)
             self.game.report(Outcome(OutcomeType.KICKOFF_THROW_A_ROCK, rolls=[roll]))
         elif roll.result == 12:  # Pitch Invasion
-            for team in self.game.teams:
+            for team in self.game.state.teams:
                 for player in self.game.get_players_on_pitch(team):
                     PitchInvasionRoll(self.game, team, player)
             self.game.report(Outcome(OutcomeType.KICKOFF_PITCH_INVASION, rolls=[roll]))
@@ -2153,7 +2151,7 @@ class StartGame(Procedure):
         super().__init__(game)
 
     def step(self, action):
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             for player in team.players:
                 self.game.get_reserves(team).append(player)
         self.game.report(Outcome(OutcomeType.GAME_STARTED))
@@ -2170,7 +2168,7 @@ class EndGame(Procedure):
 
     def step(self, action):
         self.game.state.team_turn = None
-        self.game.game_over = True
+        self.game.state.game_over = True
         winner = self.game.get_winner()
         if winner is not None:
             self.game.report(Outcome(OutcomeType.END_OF_GAME_WINNER, team=winner))
@@ -2198,7 +2196,7 @@ class Pregame(Procedure):
         Half(self.game, 2)
         Half(self.game, 1)
         self.game.state.half = 1
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             team.state.turn = 0
         return True
 
@@ -2304,8 +2302,6 @@ class Push(Procedure):
         # Use stand firm
         if self.waiting_stand_firm:
             if action.action_type == ActionType.USE_STAND_FIRM:
-                if self.player.team.team_id != action.team_id:
-                    raise IllegalActionExcpetion("Must be the owner of the player to use the stand firm skill.")
                 return True
             else:
                 self.waiting_stand_firm = False
@@ -2478,7 +2474,7 @@ class ClearBoard(Procedure):
 
     def step(self, action):
         self.game.state.pitch.balls.clear()
-        for team in self.game.teams:
+        for team in self.game.state.teams:
             for player in team.players:
                 # If player not in reserves. move it to it
                 if player.position is not None:
@@ -2528,7 +2524,7 @@ class Setup(Procedure):
             for i in range(min(11, len(available_players))):
                 player = available_players[i]
                 y = 3
-                x = 13 if self.team == self.game.away_team else 14
+                x = 13 if self.team == self.game.state.away_team else 14
                 self.step(Action(ActionType.PLACE_PLAYER, player_from_id=player.player_id, pos_from=None,
                                  pos_to=Square(x, y+i)))
                 if i == 11:
@@ -2732,7 +2728,7 @@ class EndTurn(Procedure):
             Setup(self.game, self.game.state.receiving_this_drive)
             Setup(self.game, self.game.state.kicking_this_drive)
 
-            for team in self.game.teams:
+            for team in self.game.state.teams:
                 PreKickOff(self.game, team)
 
             ClearBoard(self.game)
