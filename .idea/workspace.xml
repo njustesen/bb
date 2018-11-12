@@ -5,82 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/bb/ai/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bb/ai/bot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/teams/orc_2.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/bot-example.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/bb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/bb.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/game.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-concat/.npmignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-concat/.travis.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-concat/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-concat/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-concat/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-concat/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-less/.npmignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-less/.travis.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-less/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-less/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-less/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-util/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-util/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-util/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp-util/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/CHANGELOG.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/bin/gulp.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/completion/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/completion/bash" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/completion/fish" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/completion/powershell" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/completion/zsh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/gulp.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/gulp/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/.jshintrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/.npmignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/.travis.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/CHANGELOG.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/CONTRIBUTING.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/Gruntfile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/benchmark/benchmark.less" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/benchmark/less-benchmark.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/bin/lessc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/bower.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/projectFilesBackup/.idea/libraries/sass_stdlib.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/tmp/browser/test-runner-main.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/node_modules/less/tmp/less.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb/core/table.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/table.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/web/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/web/static/js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/js/controllers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/partials/game.list.html" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" beforeDir="false" afterPath="$PROJECT_DIR$/bb/web/static/partials/game.play.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/saves/before td.ffai" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/saves/before td2.ffai" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/saves/crowd dugout.ffai" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/saves/pass interception.ffai" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/saves/push corner.ffai" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/saves/push out.ffai" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/saves/surf.ffai" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/teams/gouged_eye.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/teams/orc_1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/teams/human_team_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/teams/human_2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/teams/reikland_reivers.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/teams/human_1.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -99,7 +29,7 @@
     <SUITE FILE_PATH="coverage/bb$Unittests_for_test_speed_TestLoaders_test_speed.coverage" NAME="Unittests for test_speed.TestLoaders.test_speed Coverage Results" MODIFIED="1527215188092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/bb$procedure.coverage" NAME="procedure Coverage Results" MODIFIED="1527878269844" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/core" />
     <SUITE FILE_PATH="coverage/bb$test_speed.coverage" NAME="test_speed Coverage Results" MODIFIED="1527215870404" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1542037699944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
+    <SUITE FILE_PATH="coverage/bb$server.coverage" NAME="server Coverage Results" MODIFIED="1542041708027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/web" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -112,8 +42,8 @@
       <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="2160" selection-start-line="2160" selection-end-line="2160" />
+            <state relative-caret-position="573">
+              <caret line="2545" selection-start-line="2545" selection-end-line="2545" />
             </state>
           </provider>
         </entry>
@@ -121,8 +51,8 @@
       <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="672">
-              <caret line="67" selection-start-line="67" selection-end-line="67" />
+            <state relative-caret-position="292">
+              <caret line="50" selection-start-line="50" selection-end-line="50" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -142,8 +72,8 @@
       <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="537">
-              <caret line="73" selection-start-line="73" selection-end-line="73" />
+            <state relative-caret-position="682">
+              <caret line="90" column="22" lean-forward="true" selection-start-line="90" selection-start-column="22" selection-end-line="90" selection-end-column="22" />
               <folding>
                 <element signature="e#0#59#0" expanded="true" />
               </folding>
@@ -154,8 +84,8 @@
       <file leaf-file-name="api.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="62">
-              <caret line="25" selection-start-line="25" selection-end-line="25" />
+            <state relative-caret-position="382">
+              <caret line="29" selection-start-line="29" selection-end-line="29" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -166,7 +96,7 @@
       <file leaf-file-name="host.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/host.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
+            <state relative-caret-position="190">
               <caret line="18" selection-start-line="18" selection-end-line="18" />
             </state>
           </provider>
@@ -175,8 +105,8 @@
       <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="773">
-              <caret line="151" selection-start-line="151" selection-end-line="151" />
+            <state relative-caret-position="547">
+              <caret line="285" selection-start-line="285" selection-end-line="285" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -184,25 +114,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.create.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.create.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="77" selection-start-line="25" selection-start-column="77" selection-end-line="25" selection-end-column="77" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="controllers.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="287">
-              <caret line="857" column="67" selection-start-line="857" selection-start-column="67" selection-end-line="857" selection-end-column="67" />
+            <state relative-caret-position="422">
+              <caret line="404" column="66" selection-start-line="404" selection-start-column="66" selection-end-line="404" selection-end-column="66" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.play.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="game.play.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="287">
@@ -232,25 +153,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>can_reroll</find>
-      <find>instance</find>
-      <find>$scope.main_action.team.team_id</find>
-      <find>currentProc</find>
-      <find>Setup</find>
-      <find>reroll</find>
-      <find>KickoffTable</find>
-      <find>GameState</find>
-      <find>is_touchdown</find>
-      <find>&quot;id&quot; : &quot;c</find>
-      <find>&quot;id&quot; : &quot;a</find>
-      <find>&quot;id&quot; : &quot;b</find>
-      <find>self.game.away_team</find>
-      <find>self.game.teams</find>
-      <find>.available_actions</find>
-      <find>self.game.game_over</find>
-      <find>self.game.turn_order</find>
-      <find>uuid</find>
-      <find>action.player_to_id</find>
       <find>action.team_id</find>
       <find>self.game.</find>
       <find>player_to_id</find>
@@ -259,9 +161,28 @@
       <find>.reports</find>
       <find>game.avail</find>
       <find>game.available_actions</find>
-      <find>let time = $scope.showReport($scope.game.state.reports[$scope.game.st</find>
-      <find>Action</find>
+      <find />
       <find>self.repo</find>
+      <find>turnmarker</find>
+      <find>ball_position</find>
+      <find>balls.</find>
+      <find>balls</find>
+      <find>ball</find>
+      <find>action.pos_to</find>
+      <find>action.player_id</find>
+      <find>action.player</find>
+      <find>Action(</find>
+      <find>PLACE_BALL</find>
+      <find>PLACE_PLAYER</find>
+      <find>$scope.getActionType</find>
+      <find>self.squares</find>
+      <find>Push(</find>
+      <find>step</find>
+      <find>get_player_at</find>
+      <find>Block(</find>
+      <find>Action</find>
+      <find>Setup(</find>
+      <find>avaial</find>
     </findStrings>
     <replaceStrings>
       <replace>Pitch</replace>
@@ -271,7 +192,7 @@
       <replace>player=self.player</replace>
       <replace>self.ball.position</replace>
       <replace>player.team</replace>
-      <replace>self.game.state.weather =</replace>
+      <replace />
       <replace>game.away_team.state</replace>
       <replace>$scope.getPlayer(player_id).state</replace>
       <replace>role</replace>
@@ -282,14 +203,15 @@
       <replace>.is_carried</replace>
       <replace>h</replace>
       <replace>state.current_team</replace>
-      <replace>&quot;id&quot; : &quot;d</replace>
-      <replace>&quot;id&quot; : &quot;c</replace>
-      <replace>&quot;id&quot; : &quot;b</replace>
+      <replace />
+      <replace />
+      <replace />
       <replace>self.game.state.away_team</replace>
       <replace>self.game.state.teams</replace>
       <replace>game.state.available_actions</replace>
       <replace>game.state.reports</replace>
       <replace>self.game.state.game_over</replace>
+      <replace>action.pos</replace>
       <replace>self.state.available_actions</replace>
     </replaceStrings>
   </component>
@@ -324,7 +246,6 @@
         <option value="$PROJECT_DIR$/bb/web/static/dist/js/pybowl.js" />
         <option value="$PROJECT_DIR$/data/config/bb.json" />
         <option value="$PROJECT_DIR$/data/arenas/ff_pitch.txt" />
-        <option value="$PROJECT_DIR$/bb/core/table.py" />
         <option value="$PROJECT_DIR$/bb/core/load.py" />
         <option value="$PROJECT_DIR$/bb/core/host.py" />
         <option value="$PROJECT_DIR$/bb/web/static/js/services.js" />
@@ -341,15 +262,16 @@
         <option value="$PROJECT_DIR$/bb/__init__.py" />
         <option value="$PROJECT_DIR$/bb/ai/bot.py" />
         <option value="$PROJECT_DIR$/examples/bot-example.py" />
-        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
-        <option value="$PROJECT_DIR$/bb/core/api.py" />
         <option value="$PROJECT_DIR$/data/teams/orc_1.json" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.list.html" />
-        <option value="$PROJECT_DIR$/bb/core/model.py" />
-        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
-        <option value="$PROJECT_DIR$/bb/core/game.py" />
-        <option value="$PROJECT_DIR$/bb/web/server.py" />
         <option value="$PROJECT_DIR$/bb/web/static/partials/game.play.html" />
+        <option value="$PROJECT_DIR$/bb/core/table.py" />
+        <option value="$PROJECT_DIR$/bb/core/model.py" />
+        <option value="$PROJECT_DIR$/bb/core/api.py" />
+        <option value="$PROJECT_DIR$/bb/web/server.py" />
+        <option value="$PROJECT_DIR$/bb/core/procedure.py" />
+        <option value="$PROJECT_DIR$/bb/core/game.py" />
+        <option value="$PROJECT_DIR$/bb/web/static/js/controllers.js" />
       </list>
     </option>
   </component>
@@ -603,8 +525,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.server" />
         <item itemvalue="Gulp.js.default" />
+        <item itemvalue="Python.server" />
         <item itemvalue="Python.table" />
         <item itemvalue="Python.procedure" />
         <item itemvalue="Python.test_speed" />
@@ -676,12 +598,13 @@
       <window_info anchor="bottom" id="Version Control" order="2" weight="0.25151515" />
       <window_info anchor="bottom" id="Python Console" order="1" weight="0.32814023" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32876712" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.7610921" visible="true" weight="0.10206513" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.7610921" visible="true" weight="0.12708499" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="bottom" id="Find" order="5" weight="0.32651514" />
       <window_info anchor="right" id="SciView" order="3" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.24970344" />
-      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.2810606" />
+      <window_info anchor="bottom" id="Debug" order="7" visible="true" weight="0.2810606" />
       <window_info id="Favorites" order="0" sideWeight="0.23890784" side_tool="true" weight="0.18803419" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
@@ -690,7 +613,6 @@
       <window_info anchor="bottom" id="Inspection Results" order="12" weight="0.32903227" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="5" weight="0.3268817" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -773,6 +695,11 @@
           <line>136</line>
           <option name="timeStamp" value="529" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bb/core/game.py</url>
+          <line>46</line>
+          <option name="timeStamp" value="565" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -784,7 +711,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="536" />
+      <option name="time" value="566" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
@@ -809,12 +736,22 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
+        <expression-string>self.get_reserves(player.team)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string />
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>self.game.get_receiving_team(self.half)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>Catch.success[interceptor.get_ag()] - modifier</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -824,7 +761,7 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>Catch.success[interceptor.get_ag()] + modifier</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -840,16 +777,6 @@
       </expression>
       <expression>
         <expression-string>race_name.cdata</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>race_name</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>piece is Player</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -1088,13 +1015,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/table.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/load.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2520">
@@ -1160,71 +1080,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="857" column="67" selection-start-line="857" selection-start-column="67" selection-end-line="857" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="773">
-          <caret line="151" selection-start-line="151" selection-end-line="151" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/util.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="669">
           <caret line="83" selection-start-line="83" selection-end-line="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="2160" selection-start-line="2160" selection-end-line="2160" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/host.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="18" selection-start-line="18" selection-end-line="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="537">
-          <caret line="73" selection-start-line="73" selection-end-line="73" />
-          <folding>
-            <element signature="e#0#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="67" selection-start-line="67" selection-end-line="67" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1241,6 +1100,74 @@
             <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#0;n#div#0;n#div#3;n#div#0;n#div#2;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#1;n#div#0;n#div#1;n#div#1;n#div#0;n#div#3;n#div#0;n#div#2;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/table.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="827">
+          <caret line="476" lean-forward="true" selection-start-line="476" selection-end-line="476" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/host.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="29" selection-start-line="29" selection-end-line="29" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="682">
+          <caret line="90" column="22" lean-forward="true" selection-start-line="90" selection-start-column="22" selection-end-line="90" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="547">
+          <caret line="285" selection-start-line="285" selection-end-line="285" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="573">
+          <caret line="2545" selection-start-line="2545" selection-end-line="2545" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/game.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="50" selection-start-line="50" selection-end-line="50" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="422">
+          <caret line="404" column="66" selection-start-line="404" selection-start-column="66" selection-end-line="404" selection-end-column="66" />
         </state>
       </provider>
     </entry>

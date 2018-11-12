@@ -509,18 +509,16 @@ class ActionChoice:
 
 class Action:
 
-    def __init__(self, action_type, pos_from=None, pos_to=None, player_from_id=None, player_to_id=None, idx=0):
+    def __init__(self, action_type, pos=None, player=None, idx=0):
         self.action_type = action_type
-        self.pos_from = pos_from
-        self.pos_to = pos_to
-        self.player_from_id = player_from_id
-        self.player_to_id = player_to_id
+        self.pos = pos
+        self.player = player
         self.idx = idx
 
     def to_simple(self):
         return {
             'action_type': self.action_type.name,
-            'position': self.pos_from.to_simple() if self.pos_from is not None else None
+            'position': self.pos.to_simple() if self.pos is not None else None
         }
 
 

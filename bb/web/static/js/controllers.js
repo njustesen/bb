@@ -402,7 +402,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                             for (let x = 0; x < $scope.local_state.away_dugout[y].length; x++){
                                 if (y <= 7 && $scope.local_state.away_dugout[y][x].player == null){
                                     $scope.local_state.away_dugout[y][x].available = true;
-                                    $scope.local_state.home_dugout[y][x].action_type = $scope.main_action.action_type;
+                                    $scope.local_state.away_dugout[y][x].action_type = $scope.main_action.action_type;
                                 }
                             }
                         }
@@ -671,17 +671,23 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 }
             }
             // Place ball
-            $scope.local_state.board[square.y][square.x].ball = {position: square, on_ground: false, is_carried: false};
+            ball = {position: square, on_ground: false, is_carried: false};
+            $scope.game.state.balls[0] = ball;
+            $scope.local_state.board[square.y][square.x].ball = ball;
         };
 
         $scope.create_action = function create_action(square){
+            let action_type = $scope.getActionType(square);
+            let player_id = $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id;
+            //if (action_type === "PLACE_PLAYER"){
+            //    player_id = square.player == null ? null : square.player.player_id;
+            //}
             return {
-                'player_from_id': $scope.selectedPlayer() == null ? null : $scope.selectedPlayer().player_id,
-                'player_to_id': square.player == null ? null : square.player.player_id,
-                'pos_from': $scope.selected_square != null && $scope.selected_square.area === 'pitch' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
-                'pos_to': square.area === 'pitch' || square.area === 'crowd' ? {'x': square.x, 'y': square.y} : null,
+                'player_id': player_id,
+                // 'pos_from': $scope.selected_square != null && $scope.selected_square.area === 'pitch' ? {'x': $scope.selected_square.x, 'y': $scope.selected_square.y} : null,
+                'pos': square.area === 'pitch' || square.area === 'crowd' ? {'x': square.x, 'y': square.y} : null,
                 'idx': -1,
-                'action_type': $scope.getActionType(square)
+                'action_type': action_type
             };
         };
 
@@ -866,11 +872,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.pickActionType = function pickActionType(action){
             if (action.action_type === "PLACE_BALL" && $scope.local_state.balls.length > 0){
                 let a = $scope.newAction(action.action_type);
-                a.pos_to = $scope.local_state.ball_position;
+                a.pos = $scope.local_state.balls[0].position;
                 $scope.act(a);
             } else if (action.player_ids.length > 0 && $scope.selectedPlayer != null && action.player_ids.indexOf($scope.selectedPlayer().player_id) >= 0){
                 let a = $scope.newAction(action.action_type);
-                a.player_from_id = $scope.selectedPlayer().player_id;
+                a.player_id = $scope.selectedPlayer().player_id;
                 $scope.act(a);
             } else if (action.positions.length === 0){
                 let a = $scope.newAction(action.action_type);

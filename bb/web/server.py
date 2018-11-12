@@ -74,13 +74,13 @@ def step(game_id):
     try:
         action = json.loads(request.data)['action']
         action_type = parse_enum(ActionType, action['action_type'])
-        pos_from = Square(action['pos_from']['x'], action['pos_from']['y']) if 'pos_from' in action and action['pos_from'] is not None else None
-        pos_to = Square(action['pos_to']['x'], action['pos_to']['y']) if 'pos_to' in action and action['pos_to'] is not None else None
-        player_from_id = action['player_from_id'] if 'player_from_id' in action else None
-        player_to_id = action['player_to_id'] if 'player_to_id' in action else None
+        pos = Square(action['pos']['x'], action['pos']['y']) if 'pos' in action and action['pos'] is not None else None
+        player_id = action['player_id'] if 'player_id' in action else None
         idx = action['idx'] if 'idx' in action else -1
-        coach_id = action['coach_id'] if 'coach_id' in action else None
-        action = Action(action_type, pos_from=pos_from, pos_to=pos_to, player_from_id=player_from_id, player_to_id=player_to_id, idx=idx)
+        agent_id = action['agent_id'] if 'agent_id' in action else None
+        game = api.get_game(game_id)
+        player = game.get_player(player_id) if player_id is not None else None
+        action = Action(action_type, pos=pos, player=player, idx=idx)
         game = api.step(game_id, action)
     except Exception as e:
         print(e)

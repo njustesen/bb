@@ -39,16 +39,16 @@ class Game:
         self.set_available_actions()
         # self.step(None)
 
-    def _action_allowed(self, action):
+    def _is_action_allowed(self, action):
         print(action.to_simple())
         if action is None:
             return True
         for action_choice in self.state.available_actions:
             if action.action_type == action_choice.action_type:
-                if len(action_choice.players) > 0 and self.get_player(action.player_from_id) not in action_choice.players:
+                if len(action_choice.players) > 0 and action.player not in action_choice.players:
                     print("Illegal player_id")
                     return False
-                if len(action_choice.positions) > 0 and action.pos_to not in action_choice.positions:
+                if len(action_choice.positions) > 0 and action.pos not in action_choice.positions:
                     print("Illegal position")
                     return False
                 if len(action_choice.indexes) > 0 and action.idx is not None and action.idx >= 0 and action.idx not in action_choice.indexes:
@@ -91,7 +91,7 @@ class Game:
                     return True
             else:
                 # Only allow
-                if not self._action_allowed(action):
+                if not self._is_action_allowed(action):
                     print("Action not allowed! ", action.action_type)
                     return True
 
@@ -130,7 +130,7 @@ class Game:
 
         # End player turn if only action available
         if len(self.state.available_actions) == 1 and self.state.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
-            self.step(Action(ActionType.END_PLAYER_TURN, player_from_id=self.state.available_actions[0].players[0].player_id))
+            self.step(Action(ActionType.END_PLAYER_TURN, player=self.state.available_actions[0].players[0]))
             # We can continue without user input
             return False
 

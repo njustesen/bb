@@ -819,9 +819,8 @@ class Interception(Procedure):
     def step(self, action):
 
         if action.action_type == ActionType.INTERCEPTION:
-            interceptor = self.game.get_player(action.player_from_id)
-            self.ball.move_to(interceptor.position)
-            Catch(self.game, interceptor, self.ball, interception=True)
+            self.ball.move_to(action.player.position)
+            Catch(self.game, action.player, self.ball, interception=True)
 
         return True
 
@@ -842,11 +841,10 @@ class Touchback(Procedure):
         self.ball = ball
 
     def step(self, action):
-        player = self.game.get_player(action.player_from_id)
-        self.ball.move_to(player.position)
+        self.ball.move_to(action.player.position)
         self.ball.is_carried = True
         self.ball.on_ground = True
-        self.game.report(Outcome(OutcomeType.TOUCHBACK_BALL_PLACED, player=player, pos=player.position))
+        self.game.report(Outcome(OutcomeType.TOUCHBACK_BALL_PLACED, player=action.player, pos=action.player.position))
         return True
 
     def available_actions(self):
@@ -1020,8 +1018,8 @@ class HighKick(Procedure):
 
     def step(self, action):
         if action.action_type == ActionType.PLACE_PLAYER:
-            self.game.move_player(self.game.get_player(action.player_from_id), action.pos_to)
-            self.game.report(Outcome(OutcomeType.PLAYER_PLACED_HIGH_KICK, pos=action.pos_to, team=self.receiving_team))
+            self.game.move_player(action.player, action.pos)
+            self.game.report(Outcome(OutcomeType.PLAYER_PLACED_HIGH_KICK, pos=action.pos, team=self.receiving_team))
         elif action.action_type == ActionType.END_SETUP:
             self.game.report(Outcome(OutcomeType.SETUP_DONE, team=self.receiving_team))
         return True
@@ -1852,8 +1850,8 @@ class PlaceBall(Procedure):
     def step(self, action):
         self.game.state.pitch.balls.append(self.ball)
         self.ball.on_ground = False
-        self.ball.move_to(action.pos_to)
-        self.game.report(Outcome(OutcomeType.BALL_PLACED, pos=action.pos_to, team=self.game.get_kicking_team()))
+        self.ball.move_to(action.pos)
+        self.game.report(Outcome(OutcomeType.BALL_PLACED, pos=action.pos, team=self.game.get_kicking_team()))
         return True
 
     def available_actions(self):
@@ -1903,7 +1901,7 @@ class PlayerAction(Procedure):
             return True
 
         # Action attributes
-        player_to = self.game.get_player(action.player_to_id) if action.player_to_id is not None else None
+        player_to = self.game.get_player_at(action.pos)
 
         if action.action_type == ActionType.STAND_UP:
 
@@ -1931,8 +1929,8 @@ class PlayerAction(Procedure):
                     dodge = tackle_zones_from > 0
 
             # Add proc
-            Move(self.game, self.player, action.pos_to, gfi, dodge)
-            self.squares.append(action.pos_to)
+            Move(self.game, self.player, action.pos, gfi, dodge)
+            self.squares.append(action.pos)
 
             self.player.state.moves += 1
 
@@ -1960,7 +1958,7 @@ class PlayerAction(Procedure):
                 gfi_allowed = 3 if self.player_from.has_skill(Skill.SPRINT) else 2
                 if player_state_from.moves + move_needed <= self.player_from.get_ma() + gfi_allowed:
                     gfi_2 = player_state_from.moves + move_needed > self.player_from.get_ma()
-                    Block(self.game, self.team, self.player_from, player_to, action.pos_to, gfi=gfi)
+                    Block(self.game, self.team, self.player_from, player_to, action.pos, gfi=gfi)
                     gfi = gfi_2  # Switch gfi
                 # Use movement
                 player_state_from.moves += move_needed
@@ -1989,17 +1987,17 @@ class PlayerAction(Procedure):
         elif action.action_type == ActionType.HANDOFF:
 
             EndPlayerTurn(self.game, self.player)
-            Handoff(self.game, self.game.get_ball_at(self.player.position), self.player, action.pos_to,
-                    self.game.get_player_at(action.pos_to))
+            Handoff(self.game, self.game.get_ball_at(self.player.position), self.player, action.pos,
+                    self.game.get_player_at(action.pos))
 
             return True
 
         elif action.action_type == ActionType.PASS:
 
             # Check distance
-            pass_distance = self.game.pass_distance(self.player, action.pos_to)
+            pass_distance = self.game.pass_distance(self.player, action.pos)
             EndPlayerTurn(self.game, self.player)
-            PassAction(self.game, self.game.get_ball_at(self.player.position), self.player, player_to, action.pos_to,
+            PassAction(self.game, self.game.get_ball_at(self.player.position), self.player, player_to, action.pos,
                        pass_distance)
             self.turn.pass_available = False
 
@@ -2238,7 +2236,7 @@ class FollowUp(Procedure):
 
     def step(self, action):
 
-        if action.pos_to == self.pos_to:
+        if action.pos == self.pos_to:
             self.game.move_player(self.player, self.pos_to)
             self.game.report(Outcome(OutcomeType.FOLLOW_UP, pos=self.pos_to, player=self.player))
 
@@ -2321,23 +2319,23 @@ class Push(Procedure):
         if action.action_type == ActionType.SELECT_SQUARE:
 
             # Push to crowd?
-            self.crowd = self.game.is_out_of_bounds(action.pos_to)
+            self.crowd = self.game.is_out_of_bounds(action.pos)
 
             # Report
             if self.crowd:
                 self.game.report(Outcome(OutcomeType.PUSHED_INTO_CROWD, player=self.player))
             else:
-                self.game.report(Outcome(OutcomeType.PUSHED, player=self.player, pos=action.pos_to))
+                self.game.report(Outcome(OutcomeType.PUSHED, player=self.player, pos=action.pos))
 
             # Follow up - wait if push is delayed
-            player_at = self.game.get_player_at(action.pos_to)
+            player_at = self.game.get_player_at(action.pos)
 
             # Move players in next step - after chaining
             self.waiting_for_move = True
             self.squares = None
 
             # Save positions before chaining
-            self.push_to = Square(action.pos_to.x, action.pos_to.y)
+            self.push_to = Square(action.pos.x, action.pos.y)
             self.follow_to = Square(self.player.position.x, self.player.position.y)
 
             # Chain push
@@ -2525,20 +2523,16 @@ class Setup(Procedure):
                 player = available_players[i]
                 y = 3
                 x = 13 if self.team == self.game.state.away_team else 14
-                self.step(Action(ActionType.PLACE_PLAYER, player_from_id=player.player_id, pos_from=None,
-                                 pos_to=Square(x, y+i)))
-                if i == 11:
-                    self.step(Action(ActionType.END_SETUP))
-                    break
+                self.step(Action(ActionType.PLACE_PLAYER, player=player, pos=Square(x, y + i)))
+            self.step(Action(ActionType.END_SETUP))
             return True
 
         if action.action_type == ActionType.END_SETUP:
             if not self.game.is_setup_legal(self.team, max_players=self.game.config.pitch_max,
-                                                        min_players=self.game.config.pitch_min):
+                                            min_players=self.game.config.pitch_min):
                 self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team=self.team))
                 return False
-            elif not self.game.is_setup_legal_scrimmage(self.team,
-                                                                    min_players=self.game.config.scrimmage_max):
+            elif not self.game.is_setup_legal_scrimmage(self.team, min_players=self.game.config.scrimmage_max):
                 self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_SCRIMMAGE, team=self.team))
                 return False
             elif not self.game.is_setup_legal_wings(self.team, max_players=self.game.config.wing_max):
@@ -2548,21 +2542,17 @@ class Setup(Procedure):
             return True
 
         if action.action_type == ActionType.PLACE_PLAYER:
-            player = self.game.get_player(action.player_from_id)
-            if action.pos_from is None and action.pos_to is None:
-                # Move player from reserve to reserve - sure
-                return False
-            if action.pos_to is None:
-                self.game.pitch_to_reserves(player)
-            elif action.pos_from is None:
-                self.game.reserves_to_pitch(player, action.pos_to)
+            if action.pos is None:
+                self.game.pitch_to_reserves(action.player)
+            elif action.player.position is None:
+                self.game.reserves_to_pitch(action.player, action.pos)
             else:
-                player_at = self.game.get_player_at(action.pos_to)
+                player_at = self.game.get_player_at(action.pos)
                 if player_at is not None:
-                    self.game.swap(player, player_at)
+                    self.game.swap(action.player, player_at)
                 else:
-                    self.game.move_player(player, action.pos_to)
-            self.game.report(Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos_to, player=player))
+                    self.game.move_player(action.player, action.pos)
+            self.game.report(Outcome(OutcomeType.PLAYER_PLACED, pos=action.pos, player=action.player))
             return False
 
     def available_actions(self):
@@ -2790,38 +2780,37 @@ class Turn(Procedure):
             return True
 
         # Start movement action
-        player = self.game.get_player(action.player_from_id)
         if action.action_type == ActionType.START_MOVE:
-            self.start_player_action(OutcomeType.MOVE_ACTION_STARTED, PlayerActionType.MOVE, player)
+            self.start_player_action(OutcomeType.MOVE_ACTION_STARTED, PlayerActionType.MOVE, action.player)
             return False
 
         # Start blitz action
         if action.action_type == ActionType.START_BLITZ:
             self.blitz_available = False
-            self.start_player_action(OutcomeType.BLITZ_ACTION_STARTED, PlayerActionType.BLITZ, player)
+            self.start_player_action(OutcomeType.BLITZ_ACTION_STARTED, PlayerActionType.BLITZ, action.player)
             return False
 
         # Start foul action
         if action.action_type == ActionType.START_FOUL:
             self.foul_available = False
-            self.start_player_action(OutcomeType.FOUL_ACTION_STARTED, PlayerActionType.FOUL, player)
+            self.start_player_action(OutcomeType.FOUL_ACTION_STARTED, PlayerActionType.FOUL, action.player)
             return False
 
         # Start block action
         if action.action_type == ActionType.START_BLOCK:
-            self.start_player_action(OutcomeType.BLOCK_ACTION_STARTED, PlayerActionType.BLOCK, player)
+            self.start_player_action(OutcomeType.BLOCK_ACTION_STARTED, PlayerActionType.BLOCK, action.player)
             return False
 
         # Start pass action
         if action.action_type == ActionType.START_PASS:
             self.pass_available = False
-            self.start_player_action(OutcomeType.PASS_ACTION_STARTED, PlayerActionType.PASS, player)
+            self.start_player_action(OutcomeType.PASS_ACTION_STARTED, PlayerActionType.PASS, action.player)
             return False
 
         # Start handoff action
         if action.action_type == ActionType.START_HANDOFF:
             self.handoff_available = False
-            self.start_player_action(OutcomeType.HANDOFF_ACTION_STARTED, PlayerActionType.HANDOFF, player)
+            self.start_player_action(OutcomeType.HANDOFF_ACTION_STARTED, PlayerActionType.HANDOFF, action.player)
             return False
 
     def available_actions(self):
