@@ -19,6 +19,7 @@ class Configuration:
         self.rounds = 8
         self.kick_off_table = True
         self.fast_mode = False
+        self.debug_mode = False
 
 
 class PlayerState:

@@ -154,7 +154,7 @@ class Armor(Procedure):
                 if not self.inflictor.has_skill(Skill.SNEAKY_GIT) or armor_broken:
                     self.game.report(Outcome(OutcomeType.PLAYER_EJECTED, player=self.inflictor))
                     Turnover(self.game)
-                    Ejection(self.game, self.player)
+                    Ejection(self.game, self.inflictor)
                     ejected = True
 
         # Break armor - roll injury
@@ -636,7 +636,6 @@ class Ejection(Procedure):
         self.player = player
 
     def step(self, action):
-
         self.game.pitch_to_dungeon(self.player)
         return True
 
@@ -1278,7 +1277,6 @@ class KnockOut(Procedure):
         self.game = game
         self.player = player
         self.inflictor = inflictor
-        self.inflictor_id = inflictor.player_id if inflictor is not None else None
         self.roll = roll
 
     def step(self, action):
@@ -1343,7 +1341,6 @@ class GFI(Procedure):
         self.player = player
         self.pos = pos
         self.awaiting_reroll = False
-        self.awaiting_sure_feet = False
         self.sure_feet_used = False
         self.reroll_used = False
         self.rolled = False
@@ -1373,9 +1370,9 @@ class GFI(Procedure):
                 # Check if sure feet
                 if self.player.has_skill(Skill.SURE_FEET) and not self.sure_feet_used:
                     self.sure_feet_used = True
-                    self.awaiting_sure_feet = True
+                    self.rolled = False
                     self.game.report(Outcome(OutcomeType.SKILL_USED, player=self.player, skill=Skill.SURE_FEET))
-                    return False
+                    return self.step(None)
 
                 # Check if reroll available
                 if self.game.can_use_reroll(self.player.team) and not self.sure_feet_used:
@@ -1386,18 +1383,6 @@ class GFI(Procedure):
                 if not self.player.position == self.pos:
                     self.game.move_player(self.player, self.pos)
                 KnockDown(self.game, self.player, self.pos, turnover=True)
-                return True
-
-        # If sure feet used
-        if self.awaiting_sure_feet:
-            if action.action_type == ActionType.USE_SKILL:
-                self.sure_feet_used = True
-                self.rolled = False
-                self.step(None)
-            else:
-                # Player trips
-                self.game.move_player(self.player, self.pos)
-                KnockDown(self.game, self.player, turnover=True)
                 return True
 
         # If reroll used
@@ -1414,6 +1399,10 @@ class GFI(Procedure):
                 return True
 
     def available_actions(self):
+        if self.awaiting_reroll:
+            return [ActionChoice(ActionType.USE_REROLL, team=self.game.state.current_team),
+                    ActionChoice(ActionType.DONT_USE_REROLL, team=self.game.state.current_team)]
+
         return []
 
 
@@ -2426,7 +2415,7 @@ class Scatter(Procedure):
                 else:
                     # Throw in
                     if self.game.is_out_of_bounds(self.ball.position):
-                        ThrowIn(self.game, self.ball.position, Square(self.ball.position.x-x, self.ball.position.y-y))
+                        ThrowIn(self.game, self.ball, Square(self.ball.position.x-x, self.ball.position.y-y))
                         self.game.report(Outcome(OutcomeType.BALL_SCATTER, rolls=rolls))
                         self.game.report(Outcome(OutcomeType.BALL_OUT_OF_BOUNDS,
                                                  pos=self.ball.position))

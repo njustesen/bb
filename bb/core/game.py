@@ -5,14 +5,14 @@ from copy import deepcopy, copy
 
 class Game:
 
-    def __init__(self, game_id, home_team, away_team, home_agent, away_agent, config, state=None):
+    def __init__(self, game_id, home_team, away_team, home_agent, away_agent, config, arena=None, ruleset=None, state=None):
         self.game_id = game_id
         self.home_agent = home_agent
         self.away_agent = away_agent
         self.actor = None
-        self.arena = get_arena(config.arena)
+        self.arena = get_arena(config.arena) if arena is None else arena
         self.config = config
-        self.ruleset = get_rule_set(config.ruleset)
+        self.ruleset = get_rule_set(config.ruleset) if ruleset is None else ruleset
         self.state = state if state is not None else GameState(self, home_team, away_team)
 
     def _squares_moved(self):
@@ -99,11 +99,14 @@ class Game:
 
         # Ensure player points to player object
         action.player = self.get_player(action.player.player_id) if action.player is not None else None
+        action.pos = Square(action.pos.x, action.pos.y) if action.pos is not None else None
 
         # Update game
         while True:
             done = self._one_step(action)
             if done or not self.config.fast_mode:
+                break
+            if self.state.game_over:
                 break
             action = None
 
@@ -142,36 +145,41 @@ class Game:
             else:
                 # Only allow
                 if not self._is_action_allowed(action):
-                    print("Action not allowed! ", action.action_type)
+                    #print("Action not allowed! ", action.action_type)
                     return True
 
         # Run proc
-        #print("Proc={}".format(proc))
-        #print("Action={}".format(action.action_type if action is not None else ""))
+        if self.config.debug_mode:
+            print("Proc={}".format(proc))
+            print("Action={}".format(action.action_type if action is not None else ""))
         proc.done = proc.step(action)
-        #print("Done={}".format(proc.done))
+        if self.config.debug_mode:
+            print("Done={}".format(proc.done))
 
         # Enable if cloning happens
-        for y in range(len(self.state.pitch.board)):
-            for x in range(len(self.state.pitch.board)):
-                assert self.state.pitch.board[y][x] is None or \
-                    (self.state.pitch.board[y][x].position.x == x and self.state.pitch.board[y][x].position.y == y)
+        if self.config.debug_mode:
+            for y in range(len(self.state.pitch.board)):
+                for x in range(len(self.state.pitch.board)):
+                    assert self.state.pitch.board[y][x] is None or \
+                        (self.state.pitch.board[y][x].position.x == x and self.state.pitch.board[y][x].position.y == y)
 
-        for team in self.state.teams:
-            for player in team.players:
-                if not (player.position is None or self.state.pitch.board[player.position.y][player.position.x] == player):
-                    raise Exception("Player position violation")
+            for team in self.state.teams:
+                for player in team.players:
+                    if not (player.position is None or self.state.pitch.board[player.position.y][player.position.x] == player):
+                        raise Exception("Player position violation")
 
         # Remove all finished procs
         while not self.state.stack.is_empty() and self.state.stack.peek().done:
-            #print("--Proc={}".format(self.state.stack.peek()))
+            if self.config.debug_mode:
+                print("--Proc={}".format(self.state.stack.peek()))
             self.state.stack.pop()
 
         # Is game over
         if self.state.stack.is_empty():
             return False
 
-        #print("-Proc={}".format(self.state.stack.peek()))
+        if self.config.debug_mode:
+            print("-Proc={}".format(self.state.stack.peek()))
 
         # Update available actions
         self.set_available_actions()
