@@ -29,6 +29,7 @@ class MyRandomBot(Agent):
 
     def end_game(self, game):
         winner = game.get_winner()
+        print("Casualties: ", game.num_casualties())
         if winner is None:
             print("It's a draw")
         elif winner == self.my_team:
@@ -44,18 +45,19 @@ if __name__ == "__main__":
     config = get_config("ff.json")
     ruleset = get_rule_set(config.ruleset)
     arena = get_arena(config.arena)
-    home = get_team_by_id("human-team-1", ruleset)
-    away = get_team_by_id("human-team-2", ruleset)
+    home = get_team_by_id("human-1", ruleset)
+    away = get_team_by_id("human-2", ruleset)
 
-    for i in range(100):
+    # Play 10000 games
+    for i in range(10000):
         away_agent = MyRandomBot("Random Bot 1")
         home_agent = MyRandomBot("Random Bot 2")
-        game = Game(i, deepcopy(home), deepcopy(away), home_agent, away_agent, config, arena=arena, ruleset=ruleset)
+        game = Game(i, home, away, home_agent, away_agent, config, arena=arena, ruleset=ruleset)
         game.config.fast_mode = True
 
         print("Starting game", i)
         start = time.time()
         game.init()
-        game.run()
+        game.step()
         end = time.time()
         print(end - start)

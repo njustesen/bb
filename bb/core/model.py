@@ -181,13 +181,20 @@ class Ball:
 
 class Pitch:
 
+    range = [-1, 0, 1]
+
     def __init__(self, game):
         self.balls = []
         self.board = []
+        self.squares = []
         for y in range(len(game.arena.board)):
             self.board.append([])
+            self.squares.append([])
             for x in range(len(game.arena.board[y])):
                 self.board[y].append(None)
+                self.squares[y].append(Square(y, x))
+        self.height = len(self.board)
+        self.width = len(self.board[0])
 
     def to_simple(self):
         board = []
@@ -261,7 +268,7 @@ class Pitch:
         return None
 
     def is_out_of_bounds(self, pos):
-        return pos.x < 1 or pos.x >= len(self.board[0])-1 or pos.y < 1 or pos.y >= len(self.board)-1
+        return pos.x < 1 or pos.x >= self.width-1 or pos.y < 1 or pos.y >= self.height-1
 
     def get_player_at(self, pos):
         return self.board[pos.y][pos.x]
@@ -297,10 +304,11 @@ class Pitch:
 
     def get_adjacent_squares(self, pos, manhattan=False, include_out=False, exclude_occupied=False):
         squares = []
-        for yy in [-1, 0, 1]:
-            for xx in [-1, 0, 1]:
+        for yy in Pitch.range:
+            for xx in Pitch.range:
                 if yy == 0 and xx == 0:
                     continue
+                #sq = self.squares[pos.y+yy][pos.x+xx]
                 sq = Square(pos.x+xx, pos.y+yy)
                 if not include_out and self.is_out_of_bounds(sq):
                     continue
@@ -531,10 +539,13 @@ class TwoPlayerArena:
     scrimmage_tiles = [Tile.HOME_SCRIMMAGE, Tile.AWAY_SCRIMMAGE]
     wing_right_tiles = [Tile.HOME_WING_RIGHT, Tile.AWAY_WING_RIGHT]
     wing_left_tiles = [Tile.HOME_WING_LEFT, Tile.AWAY_WING_LEFT]
-    team_td_tiles = [Tile.HOME_TOUCHDOWN]
+    home_td_tiles = [Tile.HOME_TOUCHDOWN]
+    away_td_tiles = [Tile.AWAY_TOUCHDOWN]
 
     def __init__(self, board):
         self.board = board
+        self.width = len(board[0])
+        self.height = len(board)
         self.json = None
 
     def in_opp_endzone(self, pos, home):

@@ -13,7 +13,7 @@ class Game:
         self.arena = get_arena(config.arena) if arena is None else arena
         self.config = config
         self.ruleset = get_rule_set(config.ruleset) if ruleset is None else ruleset
-        self.state = state if state is not None else GameState(self, home_team, away_team)
+        self.state = state if state is not None else GameState(self, deepcopy(home_team), deepcopy(away_team))
 
     def _squares_moved(self):
         for proc in self.state.stack.items:
@@ -79,40 +79,39 @@ class Game:
                 break
         return True
 
-    def run(self):
-
-        while True:
-            if self.state.game_over:
-                #self.home_agent.end_game(deepcopy(self))
-                #self.away_agent.end_game(deepcopy(self))
-                self.home_agent.end_game(self)
-                self.away_agent.end_game(self)
-                return
-            elif self.actor.human:
-                return
-            else:
-                #action = self.actor.act(deepcopy(self))
-                action = self.actor.act(self)
-                self.step(action)
-
-    def step(self, action):
+    def step(self, action=None):
+        '''
+        Runs until an action from a human is required. If game requires an action to continue one must be given.
+        :param action: Action to perform, can be None if game does not require any.
+        :return:
+        '''
 
         # Ensure player points to player object
-        action.player = self.get_player(action.player.player_id) if action.player is not None else None
-        action.pos = Square(action.pos.x, action.pos.y) if action.pos is not None else None
+        if action is not None:
+            action.player = self.get_player(action.player.player_id) if action.player is not None else None
+            action.pos = Square(action.pos.x, action.pos.y) if action.pos is not None else None
 
         # Update game
         while True:
             done = self._one_step(action)
-            if done or not self.config.fast_mode:
-                break
             if self.state.game_over:
-                break
-            action = None
+                if not self.home_agent.human:
+                    self.home_agent.end_game(self)
+                if not self.away_agent.human:
+                    self.away_agent.end_game(self)
+                return
+            if done:
+                if self.actor.human:
+                    return
+                action = self.actor.act(self)
+            else:
+                if not self.config.fast_mode:
+                    return
+                action = None
 
     def _one_step(self, action):
         """
-        Executes one step in the game. If in Fast Mode, it executes several steps until action is required.
+        Executes one step in the game.
         :param action: Action from agent. Can be None if no action is required.
         :return: True if game requires action or game is over, False if not
         """
@@ -130,9 +129,9 @@ class Game:
         proc = self.state.stack.peek()
 
         # If no action and action is required
-        self.state.available_actions = proc.available_actions()
+        #self.state.available_actions = proc.available_actions()
         if action is None and len(self.state.available_actions) > 0:
-            return True
+            return True  # Game needs user input
 
         # If action but it's not available
         if action is not None:
@@ -141,12 +140,12 @@ class Game:
                     # Consider this as no action
                     action.action_type = None
                 else:
-                    return True
+                    return True  # Game needs user input
             else:
                 # Only allow
                 if not self._is_action_allowed(action):
                     #print("Action not allowed! ", action.action_type)
-                    return True
+                    return True  # Game needs user input
 
         # Run proc
         if self.config.debug_mode:
@@ -176,7 +175,7 @@ class Game:
 
         # Is game over
         if self.state.stack.is_empty():
-            return False
+            return False  # Can continue without user input
 
         if self.config.debug_mode:
             print("-Proc={}".format(self.state.stack.peek()))
@@ -184,21 +183,17 @@ class Game:
         # Update available actions
         self.set_available_actions()
         if len(self.state.available_actions) == 0:
-            # We can continue without user input
-            return False
+            return False  # Can continue without user input
 
         # End player turn if only action available
         if len(self.state.available_actions) == 1 and self.state.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
             self.step(Action(ActionType.END_PLAYER_TURN, player=self.state.available_actions[0].players[0]))
-            # We can continue without user input
-            return False
+            return False  # We can continue without user input
 
-        # Game needs user input
-        return True
+        return True  # Game needs user input
 
     def set_available_actions(self):
         self.state.available_actions = self.state.stack.peek().available_actions()
-        assert(self.state.available_actions is not None)
         self.actor = None
         if len(self.state.available_actions) > 0:
             if self.state.available_actions[0].team == self.state.home_team:
@@ -349,6 +344,36 @@ class Game:
     def is_out_of_bounds(self, pos):
         return self.state.pitch.is_out_of_bounds(pos)
 
+    def is_blitz_available(self):
+        turn = self.current_turn()
+        if turn is not None:
+            return turn.blitz_available
+
+    def is_pass_available(self):
+        turn = self.current_turn()
+        if turn is not None:
+            return turn.pass_available
+
+    def is_handoff_available(self):
+        turn = self.current_turn()
+        if turn is not None:
+            return turn.handoff_available
+
+    def is_foul_available(self):
+        turn = self.current_turn()
+        if turn is not None:
+            return turn.foul_available
+
+    def is_blitz(self):
+        turn = self.current_turn()
+        if turn is not None:
+            return turn.blitz
+
+    def is_quick_snap(self):
+        turn = self.current_turn()
+        if turn is not None:
+            return turn.quick_snap
+
     def get_players_on_pitch(self, team, ready=None):
         return [player for player in team.players
                 if player.position is not None and (ready is None or ready == player.state.ready)]
@@ -439,6 +464,12 @@ class Game:
         if cnt > max_players or cnt < min_players:
             return False
         return True
+
+    def num_casualties(self, team=None):
+        if team is not None:
+            return len(self.get_casualties(self.team))
+        else:
+            return len(self.get_casualties(self.state.home_team)) + len(self.get_casualties(self.state.away_team))
 
     def get_winner(self):
         if self.state.home_team.state.score > self.state.away_team.state.score:

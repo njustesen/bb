@@ -2,6 +2,7 @@ import uuid
 from bb.core.host import *
 from bb.core.game import *
 from bb.core.load import *
+from bb.ai.bots import RandomBot
 
 # Create a game host
 host = Host()
@@ -63,8 +64,8 @@ def get_teams(ruleset):
 
 
 # Initialize with one game
-# TODO: Remove this
-new_game(home_team_id="orc-team-1",
-         away_team_id="human-team-1",
-         home_agent=Agent("Player 1", human=True),
+# TODO: Remove this at some point
+new_game(home_team_id="orc-1",
+         away_team_id="human-1",
+         home_agent=RandomBot("Random Bot"),
          away_agent=Agent("Player 2", human=True))

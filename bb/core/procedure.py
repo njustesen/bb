@@ -1394,7 +1394,8 @@ class GFI(Procedure):
                 self.step(None)
             else:
                 # Player trips
-                self.game.move_player(self.player, self.pos)
+                if not self.player.position == self.pos:
+                    self.game.move_player(self.player, self.pos)
                 KnockDown(self.game, self.player, turnover=True)
                 return True
 
@@ -2282,6 +2283,8 @@ class Push(Procedure):
 
             # Chain push
             if not self.chain:
+                if self.game.get_player_at(self.follow_to) is not None:
+                    raise Exception("")
                 FollowUp(self.game, self.pusher, self.follow_to)
 
             return True
@@ -2326,6 +2329,8 @@ class Push(Procedure):
             # Save positions before chaining
             self.push_to = Square(action.pos.x, action.pos.y)
             self.follow_to = Square(self.player.position.x, self.player.position.y)
+
+            assert self.push_to != self.follow_to
 
             # Chain push
             if player_at is not None:
