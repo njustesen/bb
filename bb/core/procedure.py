@@ -2513,10 +2513,10 @@ class Setup(Procedure):
         # TODO: Remove this
         if action.action_type == ActionType.AUTO:
             available_players = [player for player in self.game.get_reserves(self.team) if player.state.ready != PlayerReadyState.HEATED]
-            for i in range(min(11, len(available_players))):
+            for i in range(min(self.game.config.pitch_max, len(available_players))):
                 player = available_players[i]
                 y = 3
-                x = 13 if self.team == self.game.state.away_team else 14
+                x = int(self.game.arena.width/2) if self.team == self.game.state.away_team else int(self.game.arena.width/2)+1
                 self.step(Action(ActionType.PLACE_PLAYER, player=player, pos=Square(x, y + i)))
             self.step(Action(ActionType.END_SETUP))
             return True

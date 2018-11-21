@@ -13,6 +13,7 @@ class Tile(Enum):
     AWAY_WING_RIGHT = 9
     AWAY_SCRIMMAGE = 10
     CROWD = 11
+    MIDFIELD = 12
 
 
 class BBDieResult(Enum):

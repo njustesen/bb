@@ -8,7 +8,7 @@ from bb.ai.bots import RandomBot
 host = Host()
 
 
-def new_game(away_team_id, home_team_id, away_agent=None, home_agent=None, config_name="ff.json"):
+def new_game(away_team_id, home_team_id, away_agent=None, home_agent=None, config_name="ff-11.json"):
     assert away_agent is not None
     assert home_agent is not None
     config = get_config(config_name)

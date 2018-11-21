@@ -1,14 +1,14 @@
 {
-    "name": "Fantasy Football Gym",
-    "arena": "ff_pitch.txt",
+    "name": "Fantasy Football 7",
+    "arena": "ff-pitch-7.txt",
     "ruleset": "LRB5-Experimental.xml",
     "dungeon": false,
-    "roster_size": 16,
-    "pitch_max": 11,
-    "pitch_min": 3,
+    "roster_size": 9,
+    "pitch_max": 7,
+    "pitch_min": 2,
     "scrimmage_min": 3,
     "wing_max": 2,
-    "turns": 8,
+    "turns": 6,
     "kick_off_table": true,
     "fast_mode": true
 }

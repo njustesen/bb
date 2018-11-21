@@ -6,7 +6,7 @@ ruleset = get_rule_set('LRB5-Experimental.xml')
 register(
     id='FFAI-v1',
     entry_point='bb.ai.env:FFAIEnv',
-    kwargs={'config': get_config("ff-gym.json"),
+    kwargs={'config': get_config("ff-11.json"),
             'home_team': get_team('human-1', ruleset),
             'away_team': get_team('human-2', ruleset)
             }
