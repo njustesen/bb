@@ -42,7 +42,7 @@ class MyRandomBot(Agent):
 if __name__ == "__main__":
 
     # Avoid loading config and rules every time
-    config = get_config("ff-3.json")
+    config = get_config("ff-11.json")
     ruleset = get_rule_set(config.ruleset)
     arena = get_arena(config.arena)
     home = get_team_by_id("human-1", ruleset)

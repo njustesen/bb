@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/config/ff-7.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config/ff-7.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/bot-example.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/bot-example.py" afterDir="false" />
     </list>
     <ignored path="bb.iws" />
@@ -65,8 +63,8 @@
       <file leaf-file-name="bot-example.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/examples/bot-example.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="463">
-              <caret line="54" column="33" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
+            <state relative-caret-position="281">
+              <caret line="44" column="30" selection-start-line="44" selection-start-column="30" selection-end-line="44" selection-end-column="30" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -116,11 +114,11 @@
       <find>GameState</find>
       <find>is_bli</find>
       <find>game.state.board</find>
-      <find />
+      <find>pos =</find>
       <find>pos.x</find>
       <find>.x</find>
       <find>.y</find>
-      <find />
+      <find>position =</find>
       <find>START_BLOCK</find>
       <find>Game</find>
       <find>START_PASS</find>
@@ -711,17 +709,17 @@
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string />
+        <expression-string>len(self.state.available_actions) == 1</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string />
+        <expression-string>0 &lt;= pos.y &gt; len(self.arena.board)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string />
+        <expression-string>not 0 &lt;= pos.y &gt; len(self.arena.board)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -731,7 +729,7 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string />
+        <expression-string>piece.position is not None</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -1122,8 +1120,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/examples/bot-example.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="463">
-          <caret line="54" column="33" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
+        <state relative-caret-position="281">
+          <caret line="44" column="30" selection-start-line="44" selection-start-column="30" selection-end-line="44" selection-end-column="30" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
