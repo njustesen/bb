@@ -2536,7 +2536,7 @@ class Setup(Procedure):
                                             min_players=self.game.config.pitch_min):
                 self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_NUM, team=self.team))
                 return False
-            elif not self.game.is_setup_legal_scrimmage(self.team, min_players=self.game.config.scrimmage_max):
+            elif not self.game.is_setup_legal_scrimmage(self.team, min_players=self.game.config.scrimmage_min):
                 self.game.report(Outcome(OutcomeType.ILLEGAL_SETUP_SCRIMMAGE, team=self.team))
                 return False
             elif not self.game.is_setup_legal_wings(self.team, max_players=self.game.config.wing_max):

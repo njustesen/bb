@@ -5,26 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0258cea8-c4e0-4403-bae2-2f63ddfa493b" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/data/formations/11/def_spread.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/11/def_zone.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/11/off_line.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/11/off_wedge.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/3/def_spread.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/3/off_wedge.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/5/def_spread.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/5/off_wedge.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/7/def_spread.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/formations/7/off_wedge.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/load.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/load.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bb/core/procedure.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/procedure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bb/core/table.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb/core/table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/arenas/ff-pitch-5.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/arenas/ff-pitch-5.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/config/ff-11.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config/ff-11.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/config/ff-3.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config/ff-3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/config/ff-5.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config/ff-5.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/config/ff-7.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/config/ff-7.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/bot-example.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/bot-example.py" afterDir="false" />
     </list>
@@ -39,7 +20,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/bb$table.coverage" NAME="table Coverage Results" MODIFIED="1530007778406" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bb/core" />
-    <SUITE FILE_PATH="coverage/bb$bot_example.coverage" NAME="bot-example Coverage Results" MODIFIED="1543078328525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/bb$bot_example.coverage" NAME="bot-example Coverage Results" MODIFIED="1543079020505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/bb$Unittests_in_test_speed_py.coverage" NAME="Unittests in test_speed.py Coverage Results" MODIFIED="1527215093118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/bb$gym_example.coverage" NAME="gym-example Coverage Results" MODIFIED="1542816744910" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/bb$Unittests_for_test_speed_TestLoaders_test_speed.coverage" NAME="Unittests for test_speed.TestLoaders.test_speed Coverage Results" MODIFIED="1527215188092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
@@ -63,17 +44,17 @@
       <file leaf-file-name="procedure.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="2815" selection-start-line="2815" selection-end-line="2815" />
+            <state relative-caret-position="191">
+              <caret line="2538" column="109" selection-start-line="2538" selection-start-column="96" selection-end-line="2538" selection-end-column="109" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="game.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="415">
-              <caret line="189" column="26" selection-start-line="189" selection-start-column="26" selection-end-line="189" selection-end-column="26" />
+            <state relative-caret-position="182">
+              <caret line="483" selection-start-line="483" selection-end-line="483" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -81,37 +62,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bb/core/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="506">
-              <caret line="1046" selection-start-line="1046" selection-end-line="1046" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ff-11.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/config/ff-11.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ff-pitch-11.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-11.txt">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="bot-example.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="bot-example.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/examples/bot-example.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
-              <caret line="40" lean-forward="true" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="16" />
+            <state relative-caret-position="463">
+              <caret line="54" column="33" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -119,29 +74,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ff-7.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/config/ff-7.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ff-5.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/config/ff-5.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="load.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bb/core/load.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="451">
-              <caret line="211" column="27" selection-start-line="211" selection-start-column="27" selection-end-line="211" selection-end-column="27" />
+            <state relative-caret-position="202">
+              <caret line="173" selection-start-line="173" selection-end-line="173" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -149,11 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ff-3.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/config/ff-3.json">
+      <file leaf-file-name="ff-5.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/config/ff-5.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+            <state relative-caret-position="120">
+              <caret line="8" column="23" lean-forward="true" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -170,7 +107,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>TeamState</find>
       <find>rerolls_startrerolls_start</find>
       <find>Turn(</find>
       <find>reroll_used</find>
@@ -196,10 +132,11 @@
       <find>illegal</find>
       <find>setup_leg</find>
       <find>Setup</find>
-      <find>Formation</find>
       <find>Format</find>
-      <find>end_game</find>
       <find>print</find>
+      <find>end_game</find>
+      <find>Formation</find>
+      <find>setup_l</find>
     </findStrings>
     <replaceStrings>
       <replace>Pitch</replace>
@@ -280,14 +217,14 @@
         <option value="$PROJECT_DIR$/bb/core/table.py" />
         <option value="$PROJECT_DIR$/bb/ai/formations.py" />
         <option value="$PROJECT_DIR$/data/config/ff-11.json" />
-        <option value="$PROJECT_DIR$/data/config/ff-7.json" />
         <option value="$PROJECT_DIR$/data/config/ff-5.json" />
         <option value="$PROJECT_DIR$/data/config/ff-3.json" />
         <option value="$PROJECT_DIR$/bb/core/load.py" />
         <option value="$PROJECT_DIR$/bb/core/model.py" />
+        <option value="$PROJECT_DIR$/bb/core/game.py" />
+        <option value="$PROJECT_DIR$/data/config/ff-7.json" />
         <option value="$PROJECT_DIR$/bb/core/procedure.py" />
         <option value="$PROJECT_DIR$/examples/bot-example.py" />
-        <option value="$PROJECT_DIR$/bb/core/game.py" />
       </list>
     </option>
   </component>
@@ -646,7 +583,7 @@
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="2" weight="0.25151515" />
       <window_info anchor="bottom" id="Python Console" order="1" weight="0.32814023" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49940476" weight="0.26989248" />
+      <window_info active="true" anchor="bottom" id="Run" order="6" sideWeight="0.49940476" visible="true" weight="0.26989248" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32876712" />
       <window_info content_ui="combo" id="Project" order="1" sideWeight="0.7610921" visible="true" weight="0.15201466" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
@@ -655,7 +592,7 @@
       <window_info anchor="right" id="SciView" order="5" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.24970344" />
       <window_info id="Favorites" order="0" sideWeight="0.23890784" side_tool="true" weight="0.18803419" />
-      <window_info active="true" anchor="bottom" id="Debug" order="7" visible="true" weight="0.27741936" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.33225808" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.35979512" />
       <window_info anchor="right" id="Commander" order="1" weight="0.4" />
@@ -729,8 +666,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bb/core/game.py</url>
-          <line>101</line>
-          <option name="timeStamp" value="623" />
+          <line>464</line>
+          <option name="timeStamp" value="628" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -743,7 +680,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="626" />
+      <option name="time" value="629" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="tests">
@@ -755,11 +692,17 @@
         <watch expression="player_to" />
         <watch expression="positions" />
         <watch expression="self.stack" />
+        <watch expression="self.state.pitch.board" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="watch">
+      <expression>
+        <expression-string>self.state.pitch.board</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string />
         <language-id>Python</language-id>
@@ -815,20 +758,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/bb/web/static/partials/game.play.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2115">
-          <caret line="141" column="151" selection-start-line="141" selection-start-column="151" selection-end-line="141" selection-end-column="151" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/web/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="90" column="22" selection-start-line="90" selection-start-column="22" selection-end-line="90" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bb/web/static/js/controllers.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5745">
@@ -991,13 +920,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-7.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-3.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -1005,31 +927,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-5.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="8" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/formations/3/off_wedge.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="5" selection-start-line="2" selection-start-column="5" selection-end-line="2" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/formations/5/def_spread.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="8" lean-forward="true" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/formations/5/off_wedge.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -1109,44 +1010,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-11.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/config/ff-11.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/config/ff-7.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/config/ff-5.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/config/ff-3.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/load.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="451">
-          <caret line="211" column="27" selection-start-line="211" selection-start-column="27" selection-end-line="211" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1160,29 +1027,105 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/examples/bot-example.py">
+    <entry file="file://$USER_HOME$/anaconda3/envs/bb/lib/python3.6/json/decoder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="40" lean-forward="true" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="16" />
+        <state relative-caret-position="309">
+          <caret line="341" selection-start-line="341" selection-end-line="341" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/envs/bb/lib/python3.6/json/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="354">
+          <caret line="353" selection-start-line="353" selection-end-line="353" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/load.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="173" selection-start-line="173" selection-end-line="173" />
           <folding>
-            <element signature="e#0#27#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+    <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-11.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-7.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="2815" selection-start-line="2815" selection-end-line="2815" />
+        <state relative-caret-position="135">
+          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/config/ff-7.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/config/ff-3.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/arenas/ff-pitch-5.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/formations/5/def_spread.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="8" lean-forward="true" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/formations/5/off_wedge.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bb/core/game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
-          <caret line="189" column="26" selection-start-line="189" selection-start-column="26" selection-end-line="189" selection-end-column="26" />
+        <state relative-caret-position="182">
+          <caret line="483" selection-start-line="483" selection-end-line="483" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/config/ff-5.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="23" lean-forward="true" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bb/core/procedure.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="2538" column="109" selection-start-line="2538" selection-start-column="96" selection-end-line="2538" selection-end-column="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples/bot-example.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="463">
+          <caret line="54" column="33" selection-start-line="54" selection-start-column="33" selection-end-line="54" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
           </folding>
         </state>
       </provider>
