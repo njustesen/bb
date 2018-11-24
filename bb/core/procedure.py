@@ -2374,7 +2374,13 @@ class Scatter(Procedure):
             # Roll
             roll_scatter = rolls[s]
             if self.kick and not self.gentle_gust:
-                roll_distance = DiceRoll([D6()], roll_type=RollType.DISTANCE_ROLL)
+                if self.game.config.kick_scatter_dice == 'd6':
+                    distance_dice = D6()
+                elif self.game.config.kick_scatter_dice == 'd3':
+                    distance_dice = D6()
+                else:
+                    raise Exception("Unknown kick_roll_distance")
+                roll_distance = DiceRoll([distance_dice], roll_type=RollType.DISTANCE_ROLL)
                 rolls += [roll_distance]
 
             x = 0
@@ -2495,6 +2501,9 @@ class Setup(Procedure):
         self.team = team
         self.reorganize = reorganize
         self.selected_player = None
+        self.formations = game.config.defensive_formations if team == game.get_kicking_team() \
+            else game.config.offensive_formations
+
         if self.reorganize:
             positions = game.get_team_side(team)
         else:
@@ -2506,19 +2515,20 @@ class Setup(Procedure):
             ActionChoice(ActionType.END_SETUP, team=team)
         ]
         if not self.reorganize:
-            self.aa.append(ActionChoice(ActionType.AUTO, team=team))
+            self.aa.append(ActionChoice(ActionType.SETUP_FORMATION,
+                                        team=team,
+                                        indexes=[i for i in range(len(self.formations))]))
 
     def step(self, action):
 
         # TODO: Remove this
-        if action.action_type == ActionType.AUTO:
-            available_players = [player for player in self.game.get_reserves(self.team) if player.state.ready != PlayerReadyState.HEATED]
-            for i in range(min(self.game.config.pitch_max, len(available_players))):
-                player = available_players[i]
-                y = 3
-                x = int(self.game.arena.width/2) if self.team == self.game.state.away_team else int(self.game.arena.width/2)+1
-                self.step(Action(ActionType.PLACE_PLAYER, player=player, pos=Square(x, y + i)))
-            self.step(Action(ActionType.END_SETUP))
+        if action.action_type == ActionType.SETUP_FORMATION:
+            formation = self.formations[action.idx]
+            if self.game.config.debug_mode:
+                print("Formation:", formation.name)
+            for action in formation.actions(self.game, self.team):
+                self.step(action)
+            #self.step(Action(ActionType.END_SETUP))
             return True
 
         if action.action_type == ActionType.END_SETUP:
@@ -2741,7 +2751,7 @@ class Turn(Procedure):
     def start_player_action(self, outcome_type, player_action_type, player):
 
         # Start action
-        self.game.state.active_player_id = player.player_id
+        self.game.state.active_player = player
         PlayerAction(self.game, player, player_action_type, turn=self)
         self.game.report(Outcome(outcome_type, player=player))
 

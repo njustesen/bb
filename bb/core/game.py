@@ -187,7 +187,7 @@ class Game:
 
         # End player turn if only action available
         if len(self.state.available_actions) == 1 and self.state.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
-            self.step(Action(ActionType.END_PLAYER_TURN, player=self.state.available_actions[0].players[0]))
+            self._one_step(Action(ActionType.END_PLAYER_TURN, player=self.state.available_actions[0].players[0]))
             return False  # We can continue without user input
 
         return True  # Game needs user input

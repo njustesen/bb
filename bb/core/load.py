@@ -145,7 +145,7 @@ def get_team(name, ruleset):
 
 def get_arena(name):
     path = get_data_path('arenas/' + name)
-    name = 'Unknown arena'
+    # name = 'Unknown arena'
     dungeon = False
     board = []
     file = open(path, 'r')
@@ -185,5 +185,28 @@ def get_config(name):
     config.rounds = data['turns']
     config.kick_off_table = data['kick_off_table']
     config.fast_mode = data['fast_mode']
+    config.kick_scatter_dice = data['kick_scatter_dice']
+    config.defensive_formations = [get_formation(formation, config.pitch_max) for formation in
+                                   data['defensive_formations']]
+    config.offensive_formations = [get_formation(formation, config.pitch_max) for formation in
+                                   data['offensive_formations']]
     return config
 
+
+def get_formation(name, size):
+    path = get_data_path('formations/' + str(size) + "/" + name)
+    board = []
+    file = open(path, 'r')
+    name = name.replace(".txt", "").replace("off_", "").replace("def_", "")
+    while True:
+        line = file.readline()
+        if not line:
+            break
+        row = []
+        for c in line:
+            if c in ['\n']:
+                continue
+            row.append(c)
+        board.append(np.array(row))
+    file.close()
+    return Formation(name, board)

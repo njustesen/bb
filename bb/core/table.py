@@ -296,12 +296,12 @@ class ActionType(Enum):
     ROLL_FOR_WEATHER = 36
     SELECT_PLAYER = 37
     SELECT_NONE = 38
-    AUTO = 39
     DONT_USE_APOTHECARY = 40
     SELECT_ROLL = 41
     DONT_USE_REROLL = 42
     STAND_UP = 43
     SELECT_SQUARE = 44
+    SETUP_FORMATION = 45
 
 
 class WeatherType(Enum):

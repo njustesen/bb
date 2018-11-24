@@ -1,4 +1,5 @@
 import random
+import numpy as np
 import uuid
 from math import sqrt
 from bb.core.util import *
@@ -20,6 +21,9 @@ class Configuration:
         self.kick_off_table = True
         self.fast_mode = False
         self.debug_mode = False
+        self.kick_scatter_distance = "d6"
+        self.offensive_formations = []
+        self.defensive_formations = []
 
 
 class PlayerState:
@@ -192,7 +196,7 @@ class Pitch:
             self.squares.append([])
             for x in range(len(game.arena.board[y])):
                 self.board[y].append(None)
-                self.squares[y].append(Square(y, x))
+                self.squares[y].append(Square(x, y))
         self.height = len(self.board)
         self.width = len(self.board[0])
 
@@ -308,8 +312,9 @@ class Pitch:
             for xx in Pitch.range:
                 if yy == 0 and xx == 0:
                     continue
-                #sq = self.squares[pos.y+yy][pos.x+xx]
-                sq = Square(pos.x+xx, pos.y+yy)
+                sq = self.squares[pos.y+yy][pos.x+xx]
+                #assert sq.y == pos.y+yy and sq.x == pos.x+xx
+                #sq = Square(pos.x+xx, pos.y+yy)
                 if not include_out and self.is_out_of_bounds(sq):
                     continue
                 if exclude_occupied and self.get_player_at(sq) is not None:
@@ -918,7 +923,7 @@ class Team:
         }
 
     def __eq__(self, other):
-        return isinstance(other, Team) and other.team_id == self.team_id
+        return other is not None and other.team_id == self.team_id
 
 
 class Outcome:
@@ -980,3 +985,66 @@ class RuleSet:
                         return p
                 raise Exception("Role not found in race: " + race + " -> " + role)
         raise Exception("Race not found: " + race)
+
+
+class Formation:
+
+    def __init__(self, name, formation):
+        self.name = name
+        self.formation = formation
+
+    def _get_player(self, players, type):
+        if type == 's':
+            idx = np.argmax([player.get_st() + (0.5 if player.has_skill(Skill.BLOCK) else 0) for player in players])
+            return players[idx]
+        if type == 'm':
+            idx = np.argmax([player.get_ma() for player in players])
+            return players[idx]
+        if type == 'a':
+            idx = np.argmax([player.get_ag() for player in players])
+            return players[idx]
+        if type == 'v':
+            idx = np.argmax([player.get_av() for player in players])
+            return players[idx]
+        if type == 'p':
+            idx = np.argmax([1 if player.has_skill(Skill.PASS) else 0 for player in players])
+            return players[idx]
+        if type == 'c':
+            idx = np.argmax([1 if player.has_skill(Skill.CATCH) else 0 for player in players])
+            return players[idx]
+        if type == 'b':
+            idx = np.argmax([1 if player.has_skill(Skill.BLOCK) else 0 for player in players])
+            return players[idx]
+        if type == 'd':
+            idx = np.argmax([1 if player.has_skill(Skill.DODGE) else 0 for player in players])
+            return players[idx]
+        if type == '0':
+            idx = np.argmin([len(player.get_skills()) for player in players])
+            return players[idx]
+        if type == 'x':
+            idx = np.argmin([1 if player.has_skill(Skill.BLOCK) else (0 if player.has_skill(Skill.PASS) else 0.5) for player in players])
+            return players[idx]
+        return players[0]
+
+    def actions(self, game, team):
+        home = team == game.state.home_team
+        actions = []
+        # Move all player on the pitch back to the reserves
+        for player in team.players:
+            if player.position is not None:
+                actions.append(Action(ActionType.PLACE_PLAYER, pos=None, player=player))
+        # Go through formation from scrimmage to touchdown zone
+        players = [player for player in game.get_reserves(team)]
+        for y in range(len(self.formation)):
+            for x in reversed(range(len(self.formation[0]))):
+                if len(players) == 0:
+                    return actions
+                type = self.formation[y][x]
+                if type == '-':
+                    continue
+                yy = y + 1
+                xx = x + 1 if not home else game.arena.width - x - 2
+                player = self._get_player(players, type)
+                players.remove(player)
+                actions.append(Action(ActionType.PLACE_PLAYER, pos=Square(xx, yy), player=player))
+        return actions
