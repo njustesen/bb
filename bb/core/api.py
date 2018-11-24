@@ -12,6 +12,7 @@ def new_game(away_team_id, home_team_id, away_agent=None, home_agent=None, confi
     assert away_agent is not None
     assert home_agent is not None
     config = get_config(config_name)
+    config.fast_mode = False
     ruleset = get_rule_set(config.ruleset)
     home = get_team_by_id(home_team_id, ruleset)
     away = get_team_by_id(away_team_id, ruleset)
@@ -68,4 +69,9 @@ def get_teams(ruleset):
 new_game(home_team_id="orc-1",
          away_team_id="human-1",
          home_agent=RandomBot("Random Bot"),
+         away_agent=Agent("Player 2", human=True))
+
+new_game(home_team_id="human-1",
+         away_team_id="human-2",
+         home_agent=Agent("Player 1", human=True),
          away_agent=Agent("Player 2", human=True))

@@ -1022,7 +1022,7 @@ class Formation:
             idx = np.argmin([len(player.get_skills()) for player in players])
             return players[idx]
         if type == 'x':
-            idx = np.argmin([1 if player.has_skill(Skill.BLOCK) else (0 if player.has_skill(Skill.PASS) else 0.5) for player in players])
+            idx = np.argmax([1 if player.has_skill(Skill.BLOCK) else (0 if player.has_skill(Skill.PASS) else 0.5) for player in players])
             return players[idx]
         return players[0]
 
