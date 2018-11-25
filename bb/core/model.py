@@ -1,4 +1,5 @@
 import random
+from copy import copy, deepcopy
 import numpy as np
 import uuid
 from math import sqrt
@@ -125,7 +126,7 @@ class GameState:
             for player in team.players:
                 self.team_by_player_id[player.player_id] = team
                 self.player_by_id[player.player_id] = player
-        self.pitch = Pitch(game)
+        self.pitch = Pitch(game.arena.width, game.arena.height)
         self.dugouts = {team.team_id: Dugout(team) for team in self.teams}
         self.weather = WeatherType.NICE
         self.gentle_gust = False
@@ -134,6 +135,31 @@ class GameState:
         self.active_player = None
         self.game_over = False
         self.available_actions = []
+
+    def clone(self):
+        state = GameState(deepcopy(self.home_team), deepcopy(self.away_team))
+        state.stack = deepcopy(self.stack)
+        state.reports = deepcopy(self.reports)
+        state.round = self.round
+        state.kicking_first_half = self.kicking_first_half
+        state.receiving_first_half = self.receiving_first_half
+        state.kicking_this_drive = self.kicking_this_drive
+        state.receiving_this_drive = self.receiving_this_drive
+        state.current_team = None if state.current_team is None else state.home_team if state.current_team.team_id == state.home_team.team_id else state.away_team
+        state.pitch = Pitch(self.pitch.width, self.pitch.height)
+        for player in state.home_team.players:
+            if player.position is not None:
+                state.pitch.board[player.position.y][player.position.x] = player
+        for player in state.away_team.players:
+            if player.position is not None:
+                state.pitch.board[player.position.y][player.position.x] = player
+        state.weather = self.weather
+        state.gentle_gust = self.gentle_gust
+        state.turn_order = [self.team_by_id[team.team_id] for team in self.turn_order]
+        state.spectators = self.spectators
+        state.active_player = self.player_by_id[self.active_player.player_id] if self.active_player is not None else None
+        state.game_over = self.game_over
+        state.available_actions = copy(self.available_actions)
 
     def get_dugout(self, team):
         return self.dugouts[team.team_id]
@@ -187,14 +213,14 @@ class Pitch:
 
     range = [-1, 0, 1]
 
-    def __init__(self, game):
+    def __init__(self, width, height):
         self.balls = []
         self.board = []
         self.squares = []
-        for y in range(len(game.arena.board)):
+        for y in range(height):
             self.board.append([])
             self.squares.append([])
-            for x in range(len(game.arena.board[y])):
+            for x in range(width):
                 self.board[y].append(None)
                 self.squares[y].append(Square(x, y))
         self.height = len(self.board)

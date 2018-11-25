@@ -15,14 +15,18 @@ class Game:
         self.ruleset = get_rule_set(config.ruleset) if ruleset is None else ruleset
         self.state = state if state is not None else GameState(self, deepcopy(home_team), deepcopy(away_team))
 
-    def _squares_moved(self):
-        for proc in self.state.stack.items:
-            if isinstance(proc, PlayerAction):
-                out = []
-                for square in proc.squares:
-                    out.append(square.to_simple())
-                return out
-        return []
+    def clone(self):
+        state = self.state.clone()
+        game = Game(game_id=self.game_id,
+                    home_team=state.home_team,
+                    away_team=state.away_team,
+                    home_agent=self.home_agent,
+                    away_agent=self.away_agent,
+                    config=self.config,
+                    ruleset=self.ruleset,
+                    arena=self.arena,
+                    state=state)
+        game.actor = self.actor
 
     def to_simple(self):
         return {
@@ -35,6 +39,15 @@ class Game:
             'can_home_team_use_reroll': self.can_use_reroll(self.state.home_team),
             'can_away_team_use_reroll': self.can_use_reroll(self.state.away_team)
         }
+
+    def _squares_moved(self):
+        for proc in self.state.stack.items:
+            if isinstance(proc, PlayerAction):
+                out = []
+                for square in proc.squares:
+                    out.append(square.to_simple())
+                return out
+        return []
 
     def init(self):
         EndGame(self)
