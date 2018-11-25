@@ -494,15 +494,13 @@ class Pitch:
 
 class ActionChoice:
 
-    def __init__(self, action_type, team, positions=None, players=None, indexes=None, rolls=None, block_rolls=None, dice=None, agi_rolls=None, disabled=False):
+    def __init__(self, action_type, team, positions=None, players=None, rolls=None, block_rolls=None, agi_rolls=None, disabled=False):
         self.action_type = action_type
         self.positions = [] if positions is None else positions
         self.players = [] if players is None else players
         self.team = team
-        self.indexes = [] if indexes is None else indexes
         self.rolls = [] if rolls is None else rolls
         self.block_rolls = [] if block_rolls is None else block_rolls
-        self.dice = [] if dice is None else dice
         self.disabled = disabled
         self.agi_rolls = [] if agi_rolls is None else agi_rolls
 
@@ -511,29 +509,29 @@ class ActionChoice:
             'action_type': self.action_type.name,
             'positions': [position.to_simple() if position is not None else None for position in self.positions],
             'team_id': self.team.team_id if self.team is not None else None,
-            'indexes': self.indexes,
             "rolls": self.rolls,
             "block_rolls": self.block_rolls,
             "agi_rolls": self.agi_rolls,
             'player_ids': [player.player_id for player in self.players],
-            "dice": [die.to_simple() for die in self.dice],
             "disabled": self.disabled
         }
 
 
 class Action:
 
-    def __init__(self, action_type, pos=None, player=None, idx=0):
+    def __init__(self, action_type, pos=None, player=None, idx=0, dice_result=None):
         self.action_type = action_type
         self.pos = pos
         self.player = player
         self.idx = idx
+        self.dice_result = dice_result
 
     def to_simple(self):
         return {
             'action_type': self.action_type.name,
             'position': self.pos.to_simple() if self.pos is not None else None,
-            'player_id': self.player.player_id if self.player is not None else None
+            'player_id': self.player.player_id if self.player is not None else None,
+            'dice_result': self.dice_result
         }
 
 
@@ -1022,7 +1020,7 @@ class Formation:
             idx = np.argmin([len(player.get_skills()) for player in players])
             return players[idx]
         if type == 'x':
-            idx = np.argmax([1 if player.has_skill(Skill.BLOCK) else (0 if player.has_skill(Skill.PASS) else 0.5) for player in players])
+            idx = np.argmax([1 if player.has_skill(Skill.BLOCK) else (0 if player.has_skill(Skill.PASS) or player.has_skill(Skill.CATCH) else 0.5) for player in players])
             return players[idx]
         return players[0]
 
@@ -1030,11 +1028,13 @@ class Formation:
         home = team == game.state.home_team
         actions = []
         # Move all player on the pitch back to the reserves
+        player_on_pitch = []
         for player in team.players:
             if player.position is not None:
                 actions.append(Action(ActionType.PLACE_PLAYER, pos=None, player=player))
+                player_on_pitch.append(player)
         # Go through formation from scrimmage to touchdown zone
-        players = [player for player in game.get_reserves(team)]
+        players = [player for player in game.get_reserves(team) + player_on_pitch]
         for y in range(len(self.formation)):
             for x in reversed(range(len(self.formation[0]))):
                 if len(players) == 0:

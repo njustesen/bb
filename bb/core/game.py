@@ -73,9 +73,6 @@ class Game:
                 if len(action_choice.positions) > 0 and action.pos not in action_choice.positions:
                     print("Illegal position")
                     return False
-                if len(action_choice.indexes) > 0 and action.idx not in action_choice.indexes:
-                    print("Illegal index")
-                    return False
                 break
         return True
 

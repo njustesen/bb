@@ -49,11 +49,6 @@ appControllers.controller('GameCreateCtrl', ['$scope', '$location', 'GameService
             $scope.teams = data;
         });
 
-        $scope.prettify = function prettify(text){
-            let pretty = text.toLowerCase().split("_").join(" ");
-            return pretty.charAt(0).toUpperCase() + pretty.slice(1);
-        };
-
         $scope.getTeam = function getTeam(team_id){
             for (let i in $scope.teams){
                 if ($scope.teams[i].team_id === team_id){
@@ -837,7 +832,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.prettify = function prettify(text){
-            let pretty = text.toLowerCase().split("_").join(" ");
+            let pretty = text.replace("SETUP_FORMATION_", "").toLowerCase().split("_").join(" ");
             return pretty.charAt(0).toUpperCase() + pretty.slice(1);
         };
 

@@ -1,9 +1,5 @@
-from flask import Flask, request, render_template, Response
-from bb.core.util import *
-from bb.core import api
-from bb.core.model import Action, Square
-from bb.core.table import ActionType
-from bb.web.backend.users import *
+from flask import Flask, request, render_template
+from bb.web import api
 from bb.core.load import *
 import json
 app = Flask(__name__)

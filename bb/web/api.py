@@ -1,5 +1,4 @@
-import uuid
-from bb.core.host import *
+from bb.web.host import *
 from bb.core.game import *
 from bb.core.load import *
 from bb.ai.bots import RandomBot

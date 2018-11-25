@@ -1,8 +1,5 @@
-from bb.core.model import *
-from bb.core.game import *
-from bb.core.api import *
+from bb.web.api import *
 import numpy as np
-import time
 
 
 class RandomBot(Agent):

@@ -1,7 +1,6 @@
 import numpy as np
 from bb.core.model import *
 from bb.core.table import *
-from bb.core.exception import *
 
 
 class Procedure:
@@ -91,7 +90,8 @@ class Apothecary(Procedure):
             return [ActionChoice(ActionType.USE_APOTHECARY, team=self.player.team),
                     ActionChoice(ActionType.DONT_USE_APOTHECARY, team=self.player.team)]
         else:
-            return [ActionChoice(ActionType.SELECT_ROLL, team=self.player.team, indexes=[0, 1])]
+            # TODO: Does not really work
+            return [ActionChoice(ActionType.SELECT_ROLL, team=self.player.team)]
 
 
 class Armor(Procedure):
@@ -291,9 +291,17 @@ class Block(Procedure):
         elif action.action_type == ActionType.USE_JUGGERNAUT:
             self.selected_die = BBDieResult.PUSH
 
-        elif action.action_type == ActionType.SELECT_DIE:
-            die = self.roll.dice[action.idx]
-            self.selected_die = die.get_value()
+        # Select die
+        elif action.action_type == ActionType.SELECT_ATTACKER_DOWN:
+            self.selected_die = BBDieResult.ATTACKER_DOWN
+        elif action.action_type == ActionType.SELECT_BOTH_DOWN:
+            self.selected_die = BBDieResult.BOTH_DOWN
+        elif action.action_type == ActionType.SELECT_PUSH:
+            self.selected_die = BBDieResult.PUSH
+        elif action.action_type == ActionType.SELECT_DEFENDER_STUMBLES:
+            self.selected_die = BBDieResult.DEFENDER_STUMBLES
+        elif action.action_type == ActionType.SELECT_DEFENDER_DOWN:
+            self.selected_die = BBDieResult.DEFENDER_DOWN
 
         # Dice result
         if self.selected_die == BBDieResult.ATTACKER_DOWN:
@@ -340,10 +348,17 @@ class Block(Procedure):
                     actions.append(ActionChoice(ActionType.DONT_USE_REROLL, self.attacker.team))
                     disable_dice_pick = True
 
-            indexes = [i for i in range(len(self.roll.dice))]
-            dice = [die for die in self.roll.dice]
-            actions.append(ActionChoice(ActionType.SELECT_DIE, self.favor, indexes=indexes, dice=dice,
-                                        disabled=disable_dice_pick))
+            for die in self.roll.dice:
+                if die.get_value() == BBDieResult.ATTACKER_DOWN:
+                    actions.append(ActionChoice(ActionType.SELECT_ATTACKER_DOWN, self.favor, disabled=disable_dice_pick))
+                if die.get_value() == BBDieResult.BOTH_DOWN:
+                    actions.append(ActionChoice(ActionType.SELECT_BOTH_DOWN, self.favor, disabled=disable_dice_pick))
+                if die.get_value() == BBDieResult.PUSH:
+                    actions.append(ActionChoice(ActionType.SELECT_PUSH, self.favor, disabled=disable_dice_pick))
+                if die.get_value() == BBDieResult.DEFENDER_STUMBLES:
+                    actions.append(ActionChoice(ActionType.SELECT_DEFENDER_STUMBLES, self.favor, disabled=disable_dice_pick))
+                if die.get_value() == BBDieResult.DEFENDER_DOWN:
+                    actions.append(ActionChoice(ActionType.SELECT_DEFENDER_DOWN, self.favor, disabled=disable_dice_pick))
 
         return actions
 
@@ -2515,21 +2530,32 @@ class Setup(Procedure):
             ActionChoice(ActionType.END_SETUP, team=team)
         ]
         if not self.reorganize:
-            self.aa.append(ActionChoice(ActionType.SETUP_FORMATION,
-                                        team=team,
-                                        indexes=[i for i in range(len(self.formations))]))
+            for formation in self.formations:
+                if formation.name == "wedge":
+                    self.aa.append(ActionChoice(ActionType.SETUP_FORMATION_WEDGE, team=team))
+                if formation.name == "line":
+                    self.aa.append(ActionChoice(ActionType.SETUP_FORMATION_LINE, team=team))
+                if formation.name == "spread":
+                    self.aa.append(ActionChoice(ActionType.SETUP_FORMATION_SPREAD, team=team))
+                if formation.name == "zone":
+                    self.aa.append(ActionChoice(ActionType.SETUP_FORMATION_ZONE, team=team))
 
     def step(self, action):
 
-        # TODO: Remove this
-        if action.action_type == ActionType.SETUP_FORMATION:
-            formation = self.formations[action.idx]
-            if self.game.config.debug_mode:
-                print("Formation:", formation.name)
+        formation = None
+        if action.action_type == ActionType.SETUP_FORMATION_WEDGE:
+            formation = [formation for formation in self.formations if formation.name == "wedge"][0]
+        if action.action_type == ActionType.SETUP_FORMATION_ZONE:
+            formation = [formation for formation in self.formations if formation.name == "zone"][0]
+        if action.action_type == ActionType.SETUP_FORMATION_LINE:
+            formation = [formation for formation in self.formations if formation.name == "line"][0]
+        if action.action_type == ActionType.SETUP_FORMATION_SPREAD:
+            formation = [formation for formation in self.formations if formation.name == "spread"][0]
+
+        if formation is not None:
             for action in formation.actions(self.game, self.team):
                 self.step(action)
-            #self.step(Action(ActionType.END_SETUP))
-            return True
+            return False
 
         if action.action_type == ActionType.END_SETUP:
             if not self.game.is_setup_legal(self.team, max_players=self.game.config.pitch_max,

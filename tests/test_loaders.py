@@ -1,5 +1,4 @@
 import unittest
-from bb.core import api
 from bb.core import load
 
 

@@ -1,5 +1,5 @@
 import time
-from bb.core import api
+from bb.web import api
 from bb.core.model import *
 
 

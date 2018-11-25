@@ -1,3 +1,0 @@
-
-class IllegalActionExcpetion(Exception):
-    pass

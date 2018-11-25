@@ -1,8 +1,4 @@
-from bb.core.model import *
-from bb.core.game import *
-from bb.core.api import *
-import numpy as np
-import time
+from bb.web.api import *
 import gym
 
 
