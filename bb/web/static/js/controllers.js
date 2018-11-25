@@ -880,16 +880,39 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         };
 
-        $scope.pickDice = function pickDice(idx) {
-
-            let a = $scope.newAction("SELECT_DIE");
-            a.idx = idx;
-            $scope.act(a);
-
+        $scope.showActionAsDice = function showActionAsDice(action) {
+            if (action.action_type === "SELECT_ATTACKER_DOWN") {
+                return true;
+            }
+            if (action.action_type === "SELECT_PUSH") {
+                return true;
+            }
+            if (action.action_type === "SELECT_BOTH_DOWN") {
+                return true;
+            }
+            if (action.action_type === "SELECT_DEFENDER_STUMBLES") {
+                return true;
+            }
+            if (action.action_type === "SELECT_DEFENDER_DOWN") {
+                return true;
+            }
+            return false;
         };
 
         $scope.showActionAsButton = function showActionAsButton(action) {
-            if (action.action_type === "SELECT_DIE"){
+            if (action.action_type === "SELECT_ATTACKER_DOWN"){
+                return false;
+            }
+            if (action.action_type === "SELECT_PUSH"){
+                return false;
+            }
+            if (action.action_type === "SELECT_BOTH_DOWN"){
+                return false;
+            }
+            if (action.action_type === "SELECT_DEFENDER_STUMBLES"){
+                return false;
+            }
+            if (action.action_type === "SELECT_DEFENDER_DOWN"){
                 return false;
             }
             if (action.action_type !== "START_GAME" && action.action_type.indexOf("START_") > -1){
