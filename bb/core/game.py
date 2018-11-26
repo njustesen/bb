@@ -1,11 +1,12 @@
 from bb.core.procedure import *
 from bb.core.load import *
 from copy import deepcopy, copy
+import numpy as np
 
 
 class Game:
 
-    def __init__(self, game_id, home_team, away_team, home_agent, away_agent, config, arena=None, ruleset=None, state=None):
+    def __init__(self, game_id, home_team, away_team, home_agent, away_agent, config, arena=None, ruleset=None, state=None, seed=None):
         self.game_id = game_id
         self.home_agent = home_agent
         self.away_agent = away_agent
@@ -14,6 +15,8 @@ class Game:
         self.config = config
         self.ruleset = get_rule_set(config.ruleset) if ruleset is None else ruleset
         self.state = state if state is not None else GameState(self, deepcopy(home_team), deepcopy(away_team))
+        self.seed = seed
+        self.rnd = np.random.RandomState(self.seed)
 
     def clone(self):
         state = self.state.clone()
@@ -25,7 +28,8 @@ class Game:
                     config=self.config,
                     ruleset=self.ruleset,
                     arena=self.arena,
-                    state=state)
+                    state=state,
+                    seed=None)
         game.actor = self.actor
 
     def to_simple(self):

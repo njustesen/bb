@@ -1,4 +1,3 @@
-import random
 from copy import copy, deepcopy
 import numpy as np
 import uuid
@@ -677,8 +676,8 @@ class DiceRoll:
 
 class D3(Die):
 
-    def __init__(self):
-        self.value = random.randint(1, 3)
+    def __init__(self, rnd):
+        self.value = rnd.randint(1, 3)
 
     def get_value(self):
         return self.value
@@ -692,8 +691,8 @@ class D3(Die):
 
 class D6(Die):
 
-    def __init__(self):
-        self.value = random.randint(1, 6)
+    def __init__(self, rnd):
+        self.value = rnd.randint(1, 6)
 
     def get_value(self):
         return self.value
@@ -707,8 +706,8 @@ class D6(Die):
 
 class D8(Die):
 
-    def __init__(self):
-        self.value = random.randint(1, 8)
+    def __init__(self, rnd):
+        self.value = rnd.randint(1, 8)
 
     def get_value(self):
         return self.value
@@ -722,8 +721,8 @@ class D8(Die):
 
 class BBDie(Die):
 
-    def __init__(self):
-        r = random.randint(1, 6)
+    def __init__(self, rnd):
+        r = rnd.randint(1, 6)
         if r == 6:
             r = 3
         self.value = BBDieResult(r)

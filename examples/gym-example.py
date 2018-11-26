@@ -7,11 +7,16 @@ if __name__ == "__main__":
     # Create environment
     env = gym.make("FFAI-v1")
 
-    # Create a random bot to take actions
-    bot = RandomBot("My Random Bot")
+    # Set seed for reproducibility
+    seed = 0
+    env.seed(seed)
 
-    # Player 100 games
-    for i in range(100):
+    # Create a random bot to take actions
+    bot = RandomBot("My Random Bot", seed=seed)
+
+    # Play 100 games
+    steps = 0
+    for i in range(10):
 
         obs = env.reset()
         done = False
@@ -25,4 +30,5 @@ if __name__ == "__main__":
 
             # Gym step function
             obs, reward, done, info = env.step(action)
-
+            steps += 1
+    print(steps)

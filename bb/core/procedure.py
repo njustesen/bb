@@ -55,7 +55,7 @@ class Apothecary(Procedure):
 
             if action.action_type == ActionType.USE_APOTHECARY:
 
-                self.roll_second = DiceRoll([D6(), D8()], roll_type=RollType.CASUALTY_ROLL)
+                self.roll_second = DiceRoll([D6(self.game.rnd), D8(self.game.rnd)], roll_type=RollType.CASUALTY_ROLL)
                 result = self.roll_second.get_sum()
                 n = min(61, max(38, result))
                 self.casualty_second = CasualtyType(n)
@@ -109,7 +109,7 @@ class Armor(Procedure):
     def step(self, action):
 
         # Roll
-        roll = DiceRoll([D6(), D6()], roll_type=RollType.ARMOR_ROLL)
+        roll = DiceRoll([D6(self.game.rnd), D6(self.game.rnd)], roll_type=RollType.ARMOR_ROLL)
         roll.modifiers = self.modifiers
         roll.target = self.player.get_av() + 1
         result = roll.get_sum() + self.modifiers
@@ -250,7 +250,7 @@ class Block(Procedure):
             # Assists
             if self.defender.get_st() > self.attacker.get_st() and self.attacker.has_skill(Skill.DAUNTLESS) \
                     and self.dauntless_roll is None:
-                self.dauntless_roll = DiceRoll([D6()], roll_type=RollType.STRENGTH_ROLL)
+                self.dauntless_roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.STRENGTH_ROLL)
                 self.dauntless_success = self.dauntless_roll.get_sum() + self.attacker.get_st() > self.defender.get_st()
                 self.game.report(Outcome(OutcomeType.DAUNTLESS_USED, team=self.attacker.team, player=self.attacker,
                                          rolls=[self.dauntless_roll], n=True))
@@ -262,7 +262,7 @@ class Block(Procedure):
             # Roll
             self.roll = DiceRoll([], roll_type=RollType.BLOCK_ROLL)
             for i in range(dice):
-                self.roll.dice.append(BBDie())
+                self.roll.dice.append(BBDie(self.game.rnd))
 
             self.game.report(Outcome(OutcomeType.BLOCK_ROLL, player=self.attacker, opp_player=self.defender,
                                      rolls=[self.roll]))
@@ -376,7 +376,7 @@ class Bounce(Procedure):
         self.ball.is_carried = False
 
         # Roll
-        roll_scatter = DiceRoll([D8()], roll_type=RollType.BOUNCE_ROLL)
+        roll_scatter = DiceRoll([D8(self.game.rnd)], roll_type=RollType.BOUNCE_ROLL)
         result = roll_scatter.get_sum()
 
         # Bounce
@@ -439,7 +439,7 @@ class Casualty(Procedure):
 
     def step(self, action):
 
-        self.roll = DiceRoll([D6(), D8()], d68=True, roll_type=RollType.CASUALTY_ROLL)
+        self.roll = DiceRoll([D6(self.game.rnd), D8(self.game.rnd)], d68=True, roll_type=RollType.CASUALTY_ROLL)
         result = self.roll.get_sum()
         n = min(61, max(38, result))
         self.casualty = CasualtyType(n)
@@ -517,7 +517,7 @@ class Catch(Procedure):
                                               interception=self.interception, handoff=self.handoff)
 
             # Roll
-            roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
+            roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.AGILITY_ROLL)
             roll.modifiers = modifiers
             roll.target = Catch.success[self.player.get_ag()]
             self.rolled = True
@@ -603,14 +603,14 @@ class CoinToss(Procedure):
 
     def _flip_coin(self, action):
         if action.action_type == ActionType.HEADS:
-            if random.random() >= 0.5:
+            if self.game.rnd.rand(1)[0] >= 0.5:
                 self.away_won_toss = True
                 self.game.report(Outcome(OutcomeType.HEADS_WON))
             else:
                 self.away_won_toss = False
                 self.game.report(Outcome(OutcomeType.TAILS_LOSS))
         elif action.action_type == ActionType.TAILS:
-            if random.random() >= 0.5:
+            if self.game.rnd.rand(1)[0] >= 0.5:
                 self.away_won_toss = True
                 self.game.report(Outcome(OutcomeType.TAILS_WON))
             else:
@@ -769,7 +769,7 @@ class Injury(Procedure):
         # TODO: Necromancer
 
         # Roll
-        roll = DiceRoll([D6(), D6()], roll_type=RollType.INJURY_ROLL)
+        roll = DiceRoll([D6(self.game.rnd), D6(self.game.rnd)], roll_type=RollType.INJURY_ROLL)
         result = roll.get_sum()
         self.injury_rolled = True
 
@@ -914,7 +914,7 @@ class Fans(Procedure):
         rolls = []
         spectators = []
         for team in self.game.state.teams:
-            roll = DiceRoll([D6(), D6()], roll_type=RollType.FANS_ROLL)
+            roll = DiceRoll([D6(self.game.rnd), D6(self.game.rnd)], roll_type=RollType.FANS_ROLL)
             rolls.append(roll)
             fans = (roll.get_sum() + team.fan_factor) * 1000
             spectators.append(fans)
@@ -1000,7 +1000,7 @@ class Riot(Procedure):
         elif receiving_turn == 0:
             self.effect = 1
         else:
-            roll = DiceRoll([D6()], roll_type=RollType.RIOT_ROLL)
+            roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.RIOT_ROLL)
             if roll.get_sum() <= 3:
                 self.effect = 1
             else:
@@ -1062,7 +1062,7 @@ class CheeringFans(Procedure):
         rolls = []
         cheers = []
         for team in self.game.state.teams:
-            roll = DiceRoll([D3()], roll_type=RollType.CHEERING_FANS_ROLL)
+            roll = DiceRoll([D3(self.game.rnd)], roll_type=RollType.CHEERING_FANS_ROLL)
             rolls.append(roll)
             roll.modifiers = team.state.fame + team.cheerleaders
             cheers.append(roll.get_result())
@@ -1095,7 +1095,7 @@ class BrilliantCoaching(Procedure):
         rolls = []
         brilliant_coaches = []
         for team in self.game.state.teams:
-            roll = DiceRoll([D3()], roll_type=RollType.BRILLIANT_COACHING_ROLL)
+            roll = DiceRoll([D3(self.game.rnd)], roll_type=RollType.BRILLIANT_COACHING_ROLL)
             rolls.append(roll)
             roll.modifiers = team.state.fame + team.ass_coaches
             brilliant_coaches.append(roll.get_result())
@@ -1130,7 +1130,7 @@ class ThrowARock(Procedure):
         rolls = []
         rocks = []
         for team in self.game.state.teams:
-            roll = DiceRoll([D3()], roll_type=RollType.THROW_A_ROCK_ROLL)
+            roll = DiceRoll([D3(self.game.rnd)], roll_type=RollType.THROW_A_ROCK_ROLL)
             rolls.append(roll)
             roll.modifiers = team.state.fame
             rocks.append(roll.get_result())
@@ -1140,7 +1140,7 @@ class ThrowARock(Procedure):
         for i in range(len(self.game.state.teams)):
             team = self.game.state.teams[i]
             if max_cheers >= rocks[i]:
-                player = np.random.choice(self.game.get_players_on_pitch(team))
+                player = self.game.rnd.choice(self.game.get_players_on_pitch(team))
                 KnockDown(self.game, player, armor_roll=False)
                 self.game.report(Outcome(OutcomeType.HIT_BY_ROCK, player=player))
 
@@ -1161,7 +1161,7 @@ class PitchInvasionRoll(Procedure):
         self.player = player
 
     def step(self, action):
-        roll = DiceRoll([D6()], roll_type=RollType.PITCH_INVASION_ROLL)
+        roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.PITCH_INVASION_ROLL)
 
         roll.modifiers = self.team.state.fame
         result = roll.get_sum() + roll.modifiers
@@ -1191,7 +1191,7 @@ class KickoffTable(Procedure):
 
     def step(self, action):
 
-        roll = DiceRoll([D6(), D6()], roll_type=RollType.KICKOFF_ROLL)
+        roll = DiceRoll([D6(self.game.rnd), D6(self.game.rnd)], roll_type=RollType.KICKOFF_ROLL)
         roll.result = roll.get_sum()
 
         if roll.result == 2:  # Get the ref!
@@ -1366,7 +1366,7 @@ class GFI(Procedure):
         if not self.rolled:
 
             # Roll
-            roll = DiceRoll([D6()], roll_type=RollType.GFI_ROLL)
+            roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.GFI_ROLL)
             self.rolled = True
             roll.target = 2
             roll.modifiers = 1 if self.game.state.weather == WeatherType.BLIZZARD else 0
@@ -1468,7 +1468,7 @@ class Dodge(Procedure):
             # TODO: Auto-use other skills
 
             # Roll
-            roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
+            roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.AGILITY_ROLL)
             self.rolled = True
 
             # Calculate target
@@ -1636,7 +1636,7 @@ class PassAction(Procedure):
             self.ball.move_to(self.passer.position)
 
             # Roll
-            self.pass_roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
+            self.pass_roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.AGILITY_ROLL)
             self.pass_roll.target = Catch.success[self.passer.get_ag()]
             self.pass_roll.modifiers = PassAction.pass_modifiers(self.game, self.passer, self.pass_distance)
             result = self.pass_roll.get_sum()
@@ -1754,7 +1754,7 @@ class Pickup(Procedure):
         # Otherwise roll if player hasn't rolled
         if not self.rolled:
 
-            roll = DiceRoll([D6()], roll_type=RollType.AGILITY_ROLL)
+            roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.AGILITY_ROLL)
             roll.target = Pickup.success[self.player.get_ag()]
             roll.modifiers = Pickup.pickup_modifiers(self.game, self.player)
 
@@ -1829,7 +1829,7 @@ class StandUp(Procedure):
     def step(self, action):
 
         if self.roll:
-            roll = DiceRoll([D6()], target=4, roll_type=RollType.STAND_UP_ROLL)
+            roll = DiceRoll([D6(self.game.rnd)], target=4, roll_type=RollType.STAND_UP_ROLL)
             if roll.is_d6_success():
                 self.player.state.ready = PlayerReadyState.READY
                 self.game.report(Outcome(OutcomeType.PLAYER_STAND_UP_SUCCESS, rolls=[roll], player=self.player))
@@ -2217,7 +2217,7 @@ class PreKickOff(Procedure):
     def step(self, action):
         for player in self.team.players:
             if player.state.ready == PlayerReadyState.KOD and player not in self.checked:
-                roll = DiceRoll([D6()], roll_type=RollType.KO_READY_ROLL)
+                roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.KO_READY_ROLL)
                 if roll.get_sum() >= 4:
                     self.game.kod_to_reserves(player)
                     self.checked.append(player)
@@ -2382,7 +2382,7 @@ class Scatter(Procedure):
             return True
 
         n = 3 if self.is_pass else 1
-        rolls = [DiceRoll([D8()], roll_type=RollType.SCATTER_ROLL) for _ in range(n)]
+        rolls = [DiceRoll([D8(self.game.rnd)], roll_type=RollType.SCATTER_ROLL) for _ in range(n)]
 
         for s in range(n):
 
@@ -2390,9 +2390,9 @@ class Scatter(Procedure):
             roll_scatter = rolls[s]
             if self.kick and not self.gentle_gust:
                 if self.game.config.kick_scatter_dice == 'd6':
-                    distance_dice = D6()
+                    distance_dice = D6(self.game.rnd)
                 elif self.game.config.kick_scatter_dice == 'd3':
-                    distance_dice = D6()
+                    distance_dice = D6(self.game.rnd)
                 else:
                     raise Exception("Unknown kick_roll_distance")
                 roll_distance = DiceRoll([distance_dice], roll_type=RollType.DISTANCE_ROLL)
@@ -2497,7 +2497,7 @@ class ClearBoard(Procedure):
                     self.game.pitch_to_reserves(player)
                     # Check if heat exhausted
                     if self.game.state.weather == WeatherType.SWELTERING_HEAT:
-                        roll = DiceRoll([D6()], roll_type=RollType.SWELTERING_HEAT_ROLL)
+                        roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.SWELTERING_HEAT_ROLL)
                         if roll.get_sum() == 1:
                             player.state.ready = PlayerReadyState.HEATED
                             self.game.report(Outcome(OutcomeType.PLAYER_HEATED, player=player, rolls=[roll]))
@@ -2603,8 +2603,8 @@ class ThrowIn(Procedure):
         self.ball.carried = False
 
         # Roll
-        roll_direction = DiceRoll([D3()], roll_type=RollType.SCATTER_ROLL)
-        roll_distance = DiceRoll([D6(), D6()], roll_type=RollType.DISTANCE_ROLL)
+        roll_direction = DiceRoll([D3(self.game.rnd)], roll_type=RollType.SCATTER_ROLL)
+        roll_distance = DiceRoll([D6(self.game.rnd), D6(self.game.rnd)], roll_type=RollType.DISTANCE_ROLL)
 
         # Scatter
         x = 0
@@ -2894,7 +2894,7 @@ class WeatherTable(Procedure):
         self.kickoff = kickoff
 
     def step(self, action):
-        roll = DiceRoll([D6(), D6()], roll_type=RollType.WEATHER_ROLL)
+        roll = DiceRoll([D6(self.game.rnd), D6(self.game.rnd)], roll_type=RollType.WEATHER_ROLL)
         if roll.get_sum() == 2:
             self.game.state.weather = WeatherType.SWELTERING_HEAT
             self.game.report(Outcome(OutcomeType.WEATHER_SWELTERING_HEAT, rolls=[roll]))

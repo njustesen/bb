@@ -4,6 +4,7 @@ from bb.core.load import *
 from bb.ai.bots import RandomBot
 from bb.ai.layers import *
 from gym import error, spaces, utils
+from gym.utils import seeding
 from copy import deepcopy
 import random
 import uuid
@@ -21,6 +22,7 @@ class FFAIEnv(gym.Env):
         self.away_team = away_team
         self.actor = Agent("Gym Learner", human=True)
         self.opp_actor = opp_actor if opp_actor is not None else RandomBot("Random")
+        self.seed()
         self.layers = [
             OccupiedLayer(),
             OwnPlayerLayer(),
@@ -62,6 +64,14 @@ class FFAIEnv(gym.Env):
             'round': self.game.state.round
         }
         return self._observation(self.game), reward, self.game.state.game_over, info
+
+    def seed(self, seed=None):
+        if seed is None:
+            seed = np.random.randint(0, 2**32)
+        self.rnd = np.random.RandomState(seed)
+        if isinstance(self.opp_actor, RandomBot):
+            self.opp_actor.rnd = self.rnd
+        return seed
 
     def get_game(self):
         return self.game
@@ -129,7 +139,7 @@ class FFAIEnv(gym.Env):
         return obs
 
     def reset(self):
-        if random.random() >= 0.5:
+        if self.rnd.rand(1)[0] >= 0.5:
             self.team_id = self.home_team.team_id
             home_agent = self.actor
             away_agent = self.opp_actor
@@ -137,13 +147,15 @@ class FFAIEnv(gym.Env):
             self.team_id = self.away_team.team_id
             home_agent = self.opp_actor
             away_agent = self.actor
+        seed = self.rnd.randint(0, 2**32)
         self.game = Game(game_id=str(uuid.uuid1()),
                          home_team=self.home_team,
                          away_team=self.away_team,
                          home_agent=home_agent,
                          away_agent=away_agent,
                          config=self.config,
-                         ruleset=self.ruleset)
+                         ruleset=self.ruleset,
+                         seed=seed)
         self.game.init()
         return self._observation(self.game)
 
