@@ -10,12 +10,14 @@
                 <li>
                     <a class="nav-link" href="#"><span class="glyphicon glyphicon-list"></span> Games</a>
                 </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-link" ng-click="gridClass = 'none'"><span class="glyphicon glyphicon-stop"></span> None</a></li>
+                        <li><a class="nav-link" ng-click="gridClass = 'full-grid'"><span class="glyphicon glyphicon-th"></span> Grid</a></li>
+                        <li><a class="nav-link" ng-click="gridClass = 'dot-grid'"><span class="glyphicon glyphicon-record"></span> Dots</a></li>
+                    </ul>
                 <li>
-                    <a class="nav-link" ng-click="gridClass = 'full-grid'"><span class="glyphicon glyphicon-list"></span> Grid</a>
-                </li>
-                <li>
-                    <a class="nav-link" ng-click="gridClass = 'dot-grid'"><span class="glyphicon glyphicon-list"></span> Dots</a>
-                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
