@@ -507,7 +507,7 @@ class Catch(Procedure):
         if not self.rolled:
 
             # Can player even catch ball?
-            if self.player.has_skill(Skill.NO_HANDS) or self.player.state.ready not in Rules.catchable:
+            if self.player.has_skill(Skill.NO_HANDS) or not self.player.can_catch():
                 Bounce(self.game, self.ball)
                 self.game.report(Outcome(OutcomeType.BALL_DROPPED, player=self.player))
                 return True
@@ -803,7 +803,8 @@ class Injury(Procedure):
                 if self.in_crowd:
                     self.game.pitch_to_reserves(self.player)
                 else:
-                    self.player.state.ready = PlayerReadyState.STUNNED
+                    self.player.state.stunned = True
+                    self.player.state.up = False
 
         # CASUALTY
         elif result + stunty + mighty_blow + dirty_player >= 10:
@@ -843,8 +844,8 @@ class Interception(Procedure):
         for interceptor in self.interceptors:
             modifier = Catch.catch_modifiers(self.game, interceptor, interception=True)
             agi_rolls.append([max(2, min(6, Catch.success[interceptor.get_ag()] - modifier))])
-        return [ActionChoice(ActionType.INTERCEPTION, team=self.team, players=self.interceptors,
-                             agi_rolls=agi_rolls),
+        return [ActionChoice(ActionType.INTERCEPTION, team=self.team,
+                             players=self.interceptors, agi_rolls=agi_rolls),
                 ActionChoice(ActionType.SELECT_NONE, team=self.team)]
 
 
@@ -864,7 +865,7 @@ class Touchback(Procedure):
     def available_actions(self):
         return [ActionChoice(ActionType.SELECT_PLAYER, team=self.game.state.receiving_this_drive,
                              players=self.game.get_players_on_pitch(self.game.state.receiving_this_drive,
-                                                                    ready=PlayerReadyState.READY))]
+                                                                    up=True))]
 
 
 class LandKick(Procedure):
@@ -1171,7 +1172,8 @@ class PitchInvasionRoll(Procedure):
                 self.game.report(Outcome(OutcomeType.KNOCKED_OUT, rolls=[roll], player=self.player, team=self.team))
                 KnockOut(self.game, self.player, roll=roll)
             else:
-                self.player.state.ready = PlayerReadyState.STUNNED
+                self.player.state.stunned = True
+                self.player.state.up = False
                 self.game.report(Outcome(OutcomeType.STUNNED, rolls=[roll], player=self.player, team=self.team))
         else:
             self.game.report(Outcome(OutcomeType.PLAYER_READY, rolls=[roll], player=self.player, team=self.team))
@@ -1254,10 +1256,9 @@ class KnockDown(Procedure):
     def step(self, action):
 
         # Knock down player
+        self.player.state.up = False
         if self.player.team == self.game.state.current_team:
-            self.player.state.ready = PlayerReadyState.DOWN_USED
-        else:
-            self.player.state.ready = PlayerReadyState.DOWN_READY
+            self.player.state.used = True
 
         self.game.report(Outcome(OutcomeType.KNOCKED_DOWN, player=self.player, opp_player=self.inflictor))
 
@@ -1406,7 +1407,8 @@ class GFI(Procedure):
                 # Remove reroll and roll again - recursive call
                 self.game.report(Outcome(OutcomeType.REROLL_USED, team=self.player.team))
                 self.rolled = False
-                self.step(None)
+                self.player.team.state.use_reroll()
+                return self.step(None)
             else:
                 # Player trips
                 if not self.player.position == self.pos:
@@ -1831,13 +1833,13 @@ class StandUp(Procedure):
         if self.roll:
             roll = DiceRoll([D6(self.game.rnd)], target=4, roll_type=RollType.STAND_UP_ROLL)
             if roll.is_d6_success():
-                self.player.state.ready = PlayerReadyState.READY
+                self.player.state.up = True
                 self.game.report(Outcome(OutcomeType.PLAYER_STAND_UP_SUCCESS, rolls=[roll], player=self.player))
             else:
-                self.player.state.ready = PlayerReadyState.DOWN_USED
+                self.player.state.up = False
                 self.game.report(Outcome(OutcomeType.PLAYER_STAND_UP_FAILURE, rolls=[roll], player=self.player))
         else:
-            self.player.state.ready = PlayerReadyState.READY
+            self.player.state.up = True
 
         return True
 
@@ -1873,10 +1875,7 @@ class EndPlayerTurn(Procedure):
         self.player = player
 
     def step(self, action):
-        if self.player.state.ready == PlayerReadyState.READY:
-            self.player.state.ready = PlayerReadyState.USED
-        elif self.player.state.ready == PlayerReadyState.DOWN_READY:
-            self.player.state.ready = PlayerReadyState.DOWN_USED
+        self.player.state.used = True
         self.player.state.moves = 0
         self.game.report(Outcome(OutcomeType.END_PLAYER_TURN, player=self.player))
         self.game.state.active_player = None
@@ -1946,13 +1945,13 @@ class PlayerAction(Procedure):
             # Check GFI
             gfi = False
             if self.player_action_type == PlayerActionType.BLITZ:
-                move_needed = 3 if self.player.state.ready == PlayerReadyState.DOWN_READY else 1
+                move_needed = 3 if not self.player.state.up else 1
                 gfi = self.player.state.moves + move_needed > self.player.get_ma()
                 # Use movement
                 self.player.state.moves += move_needed
                 for i in range(move_needed):
                     self.squares.append(self.player.position)
-                    self.player.state.ready = PlayerReadyState.READY
+                    self.player.state.up = True
 
             # Check frenzy
             '''
@@ -2015,10 +2014,10 @@ class PlayerAction(Procedure):
         if self.player_action_type != PlayerActionType.BLOCK:
             move_positions = []
             agi_rolls = []
-            move_needed = 1 if self.player.state.ready == PlayerReadyState.DOWN_READY else 1
+            move_needed = 1 if not self.player.state.up else 1
             gfi = self.player.state.moves + move_needed > self.player.get_ma()
             sprints = 3 if self.player.has_skill(Skill.SPRINT) else 2
-            if self.player.state.ready is PlayerReadyState.DOWN_READY:
+            if not self.player.state.up:
                 if self.player.get_ma() < 3:
                     agi_rolls.append([4])
                 else:
@@ -2058,7 +2057,7 @@ class PlayerAction(Procedure):
             can_block = True
             gfi = False
             if self.player_action_type == PlayerActionType.BLITZ:
-                move_needed = 3 if self.player.state.ready == PlayerReadyState.DOWN_READY else 1
+                move_needed = 3 if not self.player.state.up else 1
                 gfi_allowed = 3 if self.player.has_skill(Skill.SPRINT) else 2
                 if self.player.state.moves + move_needed > self.player.get_ma() + gfi_allowed or move_needed > 1:
                     can_block = False
@@ -2110,7 +2109,7 @@ class PlayerAction(Procedure):
             agi_rolls = []
             for square in self.game.adjacent_player_squares(self.player, include_own=True, include_opp=False):
                 player_to = self.game.get_player_at(square)
-                if player_to.state.ready in Rules.catchable and Skill.NO_HANDS not in player_to.get_skills():
+                if player_to.can_catch():
                     hand_off_positions.append(square)
                     modifiers = Catch.catch_modifiers(self.game, self.player, square)
                     target = Catch.success[self.player.get_ag()]
@@ -2135,7 +2134,7 @@ class PlayerAction(Procedure):
                 rolls = [cache[distance]]
                 player_to = self.game.get_player_at(position)
                 if player_to is not None and player_to.team == self.player.team \
-                        and player_to.state.ready in Rules.catchable:
+                        and player_to.can_catch():
                     catch_target = Catch.success[player_to.get_ag()]
                     catch_modifiers = Catch.catch_modifiers(self.game, player_to, accurate=True)
                     rolls.append(min(6, max(2, catch_target - catch_modifiers)))
@@ -2215,8 +2214,8 @@ class PreKickOff(Procedure):
         self.checked = []
 
     def step(self, action):
-        for player in self.team.players:
-            if player.state.ready == PlayerReadyState.KOD and player not in self.checked:
+        for player in self.game.get_kods(self.team):
+            if player not in self.checked:
                 roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.KO_READY_ROLL)
                 if roll.get_sum() >= 4:
                     self.game.kod_to_reserves(player)
@@ -2492,14 +2491,15 @@ class ClearBoard(Procedure):
                 # If player not in reserves. move it to it
                 if player.position is not None:
                     # Set to ready
-                    player.state.ready = PlayerReadyState.READY
+                    player.state.reset()
+                    player.state.up = True
                     # Remove from pitch
                     self.game.pitch_to_reserves(player)
                     # Check if heat exhausted
                     if self.game.state.weather == WeatherType.SWELTERING_HEAT:
                         roll = DiceRoll([D6(self.game.rnd)], roll_type=RollType.SWELTERING_HEAT_ROLL)
                         if roll.get_sum() == 1:
-                            player.state.ready = PlayerReadyState.HEATED
+                            player.state.heated = True
                             self.game.report(Outcome(OutcomeType.PLAYER_HEATED, player=player, rolls=[roll]))
                         else:
                             self.game.report(Outcome(OutcomeType.PLAYER_NOT_HEATED, player=player, rolls=[roll]))
@@ -2702,8 +2702,8 @@ class TurnStunned(Procedure):
     def step(self, action):
         players = []
         for player in self.team.players:
-            if player.state.ready == PlayerReadyState.STUNNED:
-                player.state.ready = PlayerReadyState.DOWN_USED
+            if player.state.stunned:
+                player.state.stunned = False
                 players.append(player)
         self.game.report(Outcome(OutcomeType.STUNNED_TURNED))
         return True
@@ -2733,10 +2733,8 @@ class EndTurn(Procedure):
         self.game.state.current_team.state.reset_turn()
         for player in self.game.state.current_team.players:
             player.state.moves = 0
-            if player.state.ready == PlayerReadyState.USED:
-                player.state.ready = PlayerReadyState.READY
-            elif player.state.ready == PlayerReadyState.DOWN_USED:
-                player.state.ready = PlayerReadyState.DOWN_READY
+            if player.state.used:
+                player.state.used = False
 
         # Add kickoff procedure - if there are more turns left
         if self.kickoff and self.game.get_opp_team(self.game.state.current_team).state.turn < self.game.config.rounds:
@@ -2856,7 +2854,7 @@ class Turn(Procedure):
             if self.blitz:
                 if self.game.num_tackle_zones_in(player) > 0:
                     continue
-            if player.state.ready == PlayerReadyState.READY or player.state.ready == PlayerReadyState.DOWN_READY:
+            if not player.state.used:
                 move_players.append(player)
                 if self.blitz_available:
                     blitz_players.append(player)
@@ -2866,8 +2864,8 @@ class Turn(Procedure):
                     handoff_players.append(player)
                 if self.foul_available:
                     foul_players.append(player)
-            if player.state.ready == PlayerReadyState.READY and not self.quick_snap and not self.blitz:
-                block_players.append(player)
+                if not self.quick_snap and not self.blitz:
+                    block_players.append(player)
 
         actions = []
         if len(move_players) > 0:

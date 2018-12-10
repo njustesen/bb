@@ -96,6 +96,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $scope.passOptions = false;
         $scope.passHint = false;
         $scope.gridClass = 'none';
+        $scope.opp_turn = false;
         $scope.local_state = {
             balls: [],
             board: [],
@@ -103,6 +104,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             away_dugout: [],
             player_positions: {}
         };
+
+        var id = $routeParams.id;
+        $scope.team_id = $routeParams.team_id;
 
         $scope.getAvailable = function getAvailable(square){
             if (square.special_action_type === "PASS" && $scope.passOptions) {
@@ -146,8 +150,6 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 //$location.path("/#/");
             });
         };
-
-        var id = $routeParams.id;
 
         $scope.showReport = function showReport(report){
             return report.outcome_type in GameLogService.log_texts;
@@ -235,6 +237,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             event.stopPropagation();
             for (let idx in $scope.game.state.available_actions) {
                 let a = $scope.game.state.available_actions[idx];
+                if (a.disabled){
+                    continue;
+                }
                 if (a.action_type === "START_MOVE" && action === "move"){
                     $scope.pickActionType(a);
                 } else if (a.action_type === "START_BLOCK" && action === "block"){
@@ -257,6 +262,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             }
             for (let idx in $scope.game.state.available_actions){
                 let action = $scope.game.state.available_actions[idx];
+                if ($scope.agent_id != null && $scope.agent_id !== action.agent_id){
+                    action.disabled = true;
+                }
                 if (action.player_ids.indexOf($scope.selectedPlayer().player_id) === -1) {
                     continue;
                 }
@@ -330,6 +338,9 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.main_action = null;
             for (let idx in $scope.game.state.available_actions){
                 let action = $scope.game.state.available_actions[idx];
+                if (action.disabled){
+                    continue;
+                }
                 if (action.positions.length > 0){
                     // If an available player is selected
                     $scope.main_action = action;
@@ -433,8 +444,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
                 let player = $scope.local_state.board[pos.y][pos.x].player;
                 if (player !== null){
                     let team = $scope.teamOfPlayer(player);
-                    if (team.team_id === $scope.local_state.current_team_id &&
-                            player.state.ready !== "DOWN_READY" && player.state.ready !== "STUNNED" && player.state.ready !== "DOWN_USED") {
+                    if (team.team_id === $scope.local_state.current_team_id && player.state.up) {
                         $scope.local_state.board[pos.y][pos.x].available = true;
                         $scope.local_state.board[pos.y][pos.x].action_type = "PASS";
                         if ($scope.available_pass_rolls.length > i) {
@@ -587,10 +597,10 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             };
         };
 
-        $scope.checkForReload =  function checkForReload(time){
+        $scope.checkForReload = function checkForReload(time){
             if ($scope.available_positions.length === 0 && !$scope.game.game_over){
                 setTimeout(function(){
-                    if (!$scope.loading && !$scope.refreshing && $scope.game.state.available_actions.length === 0){
+                    if (!$scope.loading && !$scope.refreshing && ($scope.game.state.available_actions.length === 0 || $scope.opp_turn)){
                         $scope.act($scope.newAction('CONTINUE'));
                     }
                 }, time);
@@ -599,11 +609,11 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         $scope.select = function select(square){
             $scope.selected_square = square;
-            if (square.area == 'pitch'){
+            if (square.area === 'pitch'){
                 $scope.local_state.board[square.y][square.x].selected = true;
-            } else if (square.area == 'dugout-home'){
+            } else if (square.area === 'dugout-home'){
                 $scope.local_state.home_dugout[square.y][square.x].selected = true;
-            } else if (square.area == 'dugout-away'){
+            } else if (square.area === 'dugout-away'){
                 $scope.local_state.away_dugout[square.y][square.x].selected = true;
             }
         };
@@ -644,18 +654,31 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         };
 
         $scope.playerReadyStateClass = function playerStateClass(player){
-            if (player.state.ready === "READY" || player.state.ready === "DOWN"){
-                return "success";
-            } if (player.state.ready === "STUNNED"){
-                return "warning";
-            } else if (player.state.ready === "USED" || player.state.ready === "DOWN USED" || player.state.ready === "STUNNED" || player.state.ready === "HEATED" || player.state.ready === "BONE HEADED" || player.state.ready === "HYPNOTIZED" || player.state.ready === "REALLY STUPID" || player.state.ready === "REALLY STUPID"){
+            if (player.state.heated || player.state.bone_headed || player.state.hypnotized || player.state.used){
                 return "secondary";
-            } else if (player.state.ready === "KOD"){
+            } else if (player.state.up){
+                return "success";
+            } if (player.state.stunned){
                 return "warning";
-            } else if (player.state.ready === "BH" || player.state.ready === "MNG" || player.state.ready === "DEAD" || player.state.ready === ""){
-                return "danger";
             }
-            return "light";
+            return "default";
+        };
+
+        $scope.playerReadyStateName = function playerReadyStateName(player){
+            if (player.state.heated){
+                return "Heated";
+            } else if (player.state.bone_headed){
+                return "Bone Headed";
+            } else if (player.state.hypnotized){
+                return "Hypnotized";
+            } else if (player.state.used){
+                return "Used";
+            } else if (player.state.up){
+                return "";
+            } else if (player.state.stunned){
+                return "Stunned";
+            }
+            return "Down";
         };
 
         $scope.placeBall = function placeBall(square){
@@ -816,6 +839,19 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             return "";
         };
 
+        $scope.platerStateText = function platerStateText(state) {
+            if (state.stunned){
+                return "Stunned";
+            } else if (state.bone_headed){
+                return "Bone Headed";
+            } else if (state.really_stupid){
+                return "Really Stupid";
+            } else if (state.heated){
+                return "Heated";
+            }
+            return "";
+        };
+
         $scope.playerInFocus = function playerInFocus(team) {
             if ($scope.hover_player != null){
                 let player = $scope.hover_player;
@@ -840,6 +876,18 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.reportsLimit=10000;
         };
 
+        $scope.disableOppActions = function disableOppActions(){
+            $scope.opp_turn = true;
+            for (let idx in $scope.game.state.available_actions) {
+                let action = $scope.game.state.available_actions[idx];
+                if (action.team_id !== $scope.team_id) {
+                    action.disabled = true;
+                    continue;
+                }
+                $scope.opp_turn = false;
+            }
+        };
+
         $scope.act = function act(action){
             console.log(action);
             if (action.action_type === "END_TURN" || action.action_type === "PASS"){
@@ -849,6 +897,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.reportsLimit = 20;
             GameService.act($scope.game.game_id, action).success(function(data) {
                 $scope.game = data;
+                $scope.disableOppActions();
                 console.log(data);
                 $scope.playersById = Object.assign({}, $scope.game.state.home_team.players_by_id, $scope.game.state.away_team.players_by_id);
                 $scope.setLocalState();
@@ -957,6 +1006,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
         $( document ).ready(function() {
             GameService.get(id).success(function (data) {
                 $scope.game = data;
+                $scope.disableOppActions();
                 $scope.playersById = Object.assign({}, $scope.game.state.home_team.players_by_id, $scope.game.state.away_team.players_by_id);
                 $scope.setLocalState();
                 $scope.setAvailablePositions();

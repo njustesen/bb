@@ -24,10 +24,8 @@ def new_game(away_team_id, home_team_id, away_agent=None, home_agent=None, confi
 
 
 def step(game_id, action):
-
     game = host.get_game(game_id)
     game.step(action)
-
     return game
 
 

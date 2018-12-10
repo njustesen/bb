@@ -24,7 +24,7 @@ app.config(['$locationProvider', '$routeProvider',
             controller: 'GameCreateCtrl',
             access: { requiredAuthentication: true }
         }).
-        when('/game/play/:id', {
+        when('/game/play/:id/:team_id', {
             templateUrl: 'static/partials/game.play.html',
             controller: 'GamePlayCtrl',
             access: { requiredAuthentication: true }

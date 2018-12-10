@@ -104,10 +104,10 @@ class ReadyLayer(FeatureLayer):
             return out
         for player in active_team.players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.READY else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.READY else 0.0
         for player in game.get_opp_team(active_team).players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.READY else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.READY else 0.0
         return out
 
     def name(self):
@@ -123,10 +123,10 @@ class DownLayer(FeatureLayer):
             return out
         for player in active_team.players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.DOWN_READY or player.state.ready == PlayerReadyState.DOWN_USED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.DOWN_READY or player.state.ready == PhysicalState.DOWN_USED else 0.0
         for player in game.get_opp_team(active_team).players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.DOWN_READY or player.state.ready == PlayerReadyState.DOWN_USED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.DOWN_READY or player.state.ready == PhysicalState.DOWN_USED else 0.0
         return out
 
     def name(self):
@@ -142,10 +142,10 @@ class StunnedLayer(FeatureLayer):
             return out
         for player in active_team.players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.STUNNED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.STUNNED else 0.0
         for player in game.get_opp_team(active_team).players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.STUNNED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.STUNNED else 0.0
         return out
 
     def name(self):
@@ -161,10 +161,10 @@ class UsedLayer(FeatureLayer):
             return out
         for player in active_team.players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.USED or player.state.ready == PlayerReadyState.DOWN_USED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.USED or player.state.ready == PhysicalState.DOWN_USED else 0.0
         for player in game.get_opp_team(active_team).players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PlayerReadyState.USED or player.state.ready == PlayerReadyState.DOWN_USED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.USED or player.state.ready == PhysicalState.DOWN_USED else 0.0
         return out
 
     def name(self):

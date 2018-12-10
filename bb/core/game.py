@@ -37,12 +37,19 @@ class Game:
             'game_id': self.game_id,
             'state': self.state.to_simple(),
             'stack': self.procs(),
+            'home_agent': self.home_agent.to_simple(),
+            'away_agent': self.away_agent.to_simple(),
             'squares_moved': self._squares_moved(),
             'arena': self.arena.to_simple(),
             'ruleset': self.ruleset.name,
             'can_home_team_use_reroll': self.can_use_reroll(self.state.home_team),
             'can_away_team_use_reroll': self.can_use_reroll(self.state.away_team)
         }
+
+    def team_agent(self, team):
+        if team == self.state.home_team:
+            return self.home_agent
+        return self.away_agent
 
     def _squares_moved(self):
         for proc in self.state.stack.items:
@@ -388,14 +395,15 @@ class Game:
         if turn is not None:
             return turn.quick_snap
 
-    def get_players_on_pitch(self, team, ready=None):
+    def get_players_on_pitch(self, team, ready=None, up=None):
         return [player for player in team.players
-                if player.position is not None and (ready is None or ready == player.state.ready)]
+                if player.position is not None and (ready is None or ready == player.state.ready) and up is None or
+                up == player.state.up]
 
     def pitch_to_reserves(self, player):
         self.state.pitch.remove(player)
         self.get_reserves(player.team).append(player)
-        player.state.ready = PlayerReadyState.READY
+        player.state.ready = PhysicalState.READY
 
     def reserves_to_pitch(self, player, pos):
         self.get_reserves(player.team).remove(player)
@@ -407,10 +415,10 @@ class Game:
     def pitch_to_kod(self, player):
         self.state.pitch.remove(player)
         self.get_kods(player.team).append(player)
-        player.state.ready = PlayerReadyState.KOD
+        player.state.ready = PhysicalState.KOD
 
     def kod_to_reserves(self, player):
-        player.state.ready = PlayerReadyState.READY
+        player.state.ready = PhysicalState.READY
         self.get_kods(player.team).remove(player)
         self.get_reserves(player.team).append(player)
 
@@ -427,7 +435,7 @@ class Game:
     def pitch_to_dungeon(self, player):
         self.state.pitch.remove(player)
         self.get_dungeon(player.team).append(player)
-        player.ready = PlayerReadyState.EJECTED
+        player.ready = PhysicalState.EJECTED
 
     def move_player(self, player, pos):
         self.state.pitch.move(player, pos)

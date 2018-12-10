@@ -224,7 +224,7 @@
                             </span>
                         </div>
                         <div class="playericon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].player != null">
-                            <img src="static/img/iconssmall/{{ local_state.board[$parent.$parent.$index+1][$index+1].player_icon }}" class="{{ ['READY', 'DOWN_READY'].includes((local_state.board[$parent.$parent.$index+1][$index+1].player.state.ready) ) ? '' : 'transparent'  }}" />
+                            <img src="static/img/iconssmall/{{ local_state.board[$parent.$parent.$index+1][$index+1].player_icon }}" class="{{ local_state.board[$parent.$parent.$index+1][$index+1].player.state.used ? 'transparent' : ''  }}" />
                         </div>
                         <div class="ballicon align-middle text-center" ng-if="local_state.board[$parent.$index+1][$index+1].ball != null">
                             <img ng-if="local_state.board[$parent.$index+1][$index+1].ball.in_air" src="static/img/ball/sball_30x30.png" />
@@ -242,9 +242,8 @@
                             <img src="static/img/icons/decorations/block3d.gif" class="blockDice" ng-if="local_state.board[$parent.$index+1][$index+1].block_roll == 3" />
                         </div>
                         <div class="stateicon align-middle text-center">
-                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player.state.ready == 'STUNNED'" src="static/img/player_status/stunned.gif" />
-                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player.state.ready == 'DOWN_READY'" src="static/img/player_status/prone.gif" />
-                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player.state.ready == 'DOWN_USED'" src="static/img/player_status/prone.gif" />
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player.stunned" src="static/img/player_status/stunned.gif" />
+                            <img ng-if="local_state.board[$parent.$index+1][$index+1].player.state.up == false" src="static/img/player_status/prone.gif" />
                         </div>
                     </div>
                 </div>
@@ -280,7 +279,7 @@
                             <span class="name-box">
                                 {{playerInFocus(game.state.away_team).nr}}. <b>{{playerInFocus(game.state.away_team).role}}:</b> {{playerInFocus(game.state.away_team).name}}
                             </span>
-                            <span style="float:right" class="label right label-{{ playerReadyStateClass(playerInFocus(game.state.away_team)) }}">{{ playerInFocus(game.state.away_team).state.ready }}</span>
+                            <span style="float:right" class="label right label-{{ playerReadyStateClass(playerInFocus(game.state.away_team)) }}">{{ platerStateText(playerInFocus(game.state.away_team).state) }}</span>
                         </div>
                         <div>
                             <div class="attribute text-center">
@@ -317,7 +316,7 @@
                             <span class="name-box">
                                 {{playerInFocus(game.state.home_team).nr}}. <b>{{playerInFocus(game.state.home_team).role}}:</b> {{playerInFocus(game.state.home_team).name}}
                             </span>
-                            <span style="float:right" class="label label-{{ playerReadyStateClass(playerInFocus(game.state.home_team)) }}">{{ playerInFocus(game.state.home_team).state.ready }}</span>
+                            <span style="float:right" class="label label-{{ playerReadyStateClass(playerInFocus(game.state.home_team)) }}">{{ playerReadyStateName(playerInFocus(game.state.home_team)) }}</span>
                         </div>
                         <div>
                             <div class="attribute text-center">

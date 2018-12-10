@@ -187,11 +187,8 @@ class PlayerActionType(Enum):
     FOUL = 6
 
 
-class PlayerReadyState(Enum):
-    READY = 1
-    USED = 2
-    DOWN_READY = 3
-    DOWN_USED = 4
+class PhysicalState(Enum):
+    NONE = 1
     STUNNED = 5
     KOD = 6
     BH = 7
@@ -458,32 +455,3 @@ class Rules:
         CasualtyType.SMASHED_COLLAR_BONE: CasualtyEffect.ST,
         CasualtyType.DEAD: CasualtyEffect.DEAD
     }
-
-    has_tackle_zone = [
-        PlayerReadyState.READY,
-        PlayerReadyState.USED
-    ]
-
-    blockable = [
-        PlayerReadyState.READY,
-        PlayerReadyState.USED,
-        PlayerReadyState.BONE_HEADED,
-        PlayerReadyState.HYPNOTIZED,
-        PlayerReadyState.REALLY_STUPID
-    ]
-
-    foulable = [
-        PlayerReadyState.DOWN_READY,
-        PlayerReadyState.DOWN_USED,
-        PlayerReadyState.STUNNED
-    ]
-
-    assistable = [
-        PlayerReadyState.READY,
-        PlayerReadyState.USED
-    ]
-
-    catchable = [
-        PlayerReadyState.READY,
-        PlayerReadyState.USED
-    ]

@@ -29,20 +29,41 @@ class Configuration:
 class PlayerState:
 
     def __init__(self):
-        self.ready = PlayerReadyState.READY
+        self.up = True
+        self.used = False
         self.spp_earned = 0
         self.moves = 0
+        self.stunned = False
+        self.bone_headed = False
+        self.hypnotized = False
+        self.really_stupid = False
+        self.heated = False
         self.casualty_effect = None
         self.casualty_type = None
 
     def to_simple(self):
         return {
-            'ready': self.ready.name,
+            'up': self.up,
+            'used': self.used,
+            'stunned': self.stunned,
+            'bone_headed': self.bone_headed,
+            'hypnotized': self.hypnotized,
+            'really_stupid': self.really_stupid,
+            'heated': self.heated,
             'spp_earned': self.spp_earned,
             'moves': self.moves,
             'casualty_type': self.casualty_type.name if self.casualty_type is not None else None,
             'casualty_effect': self.casualty_effect.name if self.casualty_effect is not None else None
         }
+
+    def reset(self):
+        self.up = True
+        self.used = False
+        self.stunned = False
+        self.bone_headed = False
+        self.hypnotized = False
+        self.really_stupid = False
+        self.heated = False
 
 
 class Agent:
@@ -51,6 +72,13 @@ class Agent:
         self.agent_id = str(uuid.uuid1())
         self.name = name
         self.human = human
+
+    def to_simple(self):
+        return {
+            'agent_id': self.agent_id,
+            'name': self.name,
+            'human': self.human
+        }
 
     def new_game(self, game, team):
         raise NotImplementedError("This method must be overridden by non-human subclasses")
@@ -357,8 +385,8 @@ class Pitch:
             if player_at is None:
                 continue
             if include_own and player_at.team == player.team or include_opp and not player_at.team == player.team:
-                if not only_blockable or player_at.state.ready in Rules.blockable:
-                    if not only_foulable or player_at.state.ready in Rules.foulable:
+                if not only_blockable or player_at.state.up:
+                    if not only_foulable or not player_at.state.up:
                         squares.append(square)
         return squares
 
@@ -416,7 +444,7 @@ class Pitch:
                     player_at = self.get_player_at(p)
                     if player_at is not None:
                         if player_at.team == player.team:
-                            if player_at.state.ready not in Rules.assistable:
+                            if not player_at.can_assist():
                                 continue
                             if (not ignore_guard and player_at.has_skill(Skill.GUARD)) or \
                                             self.num_tackle_zones_in(player_at) <= 1:
@@ -498,7 +526,7 @@ class Pitch:
                     continue
                 if player_at.team == passer.team:
                     continue
-                if player_at.state.ready not in Rules.catchable:
+                if player_at.can_catch():
                     continue
                 if player_at.has_skill(Skill.NO_HANDS):
                     continue
@@ -819,12 +847,19 @@ class Player(Piece):
     def get_skills(self):
         return self.skills
 
-    def has_tackle_zone(self,):
-        if self.state.ready not in Rules.has_tackle_zone:
-            return False
+    def has_tackle_zone(self):
         if self.has_skill(Skill.TITCHY):
             return False
-        return True
+        if self.state.up and not self.state.bone_headed and not self.state.hypnotized and not self.state.really_stupid:
+            return True
+        return False
+
+    def can_catch(self):
+        return self.state.up and not self.state.bone_headed and not self.state.hypnotized and \
+               not self.state.really_stupid and Skill.NO_HANDS not in self.get_skills()
+
+    def can_assist(self):
+        return self.state.up and not self.state.bone_headed and not self.state.hypnotized and not self.state.really_stupid
 
     def to_simple(self):
         skills = []
