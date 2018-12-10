@@ -29,6 +29,11 @@ app.config(['$locationProvider', '$routeProvider',
             controller: 'GamePlayCtrl',
             access: { requiredAuthentication: true }
         }).
+        when('/game/hotseat/:id', {
+            templateUrl: 'static/partials/game.play.html',
+            controller: 'GamePlayCtrl',
+            access: { requiredAuthentication: true }
+        }).
         otherwise({
             redirectTo: '/'
         });
