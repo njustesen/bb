@@ -38,6 +38,8 @@ class PlayerState:
         self.hypnotized = False
         self.really_stupid = False
         self.heated = False
+        self.knocked_out = False
+        self.ejected = False
         self.casualty_effect = None
         self.casualty_type = None
 
@@ -46,10 +48,12 @@ class PlayerState:
             'up': self.up,
             'used': self.used,
             'stunned': self.stunned,
+            'knocked_out': self.knocked_out,
             'bone_headed': self.bone_headed,
             'hypnotized': self.hypnotized,
             'really_stupid': self.really_stupid,
             'heated': self.heated,
+            'ejected': self.ejected,
             'spp_earned': self.spp_earned,
             'moves': self.moves,
             'casualty_type': self.casualty_type.name if self.casualty_type is not None else None,

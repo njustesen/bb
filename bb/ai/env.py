@@ -1,16 +1,29 @@
+import os
 import gym
 from bb.core.game import *
 from bb.core.load import *
 from bb.ai.bots import RandomBot
 from bb.ai.layers import *
-from gym import error, spaces, utils
-from gym.utils import seeding
-from copy import deepcopy
-import random
+import bb.web
 import uuid
+import tkinter as tk
+from PIL import Image, ImageTk
 
 
 class FFAIEnv(gym.Env):
+
+    square_size = 16
+    top_bar_height = 42
+    bot_bar_height = 80
+    black = '#000000'
+    white = '#ffffff'
+    crowd = '#113311'
+    blue = '#2277cc'
+    red = '#cc7722'
+    ball = '#ff00cc'
+    field = '#77cc77'
+    wing = '#55aa55'
+    scrimmage = '#338833'
 
     def __init__(self, config, home_team, away_team, opp_actor=None):
         self.__version__ = "0.0.1"
@@ -23,17 +36,22 @@ class FFAIEnv(gym.Env):
         self.actor = Agent("Gym Learner", human=True)
         self.opp_actor = opp_actor if opp_actor is not None else RandomBot("Random")
         self.seed()
+        self.root = None
+        self.cv = None
+
         self.layers = [
             OccupiedLayer(),
             OwnPlayerLayer(),
             OppPlayerLayer(),
             OwnTackleZoneLayer(),
             OppTackleZoneLayer(),
-            ReadyLayer(),
-            DownLayer(),
+            UpLayer(),
             UsedLayer(),
             AvailablePlayerLayer(),
             AvailablePositionLayer(),
+            RollProbabilityLayer(),
+            BlockDiceLayer(),
+            ActivePlayerLayer(),
             MALayer(),
             STLayer(),
             AGLayer(),
@@ -159,9 +177,153 @@ class FFAIEnv(gym.Env):
         self.game.init()
         return self._observation(self.game)
 
+    def _draw_player(self, player, x, y):
+        if player.team == self.game.state.home_team:
+            fill = FFAIEnv.blue
+        else:
+            fill = FFAIEnv.red
+        width = max(1, player.get_st() - 1)
+        if player.has_skill(Skill.BLOCK):
+            outline = 'red'
+        elif player.has_skill(Skill.CATCH):
+            outline = 'yellow'
+        elif player.has_skill(Skill.PASS):
+            outline = 'white'
+        elif player.get_st() > 3:
+            outline = 'green'
+        else:
+            outline = 'grey'
+        self.cv.create_oval(x, y, x + FFAIEnv.square_size, y + FFAIEnv.square_size, fill=fill, outline=outline,
+                            width=width)
+        text_fill = 'grey' if player.state.used else 'black'
+        self.cv.create_text(x + FFAIEnv.square_size / 2,
+                            y + FFAIEnv.square_size / 2,
+                            text=str(player.nr), fill=text_fill)
+
+        # State
+        if not player.state.up:
+            self.cv.create_line(FFAIEnv.square_size * x, FFAIEnv.square_size * y + FFAIEnv.top_bar_height,
+                                FFAIEnv.square_size * x + FFAIEnv.square_size,
+                                FFAIEnv.square_size * y + FFAIEnv.square_size + FFAIEnv.top_bar_height, fill='white',
+                                width=1)
+        if player.state.stunned:
+            self.cv.create_line(FFAIEnv.square_size * x + FFAIEnv.square_size,
+                                FFAIEnv.square_size * y + FFAIEnv.top_bar_height,
+                                FFAIEnv.square_size * x,
+                                FFAIEnv.square_size * y + FFAIEnv.square_size + FFAIEnv.top_bar_height, fill='white',
+                                width=1)
+
     def render(self, mode='human'):
-        return NotImplementedError("Will appera in version 0.0.2")
+        if self.root is None:
+            self.root = tk.Tk()
+            self.root.title("FFAI Gym")
+            self.cv = tk.Canvas(width=self.game.arena.width*FFAIEnv.square_size, height=self.game.arena.height*FFAIEnv.square_size + FFAIEnv.top_bar_height + FFAIEnv.bot_bar_height)
+
+        self.cv.pack(side='top', fill='both', expand='yes')
+        self.cv.delete("all")
+        self.root.configure(background='black')
+
+        if self.game is not None:
+            # Squares
+            for y in range(self.game.arena.height):
+                for x in range(self.game.arena.width):
+                    if self.game.arena.board[y][x] == Tile.CROWD:
+                        fill = FFAIEnv.crowd
+                    elif self.game.arena.board[y][x] in TwoPlayerArena.home_td_tiles:
+                        fill = FFAIEnv.blue
+                    elif self.game.arena.board[y][x] in TwoPlayerArena.away_td_tiles:
+                        fill = FFAIEnv.red
+                    elif self.game.arena.board[y][x] in TwoPlayerArena.wing_left_tiles or self.game.arena.board[y][x] in TwoPlayerArena.wing_right_tiles:
+                        fill = FFAIEnv.wing
+                    elif self.game.arena.board[y][x] in TwoPlayerArena.scrimmage_tiles:
+                        fill = FFAIEnv.scrimmage
+                    else:
+                        fill = FFAIEnv.field
+                    self.cv.create_rectangle(FFAIEnv.square_size*x, FFAIEnv.square_size*y + FFAIEnv.top_bar_height, FFAIEnv.square_size*x + FFAIEnv.square_size, FFAIEnv.square_size*y + FFAIEnv.square_size + FFAIEnv.top_bar_height, fill=fill, outline=FFAIEnv.black)
+
+            self.cv.create_line(self.game.arena.width*FFAIEnv.square_size/2.0-1, FFAIEnv.top_bar_height, self.game.arena.width*FFAIEnv.square_size/2.0-1, self.game.arena.height*FFAIEnv.square_size + FFAIEnv.top_bar_height, fill=FFAIEnv.black, width=2)
+
+            # Players
+            for y in range(self.game.state.pitch.height):
+                for x in range(self.game.state.pitch.width):
+                    player = self.game.state.pitch.board[y][x]
+                    if player is not None:
+                        self._draw_player(player, FFAIEnv.square_size*x, FFAIEnv.square_size*y + FFAIEnv.top_bar_height)
+
+            # Dugouts
+            x = 4
+            y = self.game.arena.height*FFAIEnv.square_size + FFAIEnv.top_bar_height + 4
+            for player in self.game.get_reserves(self.game.state.away_team):
+                self._draw_player(player, x, y)
+                x += FFAIEnv.square_size
+            x = 4
+            y += FFAIEnv.square_size
+            for player in self.game.get_kods(self.game.state.away_team):
+                self._draw_player(player, x, y)
+                x += FFAIEnv.square_size
+            x = 4
+            y += FFAIEnv.square_size
+            for player in self.game.get_casualties(self.game.state.away_team):
+                self._draw_player(player, x, y)
+                x += FFAIEnv.square_size
+            x = 4
+            y += FFAIEnv.square_size
+            for player in self.game.get_dungeon(self.game.state.away_team):
+                self._draw_player(player, x, y)
+                x += FFAIEnv.square_size
+
+            x = self.game.arena.width*FFAIEnv.square_size - FFAIEnv.square_size
+            y = self.game.arena.height * FFAIEnv.square_size + FFAIEnv.top_bar_height + 4
+            for player in self.game.get_reserves(self.game.state.home_team):
+                self._draw_player(player, x, y)
+                x -= FFAIEnv.square_size
+                x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
+            y += FFAIEnv.square_size
+            for player in self.game.get_kods(self.game.state.home_team):
+                self._draw_player(player, x, y)
+                x -= FFAIEnv.square_size
+                x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
+            y += FFAIEnv.square_size
+            for player in self.game.get_casualties(self.game.state.home_team):
+                self._draw_player(player, x, y)
+                x -= FFAIEnv.square_size
+                x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
+            y += FFAIEnv.square_size
+            for player in self.game.get_dungeon(self.game.state.home_team):
+                self._draw_player(player, x, y)
+                x -= FFAIEnv.square_size
+
+            # Ball
+            for ball in self.game.state.pitch.balls:
+                self.cv.create_oval(FFAIEnv.square_size * ball.position.x + FFAIEnv.square_size/4,
+                                    FFAIEnv.square_size * ball.position.y + FFAIEnv.square_size/4 + FFAIEnv.top_bar_height,
+                                    FFAIEnv.square_size * ball.position.x + FFAIEnv.square_size - FFAIEnv.square_size/4,
+                                    FFAIEnv.square_size * ball.position.y + FFAIEnv.square_size - FFAIEnv.square_size/4 + FFAIEnv.top_bar_height,
+                                    fill=FFAIEnv.ball, outline=FFAIEnv.black, width=1)
+
+            # Non-spatial
+            self.cv.create_text(self.game.arena.width*FFAIEnv.square_size/2.0, 10, text='Half: {}, Weather: {}'.format(self.game.state.half, self.game.state.weather.name), fill='black')
+            self.cv.create_text(self.game.arena.width*FFAIEnv.square_size/2.0, 34, text='{}: Score: {}, Turn: {}, RR: {}/{}, Bribes: {}'.format(
+                self.game.state.away_team.name,
+                self.game.state.away_team.state.score,
+                self.game.state.away_team.state.turn,
+                self.game.state.away_team.state.rerolls,
+                self.game.state.away_team.state.rerolls_start,
+                self.game.state.away_team.state.bribes), fill='blue')
+            self.cv.create_text(self.game.arena.width * FFAIEnv.square_size / 2.0, 22,
+                                text='{}: Score: {}, Turn: {}, RR: {}/{}, Bribes: {}'.format(
+                                    self.game.state.home_team.name,
+                                    self.game.state.home_team.state.score,
+                                    self.game.state.home_team.state.turn,
+                                    self.game.state.home_team.state.rerolls,
+                                    self.game.state.home_team.state.rerolls_start,
+                                    self.game.state.home_team.state.bribes), fill='red')
+
+        self.root.update_idletasks()
+        self.root.update()
 
     def close(self):
         self.game = None
+        self.root = None
+        self.cv = None
 

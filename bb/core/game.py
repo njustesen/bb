@@ -395,15 +395,15 @@ class Game:
         if turn is not None:
             return turn.quick_snap
 
-    def get_players_on_pitch(self, team, ready=None, up=None):
+    def get_players_on_pitch(self, team, used=None, up=None):
         return [player for player in team.players
-                if player.position is not None and (ready is None or ready == player.state.ready) and up is None or
-                up == player.state.up]
+                if player.position is not None and (used is None or used == player.state.used) and
+                (up is None or up == player.state.up)]
 
     def pitch_to_reserves(self, player):
         self.state.pitch.remove(player)
         self.get_reserves(player.team).append(player)
-        player.state.ready = PhysicalState.READY
+        player.state.used = False
 
     def reserves_to_pitch(self, player, pos):
         self.get_reserves(player.team).remove(player)
@@ -415,12 +415,12 @@ class Game:
     def pitch_to_kod(self, player):
         self.state.pitch.remove(player)
         self.get_kods(player.team).append(player)
-        player.state.ready = PhysicalState.KOD
+        player.state.knocked_out = True
 
     def kod_to_reserves(self, player):
-        player.state.ready = PhysicalState.READY
         self.get_kods(player.team).remove(player)
         self.get_reserves(player.team).append(player)
+        player.state.knocked_out = False
 
     def pitch_to_casualties(self, player, casualty, effect, apothecary=False):
         self.state.pitch.remove(player)
@@ -435,7 +435,7 @@ class Game:
     def pitch_to_dungeon(self, player):
         self.state.pitch.remove(player)
         self.get_dungeon(player.team).append(player)
-        player.ready = PhysicalState.EJECTED
+        player.state.ejected = True
 
     def move_player(self, player, pos):
         self.state.pitch.move(player, pos)

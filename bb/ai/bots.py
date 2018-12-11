@@ -1,4 +1,4 @@
-from bb.web.api import *
+from bb.core.model import Agent, ActionType, Action
 import numpy as np
 
 

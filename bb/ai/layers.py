@@ -95,7 +95,7 @@ class OppTackleZoneLayer(FeatureLayer):
         return "opp tackle zones"
 
 
-class ReadyLayer(FeatureLayer):
+class UsedLayer(FeatureLayer):
 
     def produce(self, game):
         out = np.zeros((game.arena.height, game.arena.width))
@@ -104,17 +104,17 @@ class ReadyLayer(FeatureLayer):
             return out
         for player in active_team.players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.READY else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.used else 0.0
         for player in game.get_opp_team(active_team).players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.READY else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.used else 0.0
         return out
 
     def name(self):
         return "ready players"
 
 
-class DownLayer(FeatureLayer):
+class UpLayer(FeatureLayer):
 
     def produce(self, game):
         out = np.zeros((game.arena.height, game.arena.width))
@@ -123,10 +123,10 @@ class DownLayer(FeatureLayer):
             return out
         for player in active_team.players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.DOWN_READY or player.state.ready == PhysicalState.DOWN_USED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.up else 0.0
         for player in game.get_opp_team(active_team).players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.DOWN_READY or player.state.ready == PhysicalState.DOWN_USED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.up else 0.0
         return out
 
     def name(self):
@@ -142,33 +142,29 @@ class StunnedLayer(FeatureLayer):
             return out
         for player in active_team.players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.STUNNED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.stunned else 0.0
         for player in game.get_opp_team(active_team).players:
             if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.STUNNED else 0.0
+                out[player.position.y][player.position.x] = 1.0 if player.state.stunned else 0.0
         return out
 
     def name(self):
         return "stunned players"
 
 
-class UsedLayer(FeatureLayer):
+class ActivePlayerLayer(FeatureLayer):
 
     def produce(self, game):
         out = np.zeros((game.arena.height, game.arena.width))
-        active_team = game.state.available_actions[0].team if len(game.state.available_actions) > 0 else None
-        if active_team is None:
+
+        if game.state.active_player is None or game.state.active_player.position is None:
             return out
-        for player in active_team.players:
-            if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.USED or player.state.ready == PhysicalState.DOWN_USED else 0.0
-        for player in game.get_opp_team(active_team).players:
-            if player.position is not None:
-                out[player.position.y][player.position.x] = 1.0 if player.state.ready == PhysicalState.USED or player.state.ready == PhysicalState.DOWN_USED else 0.0
+
+        out[game.state.active_player.position.y][game.state.active_player.position.x] = 1.0
         return out
 
     def name(self):
-        return "used players"
+        return "active players"
 
 
 class AvailablePlayerLayer(FeatureLayer):
@@ -203,6 +199,47 @@ class AvailablePositionLayer(FeatureLayer):
 
     def name(self):
         return "available positions"
+
+
+class RollProbabilityLayer(FeatureLayer):
+
+    def produce(self, game):
+        out = np.zeros((game.arena.height, game.arena.width))
+        active_team = game.state.available_actions[0].team if len(game.state.available_actions) > 0 else None
+        if active_team is None:
+            return out
+        for action_choice in game.state.available_actions:
+            for i in range(len(action_choice.positions)):
+                if action_choice.positions[i] is not None:
+                    if i < len(action_choice.agi_rolls):
+                        # Convert to chance of succeeding
+                        chance = 1.0
+                        for roll in action_choice.agi_rolls[i]:
+                            chance = chance * ((1+(6-roll)) / 6)
+                        out[action_choice.positions[i].y][action_choice.positions[i].x] = chance
+        return out
+
+    def name(self):
+        return "roll probabilities"
+
+
+class BlockDiceLayer(FeatureLayer):
+
+    def produce(self, game):
+        out = np.zeros((game.arena.height, game.arena.width))
+        active_team = game.state.available_actions[0].team if len(game.state.available_actions) > 0 else None
+        if active_team is None:
+            return out
+        for action_choice in game.state.available_actions:
+            for i in range(len(action_choice.positions)):
+                if action_choice.positions[i] is not None:
+                    if i < len(action_choice.block_rolls):
+                        roll = (action_choice.block_rolls[i] + 3) / 6.0
+                        out[action_choice.positions[i].y][action_choice.positions[i].x] = roll
+        return out
+
+    def name(self):
+        return "block dice"
 
 
 class MALayer(FeatureLayer):
