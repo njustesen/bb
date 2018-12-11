@@ -277,17 +277,17 @@ class FFAIEnv(gym.Env):
             for player in self.game.get_reserves(self.game.state.home_team):
                 self._draw_player(player, x, y)
                 x -= FFAIEnv.square_size
-                x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
+            x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
             y += FFAIEnv.square_size
             for player in self.game.get_kods(self.game.state.home_team):
                 self._draw_player(player, x, y)
                 x -= FFAIEnv.square_size
-                x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
+            x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
             y += FFAIEnv.square_size
             for player in self.game.get_casualties(self.game.state.home_team):
                 self._draw_player(player, x, y)
                 x -= FFAIEnv.square_size
-                x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
+            x = self.game.arena.width * FFAIEnv.square_size - FFAIEnv.square_size
             y += FFAIEnv.square_size
             for player in self.game.get_dungeon(self.game.state.home_team):
                 self._draw_player(player, x, y)
