@@ -107,6 +107,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
 
         var id = $routeParams.id;
         $scope.team_id = $routeParams.team_id;
+        $scope.spectating = window.location.href.indexOf('/spectate/') >= 0;
 
         $scope.getAvailable = function getAvailable(square){
             if (square.special_action_type === "PASS" && $scope.passOptions) {
@@ -880,7 +881,7 @@ appControllers.controller('GamePlayCtrl', ['$scope', '$routeParams', '$location'
             $scope.opp_turn = true;
             for (let idx in $scope.game.state.available_actions) {
                 let action = $scope.game.state.available_actions[idx];
-                if ($scope.team_id !== undefined && action.team_id !== $scope.team_id) {
+                if ($scope.spectating || ($scope.team_id !== undefined && action.team_id !== $scope.team_id)) {
                     action.disabled = true;
                     continue;
                 }
