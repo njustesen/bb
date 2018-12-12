@@ -8,13 +8,16 @@ import bb.web
 import uuid
 import tkinter as tk
 from PIL import Image, ImageTk
+import math
 
 
 class FFAIEnv(gym.Env):
 
     square_size = 16
+    square_size_fl = 4
     top_bar_height = 42
     bot_bar_height = 80
+    layer_text_height = 26
     black = '#000000'
     white = '#ffffff'
     crowd = '#113311'
@@ -38,6 +41,7 @@ class FFAIEnv(gym.Env):
         self.seed()
         self.root = None
         self.cv = None
+        self.last_obs = None
 
         self.layers = [
             OccupiedLayer(),
@@ -154,6 +158,8 @@ class FFAIEnv(gym.Env):
         obs['non-spatial']['is blitz'] = 1.0 if game.is_blitz() else 0.0
         obs['non-spatial']['is quick snap'] = 1.0 if game.is_quick_snap() else 0.0
 
+        self.last_obs = obs
+
         return obs
 
     def reset(self):
@@ -213,11 +219,20 @@ class FFAIEnv(gym.Env):
                                 FFAIEnv.square_size * y + FFAIEnv.square_size + FFAIEnv.top_bar_height, fill='white',
                                 width=1)
 
-    def render(self, mode='human'):
+    def render(self, feature_layers=False):
         if self.root is None:
             self.root = tk.Tk()
             self.root.title("FFAI Gym")
-            self.cv = tk.Canvas(width=self.game.arena.width*FFAIEnv.square_size, height=self.game.arena.height*FFAIEnv.square_size + FFAIEnv.top_bar_height + FFAIEnv.bot_bar_height)
+            self.game_width = self.game.arena.width*FFAIEnv.square_size
+            self.game_height = self.game.arena.height*FFAIEnv.square_size + FFAIEnv.top_bar_height + FFAIEnv.bot_bar_height
+            if feature_layers:
+                self.cols = math.floor(math.sqrt(len(self.layers)))
+                self.rows = math.ceil(math.sqrt(len(self.layers)))
+                self.fl_width = (self.game.arena.width+1) * self.cols * FFAIEnv.square_size_fl + FFAIEnv.square_size_fl
+                self.fl_height = ((self.game.arena.height+1) * FFAIEnv.square_size_fl + FFAIEnv.layer_text_height) * self.rows + FFAIEnv.square_size_fl
+                self.cv = tk.Canvas(width=max(self.game_width, self.fl_width), height=self.fl_height + self.game_height)
+            else:
+                self.cv = tk.Canvas(width=self.game_width, height=self.game_height)
 
         self.cv.pack(side='top', fill='both', expand='yes')
         self.cv.delete("all")
@@ -318,6 +333,34 @@ class FFAIEnv(gym.Env):
                                     self.game.state.home_team.state.rerolls,
                                     self.game.state.home_team.state.rerolls_start,
                                     self.game.state.home_team.state.bribes), fill='red')
+
+        # Feature layers
+        if feature_layers:
+            row = 0
+            col = 0
+            for name, grid in self.last_obs['spatial'].items():
+                grid_x = col * (len(grid[0]) + 1) * FFAIEnv.square_size_fl + FFAIEnv.square_size_fl
+                grid_y = row * (len(grid) + 1) * FFAIEnv.square_size_fl + self.game_height + FFAIEnv.square_size_fl + ((row+1) * FFAIEnv.layer_text_height)
+
+                self.cv.create_text(grid_x + (len(grid[0]) * FFAIEnv.square_size_fl)/2, grid_y - FFAIEnv.layer_text_height/2, text=name)
+                self.cv.create_rectangle(grid_x,
+                                         grid_y,
+                                         grid_x + len(grid[0]) * FFAIEnv.square_size_fl,
+                                         grid_y + len(grid) * FFAIEnv.square_size_fl,
+                                         fill='black', outline=FFAIEnv.black, width=2)
+                for y in range(len(grid)):
+                    for x in range(len(grid[0])):
+                        value = 1 - grid[y][x]
+                        fill = '#%02x%02x%02x' % (int(value * 255), int(value * 255), int(value * 255))
+                        self.cv.create_rectangle(FFAIEnv.square_size_fl * x + grid_x,
+                                                 FFAIEnv.square_size_fl * y + grid_y,
+                                                 FFAIEnv.square_size_fl * x + grid_x + FFAIEnv.square_size_fl,
+                                                 FFAIEnv.square_size_fl * y + grid_y + FFAIEnv.square_size_fl,
+                                                 fill=fill, outline=FFAIEnv.black)
+                col += 1
+                if col >= self.cols:
+                    col = 0
+                    row += 1
 
         self.root.update_idletasks()
         self.root.update()

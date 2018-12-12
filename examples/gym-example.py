@@ -5,10 +5,10 @@ import gym
 if __name__ == "__main__":
 
     # Create environment
-    env = gym.make("FFAI-v1")
+    # env = gym.make("FFAI-v1")
     # env = gym.make("FFAI-7-v1")
     # env = gym.make("FFAI-5-v1")
-    # env = gym.make("FFAI-3-v1")
+    env = gym.make("FFAI-3-v1")
 
     # Set seed for reproducibility
     seed = 0
@@ -37,6 +37,6 @@ if __name__ == "__main__":
             print(steps)
 
             # Render
-            env.render()
+            env.render(feature_layers=False)
 
     print(steps)
