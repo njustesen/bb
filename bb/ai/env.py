@@ -1,5 +1,6 @@
 import os
 import gym
+from gym import spaces
 from bb.core.game import *
 from bb.core.load import *
 from bb.ai.bots import RandomBot
@@ -27,6 +28,61 @@ class FFAIEnv(gym.Env):
     field = '#77cc77'
     wing = '#55aa55'
     scrimmage = '#338833'
+
+    simple_action_types = [
+        ActionType.START_GAME,
+        ActionType.HEADS,
+        ActionType.TAILS,
+        ActionType.KICK,
+        ActionType.RECEIVE,
+        ActionType.END_SETUP,
+        ActionType.END_PLAYER_TURN,
+        ActionType.USE_REROLL,
+        ActionType.DONT_USE_REROLL,
+        ActionType.END_TURN,
+        ActionType.STAND_UP,
+        ActionType.SELECT_ATTACKER_DOWN,
+        ActionType.SELECT_BOTH_DOWN,
+        ActionType.SELECT_PUSH,
+        ActionType.SELECT_DEFENDER_STUMBLES,
+        ActionType.SELECT_DEFENDER_DOWN,
+        ActionType.SELECT_NONE
+    ]
+
+    formation_action_types = [
+        ActionType.SETUP_FORMATION_WEDGE,
+        ActionType.SETUP_FORMATION_LINE,
+        ActionType.SETUP_FORMATION_SPREAD,
+        ActionType.SETUP_FORMATION_ZONE
+    ]
+
+    positional_action_types = [
+        ActionType.PLACE_PLAYER,
+        ActionType.PLACE_BALL,
+        ActionType.SELECT_SQUARE,
+        ActionType.INTERCEPTION,
+        ActionType.SELECT_PLAYER,
+        ActionType.SELECT_NONE,
+        ActionType.MOVE,
+        ActionType.BLOCK,
+        ActionType.BLITZ,
+        ActionType.PASS,
+        ActionType.FOUL,
+        ActionType.SELECT_SQUARE,
+        ActionType.HANDOFF
+    ]
+
+    player_action_types = [
+        ActionType.PLACE_PLAYER,
+        ActionType.INTERCEPTION,
+        ActionType.SELECT_PLAYER,
+        ActionType.START_MOVE,
+        ActionType.START_BLOCK,
+        ActionType.START_BLITZ,
+        ActionType.START_PASS,
+        ActionType.START_FOUL,
+        ActionType.START_HANDOFF
+    ]
 
     def __init__(self, config, home_team, away_team, opp_actor=None):
         self.__version__ = "0.0.1"
@@ -72,7 +128,40 @@ class FFAIEnv(gym.Env):
             SkillLayer(Skill.BLOCK)
         ]
 
+        arena = get_arena(self.config.arena)
+
+        self.observation_space = spaces.Dict({
+            'spatial': spaces.Box(low=0, high=1, shape=(arena.height, arena.width, len(self.layers))),
+            'non-spatial': spaces.Discrete(44)
+        })
+
+        self.actions = FFAIEnv.simple_action_types + FFAIEnv.formation_action_types + FFAIEnv.positional_action_types
+
+        self.action_space = spaces.Dict({
+            'action-type': spaces.Discrete(len(self.actions)),
+            'x': spaces.Discrete(arena.width),
+            'y': spaces.Discrete(arena.height)
+        })
+
     def step(self, action):
+        action_type = self.actions[action['action-type']] if action['action-type'] is not None else None
+        if action_type is None:
+            return
+        p = Square(action['x'], action['y']) if action['x'] is not None and action['y'] is not None else None
+        position = None
+        player = None
+        if action_type in self.player_action_types:
+            if p is None:
+                print("p is None")
+            player = self.game.get_player_at(p)
+            if player is None:
+                print("player is None")
+        elif action_type in self.positional_action_types:
+            position = p
+        real_action = Action(action_type=action_type, pos=position, player=player)
+        return self._step(real_action)
+
+    def _step(self, action):
         self.game.step(action)
         reward = 1 if self.game.get_winner() == self.actor else 0
         team = self.game.state.home_team if self.team_id == self.home_team.team_id else self.game.state.away_team
@@ -182,6 +271,34 @@ class FFAIEnv(gym.Env):
                          seed=seed)
         self.game.init()
         return self._observation(self.game)
+
+    def available_action_types(self):
+        if isinstance(self.game.state.stack.peek(), Setup):
+            return [self.actions.index(action.action_type) for action in self.game.state.available_actions if
+                    action.action_type in self.actions and action.action_type != ActionType.PLACE_PLAYER]
+        return [self.actions.index(action.action_type) for action in self.game.state.available_actions if action.action_type in self.actions]
+
+    def available_positions(self, action_type):
+        action = None
+        for a in self.game.state.available_actions:
+            if a.action_type == self.actions[action_type]:
+                action = a
+        if action is None:
+            return []
+        if action.action_type in FFAIEnv.player_action_types:
+            return [player.position for player in action.players]
+        if action.action_type in FFAIEnv.positional_action_types:
+            return [position for position in action.positions]
+        return []
+
+    def _available_players(self, action_type):
+        action = None
+        for a in self.game.state.available_actions:
+            if a.action_type == self.actions[action_type]:
+                action = a
+        if action is None:
+            return []
+        return [player.position for player in action.players]
 
     def _draw_player(self, player, x, y):
         if player.team == self.game.state.home_team:

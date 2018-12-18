@@ -288,8 +288,8 @@ class Block(Procedure):
             # Roll again
             self.reroll_used = True
 
-        elif action.action_type == ActionType.USE_JUGGERNAUT:
-            self.selected_die = BBDieResult.PUSH
+        #elif action.action_type == ActionType.USE_JUGGERNAUT:
+        #    self.selected_die = BBDieResult.PUSH
 
         # Select die
         elif action.action_type == ActionType.SELECT_ATTACKER_DOWN:
@@ -2022,8 +2022,8 @@ class PlayerAction(Procedure):
                     agi_rolls.append([4])
                 else:
                     agi_rolls.append([])
-                actions.append(ActionChoice(ActionType.STAND_UP, players=[self.player],
-                                            positions=[self.player.position], team=self.player.team,
+                actions.append(ActionChoice(ActionType.STAND_UP, positions=[self.player.position],
+                                            team=self.player.team,
                                             agi_rolls=agi_rolls))
                 # TODO: Check if position is necessary here? ^^
             elif (not self.turn.quick_snap
@@ -2046,7 +2046,7 @@ class PlayerAction(Procedure):
                             rolls.append(min(6, max(2, target - modifiers)))
                     agi_rolls.append(rolls)
                 if len(move_positions) > 0:
-                    actions.append(ActionChoice(ActionType.MOVE, players=[self.player], team=self.player.team,
+                    actions.append(ActionChoice(ActionType.MOVE, team=self.player.team,
                                                 positions=move_positions, agi_rolls=agi_rolls))
 
         # Block actions
@@ -2081,7 +2081,7 @@ class PlayerAction(Procedure):
                     block_rolls.append(dice)
                 if len(block_positions) > 0:
                     agi_rolls = [([2] if gfi else []) for _ in block_positions]
-                    actions.append(ActionChoice(ActionType.BLOCK, players=[self.player], team=self.player.team,
+                    actions.append(ActionChoice(ActionType.BLOCK, team=self.player.team,
                                                 positions=block_positions, block_rolls=block_rolls,
                                                 agi_rolls=agi_rolls))
 
@@ -2100,7 +2100,7 @@ class PlayerAction(Procedure):
                 foul_rolls.append(min(0, armor + 1 - len(assists_from) + len(assists_to)))
 
             if len(foul_positions) > 0:
-                actions.append(ActionChoice(ActionType.FOUL, players=[self.player], team=self.player.team,
+                actions.append(ActionChoice(ActionType.FOUL, team=self.player.team,
                                             positions=foul_positions, block_rolls=foul_rolls))
 
         # Handoff actions
@@ -2116,7 +2116,7 @@ class PlayerAction(Procedure):
                     agi_rolls.append([min(6, max(2, target - modifiers))])
 
             if len(hand_off_positions) > 0:
-                actions.append(ActionChoice(ActionType.HANDOFF, players=[self.player], team=self.player.team,
+                actions.append(ActionChoice(ActionType.HANDOFF, team=self.player.team,
                                             positions=hand_off_positions, agi_rolls=agi_rolls))
 
         # Pass actions
@@ -2140,10 +2140,10 @@ class PlayerAction(Procedure):
                     rolls.append(min(6, max(2, catch_target - catch_modifiers)))
                 agi_rolls.append(rolls)
             if len(positions) > 0:
-                actions.append(ActionChoice(ActionType.PASS, players=[self.player], team=self.player.team,
+                actions.append(ActionChoice(ActionType.PASS, team=self.player.team,
                                             positions=positions, agi_rolls=agi_rolls))
 
-        actions.append(ActionChoice(ActionType.END_PLAYER_TURN, players=[self.player], team=self.player.team))
+        actions.append(ActionChoice(ActionType.END_PLAYER_TURN, team=self.player.team))
         return actions
 
 
@@ -2247,12 +2247,12 @@ class FollowUp(Procedure):
         return True
 
     def available_actions(self):
-        if not self.player.has_skill(Skill.FRENZY):
-            return [ActionChoice(ActionType.SELECT_SQUARE, team=self.player.team,
-                                 positions=[self.player.position, self.pos_to], players=[self.player])]
+        if self.player.has_skill(Skill.FRENZY):
+            return [ActionChoice(ActionType.SELECT_SQUARE, team=self.player.team, positions=[self.pos_to])]
         else:
-            return [ActionChoice(ActionType.SELECT_SQUARE, team=self.player.team, positions=[self.pos_to],
-                                 players=[self.player])]
+            return [ActionChoice(ActionType.SELECT_SQUARE, team=self.player.team,
+                                 positions=[self.player.position, self.pos_to])]
+
 
 
 class Push(Procedure):

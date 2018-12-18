@@ -256,7 +256,6 @@ class CasualtyType(Enum):
 
 class ActionType(Enum):
     START_GAME = 1
-    END_GAME = 2
     HEADS = 3
     TAILS = 4
     KICK = 5
@@ -277,20 +276,13 @@ class ActionType(Enum):
     PASS = 20
     FOUL = 21
     HANDOFF = 22
-    USE_SKILL = 23
     USE_REROLL = 24
     END_TURN = 25
-    SELECT_DIE = 26
     USE_APOTHECARY = 27
-    USE_ROLL = 28
-    USE_JUGGERNAUT = 29
-    USE_WRESTLE = 30
-    DONT_USE_SKILL = 31
-    FOLLOW_UP = 32
-    DONT_FOLLOW_UP = 33
+    #USE_JUGGERNAUT = 29
+    #USE_WRESTLE = 30
     INTERCEPTION = 34
     CONTINUE = 35
-    ROLL_FOR_WEATHER = 36
     SELECT_PLAYER = 37
     SELECT_NONE = 38
     DONT_USE_APOTHECARY = 40

@@ -83,16 +83,16 @@ class Game:
                     print("Illegal action type")
                     return False
                 if action.player is not None and not isinstance(action.player, Player):
-                    print("Illegal player")
+                    print("Illegal player", action.action_type, action.player.to_simple())
                     return False
                 if action.pos is not None and not isinstance(action.pos, Square):
-                    print("Illegal position")
+                    print("Illegal position", action.pos.to_simple(), action.action_type.name)
                     return False
                 if action.idx is not None and not isinstance(action.idx, int):
                     print("Illegal index")
                     return False
                 if len(action_choice.players) > 0 and action.player not in action_choice.players:
-                    print("Illegal player")
+                    print("Illegal player", action.action_type, action.player)
                     return False
                 if len(action_choice.positions) > 0 and action.pos not in action_choice.positions:
                     print("Illegal position")
@@ -208,7 +208,7 @@ class Game:
 
         # End player turn if only action available
         if len(self.state.available_actions) == 1 and self.state.available_actions[0].action_type == ActionType.END_PLAYER_TURN:
-            self._one_step(Action(ActionType.END_PLAYER_TURN, player=self.state.available_actions[0].players[0]))
+            self._one_step(Action(ActionType.END_PLAYER_TURN))
             return False  # We can continue without user input
 
         return True  # Game needs user input
