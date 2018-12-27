@@ -39,9 +39,12 @@ class MyRandomBot(Agent):
 
 if __name__ == "__main__":
 
-    # Avoid loading config and rules every time
+    # Load configurations, rules, arena and teams
     config = get_config("ff-11.json")
-    ruleset = get_rule_set(config.ruleset)
+    # config = get_config("ff-7.json")
+    # config = get_config("ff-5.json")
+    # config = get_config("ff-3.json")
+    ruleset = get_rule_set(config.ruleset, all_rules=False)  # We don't need all the rules
     arena = get_arena(config.arena)
     home = get_team_by_id("human-1", ruleset)
     away = get_team_by_id("human-2", ruleset)
@@ -54,7 +57,7 @@ if __name__ == "__main__":
         game = Game(i, home, away, home_agent, away_agent, config, arena=arena, ruleset=ruleset)
         game.config.fast_mode = True
 
-        print("Starting game", i)
+        print("Starting game", (i+1))
         start = time.time()
         game.init()
         game.step()

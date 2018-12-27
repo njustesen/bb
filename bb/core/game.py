@@ -95,7 +95,7 @@ class Game:
                     print("Illegal player", action.action_type, action.player)
                     return False
                 if len(action_choice.positions) > 0 and action.pos not in action_choice.positions:
-                    print("Illegal position")
+                    print("Illegal position", action.pos.to_simple(), action.action_type.name)
                     return False
                 break
         return True

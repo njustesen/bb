@@ -89,7 +89,7 @@ class FFAIEnv(gym.Env):
         self.config = config
         self.game = None
         self.team_id = None
-        self.ruleset = get_rule_set(config.ruleset)
+        self.ruleset = get_rule_set(config.ruleset, all_rules=False)
         self.home_team = home_team
         self.away_team = away_team
         self.actor = Agent("Gym Learner", human=True)
@@ -132,7 +132,7 @@ class FFAIEnv(gym.Env):
 
         self.observation_space = spaces.Dict({
             'spatial': spaces.Box(low=0, high=1, shape=(arena.height, arena.width, len(self.layers))),
-            'non-spatial': spaces.Discrete(44)
+            'non-spatial': spaces.Box(low=0, high=1, shape=(44,))
         })
 
         self.actions = FFAIEnv.simple_action_types + FFAIEnv.formation_action_types + FFAIEnv.positional_action_types
@@ -156,6 +156,12 @@ class FFAIEnv(gym.Env):
             player = self.game.get_player_at(p)
             if player is None:
                 print("player is None")
+            action = None
+            for a in self.game.state.available_actions:
+                if a.action_type == action_type:
+                    action = a
+            if len(action.positions) == 1:
+                position = action.positions[0]
         elif action_type in self.positional_action_types:
             position = p
         real_action = Action(action_type=action_type, pos=position, player=player)
@@ -286,9 +292,9 @@ class FFAIEnv(gym.Env):
         if action is None:
             return []
         if action.action_type in FFAIEnv.player_action_types:
-            return [player.position for player in action.players]
+            return [player.position for player in action.players if player.position is not None]
         if action.action_type in FFAIEnv.positional_action_types:
-            return [position for position in action.positions]
+            return [position for position in action.positions if position is not None]
         return []
 
     def _available_players(self, action_type):

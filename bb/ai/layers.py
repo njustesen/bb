@@ -195,6 +195,9 @@ class AvailablePositionLayer(FeatureLayer):
             for position in action_choice.positions:
                 if position is not None:
                     out[position.y][position.x] = 1.0
+            for player in action_choice.players:
+                if player.position is not None:
+                    out[player.position.y][player.position.x] = 1.0
         return out
 
     def name(self):

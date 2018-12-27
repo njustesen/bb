@@ -42,18 +42,21 @@ def parse_sc(sc):
     return parsed
 
 
-def get_rule_set(name):
+def get_rule_set(name, debug=False, all_rules=True):
 
     path = get_data_path('rules/' + name)
 
-    print("Loading rules at " + path)
+    if debug:
+        print("Loading rules at " + path)
     obj = untangle.parse(path)
 
     ruleset = RuleSet(path.split("/")[-1].split(".")[0])
 
-    print("Parsing races")
+    if debug:
+        print("Parsing races")
     for r in obj.rules.rosters.roster:
-        print("-- Parsing " + str(r.name.cdata))
+        if debug:
+            print("-- Parsing " + str(r.name.cdata))
         race = Race(r.name.cdata, [], (int)(r.rerollValue.cdata), (bool)(r.apothecary.cdata), (bool)(r.stakes.cdata))
         for p in r.positions.position:
             position = Role(p.title.cdata, [race.name], (int)(p.ma.cdata), (int)(p.st.cdata), (int)(p.ag.cdata), (int)(p.av.cdata), [], (int)(p.cost.cdata), parse_sc(p.normal.cdata), parse_sc(p.double.cdata))
@@ -63,46 +66,59 @@ def get_rule_set(name):
             race.roles.append(position)
         ruleset.races.append(race)
 
-    print("Parsing star players")
-    for star in obj.rules.stars.star:
-        print("-- Parsing " + str(star.name.cdata))
-        role = Role(star.name.cdata, [], (int)(star.ma.cdata), (int)(star.st.cdata), (int)(star.ag.cdata), (int)(star.av.cdata), [], (int)(star.cost.cdata), (bool)(star.feeder.cdata), [], [], star_player=True)
-        if len(star.skills) == 0:
-            continue
-        for skill_name in star.skills.skill:
-            role.skills.append(parse_enum(Skill, skill_name.cdata))
-        for race_name in star.races.race:
-            role.races.append(race_name.cdata)
-        ruleset.star_players.append(role)
+    if all_rules:
+        if debug:
+            print("Parsing star players")
+        for star in obj.rules.stars.star:
+            if debug:
+                print("-- Parsing " + str(star.name.cdata))
+            role = Role(star.name.cdata, [], (int)(star.ma.cdata), (int)(star.st.cdata), (int)(star.ag.cdata), (int)(star.av.cdata), [], (int)(star.cost.cdata), (bool)(star.feeder.cdata), [], [], star_player=True)
+            if len(star.skills) == 0:
+                continue
+            for skill_name in star.skills.skill:
+                role.skills.append(parse_enum(Skill, skill_name.cdata))
+            for race_name in star.races.race:
+                role.races.append(race_name.cdata)
+            ruleset.star_players.append(role)
 
-    print("Parsing inducements")
-    for i in obj.rules.inducements.inducement:
-        print("-- Parsing " + str(i["name"]))
-        reduced = 0 if not "reduced" in i else i["reduced"]
-        inducement = Inducement(i["name"], (int)(i.cdata), (int)(i["max"]), reduced=reduced)
-        ruleset.inducements.append(inducement)
+        if debug:
+            print("Parsing inducements")
+        for i in obj.rules.inducements.inducement:
+            if debug:
+                print("-- Parsing " + str(i["name"]))
+            reduced = 0 if not "reduced" in i else i["reduced"]
+            inducement = Inducement(i["name"], (int)(i.cdata), (int)(i["max"]), reduced=reduced)
+            ruleset.inducements.append(inducement)
 
-    print("Parsing SPP actions")
-    for a in obj.rules.spp.action:
-        print("-- Parsing " + str(a["name"]))
-        ruleset.spp_actions[a["name"]] = (int)(a.cdata)
+        if debug:
+            print("Parsing SPP actions")
+        for a in obj.rules.spp.action:
+            if debug:
+                print("-- Parsing " + str(a["name"]))
+            ruleset.spp_actions[a["name"]] = (int)(a.cdata)
 
-    print("Parsing SPP levels")
-    for l in obj.rules.spp.level:
-        print("-- Parsing " + str(l["name"]))
-        ruleset.spp_levels[l["name"]] = (int)(l.cdata)
+        if debug:
+            print("Parsing SPP levels")
+        for l in obj.rules.spp.level:
+            if debug:
+                print("-- Parsing " + str(l["name"]))
+            ruleset.spp_levels[l["name"]] = (int)(l.cdata)
 
-    print("Parsing improvements")
-    for imp in obj.rules.improvements.improvement:
-        print("-- Parsing " + str(imp["name"]))
-        ruleset.improvements[imp["name"]] = (int)(imp.cdata)
+        if debug:
+            print("Parsing improvements")
+        for imp in obj.rules.improvements.improvement:
+            if debug:
+                print("-- Parsing " + str(imp["name"]))
+            ruleset.improvements[imp["name"]] = (int)(imp.cdata)
 
-    print("Parsing spiralling expenses")
-    ruleset.se_start = (int)(obj.rules.spirallingExpenses.start.cdata)
-    ruleset.se_interval = (int)(obj.rules.spirallingExpenses.interval.cdata)
-    ruleset.se_pace = (int)(obj.rules.spirallingExpenses.pace.cdata)
+        if debug:
+            print("Parsing spiralling expenses")
+        ruleset.se_start = (int)(obj.rules.spirallingExpenses.start.cdata)
+        ruleset.se_interval = (int)(obj.rules.spirallingExpenses.interval.cdata)
+        ruleset.se_pace = (int)(obj.rules.spirallingExpenses.pace.cdata)
 
-    print("Done loading rules")
+    if debug:
+        print("Done loading rules")
 
     return ruleset
 
