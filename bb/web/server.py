@@ -2,6 +2,8 @@ from flask import Flask, request, render_template
 from bb.web import api
 from bb.core.load import *
 import json
+
+
 app = Flask(__name__)
 
 '''
@@ -32,16 +34,6 @@ def save():
         return json.dumps("Game was successfully saved")
     else:
         raise Exception("Cannot save this game")
-
-'''
-@app.route('/games/', methods=['GET'])
-def get_games():
-    games = api.get_games()
-    game_list = []
-    for game in games:
-        game_list.append(game.to_simple())
-    return json.dumps(game_list)
-'''
 
 
 @app.route('/games/', methods=['GET'])

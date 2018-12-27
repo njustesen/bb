@@ -1,6 +1,6 @@
 {
-  "name": "blog-builder",
-  "description": "Blog Builder",
+  "name": "FFAI",
+  "description": "FFAI web interface",
   "version": "0.0.1",
   "private": true,
   "dependencies": {

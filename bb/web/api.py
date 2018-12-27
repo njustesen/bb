@@ -61,7 +61,7 @@ def get_teams(ruleset):
     return get_all_teams(ruleset)
 
 
-# Initialize with one game
+# Initialize with two games
 # TODO: Remove this at some point
 new_game(home_team_id="orc-1",
          away_team_id="human-1",
